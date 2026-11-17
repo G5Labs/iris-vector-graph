@@ -1,0 +1,44 @@
+verification results:: 45 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/status-pending-reads-nkg/20261117T045716Z/models/operator_reports/operator_reports.rs:463:13
+    |
+461 |   pub proof fn theorem_fresh_namespace_edges_skip_nkg(e: Edge, eng: Eng)
+    |   ---------------------------------------------------------------------- at the end of the function body
+462 |       requires !eng.dirty,
+463 |       ensures ({
+    |  _____________^
+464 | |         let ns = create_edge(fresh_setup(), e);
+465 | |         let s = status(ns, eng);
+466 | |         &&& ready_for_bfs(s) && ready_for_multihop_bfs(s)
+467 | |         &&& !s.nkg_populated && sync_line(s) == SyncLine::InSync
+468 | |         &&& !verify(ns, eng).in_sync
+469 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/status-pending-reads-nkg/20261117T045716Z/models/operator_reports/operator_reports.rs:489:13
+    |
+487 |   pub proof fn theorem_delete_status_vs_verify(ns: Ns, keep: Seq<Edge>, eng: Eng, other: Eng)
+    |   ------------------------------------------------------------------------------------------- at the end of the function body
+488 |       requires keep.len() > 0, !other.dirty,
+489 |       ensures ({
+    |  _____________^
+490 | |         let n2 = delete_ns(ns, keep);
+491 | |         let e2 = Eng { dirty: false, ..eng };
+492 | |         &&& sync_line(status(n2, e2)) == SyncLine::InSync && sync_line(status(n2, other)) == SyncLine::InSync
+493 | |         &&& !status(n2, e2).nkg_populated
+494 | |         &&& !verify(n2, e2).in_sync && !verify(n2, other).in_sync
+495 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/status-pending-reads-nkg/20261117T045716Z/models/operator_reports/operator_reports.rs:505:9
+    |
+500 | pub proof fn theorem_bulk_pending_is_engine_local(ns: Ns, more: Seq<Edge>, eng: Eng, other: Eng)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+505 |         !status(bulk_ns(ns, more), other).pending,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

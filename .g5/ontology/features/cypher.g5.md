@@ -490,7 +490,8 @@ Cypher's built-in list, string, map and aggregate functions give the openCypher 
 `list[i]` counts a negative `i` from the end, an `i` past either end gives null, a null `i` gives null, and the element keeps its type.
 - Today this holds for an index written in the query, and for a run-time index into a list a `WITH` holds from a literal (`WITH [1, 2, 3] AS l UNWIND [-1] AS i RETURN l[i]` gives 3).
 - Today, for a list read from a property (directly or through a `WITH` column), a negative run-time index fails the whole query and a non-negative one answers the element as text (`'1'` for 1); a negative parameter index fails for every list ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-111)).
-- Today a null index known only at run time, and `l[null]` on a list a row holds, give the list's first element ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-126)).
+- Today a null index taken from a row (`UNWIND [null] AS i`), and `l[null]` on a list a row holds, give the list's first element ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-126)).
+- Today a null parameter index (`l[$i]` with `i` null) fails the whole query with "Incorrect number of parameters", for every list. `[1, 2, 3][null]` written in the query gives null, as the rule says.
 
 <a id="query.functions.reverse"></a>
 [I · query.functions.reverse]

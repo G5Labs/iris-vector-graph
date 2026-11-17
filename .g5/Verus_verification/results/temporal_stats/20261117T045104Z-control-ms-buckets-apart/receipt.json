@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: the millisecond class keeps its statistics apart from the seconds class's (the bug-tmp-106 repair; a different global subscript or unit marker)",
+    "expect_fail_in": [
+      "theorem_ms_edge_in_seconds_whole_bucket"
+    ],
+    "find": "pub open spec fn k4(e: Ev, div: int) -> (int, int, int, int) { (e.g, bucket_of(e.ts, div), e.s, e.p) }",
+    "name": "ms-buckets-apart",
+    "replace": "pub open spec fn k4(e: Ev, div: int) -> (int, int, int, int) { (e.g, if div == 300 { bucket_of(e.ts, div) } else { -1 - bucket_of(e.ts, div) }, e.s, e.p) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_ms_edge_in_seconds_whole_bucket"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "a6722cd994d1ac8658d2a35ac179bf459504348d97175250d4b7e3cd7de4f425",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "d991a56fb04bd65be13b39aff5d04d8d11a78a68927318964f29334e0d1e9104"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/ms-buckets-apart/20261117T045100Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_ms_edge_in_seconds_whole_bucket": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045100Z-control-ms-buckets-apart-theorem_ms_edge_in_seconds_whole_bucket.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045100Z-control-ms-buckets-apart.log",
+    "timed_out": false,
+    "verified": 57
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T045104Z-control-ms-buckets-apart/logs/20261117T045100Z-control-ms-buckets-apart-theorem_ms_edge_in_seconds_whole_bucket.log": "462924917ef17e373829a28872dc5a3e1a90e803b012b468bd36976303a81d0f",
+    ".g5/Verus_verification/results/temporal_stats/20261117T045104Z-control-ms-buckets-apart/logs/20261117T045100Z-control-ms-buckets-apart.log": "88969c2c50532d7edded4d9a342609dc3c8b16c2db29363d7fa672a11b784e51"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

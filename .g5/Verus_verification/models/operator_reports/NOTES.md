@@ -1,19 +1,30 @@
-# operator_reports — operator reports (W58, iteration 52)
+# operator_reports — operator reports (W58, iteration 52; extended in iteration 53)
 
 Product pin `3eaa79cf`. Root [operator_reports.rs](operator_reports.rs), controls in [model.json](model.json), native
 binding [binding.py](binding.py). Frozen predictions: [reports-PAIRS.md](../../../uplift/consolidated/iteration-52/reports-PAIRS.md)
 (committed before the deciding source was read). Raw probe: [reports_probe.py](../../../uplift/consolidated/iteration-52/reports_probe.py)
 in namespace `I52`. Owners: [install.status](../../../ontology/concepts/install.g5.md#install.status) and its children
-`.readiness`, `.sync`, `.verify_sync`, `.capabilities`, `.readers`, `.diagram`, and
+`.readiness`, `.sync`, `.verify_sync`, `.capabilities`, `.readers`, `.ledger` (iteration 53), `.diagram`, and
 [install.snapshot.info](../../../ontology/concepts/install.g5.md#install.snapshot.info).
 
-## Results (final candidate)
+## Results (final candidate, iteration 53)
 
 | Run | Result | Receipt |
 |---|---|---|
-| prove | PASS 34 verified, 0 errors | `results/operator_reports/20261117T042319Z-prove` |
-| controls | 17 of 17 EXPECTED_FAIL, each in its named functions | `results/operator_reports/20261117T0423*-control-*` |
-| binding | AGREES, 414 cases, all 17 mutations detected, tampered observation detected | `results/operator_reports/20261117T042408Z-binding` |
+| prove | PASS 48 verified, 0 errors | `results/operator_reports/20261117T045706Z-prove` |
+| controls | 24 of 24 EXPECTED_FAIL, each in its named functions | `results/operator_reports/20261117T0457*-control-*` |
+| binding | AGREES, 535 cases in namespace `I53B`, all 24 mutations detected, both tampered observations detected | `results/operator_reports/20261117T045659Z-binding` |
+
+Iteration 52's final candidate (34 verified, 17 controls, binding AGREES 414 in `I52B`: `20261117T042319Z-prove`,
+`20261117T0423*-control-*`, `20261117T042408Z-binding`) is kept; its receipts are of the earlier model.
+
+Iteration 53 kept runs (not final):
+- `20261117T045341Z-prove` (PASS 48) was made with a reformatted `model.json` (indent 1); the content was rewritten in
+  the repository's indent before any other run.
+- `20261117T045354Z-prove` and `20261117T0453*`/`T0454*` controls ran before the `edge-registry-keeps-case` attribution
+  was corrected; `20261117T045439Z-control-edge-registry-keeps-case` is **FAIL_ELSEWHERE**: the change breaks
+  `lemma_erouted_sum_zero`, on which the two named theorems rely, so they verify alone. The control now names the lemma
+  (`20261117T045630Z` EXPECTED_FAIL), and the full suite was re-run on the final `model.json`.
 
 Kept failures:
 - `20261117T042222Z-binding` **DISAGREES** (4 mismatches), against the model as first written:
@@ -26,6 +37,48 @@ Kept failures:
     theorem and its control `setup-ignores-engine-cache` were withdrawn. `theorem_setup_again_sets_markers` and the
     control `setup-skips-bootstrap` replace them.
 - The first prove/control receipts (`20261117T041918Z`…`T041943Z`, 31 verified, 16 controls) are of that first model.
+
+## Iteration 53: failed probes, edge vectors, the ledger line (independent review round 2: M2, M3, m7, m10)
+
+Probe first: [failed_probe.py](../../../uplift/consolidated/iteration-53/reports/failed_probe.py) in the fresh namespace
+`I53` ([raw](../../../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json)). A failed probe is
+made honestly: IRIS users with the namespace's database and, for three of them, the Native API resources
+(`%Native_GlobalAccess`, `%Native_ClassExecution`) through a role, holding SELECT on all, some or none of the IVG tables.
+
+Added to the state: `label_rows`, `prop_rows` (count inputs), `edge_legacy`, `edge_routes`, `led` (the ledger's Meta and
+counters). Added inputs: `Probes` (which probes the caller's privileges let succeed). `status(ns, eng)` is now
+`status_p(ns, eng, all_ok())`, so every iteration-52 claim holds unchanged for a caller whose probes all succeed.
+
+| Spec function | Source | Role |
+|---|---|---|
+| `status_p`, `unknown_of` | `_engine/admin.py` 449-476 (`_count`'s 0 and its part, `_failed`), 480-583 (native probes) | reader: a failed SQL count answers 0; only nodes/edges name a part (`graph`), the node-vector count names `vector_index`; labels, props and edge vectors name none |
+| `ledger_line` | `_engine/ledger.py` 39-67; `ledger/client.py` 542-575 | reader: Meta failure → unknown; a failed `ledger_stats` SELECT is caught inside `stats()`, which answers zeros |
+| `ledger_enable`, `ledger_commit`, `ledger_reject` | `GraphLedger.enable`, `commit` (observed counters) | writers: genesis is commit 1; a refused commit adds a rejection |
+| `is_eroute`, `ecounted`, `erouted_sum` | `security.py` (`is_routed_edge_embedding_table`), `_engine/admin.py` 305-376 with `kind='edge'` | decision: the same case-sensitive test on the DISTINCT text (bug-plt-115) |
+| `store_edge_routed`, `store_edge_legacy`, `annotate` | `store_edge_embeddings` (`_engine/embeddings.py` 1207-1290) | writers |
+| `server`, `metrics`, `graph_line`, `ready_for_edge_search` | `cypher_api.py` 498-554; `status.py` 192-214, 216-232 | readers: `/server` keeps errors but not `unknown`; `/metrics` neither |
+
+New claims (general unless shown):
+- `theorem_failed_census_unknown_only_in_report`: a failed nodes/edges count → `unknown` names graph and the report says
+  unknown, but `/metrics` and `/server` answer 0 and `ready_for_bfs` is False while `kg_populated` holds; with every
+  probe succeeding the same namespace is ready (bug-plt-119).
+- `theorem_failed_vector_count_reads_zero`; `theorem_failed_side_counts_silent` (labels, props, edge vectors name no
+  part, and `ready_for_edge_search` reads False); neighbor `theorem_all_probes_ok_counts`.
+- `lemma_upper_never_eroute`, `lemma_erouted_sum_zero`, `theorem_routed_edges_never_counted`,
+  `theorem_routed_edges_only_not_ready_but_searchable`; neighbor `theorem_legacy_edge_vectors_ready` (bug-plt-115's
+  edge trigger, review m7).
+- `theorem_ledger_stats_failure_reads_zero` (bug-plt-120); neighbors `theorem_ledger_meta_failure_unknown` (the
+  documented unknown path) and `theorem_ledger_counters_follow_commits`; witness of the binding's flow
+  `theorem_enable_two_commits_one_reject`.
+
+New controls (7): `metrics-marks-unknown` and `readiness-unknown-not-false` (repair directions of bug-plt-119),
+`failed-count-not-zero` (guard: `_count`'s 0), `side-count-marks-unknown` (effect), `edge-registry-keeps-case` (repair
+direction, edge trigger of bug-plt-115), `ledger-read-reported` (repair direction of bug-plt-120), `meta-failure-silent`
+(guard). `registry-keeps-case` now also names `lemma_upper_never_eroute` (the same provider premise).
+
+Premise added: the probe failures are inputs (`Probes`) chosen by the caller's privileges; which SQL statement a
+privilege covers is observed, not modeled. `kg_predicates_consistent` (a conjunct of `ready_for_multihop_bfs`, review
+m10) is not modeled: the model's adjacency is consistent by premise, and the owner now names the conjunct.
 
 ## What is modeled
 
@@ -103,7 +156,20 @@ The rest remove an effect or guard:
 
 ## Binding
 
-`binding.py` drops and re-creates namespace `I52B` from `%SYS`, in `ivg-cont-20261117-iris` only. It runs one history
+Iteration 53: `binding.py` now drops and re-creates namespace `I53B` (prefix `i53b_`); `I52B` is left as iteration 52
+left it. After the iteration-52 history it adds three steps and compares 535 values:
+- `s17`: routed edge vectors in a named graph (0 counted, not ready, the edge search answers), then a legacy edge
+  vector (ready);
+- `s18`: `ledger.enable()`, two commits and a commit refused for a stale head (`StaleHeadError`): head seq 3, 3 commits,
+  1 rejection on every reader;
+- `s19`: the same moment read by four users created in `%SYS` for the run and dropped after it (role `i53_brole`;
+  users `i53_bmon`, `i53_bnative`, `i53_bpart`, `i53_bnoledger`): status counts, modeled `unknown` parts, ledger line,
+  readiness flags, `/server` and `/metrics`. Expected answers come from `status_p` with each user's `Probes`.
+Producer inputs added: the routed edge table's name and the `rdf_labels`/`rdf_props` row counts as `_SYSTEM` reads them.
+A second tampered observation (the no-ledger user's line set to unknown) is detected. Recorded but not compared:
+`ivg status` exits 0 for every user, with 15, 5, 3 and 1 probe errors.
+
+Iteration 52's binding dropped and re-created namespace `I52B` from `%SYS`, in `ivg-cont-20261117-iris` only. It runs one history
 through the public API on the pin, and the same history through a Python port of this model's writers and readers. Then
 it compares 414 values after 17 steps:
 - status fields and flags, and the report's sync line;
@@ -130,9 +196,11 @@ label list. The provider premise P-COLLATE is observed in the same run: the regi
 
 ## Not modeled
 
-- `ready_for_edge_search`: the probe's edge-vector write used a wrong item key, so it was not exercised.
-- `acceleration_state` and `acceleration_label`; failed-probe readiness (a failed count reads 0, so the flags read
-  False rather than unknown).
+- `acceleration_state` and `acceleration_label`.
 - The store's `capabilities()` catalogue (observed: every algorithm True, no Arno keys).
-- `LedgerStatus` (observed: `never-enabled` with head 0, then `enabled` with head 1 after `enable()`).
+- `LedgerStatus`'s `strict`, `replays_idem` and verify fields; the per-kind rejection columns are summed.
+- `kg_predicates_consistent` and the Arno branch of `ready_for_multihop_bfs` (premises: consistent, no Arno).
+- `ivg status`'s exit code (0 with probe errors, observed) and `/indexes` states (an empty BM25 index is `ONLINE`,
+  observed); `/indexes` failing whole on one `List()` error, `snapshot_info`'s raw errors and a heal after an
+  indeterminate count are source readings only (review m8).
 - The multigraph parallel-edge variant of bug-plt-116, which the source predicts but was not run.

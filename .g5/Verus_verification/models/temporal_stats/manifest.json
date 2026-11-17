@@ -1,6 +1,6 @@
 {
   "title": "temporal stats",
-  "question": "Temporal statistics readers (W57): how insert, update, collision, delete, a rolled-back write, a raw purge and a bucket-range purge change the bucket statistics, and what get_temporal_aggregate, get_bucket_groups, get_bucket_group_targets, get_edge_velocity, find_burst_nodes, get_distinct_count and the label-set interner answer from them (bug-tmp-002, -003, -009, -103, -104; F-0508, F-0509; q-tmp-002)",
+  "question": "Temporal statistics readers (W57): how insert, update, collision, delete, a rolled-back write, a raw purge and a bucket-range purge change the bucket statistics, and what get_temporal_aggregate, get_bucket_groups, get_bucket_group_targets, get_edge_velocity, find_burst_nodes, get_distinct_count and the label-set interner answer from them (iteration 53: nested label-set values, the millisecond writer read by the seconds readers; bug-tmp-002, -003, -009, -103, -104, -105, -106; F-0508, F-0509; q-tmp-002)",
   "ontology_ids": [
     "temporal.stats",
     "temporal.stats.after-purge",
@@ -15,7 +15,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 51}"
+      "expect": "{\"errors\": 0, \"verified\": 58}"
     },
     {
       "label": "update-keeps-statistics",
@@ -112,6 +112,18 @@
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_label_sets_collide\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nested-serialized-as-json",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_nested_value_hash_per_call\", \"theorem_nested_content_ignored\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ms-buckets-apart",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ms_edge_in_seconds_whole_bucket\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

@@ -1,6 +1,6 @@
 {
   "title": "operator reports",
-  "question": "Operator reports (W58): how setup, edge writes, sync, deletes, a bulk load in a caller transaction, routed and legacy vectors and BM25 builds change what status() and its readiness flags, the sync line, verify_sync (with heal), engine.capabilities, /server, /metrics, /stats, the schema diagram and snapshot_info report, and whether each report agrees with the operation it announces (bug-plt-115, -116, -117, -118; HD-1703)",
+  "question": "Operator reports (W58): how setup, edge writes, sync, deletes, a bulk load in a caller transaction, routed and legacy vectors and BM25 builds change what status() and its readiness flags, the sync line, verify_sync (with heal), engine.capabilities, /server, /metrics, /stats, the schema diagram and snapshot_info report, and whether each report agrees with the operation it announces; iteration 53: routed and legacy edge vectors, the ledger line, and callers whose privileges let only some probes succeed (bug-plt-115, -116, -117, -118, -119, -120; HD-1703)",
   "ontology_ids": [
     "install.status",
     "install.status.readiness",
@@ -8,6 +8,7 @@
     "install.status.verify_sync",
     "install.status.capabilities",
     "install.status.readers",
+    "install.status.ledger",
     "install.status.diagram",
     "install.snapshot.info"
   ],
@@ -16,13 +17,13 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 34}"
+      "expect": "{\"errors\": 0, \"verified\": 48}"
     },
     {
       "label": "registry-keeps-case",
       "kind": "control",
       "variant": "as-built bounded transcription",
-      "expect": "{\"fail_in\": [\"lemma_upper_never_route\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"lemma_upper_never_route\", \"lemma_upper_never_eroute\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "verify-counts-distinct-rows",
@@ -119,6 +120,48 @@
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_setup_again_sets_markers\", \"theorem_setup_with_edges_sets_markers\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "metrics-marks-unknown",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_census_unknown_only_in_report\", \"theorem_failed_vector_count_reads_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "readiness-unknown-not-false",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_census_unknown_only_in_report\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failed-count-not-zero",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_census_unknown_only_in_report\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "side-count-marks-unknown",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_side_counts_silent\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "edge-registry-keeps-case",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_erouted_sum_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ledger-read-reported",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ledger_stats_failure_reads_zero\", \"theorem_enable_two_commits_one_reject\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "meta-failure-silent",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ledger_meta_failure_unknown\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

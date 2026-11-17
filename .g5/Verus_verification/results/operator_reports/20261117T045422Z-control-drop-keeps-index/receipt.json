@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: bm25_drop leaves the name in BM25Index.List",
+    "expect_fail_in": [
+      "theorem_full_text_follows_index"
+    ],
+    "find": "pub open spec fn bm25_drop(ns: Ns, name: int) -> Ns { Ns { bm25: ns.bm25.remove(name), ..ns } }",
+    "name": "drop-keeps-index",
+    "replace": "pub open spec fn bm25_drop(ns: Ns, name: int) -> Ns { ns }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_full_text_follows_index"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "849497e78bd6d4d2681e9180c8d6b00ab12500ea32fe9159ffef0e87b135e9eb",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/drop-keeps-index/20261117T045420Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_full_text_follows_index": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045420Z-control-drop-keeps-index-theorem_full_text_follows_index.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045420Z-control-drop-keeps-index.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045422Z-control-drop-keeps-index/logs/20261117T045420Z-control-drop-keeps-index-theorem_full_text_follows_index.log": "885911e8c2142750c4f9aef903d0ce668dba639ce72033958d11695513699fcd",
+    ".g5/Verus_verification/results/operator_reports/20261117T045422Z-control-drop-keeps-index/logs/20261117T045420Z-control-drop-keeps-index.log": "477041aee9badc101ce558a1db91c720f728068a22a11fb53623365e2f8f03d4"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

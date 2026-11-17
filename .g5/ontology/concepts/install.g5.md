@@ -113,6 +113,7 @@ Status reports current row counts across every graph, while the ordinary count m
 - An install without a registry still reports its legacy embedding counts.
 - A registered table that cannot be counted is named as an error, and completed counts remain available.
 - If the graph census fails, the human report marks the graph size as unknown rather than printing an invented zero; the structured status keeps completed counts and probe errors.
+- Today only the human report keeps that distinction: `/server`, `/metrics` and the readiness flags read a failed count as zero ([install.status.readers](#install.status.readers), [bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119)).
 - Today on IRIS no registered table is counted: the registry read answers each name upper-cased and the name test expects lower case, so the totals are the legacy tables' rows only ([bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115)).
 
 <a id="install.status.readiness"></a>
@@ -120,10 +121,13 @@ Status reports current row counts across every graph, while the ordinary count m
 
 Each readiness flag is computed from the same probe as the report's counts, over every graph, and should say whether the operation it names would answer.
 - `ready_for_bfs` is true when the adjacency index holds an edge and some edge row exists. Where the index is declared, that is exactly "some edge row exists".
-- `ready_for_multihop_bfs` adds only that the ObjectScript or Arno path is there; it does not require the integer copy. Variable-length matches answer without it.
+- `ready_for_multihop_bfs` adds that the adjacency's predicate entries are consistent (`kg_predicates_consistent`) and that the ObjectScript or Arno path is there; it does not require the integer copy. Variable-length matches answer without it.
 - `ready_for_vector_search` is true when the node-vector total is above zero; `vector_index_state` is `absent` with no vectors, `empty` with vectors and no ANN index (the report says "searched by a scan"), and `ready` with an ANN index.
+- `ready_for_edge_search` is true when the edge-vector total is above zero.
 - `ready_for_full_text` is true while some BM25 index exists, and false again once the last one is dropped.
-- Today the node-vector total leaves out every routed vector table, so a namespace whose vectors are all routed reads `absent` and not ready while a search on that graph answers ([bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115)).
+- The vector totals count every table of their kind, as spec 230 says. ADMIN_GUIDE's older field table describes `ready_for_vector_search` as "the default embedding table holds vectors" and `kg_edge_count` as equal to the edge rows; the code caps that count at 10000.
+- Today the vector totals leave out every routed table, node or edge, so a namespace whose vectors are all routed reads `absent` and not ready while a search on that graph answers ([bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115)).
+- Today a flag whose count probe failed reads False rather than unknown, for example `ready_for_bfs` for a role that may not read the edge rows while traversals answer ([bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119)).
 
 
 <a id="install.status.sync"></a>
@@ -160,11 +164,21 @@ The report's sync state and `pending_sync` show only the calling engine's pendin
 [I · install.status.readers]
 
 The HTTP and command-line reports read the same facts through different readers, so their counts can differ by design.
-- `GET /server` and `GET /metrics` carry `status()`'s counts and adjacency facts unchanged, so they count every graph.
+- `GET /server` carries `status()`'s counts, adjacency facts and probe errors, and `GET /metrics` its counts as numbers; both count every graph. Neither carries `unknown`, and `/metrics` carries no errors either.
+- Today a count that failed therefore reads 0 there: `ivg_nodes_total 0` for a scraper's role that may not read the node rows ([bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119)).
 - `GET /stats` and `GET /schema` count the default graph's nodes and edges; with nodes in a named graph they answer fewer than `/server`. `/stats`'s embedding count reads the legacy table only.
-- `GET /indexes` lists the adjacency indexes as `ONLINE` or `NOT_BUILT`, and each BM25, IVF and PLAID index by name. It lists HNSW indexes only on the legacy tables.
-- `ivg status`, `ivg schema status` and `ivg indexes list` print the answers of `/server`, `/schema` and `/indexes` unchanged.
+- `GET /indexes` lists the adjacency indexes as `ONLINE` or `NOT_BUILT`, and each BM25, IVF and PLAID index by name as `ONLINE`, even one that indexed no document. It lists HNSW indexes only on the legacy tables.
+- `ivg status`, `ivg schema status` and `ivg indexes list` print the answers of `/server`, `/schema` and `/indexes` unchanged. `ivg status` exits 0 whenever the server answers, even when the answer lists probe errors.
 - None of them shows the pending-sync flag; the server's engine wrote nothing of its own, so its flag is always False.
+
+
+<a id="install.status.ledger"></a>
+[I · install.status.ledger]
+
+The report's ledger line says whether the revision ledger is enabled and, when it is, its head sequence and its commit and rejection counts. A read that fails is reported, and the line then says unknown.
+- The genesis revision of `enable()` counts as a commit; a refused commit adds a rejection and leaves the head where it was.
+- Without the Native API resources the ledger's state cannot be read, and the line says unknown, as documented.
+- Today a failed read of the counters, for a role without SELECT on the ledger's counter table, shows "0 commits · 0 rejections" with no error ([bug-plt-120](../../Verus_verification/bugs_issues.md#bug-plt-120)).
 
 
 <a id="install.status.diagram"></a>
@@ -639,7 +653,9 @@ This owner recovers ordinary reporting intent from the primary docs and tests be
 
 State machines: [routine reporting](../../Verus_verification/models/routine_reporting/manifest.json), [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
 
-Children: [readiness](#install.status.readiness), [sync state](#install.status.sync), [verify_sync](#install.status.verify_sync), [capabilities](#install.status.capabilities), [HTTP and CLI readers](#install.status.readers), [schema diagram](#install.status.diagram).
+Children: [readiness](#install.status.readiness), [sync state](#install.status.sync), [verify_sync](#install.status.verify_sync), [capabilities](#install.status.capabilities), [HTTP and CLI readers](#install.status.readers), [ledger line](#install.status.ledger), [schema diagram](#install.status.diagram).
+
+Iteration 53 (independent review round 2, M2): a failed count probe reproduced with a narrow monitoring role; the text report keeps "unknown", the other readers read zero ([bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119)); [operator_reports](../../Verus_verification/models/operator_reports/NOTES.md) `theorem_failed_census_unknown_only_in_report`.
 
 Iteration 52: on IRIS the routed-table count fails ([bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115)); the routine_reporting replay ran on local SQL, whose `DISTINCT` keeps the stored case, so its correspondence for routed tables is withdrawn at the IRIS reader. [operator_reports](../../Verus_verification/models/operator_reports/NOTES.md) `theorem_routed_never_counted` models the IRIS reader.
 
@@ -649,9 +665,11 @@ Iteration 52: on IRIS the routed-table count fails ([bug-plt-115](../../Verus_ve
 - agent
 - user-facing-behavior, operations
 - design-verified
-- Formal: [`theorem_ready_for_bfs_iff_rows`, `theorem_fresh_namespace_edges_skip_nkg`, `theorem_routed_only_not_ready_but_searchable`, `theorem_legacy_vectors_ready`, `theorem_full_text_follows_index`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+- Formal: [`theorem_ready_for_bfs_iff_rows`, `theorem_fresh_namespace_edges_skip_nkg`, `theorem_routed_only_not_ready_but_searchable`, `theorem_legacy_vectors_ready`, `theorem_full_text_follows_index`, `theorem_routed_edges_only_not_ready_but_searchable`, `theorem_legacy_edge_vectors_ready`, `theorem_failed_census_unknown_only_in_report`, `theorem_failed_vector_count_reads_zero`, `theorem_failed_side_counts_silent`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
-Expected results come from ADMIN_GUIDE's field table ("the graph has edges: traversals work", "a BM25 index exists") and spec 230 FR-006 (routed vectors count). Findings: [bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115).
+Expected results come from ADMIN_GUIDE's field table ("the graph has edges: traversals work", "a BM25 index exists"), its unknown rule (R050, `docs/ADMIN_GUIDE.md#L950-L958`) and spec 230 FR-006 (routed vectors count). The field table's "default embedding table" (L940) predates routing and conflicts with FR-006; FR-006 is kept as the rule. Findings: [bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115), [bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119).
+
+Premises of the formal claims: the adjacency index is declared, `KGEdgeCount` is below its cap, no Arno library is loaded, and the predicate entries are consistent; `kg_predicates_consistent` and the Arno branch of `ready_for_multihop_bfs` are not modeled. A failed probe is modeled for a caller whose privileges let only some probes succeed (iteration 53).
 
 State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
 
@@ -698,9 +716,21 @@ State machines: [operator reports](../../Verus_verification/models/operator_repo
 - agent
 - user-facing-behavior, operations
 - design-verified
-- Formal: [`theorem_stats_default_vs_server_every_graph`, `theorem_server_and_metrics_project_status`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+- Formal: [`theorem_stats_default_vs_server_every_graph`, `theorem_server_and_metrics_project_status`, `theorem_failed_census_unknown_only_in_report`, `theorem_failed_vector_count_reads_zero`, `theorem_all_probes_ok_counts`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
-`/indexes` and the CLI are observed by the iteration-52 probe; the CLI commands print the HTTP answer unchanged (justified delegation in the crosswalk).
+`/indexes` and the CLI are observed by the iteration-52 probe; the CLI commands print the HTTP answer unchanged (justified delegation in the crosswalk). Iteration 53 observed `ivg status` exiting 0 with probe errors and an empty BM25 index listed `ONLINE` ([probe](../../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json)); neither is modeled. Findings: [bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119).
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+
+### install.status.ledger
+- Sources: [_ledger_status](../../../iris_vector_graph/_engine/ledger.py#L39-L67), [GraphLedger.stats](../../../iris_vector_graph/ledger/client.py#L542-L575), [report ledger line](../../../iris_vector_graph/status.py#L216-L355), [ADMIN_GUIDE unknown rule](../../../docs/ADMIN_GUIDE.md#L950-L958)
+- Expands: [Status reports](#install.status)
+- agent
+- user-facing-behavior, operations
+- design-verified
+- Formal: [`theorem_ledger_stats_failure_reads_zero`, `theorem_ledger_meta_failure_unknown`, `theorem_ledger_counters_follow_commits`, `theorem_enable_two_commits_one_reject`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+Added in iteration 53 for independent review round 2 (M3). The rule comes from `_ledger_status`'s docstring ("a read that fails is reported") and R050. Observed in the [probe](../../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) and the operator_reports binding (namespace I53B). Findings: [bug-plt-120](../../Verus_verification/bugs_issues.md#bug-plt-120).
 
 State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
 

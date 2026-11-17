@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: the Eraser leaves ^NKG in place",
+    "expect_fail_in": [
+      "theorem_delete_status_vs_verify"
+    ],
+    "find": "Ns { rows: keep, nkg_skeleton: false, nkg_dict: false, nkg_triples: |t: (int, int, int)| false, nkg_count: 0, ..ns }",
+    "name": "delete-keeps-nkg",
+    "replace": "Ns { rows: keep, ..ns }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_delete_status_vs_verify"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "849497e78bd6d4d2681e9180c8d6b00ab12500ea32fe9159ffef0e87b135e9eb",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/delete-keeps-nkg/20261117T045419Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_delete_status_vs_verify": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045419Z-control-delete-keeps-nkg-theorem_delete_status_vs_verify.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045419Z-control-delete-keeps-nkg.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045420Z-control-delete-keeps-nkg/logs/20261117T045419Z-control-delete-keeps-nkg-theorem_delete_status_vs_verify.log": "8415f2c52e60ad22c0bd1fcb07bfc142febda2925624a48a4800378c9e4df358",
+    ".g5/Verus_verification/results/operator_reports/20261117T045420Z-control-delete-keeps-nkg/logs/20261117T045419Z-control-delete-keeps-nkg.log": "7a4563cdf91ccf6aad2732d48fd4737fb1cf12f70ad8c9673731372bc73f2474"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

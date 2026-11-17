@@ -1,0 +1,36 @@
+verification results:: 20 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/filer-writes-same-text/20261117T044825Z/models/cypher_exprs/cypher_exprs.rs:368:1
+    |
+368 | pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/filer-writes-same-text/20261117T044825Z/models/cypher_exprs/cypher_exprs.rs:373:9
+    |
+368 | pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    | ----------------------------------------------------------------------------- at the end of the function body
+...
+373 |         node_update(prop_set_deployed(None, DictCheck::Absent), old, new) == old,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/filer-writes-same-text/20261117T044825Z/models/cypher_exprs/cypher_exprs.rs:374:9
+    |
+368 | pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    | ----------------------------------------------------------------------------- at the end of the function body
+...
+374 |         node_update(prop_set_deployed(Some(false), DictCheck::Found), old, new) == old,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/filer-writes-same-text/20261117T044825Z/models/cypher_exprs/cypher_exprs.rs:380:9
+    |
+378 | pub proof fn theorem_without_prop_set_same_text_keeps_old(old: Stored, new: Stored)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+379 |     ensures
+380 |         (old.text == new.text) ==> node_update(false, old, new) == old,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

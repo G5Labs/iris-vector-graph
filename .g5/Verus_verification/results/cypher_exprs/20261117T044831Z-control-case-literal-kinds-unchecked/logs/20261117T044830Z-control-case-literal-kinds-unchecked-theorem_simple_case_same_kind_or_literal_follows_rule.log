@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/case-literal-kinds-unchecked/20261117T044830Z/models/cypher_exprs/cypher_exprs.rs:155:9
+    |
+153 | pub proof fn theorem_simple_case_same_kind_or_literal_follows_rule(ts: Syntax, t: V, w: V)
+    | ------------------------------------------------------------------------------------------ at the end of the function body
+154 |     ensures
+155 |         simple_case_takes(Syntax::Literal, t, Syntax::Literal, w) == rule_simple_case(t, w),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

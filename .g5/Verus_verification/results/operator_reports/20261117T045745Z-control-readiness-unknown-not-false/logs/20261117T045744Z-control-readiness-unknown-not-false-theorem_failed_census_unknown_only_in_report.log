@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/readiness-unknown-not-false/20261117T045744Z/models/operator_reports/operator_reports.rs:696:13
+    |
+694 |   pub proof fn theorem_failed_census_unknown_only_in_report(ns: Ns, eng: Eng, pr: Probes)
+    |   --------------------------------------------------------------------------------------- at the end of the function body
+695 |       requires !pr.census, pr.native, ns.rows.len() > 0, ns.node_graphs.len() > 0,
+696 |       ensures ({
+    |  _____________^
+697 | |         let s = status_p(ns, eng, pr);
+698 | |         &&& s.unknown.graph && graph_line(s).is_none()
+699 | |         &&& metrics(s).nodes == Some(0nat) && metrics(s).edges == Some(0nat)
+...   |
+702 | |         &&& ready_for_bfs(status(ns, eng)) && graph_line(status(ns, eng)) == Some((ns.node_graphs.len(), ns.rows.len()))
+703 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

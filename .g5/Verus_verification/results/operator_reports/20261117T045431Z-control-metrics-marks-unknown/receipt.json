@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "reader (repair direction, bug-plt-119): /metrics leaves out a gauge whose part is unknown instead of printing 0",
+    "expect_fail_in": [
+      "theorem_failed_census_unknown_only_in_report",
+      "theorem_failed_vector_count_reads_zero"
+    ],
+    "find": "Metrics { nodes: Some(s.nodes), edges: Some(s.edges), embeddings: Some(s.node_vecs) }",
+    "name": "metrics-marks-unknown",
+    "replace": "Metrics { nodes: if s.unknown.graph { None } else { Some(s.nodes) }, edges: if s.unknown.graph { None } else { Some(s.edges) }, embeddings: if s.unknown.vector_index { None } else { Some(s.node_vecs) } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_census_unknown_only_in_report",
+      "theorem_failed_vector_count_reads_zero"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "849497e78bd6d4d2681e9180c8d6b00ab12500ea32fe9159ffef0e87b135e9eb",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/metrics-marks-unknown/20261117T045428Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failed_census_unknown_only_in_report": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045428Z-control-metrics-marks-unknown-theorem_failed_census_unknown_only_in_report.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_failed_vector_count_reads_zero": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045428Z-control-metrics-marks-unknown-theorem_failed_vector_count_reads_zero.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045428Z-control-metrics-marks-unknown.log",
+    "timed_out": false,
+    "verified": 46
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045431Z-control-metrics-marks-unknown/logs/20261117T045428Z-control-metrics-marks-unknown-theorem_failed_census_unknown_only_in_report.log": "9daa6866f67d6bc01ddbb1706526d5570f8e03fef9b8bc1b7df584add076f6bf",
+    ".g5/Verus_verification/results/operator_reports/20261117T045431Z-control-metrics-marks-unknown/logs/20261117T045428Z-control-metrics-marks-unknown-theorem_failed_vector_count_reads_zero.log": "5859de7556b23e4cdce27a81ec2db97cbaf4071c6a041f59ea09c76ac6c670db",
+    ".g5/Verus_verification/results/operator_reports/20261117T045431Z-control-metrics-marks-unknown/logs/20261117T045428Z-control-metrics-marks-unknown.log": "69fd889c95c355789fac71d10ab6aab5107ce49ed7835dc2703c153d2ac01994"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/bulk-leaves-flag/20261117T045730Z/models/operator_reports/operator_reports.rs:500:1
+    |
+500 | pub proof fn theorem_bulk_pending_is_engine_local(ns: Ns, more: Seq<Edge>, eng: Eng, other: Eng)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/bulk-leaves-flag/20261117T045730Z/models/operator_reports/operator_reports.rs:503:9
+    |
+500 | pub proof fn theorem_bulk_pending_is_engine_local(ns: Ns, more: Seq<Edge>, eng: Eng, other: Eng)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+503 |         status(bulk_ns(ns, more), bulk_eng(eng)).pending,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/bulk-leaves-flag/20261117T045730Z/models/operator_reports/operator_reports.rs:504:9
+    |
+500 | pub proof fn theorem_bulk_pending_is_engine_local(ns: Ns, more: Seq<Edge>, eng: Eng, other: Eng)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+504 |         sync_line(status(bulk_ns(ns, more), bulk_eng(eng))) == SyncLine::NeedsSync,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

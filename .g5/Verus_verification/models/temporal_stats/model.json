@@ -1,7 +1,7 @@
 {
   "name": "temporal_stats",
   "root": "temporal_stats.rs",
-  "expected_verified": 51,
+  "expected_verified": 58,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -157,6 +157,25 @@
         "theorem_label_sets_collide"
       ],
       "classification": "effect: InternLabelSet escapes string values (the F-0509 / bug-tmp-104 repair)"
+    },
+    {
+      "name": "nested-serialized-as-json",
+      "find": "        LVal::Nested(j) => enc(r),",
+      "replace": "        LVal::Nested(j) => j,",
+      "expect_fail_in": [
+        "theorem_nested_value_hash_per_call",
+        "theorem_nested_content_ignored"
+      ],
+      "classification": "effect: InternLabelSet writes a nested object or array as its JSON text (%ToJSON) instead of the object reference (the bug-tmp-105 repair)"
+    },
+    {
+      "name": "ms-buckets-apart",
+      "find": "pub open spec fn k4(e: Ev, div: int) -> (int, int, int, int) { (e.g, bucket_of(e.ts, div), e.s, e.p) }",
+      "replace": "pub open spec fn k4(e: Ev, div: int) -> (int, int, int, int) { (e.g, if div == 300 { bucket_of(e.ts, div) } else { -1 - bucket_of(e.ts, div) }, e.s, e.p) }",
+      "expect_fail_in": [
+        "theorem_ms_edge_in_seconds_whole_bucket"
+      ],
+      "classification": "effect: the millisecond class keeps its statistics apart from the seconds class's (the bug-tmp-106 repair; a different global subscript or unit marker)"
     }
   ]
 }

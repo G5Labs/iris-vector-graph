@@ -1,0 +1,12 @@
+verification results:: 47 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/meta-failure-silent/20261117T045753Z/models/operator_reports/operator_reports.rs:811:13
+    |
+809 | pub proof fn theorem_ledger_meta_failure_unknown(ns: Ns, eng: Eng, pr: Probes)
+    | ------------------------------------------------------------------------------ at the end of the function body
+810 |     requires !pr.native,
+811 |     ensures status_p(ns, eng, pr).ledger == LedgerLine::Unknown, status_p(ns, eng, pr).unknown.ledger,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

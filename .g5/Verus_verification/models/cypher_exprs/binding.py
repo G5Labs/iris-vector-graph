@@ -16,7 +16,7 @@ MUTS = ["row_slice_wrapped", "literal_slice_unwrapped", "row_condition_compared"
         "rel_literal_dropped", "coalesce_always_typed", "coalesce_needs_two_props", "identifier_lookahead",
         "substring_checks_start", "substring_zero_based", "setval_skips_retype", "prop_set_not_emitted",
         "filer_writes_same_text", "null_list_guard", "rel_param_kept", "case_kinds_compared", "case_literal_kinds_unchecked",
-        "unreadable_taken_as_absent"]
+        "unreadable_taken_as_absent", "lexer_table_altered"]
 LIST = [10, 20, 30, 40, 50]
 BOUNDS = [-7, -3, -1, 0, 2, 5, 8]
 FNS = {"ToUpper": "toUpper('ab')", "ToLower": "toLower('AB')", "Trim": "trim(' a ')", "Coalesce": "coalesce(null, 'x')",
@@ -149,6 +149,16 @@ def coalesce_number(a, b, m):
 
 
 TOKENS_AFTER_LOWER = {"Int": ("Dot", "FloatLit"), "Ident": ("Dot", "Dot"), "Close": ("Dot", "Dot")}
+# Iteration 53 (review 50-52 m5): the table is no longer only "as observed" in prose; the binding reads the lexer's
+# tokens after the identifier for each upper-bound form and compares them with this table (cases lex_*).
+LEX_TEXT = {"Int": "a..3", "Ident": "a..b", "Close": "a..]"}
+LEX_NAME = {"DOT": "Dot", "FLOAT_LITERAL": "FloatLit", "IDENTIFIER": "Ident"}
+
+
+def tokens_after_lower(u, m):
+    if m.get("lexer_table_altered") and u == "Int":
+        return ("Dot", "Dot")
+    return TOKENS_AFTER_LOWER[u]
 
 
 def parses(lo, u, m):
@@ -288,6 +298,11 @@ def main():
         v = rows[0][-1] if rows else None
         got[f"coalesce_{a}_{b}"] = "int" if (v == 7 and isinstance(v, int)) else ("text" if v == "7" else f"other:{v!r}:{err}")
 
+    # lexer: the two tokens after the identifier `a` (the model's tokens_after_lower premise)
+    from iris_vector_graph.cypher.lexer import Lexer
+    for u, text in LEX_TEXT.items():
+        toks = [LEX_NAME.get(t.kind.name, "Other") for t in Lexer(text).tokens]
+        got[f"lex_{u}"] = toks[1:3]
     # parser: a slice's lower bound
     for lo, text, params in (("Identifier", "WITH [1, 2, 3] AS l, 1 AS a RETURN l[a..3]", {}),
                              ("Identifier_Ident", "WITH [1, 2, 3] AS l, 1 AS a, 3 AS b RETURN l[a..b]", {}),
@@ -394,6 +409,8 @@ def main():
             out[f"parse_{lo}"] = parses(lo, "Int", m)
         out["parse_Identifier_Ident"] = parses("Identifier", "Ident", m)
         out["parse_Identifier_Close"] = parses("Identifier", "Close", m)
+        for u in LEX_TEXT:
+            out[f"lex_{u}"] = list(tokens_after_lower(u, m))
         for s, l in SUBS:
             out[f"substring_literal_{s}_{l}"] = as_built_substring(len(STR), s, l, m)
             out[f"substring_row_{s}_{l}"] = as_built_substring(len(STR), s, l, m)
@@ -427,7 +444,7 @@ def main():
             "sensitivities_detected_cases": sens, "all_sensitivities_detected": all(v > 0 for v in sens.values()),
             "observation_tamper_detected": tamper_detected, "elapsed_s": round(time.time() - t0, 1),
             "inputs": {**{str(q_.relative_to(REPO)): sha(q_) for q_ in [HERE / "binding.py", HERE / "cypher_exprs.rs", HERE / "model.json"]},
-                       **{f: sha(Path(runtime.PIN) / f) for f in ["iris_vector_graph/cypher/translator.py", "iris_vector_graph/cypher/parser.py",
+                       **{f: sha(Path(runtime.PIN) / f) for f in ["iris_vector_graph/cypher/translator.py", "iris_vector_graph/cypher/parser.py", "iris_vector_graph/cypher/lexer.py",
                                                                    "iris_vector_graph/engine.py", "iris_src/src/Graph/KG/PropWrite.cls",
                                                                    "iris_src/src/Graph/KG/SqlProcs.cls"]}},
             "scope": "Actual execute_cypher on IRIS 2026.1 (pin 3eaa79cf): slices over a stored 5-element list with 49 bound pairs "
@@ -437,7 +454,8 @@ def main():
                      "3 Prop_Set retypes with Prop_Set and through the product's path for a namespace without it. Iteration 50: a "
                      "parameter on a relationship CREATE between new nodes and the node / matched neighbors; 9 simple CASE kind "
                      "pairs; a null list sliced by literal, row and parameter bounds; _prop_set_deployed's found, absent "
-                     "(missing schema), unreadable (closed connection) and cached branches; 3 identifier lower-bound forms."}
+                     "(missing schema), unreadable (closed connection) and cached branches; 3 identifier lower-bound forms. Iteration 53: the lexer's two tokens after the identifier for a..3, a..b and a..] "
+                     "(the tokens_after_lower table, mutation lexer_table_altered)."}
     d = REPO / ".g5/Verus_verification/results/cypher_exprs" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "native_declined", "prop_set_deployed_on_fixture", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

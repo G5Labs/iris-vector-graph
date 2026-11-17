@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: velocity skips the bucket holding now - window",
+    "expect_fail_in": [
+      "theorem_velocity_counts_touched_buckets"
+    ],
+    "find": "    bkt_sum(st, g, s, (now - window) / div, now / div)",
+    "name": "velocity-not-rounded",
+    "replace": "    bkt_sum(st, g, s, (now - window) / div + 1, now / div)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_velocity_counts_touched_buckets"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "a6722cd994d1ac8658d2a35ac179bf459504348d97175250d4b7e3cd7de4f425",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "d991a56fb04bd65be13b39aff5d04d8d11a78a68927318964f29334e0d1e9104"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/velocity-not-rounded/20261117T045036Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_velocity_counts_touched_buckets": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045036Z-control-velocity-not-rounded-theorem_velocity_counts_touched_buckets.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045036Z-control-velocity-not-rounded.log",
+    "timed_out": false,
+    "verified": 57
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T045039Z-control-velocity-not-rounded/logs/20261117T045036Z-control-velocity-not-rounded-theorem_velocity_counts_touched_buckets.log": "2e7dbd807b8e58bafe77f27499c302f1fc9f87d21ffc5f94cd99ccbbf0c0aacc",
+    ".g5/Verus_verification/results/temporal_stats/20261117T045039Z-control-velocity-not-rounded/logs/20261117T045036Z-control-velocity-not-rounded.log": "a059c2b1d9a1a3d05d445c8ff044f6270db2c46e063819d907c7eacedeab807a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

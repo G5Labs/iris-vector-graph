@@ -1,0 +1,27 @@
+verification results:: 56 verified, 2 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/escape-values/20261117T045053Z/models/temporal_stats/temporal_stats.rs:916:12
+    |
+916 |     assert(pair_text(k1, inj) =~= pair_text(k1, v1) + seq![','] + pair_text(k2, v2));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/escape-values/20261117T045053Z/models/temporal_stats/temporal_stats.rs:993:1
+    |
+993 | pub proof fn theorem_nested_value_hash_per_call(store: Set<Seq<char>>, ps: Seq<(Seq<char>, LVal)>, r1: Seq<Seq<char>>, r2: Seq<Seq<char>>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/escape-values/20261117T045053Z/models/temporal_stats/temporal_stats.rs:1017:12
+     |
+1017 |     assert(canon_v(ps, r1) =~= a + r1.last() + qt() + seq!['}']);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/escape-values/20261117T045053Z/models/temporal_stats/temporal_stats.rs:1018:12
+     |
+1018 |     assert(canon_v(ps, r2) =~= a + r2.last() + qt() + seq!['}']);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

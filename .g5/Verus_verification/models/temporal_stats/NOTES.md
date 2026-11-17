@@ -1,4 +1,4 @@
-# temporal_stats — temporal statistics readers (W57, iteration 51)
+# temporal_stats — temporal statistics readers (W57, iteration 51; label-set value kinds and the millisecond writer added in iteration 53)
 
 Product pin `3eaa79cf`. Root [temporal_stats.rs](temporal_stats.rs), controls in [model.json](model.json), native
 binding [binding.py](binding.py). Frozen predictions: [stats-PAIRS.md](../../../uplift/consolidated/iteration-51/stats-PAIRS.md)
@@ -10,9 +10,13 @@ and its children `.after-purge`, `.window`, `.writers`, `.velocity`, `.distinct`
 
 | Run | Result | Receipt |
 |---|---|---|
-| prove | PASS 51 verified, 0 errors | `results/temporal_stats/20261117T035909Z-prove` |
-| controls | 16 of 16 EXPECTED_FAIL; each fails exactly its named functions (full-run error count = named count) | `results/temporal_stats/20261117T0359*-control-*` |
-| binding | AGREES, 139 cases, all 16 mutations detected, tampered observation detected | `results/temporal_stats/20261117T040000Z-binding` |
+| prove | PASS 58 verified, 0 errors (iteration 53; 51 in iteration 51) | `results/temporal_stats/20261117T044949Z-prove` |
+| controls | 18 of 18 EXPECTED_FAIL (iteration 53 adds `nested-serialized-as-json`, `ms-buckets-apart`) | `results/temporal_stats/20261117T044958Z`…`T045104Z-control-*` |
+| binding | AGREES, 148 cases, all 18 mutations detected, tampered observation detected (iteration 53, prefix `i53t_`) | `results/temporal_stats/20261117T045124Z-binding` |
+
+Iteration 53 (review round 2, M1 and m1): `20261117T045049Z-binding` AGREES 146 is of the binding before the m9
+millisecond-window cases were added; it is superseded by `T045124Z`, not a failure. Iteration-51 receipts
+(`T035909Z-prove`, `T0359*` controls, `T040000Z-binding`) are of the 51-obligation model.
 
 Kept failures: `20261117T035814Z-prove` was UNEXPECTED (50 verified, 1 error): `theorem_targets_follow_raw` left the
 frame fact `purge_buckets(..).raw == st.raw` implicit and the solver did not find it on that run. The proof now
@@ -42,7 +46,9 @@ from this state, and the state only from the modeled writers applied to a histor
 | `velocity`, `bkt_sum`, `now_of`, `bucket_count` | `GetVelocity` 757-770, `TemporalIndexMS.GetBucketCount` | reader |
 | `burst_listed`, `present` | `FindBursts` 772-806 | reader (predicate unused) |
 | `distinct`, `merged`, `estimate`, `zs` | `GetDistinctCount` 632-682 | reader and estimator |
-| `canon`, `body`, `pair_text`, `enc` (`esc` for the repair) | `InternLabelSet` 1341-1391, `ResolveLabelSet` 1394-1397 | effect and reader |
+| `canon`, `body`, `pair_text`, `enc` (`esc` for the repair) | `InternLabelSet` 1341-1391, `ResolveLabelSet` 1394-1397 | effect and reader (string values) |
+| `LVal`, `val_text`, `texts`, `body_t`, `canon_v`, `intern` | `InternLabelSet` 1355-1389 (value-kind branches 1366-1378; store-if-absent 1386-1389) | effect: every value kind; a nested object or array is written as its per-call object reference text `refs[i]` (provider input) |
+| `write(st, 300000, ..)` then the readers with `div` 300 | `TemporalIndexMS` (BUCKETMS 300000) and `TemporalIndex` (BUCKET 300) over the same `^KG("tagg")`/`^KG("bucket")` | effect shared between the two classes (iteration 53) |
 
 ## Claims (general unless marked)
 
@@ -66,13 +72,29 @@ from this state, and the state only from the modeled writers applied to a histor
   register answers ≥ 11); `theorem_distinct_one_target_is_eleven` (every hash); `theorem_same_target_twice`;
   `theorem_distinct_window_rounded_out` (a target before the window's start in a touched bucket counts).
 - `theorem_label_sets_collide` (bug-tmp-104, for all keys and values).
+- Iteration 53 (review round 2 M1, bug-tmp-105): `theorem_nested_value_hash_per_call` (every set whose last key in
+  sorted order holds a nested object or array: two calls whose references for it differ give two texts and hashes, and
+  the second call stores a second entry); `theorem_nested_content_ignored` (every pair of sets differing only inside
+  nested values: same references, same text and hash); valid neighbor `theorem_scalar_sets_idempotent` (every set of
+  strings, numbers, booleans and null: one text whatever the references, and a second intern stores nothing new).
+  Control `nested-serialized-as-json` (the repair) fails the first two.
+- Iteration 53 (review m1, bug-tmp-106): `theorem_ms_edge_in_seconds_whole_bucket` (every state and every event at
+  x > 0 seconds stored by the millisecond class as x·1000: its key equals the seconds key of x, a seconds whole-bucket
+  read counts it, the raw window misses it; neighbor in the same theorem: the same event written by the seconds class
+  is in the raw window). Control `ms-buckets-apart` (the repair) fails it. The velocity reader follows from the shared
+  `bkt` key (binding `ms_in_sec_velocity`).
+- Review m9: the millisecond class's window argument is subtracted from a millisecond now, so it is in milliseconds.
+  `velocity` is already general in `div` and `window`; the binding observes `ms_vel_window_300` = 1 and
+  `ms_vel_window_300000` = 2 for edges in two consecutive millisecond buckets.
 
 ## Premises and trust
 
 No `assume`, `admit`, `external_body` or `uninterp`; bundled vstd (`arithmetic::div_mod`). Premises: P-INCR (IRIS does
 not undo `$Increment` on rollback; observed again here, case `rb`); the driver returns None for an empty string
 (observed: `ValueError: could not convert string to float: 'None'`); SHA-1 bytes decide the register (binding computes
-them as HLLAdd does); ObjectScript decimal arithmetic in the estimator rounds as the integer formula does (exact on all
+them as HLLAdd does); P-SHA1 (SHA-1 is injective on the canonical texts; the label-set store is keyed by text); the
+nested value's reference text is a per-call provider input, observed as `NN@%Library.DynamicObject` /
+`NN@%Library.DynamicArray` with NN varying by call (the binding reads it back and checks its form and kind); ObjectScript decimal arithmetic in the estimator rounds as the integer formula does (exact on all
 139 cases); IRIS number text (`.5`) is a provider rule outside the model. Weights are integers in the model; the binding
 uses whole-number weights. Single process: no concurrency (q-tmp-001 unchanged).
 
@@ -82,4 +104,11 @@ The newest-event index (`NoteLatest`, `Relatest`, `RelatestRange`, `RebuildLates
 iteration-51 probe observed L1-L8 and every prediction held, but no Verus claim covers tlast exactness yet.
 `get_edge_attrs`, `get_window_sources`, `BulkInsert` (a wrapper returning the first count of `BulkInsertCounts`, not
 exercised), legacy `PurgeBefore`'s statistics kill, `RebuildBucket` (migration only), `EraseNodes`/`EraseGraph`,
-the all-sources distinct merge (`source=""`, observed in the probe only), `get_distinct_count(source, "")`.
+the all-sources distinct merge (`source=""`, observed in the probes only), and every empty-key case (review m2, owned
+as built in `temporal.stats.window`/`.distinct`, observed by the iteration-53 probe): an empty source or predicate in
+`get_temporal_aggregate` and an empty predicate with a named source in `get_distinct_count` fail with an IRIS
+`<SUBSCRIPT>` error (in a cut-only window only when an edge falls in the cut range), while `get_bucket_groups("")`,
+`get_bucket_group_targets(s, "")` and `get_distinct_count("", p)` mean every predicate or source. `InternLabelSet` on
+text that is not JSON (it throws, not ""; the Python entry point always sends `json.dumps` of a dict) and on a top-level
+array (it returns a hash, not ""). The millisecond class's own readers over seconds-class edges were probed
+(`GetAggregate` whole 1, cut 0) but are not bound.

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: initialize_schema never bootstraps the markers (only sync() would build)",
+    "expect_fail_in": [
+      "theorem_setup_again_sets_markers",
+      "theorem_setup_with_edges_sets_markers"
+    ],
+    "find": "if ns.rows.len() > 0 && !ns.marker_kg { Ns { marker_kg: true, marker_nkg: true, ..ns } } else { ns }",
+    "name": "setup-skips-bootstrap",
+    "replace": "ns"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_setup_again_sets_markers",
+      "theorem_setup_with_edges_sets_markers"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "849497e78bd6d4d2681e9180c8d6b00ab12500ea32fe9159ffef0e87b135e9eb",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/setup-skips-bootstrap/20261117T045426Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_setup_again_sets_markers": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045426Z-control-setup-skips-bootstrap-theorem_setup_again_sets_markers.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_setup_with_edges_sets_markers": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045426Z-control-setup-skips-bootstrap-theorem_setup_with_edges_sets_markers.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045426Z-control-setup-skips-bootstrap.log",
+    "timed_out": false,
+    "verified": 46
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045428Z-control-setup-skips-bootstrap/logs/20261117T045426Z-control-setup-skips-bootstrap-theorem_setup_again_sets_markers.log": "a372b7b929ab3c388a58d17b293474c6e93d043ab5582ad05d050fb4b28ce98c",
+    ".g5/Verus_verification/results/operator_reports/20261117T045428Z-control-setup-skips-bootstrap/logs/20261117T045426Z-control-setup-skips-bootstrap-theorem_setup_with_edges_sets_markers.log": "b090eca3ab689087f5bb4def097fd0edba401ee4129fb2c7b94a86fe7fa4dc3b",
+    ".g5/Verus_verification/results/operator_reports/20261117T045428Z-control-setup-skips-bootstrap/logs/20261117T045426Z-control-setup-skips-bootstrap.log": "ad281e67432a42e6ed67bab176cbf98223d84592801e4883bc0a2d6df76c1914"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

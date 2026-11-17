@@ -1,6 +1,6 @@
 # operator reports
 
-Operator reports: readiness flags, the sync line and pending-sync flag, verify_sync and its heal, engine capabilities, the HTTP and CLI readers, the schema diagram and snapshot info, each derived from the writer history and compared with the operation it announces
+Operator reports: readiness flags, the sync line and pending-sync flag, verify_sync and its heal, engine capabilities, the HTTP and CLI readers, the schema diagram and snapshot info, each derived from the writer history and compared with the operation it announces; since iteration 53 also edge-vector readiness, the ledger line, and callers whose privileges let only some status probes succeed
 
 Evidence status: active. Variant: as-built bounded transcription.
 

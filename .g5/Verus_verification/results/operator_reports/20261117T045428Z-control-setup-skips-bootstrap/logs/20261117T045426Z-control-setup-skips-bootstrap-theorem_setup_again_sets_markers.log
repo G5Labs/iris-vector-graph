@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/setup-skips-bootstrap/20261117T045426Z/models/operator_reports/operator_reports.rs:625:13
+    |
+624 |   pub proof fn theorem_setup_again_sets_markers(acts: Seq<Act>)
+    |   ------------------------------------------------------------- at the end of the function body
+625 |       ensures ({
+    |  _____________^
+626 | |         let ns = run(fresh_setup(), acts);
+627 | |         ns.rows.len() > 0 ==> detect(setup(ns)).kg_built && detect(setup(ns)).nkg_built
+628 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

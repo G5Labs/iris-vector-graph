@@ -916,4 +916,159 @@ pub proof fn theorem_label_sets_collide(k1: Seq<char>, v1: Seq<char>, k2: Seq<ch
     assert(pair_text(k1, inj) =~= pair_text(k1, v1) + seq![','] + pair_text(k2, v2));
 }
 
+// ------------------------------------------------------------- label sets: value kinds (iteration 53, review M1)
+/// A label-set value as InternLabelSet sees it after %FromJSON (1355-1378). `Num` carries IRIS's number text
+/// (provider), `Nested` an object or array (its JSON text, which InternLabelSet never reads).
+pub enum LVal { Str(Seq<char>), Num(Seq<char>), Bool(bool), Null, Nested(Seq<char>) }
+/// The text written for one value. The else branch (1376) concatenates `val`, which for an object or array is an
+/// object reference: `r` is that reference's text in this call ("NN@%Library.DynamicObject"), a per-call provider
+/// input that does not depend on the value's content.
+pub open spec fn val_text(v: LVal, r: Seq<char>) -> Seq<char> {
+    match v {
+        LVal::Str(t) => enc(t),
+        LVal::Num(t) => t,
+        LVal::Bool(b) => if b { seq!['t', 'r', 'u', 'e'] } else { seq!['f', 'a', 'l', 's', 'e'] },
+        LVal::Null => seq!['n', 'u', 'l', 'l'],
+        LVal::Nested(j) => enc(r),
+    }
+}
+pub open spec fn scalar(v: LVal) -> bool { !(v is Nested) }
+pub open spec fn pair_t(k: Seq<char>, vt: Seq<char>) -> Seq<char> { qt() + k + qt() + seq![':'] + vt }
+pub open spec fn body_t(ps: Seq<(Seq<char>, Seq<char>)>) -> Seq<char> decreases ps.len() {
+    if ps.len() == 0 { Seq::empty() }
+    else if ps.len() == 1 { pair_t(ps[0].0, ps[0].1) }
+    else { body_t(ps.drop_last()) + seq![','] + pair_t(ps.last().0, ps.last().1) }
+}
+/// The (key, value text) pairs of one call; `refs[i]` is the reference text of value i in that call.
+pub open spec fn texts(ps: Seq<(Seq<char>, LVal)>, refs: Seq<Seq<char>>) -> Seq<(Seq<char>, Seq<char>)> {
+    Seq::new(ps.len(), |i: int| (ps[i].0, val_text(ps[i].1, refs[i])))
+}
+/// The canonical text one InternLabelSet call hashes and stores.
+pub open spec fn canon_v(ps: Seq<(Seq<char>, LVal)>, refs: Seq<Seq<char>>) -> Seq<char> { seq!['{'] + body_t(texts(ps, refs)) + seq!['}'] }
+/// ^KG("labelset"): texts stored once each (SHA-1 taken as injective on these texts, premise P-SHA1); append-only.
+pub open spec fn intern(store: Set<Seq<char>>, ps: Seq<(Seq<char>, LVal)>, refs: Seq<Seq<char>>) -> Set<Seq<char>> {
+    store.insert(canon_v(ps, refs))
+}
+
+/// Valid neighbor (general): a set whose values are all strings, numbers, booleans or null has one canonical text
+/// whatever the per-call references, so interning it again returns the same hash and stores nothing new.
+pub proof fn theorem_scalar_sets_idempotent(store: Set<Seq<char>>, ps: Seq<(Seq<char>, LVal)>, r1: Seq<Seq<char>>, r2: Seq<Seq<char>>)
+    requires r1.len() == ps.len(), r2.len() == ps.len(), forall|i: int| 0 <= i < ps.len() ==> scalar(#[trigger] ps[i].1),
+    ensures canon_v(ps, r1) == canon_v(ps, r2), intern(intern(store, ps, r1), ps, r2) == intern(store, ps, r1),
+{
+    assert(texts(ps, r1) =~= texts(ps, r2));
+    assert(intern(intern(store, ps, r1), ps, r2) =~= intern(store, ps, r1));
+}
+
+/// bug-tmp-105 (general): the content of a nested value never reaches the canonical text. Two sets that differ only
+/// inside nested values, interned with the same references, share one text and hash.
+pub proof fn theorem_nested_content_ignored(ps1: Seq<(Seq<char>, LVal)>, ps2: Seq<(Seq<char>, LVal)>, refs: Seq<Seq<char>>)
+    requires
+        ps1.len() == ps2.len(), refs.len() == ps1.len(),
+        forall|i: int| 0 <= i < ps1.len() ==> (#[trigger] ps1[i]).0 == ps2[i].0
+            && (ps1[i].1 == ps2[i].1 || (ps1[i].1 is Nested && ps2[i].1 is Nested)),
+    ensures canon_v(ps1, refs) == canon_v(ps2, refs),
+{
+    assert forall|i: int| 0 <= i < ps1.len() implies #[trigger] texts(ps1, refs)[i] == texts(ps2, refs)[i] by {
+        if ps1[i].1 != ps2[i].1 {
+            assert(val_text(ps1[i].1, refs[i]) == enc(refs[i]));
+            assert(val_text(ps2[i].1, refs[i]) == enc(refs[i]));
+        }
+    }
+    assert(texts(ps1, refs) =~= texts(ps2, refs));
+}
+
+proof fn lemma_body_t_last(ts: Seq<(Seq<char>, Seq<char>)>)
+    requires ts.len() >= 1,
+    ensures ({
+        let pre: Seq<char> = if ts.len() == 1 { Seq::empty() } else { body_t(ts.drop_last()) + seq![','] };
+        body_t(ts) == pre + pair_t(ts.last().0, ts.last().1)
+    }),
+{
+    if ts.len() == 1 { assert(ts[0] == ts.last()); assert(Seq::<char>::empty() + pair_t(ts[0].0, ts[0].1) =~= pair_t(ts[0].0, ts[0].1)); }
+}
+
+/// bug-tmp-105 (general): when the last key in sorted order holds a nested value and the two calls' references for it
+/// differ, the same set gets two canonical texts, so two hashes, and the second call appends a second entry.
+pub proof fn theorem_nested_value_hash_per_call(store: Set<Seq<char>>, ps: Seq<(Seq<char>, LVal)>, r1: Seq<Seq<char>>, r2: Seq<Seq<char>>)
+    requires
+        ps.len() >= 1, r1.len() == ps.len(), r2.len() == ps.len(), ps.last().1 is Nested, r1.last() != r2.last(),
+        forall|i: int| 0 <= i < ps.len() - 1 ==> #[trigger] r1[i] == r2[i],
+    ensures
+        canon_v(ps, r1) != canon_v(ps, r2),
+        intern(intern(store, ps, r1), ps, r2).contains(canon_v(ps, r1)),
+        intern(intern(store, ps, r1), ps, r2).contains(canon_v(ps, r2)),
+{
+    let n = ps.len() as int;
+    let t1 = texts(ps, r1);
+    let t2 = texts(ps, r2);
+    assert(t1.drop_last() =~= t2.drop_last()) by {
+        assert forall|i: int| 0 <= i < n - 1 implies #[trigger] t1.drop_last()[i] == t2.drop_last()[i] by {
+            assert(r1[i] == r2[i]);
+        }
+    }
+    lemma_body_t_last(t1);
+    lemma_body_t_last(t2);
+    let pre: Seq<char> = if n == 1 { Seq::empty() } else { body_t(t1.drop_last()) + seq![','] };
+    let k = ps.last().0;
+    assert(t1.last() == (k, enc(r1.last())));
+    assert(t2.last() == (k, enc(r2.last())));
+    let a = seq!['{'] + pre + qt() + k + qt() + seq![':'] + qt();
+    assert(canon_v(ps, r1) =~= a + r1.last() + qt() + seq!['}']);
+    assert(canon_v(ps, r2) =~= a + r2.last() + qt() + seq!['}']);
+    if canon_v(ps, r1) == canon_v(ps, r2) {
+        let c1 = canon_v(ps, r1);
+        assert(c1.len() == canon_v(ps, r2).len());
+        assert(r1.last().len() == r2.last().len());
+        assert(c1.subrange(a.len() as int, a.len() + r1.last().len() as int) =~= r1.last());
+        assert(canon_v(ps, r2).subrange(a.len() as int, a.len() + r2.last().len() as int) =~= r2.last());
+    }
+}
+
+// ------------------------------------------------------------- the millisecond writer and the seconds readers (review m1)
+/// bug-tmp-106 (general): TemporalIndexMS writes the same ^KG("tagg") and ^KG("bucket") nodes, keyed by its own
+/// bucket number. For an event at x seconds stored as x * 1000 ms the ms bucket equals the seconds bucket of x, so a
+/// seconds whole-bucket read counts it although its stored timestamp lies far outside the window and the raw window
+/// read (and any cut window) misses it. Neighbor: the same event written by the seconds class is counted by both.
+pub proof fn theorem_ms_edge_in_seconds_whole_bucket(st: St, hf: spec_fn(int) -> (int, int), e: Ev, x: int)
+    requires
+        x > 0, e.ts == x * 1000, !occupied(st.raw, e),
+        get0(st.cnt, (e.g, x / 300, e.s, e.p)) == 0,
+        raw_agg(st.raw, e.g, e.s, e.p, b_lo(x / 300, 300), b_hi(x / 300, 300)).count == 0,
+    ensures ({
+        let b = x / 300;
+        let st_ms = write(st, 300000, hf, Mode::Insert, e);
+        let es = Ev { ts: x, ..e };
+        &&& k4(e, 300000) == k4(es, 300)
+        &&& get_aggregate(st_ms, 300, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)).count == 1
+        &&& raw_agg(st_ms.raw, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)).count == 0
+        &&& (!occupied(st.raw, es) ==> raw_agg(write(st, 300, hf, Mode::Insert, es).raw, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)).count == 1)
+    }),
+{
+    let b = x / 300;
+    assert((x * 1000) / 300000 == x / 300) by {
+        lemma_fundamental_div_mod(x, 300);
+        let q = x / 300; let r = x % 300;
+        assert(x * 1000 == q * 300000 + r * 1000) by (nonlinear_arith) requires x == 300 * q + r;
+        lemma_fundamental_div_mod_converse(x * 1000, 300000, q, r * 1000);
+    }
+    let st_ms = write(st, 300000, hf, Mode::Insert, e);
+    theorem_one_whole_bucket_reads_statistics(st_ms, e.g, e.s, e.p, b);
+    lemma_bucket_bounds(b, 300);
+    assert(b_hi(b, 300) < x * 1000) by {
+        lemma_fundamental_div_mod(x, 300);
+        assert(b * 300 <= x);
+        assert(b_hi(b, 300) == b * 300 + 299);
+    }
+    assert(st_ms.raw.drop_last() =~= st.raw);
+    assert(!hit(e, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)));
+    let es = Ev { ts: x, ..e };
+    if !occupied(st.raw, es) {
+        let st_s = write(st, 300, hf, Mode::Insert, es);
+        assert(st_s.raw.drop_last() =~= st.raw);
+        lemma_fundamental_div_mod(x, 300);
+        assert(hit(es, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)));
+    }
+}
+
 } // verus!

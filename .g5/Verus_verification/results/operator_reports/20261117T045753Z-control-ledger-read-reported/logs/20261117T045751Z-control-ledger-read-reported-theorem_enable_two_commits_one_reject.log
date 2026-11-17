@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/ledger-read-reported/20261117T045751Z/models/operator_reports/operator_reports.rs:830:13
+    |
+828 |   pub proof fn theorem_enable_two_commits_one_reject(ns: Ns, eng: Eng, pr: Probes)
+    |   -------------------------------------------------------------------------------- at the end of the function body
+829 |       requires !ns.led.enabled, pr.native, !pr.ledger_stats,
+830 |       ensures ({
+    |  _____________^
+831 | |         let n2 = ledger_reject(ledger_commit(ledger_commit(ledger_enable(ns))));
+832 | |         &&& status(n2, eng).ledger == LedgerLine::Shown(3, 3, 1)
+833 | |         &&& status_p(n2, eng, pr).ledger == LedgerLine::Shown(3, 0, 0)
+834 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

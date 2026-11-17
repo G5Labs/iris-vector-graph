@@ -1,0 +1,73 @@
+verification results:: 44 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/verify-counts-distinct-rows/20261117T045356Z/models/operator_reports/operator_reports.rs:425:1
+    |
+425 | pub proof fn theorem_shared_triple_never_in_sync(ns: Ns, eng: Eng, other: Eng, i: int, j: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/verify-counts-distinct-rows/20261117T045356Z/models/operator_reports/operator_reports.rs:428:9
+    |
+425 | pub proof fn theorem_shared_triple_never_in_sync(ns: Ns, eng: Eng, other: Eng, i: int, j: int)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+...
+428 |         !verify(sync_ns(ns), sync_eng(ns, eng)).in_sync,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/verify-counts-distinct-rows/20261117T045356Z/models/operator_reports/operator_reports.rs:429:9
+    |
+425 | pub proof fn theorem_shared_triple_never_in_sync(ns: Ns, eng: Eng, other: Eng, i: int, j: int)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+...
+429 |         !verify(sync_ns(ns), other).in_sync,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/verify-counts-distinct-rows/20261117T045356Z/models/operator_reports/operator_reports.rs:446:13
+    |
+444 |   pub proof fn theorem_heal_claims_in_sync_then_drift(n0: Ns, eng: Eng, other: Eng, i: int, j: int)
+    |   ------------------------------------------------------------------------------------------------- at the end of the function body
+445 |       requires 0 <= i < j < n0.rows.len(), tri(n0.rows[i]) == tri(n0.rows[j]), !other.dirty,
+446 |       ensures ({
+    |  _____________^
+447 | |         let ns = sync_ns(n0);
+448 | |         let e1 = sync_eng(n0, eng);
+449 | |         let (r, ns2, eng2) = verify_heal(ns, e1);
+...   |
+453 | |         &&& !verify(ns2, other).in_sync
+454 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/verify-counts-distinct-rows/20261117T045356Z/models/operator_reports/operator_reports.rs:476:13
+    |
+474 |   pub proof fn theorem_put_after_sync_counted(ns: Ns, eng: Eng, e: Edge)
+    |   ---------------------------------------------------------------------- at the end of the function body
+475 |       requires unique_triples(ns.rows), !(triples_of(ns.rows))(tri(e)),
+476 |       ensures ({
+    |  _____________^
+477 | |         let n2 = create_edge(sync_ns(ns), e);
+478 | |         &&& n2.nkg_dict
+479 | |         &&& verify(n2, sync_eng(ns, eng)).in_sync
+480 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/verify-counts-distinct-rows/20261117T045356Z/models/operator_reports/operator_reports.rs:489:13
+    |
+487 |   pub proof fn theorem_delete_status_vs_verify(ns: Ns, keep: Seq<Edge>, eng: Eng, other: Eng)
+    |   ------------------------------------------------------------------------------------------- at the end of the function body
+488 |       requires keep.len() > 0, !other.dirty,
+489 |       ensures ({
+    |  _____________^
+490 | |         let n2 = delete_ns(ns, keep);
+491 | |         let e2 = Eng { dirty: false, ..eng };
+492 | |         &&& sync_line(status(n2, e2)) == SyncLine::InSync && sync_line(status(n2, other)) == SyncLine::InSync
+493 | |         &&& !status(n2, e2).nkg_populated
+494 | |         &&& !verify(n2, e2).in_sync && !verify(n2, other).in_sync
+495 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

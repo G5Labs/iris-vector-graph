@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: InternLabelSet writes a nested object or array as its JSON text (%ToJSON) instead of the object reference (the bug-tmp-105 repair)",
+    "expect_fail_in": [
+      "theorem_nested_value_hash_per_call",
+      "theorem_nested_content_ignored"
+    ],
+    "find": "        LVal::Nested(j) => enc(r),",
+    "name": "nested-serialized-as-json",
+    "replace": "        LVal::Nested(j) => j,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_nested_value_hash_per_call",
+      "theorem_nested_content_ignored"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "a6722cd994d1ac8658d2a35ac179bf459504348d97175250d4b7e3cd7de4f425",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "d991a56fb04bd65be13b39aff5d04d8d11a78a68927318964f29334e0d1e9104"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/nested-serialized-as-json/20261117T045056Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_nested_content_ignored": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045056Z-control-nested-serialized-as-json-theorem_nested_content_ignored.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_nested_value_hash_per_call": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045056Z-control-nested-serialized-as-json-theorem_nested_value_hash_per_call.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045056Z-control-nested-serialized-as-json.log",
+    "timed_out": false,
+    "verified": 56
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T045100Z-control-nested-serialized-as-json/logs/20261117T045056Z-control-nested-serialized-as-json-theorem_nested_content_ignored.log": "36971766c65b7c6a6ef871f6d7d612d1176febe570f032bbb909e1b76d5c2bb6",
+    ".g5/Verus_verification/results/temporal_stats/20261117T045100Z-control-nested-serialized-as-json/logs/20261117T045056Z-control-nested-serialized-as-json-theorem_nested_value_hash_per_call.log": "51e2ee5012d4946a8e90abb0c3689ddef6768a39abbcf072d4119da8de7b40fd",
+    ".g5/Verus_verification/results/temporal_stats/20261117T045100Z-control-nested-serialized-as-json/logs/20261117T045056Z-control-nested-serialized-as-json.log": "dcaf34a7326f3b1df2bbc8b0d20270dc7ac7e95dca7b412f6cadbd52d6d176f8"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

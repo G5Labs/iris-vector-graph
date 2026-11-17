@@ -1,0 +1,26 @@
+verification results:: 1 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/ms-buckets-apart/20261117T045100Z/models/temporal_stats/temporal_stats.rs:1038:13
+     |
+1038 |       ensures ({
+     |  _____________^
+1039 | |         let b = x / 300;
+1040 | |         let st_ms = write(st, 300000, hf, Mode::Insert, e);
+1041 | |         let es = Ev { ts: x, ..e };
+...    |
+1045 | |         &&& (!occupied(st.raw, es) ==> raw_agg(write(st, 300, hf, Mode::Insert, es).raw, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 30...
+1046 | |     }),
+     | |______^ failed this postcondition
+...
+1066 | /     if !occupied(st.raw, es) {
+1067 | |         let st_s = write(st, 300, hf, Mode::Insert, es);
+1068 | |         assert(st_s.raw.drop_last() =~= st.raw);
+1069 | |         lemma_fundamental_div_mod(x, 300);
+1070 | |         assert(hit(es, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)));
+1071 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

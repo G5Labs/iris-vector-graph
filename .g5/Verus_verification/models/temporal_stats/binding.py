@@ -13,7 +13,7 @@ deciding observation is tampered.
 
     (cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/temporal_stats/binding.py)
 """
-import hashlib, json, os, sys, time
+import hashlib, json, os, re, sys, time
 from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = Path(os.environ.get("IVG_REPO", str(HERE.parents[3]))).resolve()
@@ -21,13 +21,13 @@ sys.path.insert(0, str(REPO / ".g5/uplift/consolidated/iteration-36"))
 import runtime  # noqa: E402
 
 RUN = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()); TAG = RUN[-7:-1]
-P = f"i51b_{TAG}_"
+P = f"i53t_{TAG}_"
 T = 1_900_000_200
 B = T // 300
 MUTS = ["update-keeps-statistics", "insert-overwrites", "counters-journaled", "whole-reads-raw", "cut-reads-tagg",
         "none-checked", "raw-purge-drops-statistics", "delete-skips-missing-statistics", "bursts-filter-predicate",
         "burst-threshold-strict", "velocity-not-rounded", "ms-now-in-ms", "small-range-correction", "no-empty-guard",
-        "distinct-whole-buckets-only", "escape-values"]
+        "distinct-whole-buckets-only", "escape-values", "nested-serialized-as-json", "ms-buckets-apart"]
 
 
 def sha(p):
@@ -35,7 +35,7 @@ def sha(p):
 
 
 def G(x):
-    return f"i51b{TAG}{x}"
+    return f"i53t{TAG}{x}"
 
 
 def N(x):
@@ -87,7 +87,10 @@ class Port:
 
     def stores_written(self, e):
         g, ts, s, p, o, w = e
-        k = (g, ts // self.div, s, p); b = (g, ts // self.div, s)
+        bn = ts // self.div
+        if self.m.get("ms-buckets-apart") and self.div == 300000:
+            bn = -1 - bn
+        k = (g, bn, s, p); b = (g, bn, s)
         self.bkt[b] = self.bkt.get(b, 0) + 1
         self.cnt[k] = self.cnt.get(k, 0) + 1
         self.sum[k] = self.sum.get(k, 0) + w
@@ -282,8 +285,18 @@ def os_num(v):
     return t.replace("0.", ".", 1) if t.startswith("0.") else (t.replace("-0.", "-.", 1) if t.startswith("-0.") else t)
 
 
-def canon(d, m):
-    def enc(v):
+REF = re.compile(r"^\d+@%Library\.Dynamic(Object|Array)$")
+
+
+def canon(d, m, refs=None):
+    """InternLabelSet's text (canon_v): a nested object or array is written as its per-call reference text
+    (`refs[k]`, a provider input read from the product); mutation nested-serialized-as-json writes its JSON."""
+    def enc(v, k=None):
+        if isinstance(v, (dict, list)):
+            if m.get("nested-serialized-as-json"):
+                return json.dumps(v, separators=(",", ":"))
+            return '"' + refs[k] + '"'
+
         if isinstance(v, bool):
             return "true" if v else "false"
         if v is None:
@@ -294,11 +307,11 @@ def canon(d, m):
         if m.get("escape-values"):
             v = v.replace("\\", "\\\\").replace('"', '\\"')
         return '"' + v + '"'
-    return "{" + ",".join('"' + k + '":' + enc(d[k]) for k in sorted(d)) + "}"
+    return "{" + ",".join('"' + k + '":' + enc(d[k], k) for k in sorted(d)) + "}"
 
 
-def label(d, m):
-    c = canon(d, m)
+def label(d, m, refs=None):
+    c = canon(d, m, refs)
     return {"hash": hashlib.sha1(c.encode("utf-8")).hexdigest(), "canonical": c}
 
 
@@ -454,6 +467,43 @@ def main():
     for k in obs["labels"]:
         obs["labels"][k]["canonical"] = e.resolve_label_set(obs["labels"][k]["hash"])
     obs["label_unknown"] = e.resolve_label_set("f" * 40)
+    # nested values (review M1, bug-tmp-105): each dict interned twice; the reference text of each nested value in each
+    # call is read back from the resolved text (provider input) and checked to be an object reference of the right kind
+    nested = {"nested_map": {"k": {"b": 1}}, "empty_map": {"k": {}}, "list": {"k": [1, 2]}, "mixed": {"a": "v", "z": [1]}}
+    obs["nested"] = {}
+    nrefs = {}
+    for name, d in nested.items():
+        for call in (1, 2):
+            h = e.intern_label_set(d); txt = e.resolve_label_set(h)
+            try:
+                got = json.loads(txt)
+            except ValueError:
+                got = {}
+            refs = {k: got.get(k) for k, v in d.items() if isinstance(v, (dict, list))}
+            nrefs[f"{name}_{call}"] = refs
+            obs["nested"][f"{name}_{call}"] = {"hash": h, "canonical": txt,
+                                               "ref_is_object_reference": all(isinstance(r, str) and REF.match(r) and
+                                                                              (r.endswith("Array") == isinstance(d[k], list)) for k, r in refs.items())}
+        obs["nested"][f"{name}_same_hash"] = obs["nested"][f"{name}_1"]["hash"] == obs["nested"][f"{name}_2"]["hash"]
+    obs["nested"]["map_vs_empty_map_call1_same_hash"] = obs["nested"]["nested_map_1"]["hash"] == obs["nested"]["empty_map_1"]["hash"]
+    # the millisecond writer read by the seconds readers (review m1, bug-tmp-106)
+    gx = G("x"); tx = (T + 50) * 1000
+    nat.classMethodValue("Graph.KG.TemporalIndexMS", "InsertEdge", gx, N("mx"), "P", N("a"), tx, 2, "", 0, 0, "")
+    obs["ms_in_sec_whole_count"] = e.get_temporal_aggregate(N("mx"), "P", "count", T, T + 299, graph=gx)
+    obs["ms_in_sec_whole_sum"] = e.get_temporal_aggregate(N("mx"), "P", "sum", T, T + 299, graph=gx)
+    obs["ms_in_sec_cut_count"] = e.get_temporal_aggregate(N("mx"), "P", "count", T, T + 298, graph=gx)
+    obs["ms_in_sec_raw_window"] = len(e.get_edges_in_window(N("mx"), "P", T, T + 299, graph=gx))
+    obs["ms_in_sec_velocity"] = e.get_edge_velocity(N("mx"), 300, now_ts=T + 299, graph=gx)
+    # the millisecond class's window argument is in milliseconds (review m9): edges in two consecutive ms buckets, now 1 s
+    # into the later one; a window of 300 stays in that bucket, 300000 reaches the earlier one
+    gv = G("v"); tv = (T * 1000 // 300000) * 300000
+    nat.classMethodValue("Graph.KG.TemporalIndexMS", "InsertEdge", gv, N("mv"), "P", N("a"), tv + 5, 1, "", 0, 0, "")
+    nat.classMethodValue("Graph.KG.TemporalIndexMS", "InsertEdge", gv, N("mv"), "P", N("b"), tv + 300005, 1, "", 0, 0, "")
+    nv = tv + 301000
+    obs["ms_vel_window_300"] = int(nat.classMethodValue("Graph.KG.TemporalIndexMS", "GetVelocity", gv, N("mv"), 300, nv))
+    obs["ms_vel_window_300000"] = int(nat.classMethodValue("Graph.KG.TemporalIndexMS", "GetVelocity", gv, N("mv"), 300000, nv))
+    obs["ms_in_sec_groups"] = {f"{r['source'][len(P):]}|{r['predicate']}": [r["count"], r["sum"], r["min"], r["max"]]
+                               for r in e.get_bucket_groups("P", T, T + 299, source_prefix=P, graph=gx)}
     c.close()
 
     def predict(m):
@@ -509,6 +559,26 @@ def main():
         w["ms_velocity_default_now_recent"] = pm.velocity(gm, N("mr"), 3600 * 1000, 0, clock_ms_call)
         w["labels"] = {k: label(d, m) for k, d in dicts.items()}
         w["label_unknown"] = ""
+        w["nested"] = {}
+        for name, d in nested.items():
+            for call in (1, 2):
+                lb = label(d, m, nrefs[f"{name}_{call}"])
+                w["nested"][f"{name}_{call}"] = {"hash": lb["hash"], "canonical": lb["canonical"], "ref_is_object_reference": True}
+            w["nested"][f"{name}_same_hash"] = w["nested"][f"{name}_1"]["hash"] == w["nested"][f"{name}_2"]["hash"]
+        w["nested"]["map_vs_empty_map_call1_same_hash"] = w["nested"]["nested_map_1"]["hash"] == w["nested"]["empty_map_1"]["hash"]
+        px = Port(m, div=300000)
+        px.write("insert", [gx, tx, N("mx"), "P", N("a"), 2])
+        px.div = 300  # the seconds readers over the same stores
+        w["ms_in_sec_whole_count"] = px.py_aggregate(gx, N("mx"), "P", "count", T, T + 299)
+        w["ms_in_sec_whole_sum"] = px.py_aggregate(gx, N("mx"), "P", "sum", T, T + 299)
+        w["ms_in_sec_cut_count"] = px.py_aggregate(gx, N("mx"), "P", "count", T, T + 298)
+        w["ms_in_sec_raw_window"] = px.raw_agg(gx, N("mx"), "P", T, T + 299)[0]
+        w["ms_in_sec_velocity"] = px.velocity(gx, N("mx"), 300, T + 299, clock)
+        pv = Port(m, div=300000)
+        pv.write("insert", [gv, tv + 5, N("mv"), "P", N("a"), 1]); pv.write("insert", [gv, tv + 300005, N("mv"), "P", N("b"), 1])
+        w["ms_vel_window_300"] = pv.velocity(gv, N("mv"), 300, nv, clock)
+        w["ms_vel_window_300000"] = pv.velocity(gv, N("mv"), 300000, nv, clock)
+        w["ms_in_sec_groups"] = {k[len(P):]: [r[0], r[1], r[2], r[3]] for k, r in px.groups(gx, "P", T, T + 299, P).items()}
         return w
 
     def close(x, y):
@@ -543,6 +613,10 @@ def main():
                                       "bursts_v_NOPE_2", "vel_a_ud", "ms_velocity_default_now_recent")}
     contrasts["labels_injected_equals_two_keys"] = obs["labels"]["injected"]["hash"] == obs["labels"]["two_keys"]["hash"]
     contrasts["fraction_canonical"] = obs["labels"]["fraction"]["canonical"]
+    contrasts["nested"] = {k: v for k, v in obs["nested"].items() if k.endswith("same_hash")}
+    contrasts["nested_map_canonicals"] = [obs["nested"]["nested_map_1"]["canonical"], obs["nested"]["nested_map_2"]["canonical"]]
+    contrasts["ms_in_sec"] = {k: obs[k] for k in ("ms_in_sec_whole_count", "ms_in_sec_cut_count", "ms_in_sec_raw_window", "ms_in_sec_velocity",
+                                                    "ms_vel_window_300", "ms_vel_window_300000")}
     body = {"kind": "binding", "model": "temporal_stats", "fixture": runtime.NAME, "port": runtime.PORT, "product_baseline": runtime.PRODUCT,
             "run": RUN, "prefix": P, "T": T, "verdict": "AGREES" if not mism else "DISAGREES", "cases": ncases,
             "mismatches": [{"case": n, "expected": w_, "observed": g_} for n, w_, g_ in mism], "contrasts": contrasts,
@@ -555,9 +629,11 @@ def main():
             "scope": "Actual product on IRIS 2026.1 (pin 3eaa79cf), seconds class through the Python engine (create_edge_temporal insert/update, "
                      "bulk_create_edges_temporal, delete_edge_temporal, a caller's START TRANSACTION/ROLLBACK around create_edge_temporal, "
                      "purge_raw_before, purge_bucket_range) and its readers (get_temporal_aggregate, get_bucket_groups, get_bucket_group_targets, "
-                     "get_edge_velocity, find_burst_nodes, get_distinct_count, intern/resolve_label_set); TemporalIndexMS InsertEdge, GetVelocity "
+                     "get_edge_velocity, find_burst_nodes, get_distinct_count, intern/resolve_label_set incl. nested values); TemporalIndexMS InsertEdge, GetVelocity "
                      "and GetBucketCount through the driver. Expected answers from the port of the model's writers applied to the same history. "
-                     "SHA-1 register choice computed as HLLAdd does (provider); IRIS number text in label sets is a provider rule. Latest reads "
+                     "SHA-1 register choice computed as HLLAdd does (provider); IRIS number text in label sets is a provider rule; a nested value's per-call "
+                     "object reference text is read back from the product (provider input; its form NN@%Library.DynamicObject/Array is checked). "
+                     "The millisecond edge is read by the seconds readers (iteration 53). Latest reads "
                      "are observed by the iteration-51 probe only."}
     d = REPO / ".g5/Verus_verification/results/temporal_stats" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")

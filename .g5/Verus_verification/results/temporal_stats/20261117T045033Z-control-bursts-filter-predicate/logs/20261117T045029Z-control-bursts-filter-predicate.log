@@ -1,0 +1,24 @@
+verification results:: 56 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/bursts-filter-predicate/20261117T045029Z/models/temporal_stats/temporal_stats.rs:754:13
+    |
+753 | pub proof fn theorem_bursts_ignore_predicate(st: St, g: int, p1: int, p2: int, s: int, window: int, thr: int, now_ts: int, clock_s: int)
+    | ---------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+754 |     ensures burst_listed(st, 300, g, p1, s, window, thr, now_ts, clock_s) == burst_listed(st, 300, g, p2, s, window, thr, now_ts, clock_s),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/bursts-filter-predicate/20261117T045029Z/models/temporal_stats/temporal_stats.rs:761:13
+    |
+759 |   pub proof fn theorem_burst_threshold_inclusive(st: St, g: int, pr: int, s: int, window: int, now_ts: int, clock_s: int)
+    |   ----------------------------------------------------------------------------------------------------------------------- at the end of the function body
+760 |       requires ({ let now = now_of(now_ts, clock_s); present(st, g, s, (now - window) / 300, now / 300) }),
+761 |       ensures ({
+    |  _____________^
+762 | |         let v = velocity(st, 300, g, s, window, now_ts, clock_s);
+763 | |         burst_listed(st, 300, g, pr, s, window, v, now_ts, clock_s) && !burst_listed(st, 300, g, pr, s, window, v + 1, now_ts, cl...
+764 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

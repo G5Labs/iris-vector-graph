@@ -1,0 +1,34 @@
+verification results:: 46 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/metrics-marks-unknown/20261117T045741Z/models/operator_reports/operator_reports.rs:696:13
+    |
+694 |   pub proof fn theorem_failed_census_unknown_only_in_report(ns: Ns, eng: Eng, pr: Probes)
+    |   --------------------------------------------------------------------------------------- at the end of the function body
+695 |       requires !pr.census, pr.native, ns.rows.len() > 0, ns.node_graphs.len() > 0,
+696 |       ensures ({
+    |  _____________^
+697 | |         let s = status_p(ns, eng, pr);
+698 | |         &&& s.unknown.graph && graph_line(s).is_none()
+699 | |         &&& metrics(s).nodes == Some(0nat) && metrics(s).edges == Some(0nat)
+...   |
+702 | |         &&& ready_for_bfs(status(ns, eng)) && graph_line(status(ns, eng)) == Some((ns.node_graphs.len(), ns.rows.len()))
+703 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/metrics-marks-unknown/20261117T045741Z/models/operator_reports/operator_reports.rs:711:13
+    |
+709 |   pub proof fn theorem_failed_vector_count_reads_zero(ns: Ns, eng: Eng, pr: Probes)
+    |   --------------------------------------------------------------------------------- at the end of the function body
+710 |       requires !pr.node_vec, ns.legacy_vecs > 0,
+711 |       ensures ({
+    |  _____________^
+712 | |         let s = status_p(ns, eng, pr);
+713 | |         &&& s.unknown.vector_index
+714 | |         &&& !ready_for_vector_search(s) && server(s).embeddings == 0 && metrics(s).embeddings == Some(0nat)
+715 | |         &&& ready_for_vector_search(status(ns, eng))
+716 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

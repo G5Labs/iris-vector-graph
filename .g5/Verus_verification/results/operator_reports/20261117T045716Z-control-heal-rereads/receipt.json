@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: heal=True reports what a check after the sync reads, not a stamped in_sync",
+    "expect_fail_in": [
+      "theorem_heal_claims_in_sync_then_drift"
+    ],
+    "find": "else { (SyncReport { in_sync: true, healed: true, ..r }, sync_ns(ns), sync_eng(ns, eng)) }",
+    "name": "heal-rereads",
+    "replace": "else { (SyncReport { healed: true, ..verify(sync_ns(ns), sync_eng(ns, eng)) }, sync_ns(ns), sync_eng(ns, eng)) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_heal_claims_in_sync_then_drift"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "6696f2a7c394da66d8031c0b5a1200e66fdc975d666b971a101b0c1f85419113",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/heal-rereads/20261117T045714Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_heal_claims_in_sync_then_drift": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045714Z-control-heal-rereads-theorem_heal_claims_in_sync_then_drift.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045714Z-control-heal-rereads.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045716Z-control-heal-rereads/logs/20261117T045714Z-control-heal-rereads-theorem_heal_claims_in_sync_then_drift.log": "5443378502ba6929ef28ccc312f4371b90d691bb625a6427bf09de8a89c7a8de",
+    ".g5/Verus_verification/results/operator_reports/20261117T045716Z-control-heal-rereads/logs/20261117T045714Z-control-heal-rereads.log": "cd68a891c7c2632700e73ad49a215a1c13d4d1ea5a95e2b0b58fd8c8239359b7"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

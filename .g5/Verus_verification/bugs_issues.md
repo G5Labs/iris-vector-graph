@@ -1108,8 +1108,11 @@ Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation f
 - `status().tables.node_embeddings` is 0, `vector_index_state` is `absent`, `ready_for_vector_search` is False, and the report says "Vector index: absent". `/server` and `/metrics` say 0 embeddings.
 - `search_nodes_by_vector(v, graph="i52bg")` answers the node, and `embedding_count(graph="i52bg")` is 1.
 - The snapshot of the same namespace lists the routed table with its row.
+- Edge vectors (iteration 53, review round 2 item m7; the iteration-52 attempt used a wrong item key): after `store_edge_embeddings([{"s", "p", "o_id", "embedding"}], graph=g)` the registry holds `kg_eemb_…` (kind `edge`) and `DISTINCT` answers `KG_EEMB_…`. `tables.edge_embeddings` is 0 and `ready_for_edge_search` is False, while `edge_vector_search(v, graph=g)` answers the edge. One legacy edge vector then makes it 1 and True. Reproduced in `I53` ([probe](../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) `edge_routed_status`, `edge_routed_search`) and `I53B` ([binding](results/operator_reports/20261117T045659Z-binding/receipt.json) `s17_edge_routed`, `s17:edge_search_g`, `s17_edge_legacy`); `theorem_routed_edges_never_counted`, `theorem_routed_edges_only_not_ready_but_searchable`, control `edge-registry-keeps-case`.
 
 Expected: Spec 230 FR-006 and the `_embedding_row_count` docstring: "Counting one table name reported zero for an install whose vectors are all routed — a number an operator reads as 'the embeddings are gone' while a search over the same rows answers fine." The owner [install.status](../ontology/concepts/install.g5.md#install.status) says the totals count each registered table of that kind.
+
+Doc conflict (review round 2 item m3): ADMIN_GUIDE's field table (`docs/ADMIN_GUIDE.md:940`) says `ready_for_vector_search` means "the default embedding table holds vectors", which reads as the legacy table only and so would describe today's answer. It was written before routing; spec 230 FR-006 and the code's own docstring are later and say the total counts every table of the kind, so this entry keeps FR-006 as Expected and the owner records the conflict. The same table (`:942`) says `adjacency.kg_edge_count` "equals the edges in `rdf_edges`"; the code caps it (`KGEdgeCount` stops at 10000 and sets `kg_edge_count_capped`), which the model takes as a premise (below the cap).
 
 Observed: `_embedding_tables` (`_engine/admin.py:336-354`) reads `SELECT DISTINCT table_name, COALESCE(kind, 'node')` from the registry. It keeps a row only when `is_routed_embedding_table(name)` matches `^kg_emb_[0-9a-f]{16}$` (`security.py:47`), case-sensitive. On IRIS, `DISTINCT` over the default-collation column answers the SQLUPPER form, so no routed name ever matches. This leaves out:
 - every routed node table (and, by the same test, every routed edge table: `kg_eemb_`);
@@ -1161,6 +1164,30 @@ Repair proposal (not implemented): compare `^NKG`'s count with `SELECT COUNT(DIS
 
 Writers and readers: `create_edge`, the bulk paths, `sync()`, `BuildNKG`, `Adjacency.Put`, then `verify_sync` and `SyncReport.__bool__`. Distinguishing case: a shared triple after `sync()` → in sync. Controls `verify-counts-distinct-rows` and `heal-rereads` check the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.verify_sync](../ontology/concepts/install.g5.md#install.status.verify_sync).
 
+<a id="bug-plt-119"></a>
+### A status count that fails reads as zero on /server, /metrics and the readiness flags; only the text report says "unknown"
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: independent review round 2 (session `d548b72a`, item M2), source reading (`cypher_api.py:498-554`, `status.py:192-214`, `_engine/admin.py:449-476`); [operator_reports](models/operator_reports/NOTES.md) `theorem_failed_census_unknown_only_in_report`, `theorem_failed_vector_count_reads_zero`, `theorem_failed_side_counts_silent`; controls `metrics-marks-unknown`, `readiness-unknown-not-false`, `failed-count-not-zero`, `side-count-marks-unknown`.
+
+Reproduced by: **E2E reproduced** in iteration 53 on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, in the fresh namespaces `I53` ([probe](../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) users `i53_native`, `i53_part`) and `I53B` ([binding](results/operator_reports/20261117T045659Z-binding/receipt.json) `s19_i53_bnative`, `s19_i53_bpart`). A monitoring user that may read the namespace's database and use the Native API but holds no SELECT on the IVG tables reads a namespace with 6 nodes, 2 edges and 1 node vector:
+- `status().unknown` names `graph` and `vector_index`, and the report prints "unknown (see Probe errors)" for them. This part works as documented.
+- `/metrics` prints `ivg_nodes_total 0`, `ivg_edges_total 0` and `ivg_embeddings_total 0` beside `ivg_kg_populated 1`, with no error or unknown sample. `/server` answers `nodes 0, edges 0, embeddings 0` (it lists the errors but drops `unknown`). `ivg status` prints that answer and exits 0.
+- `ready_for_bfs` and `ready_for_multihop_bfs` are False while `adjacency.kg_populated` is True and the adjacency serves traversals; `ready_for_vector_search` is False.
+- A user with SELECT on the node, edge and node-vector tables only reads `labels 0`, `props 0` and `edge_embeddings 0` (truth 2, 6 and 1). Each failure is in `errors`, but `unknown` names nothing, and `ready_for_edge_search` is False.
+- Passing neighbor: with every privilege the same moment reads the true counts, nothing unknown, and every flag True.
+
+Expected: ADMIN_GUIDE (`docs/ADMIN_GUIDE.md:950-958`, 4.6.0 R050): where a probe failed the report must say "unknown" instead of a value; before 4.6.0 "it printed `0 nodes` and `in sync` there", which R050 calls the defect. ADMIN_API says `/server` is "part of `engine.status()`" and `/metrics` is "from `engine.status()`"; the owner [install.status](../ontology/concepts/install.g5.md#install.status) says failed counts must not read as invented zeros. A readiness flag "should say whether the operation it names would answer" ([install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness)).
+
+Observed: `_count` answers 0 after a failed SELECT and names a part only for the nodes and edges counts (`_engine/admin.py:449-457`); the labels, props and edge-vector counts name none (472-476). `/server` (`cypher_api.py:498-524`) copies the counts and `errors` but not `unknown`; `/metrics` (527-554) prints the counts as gauge numbers with neither. The readiness properties (`status.py:192-214`) compare the counts with 0.
+
+Consequence: a Prometheus alert or dashboard reading `ivg_nodes_total 0` sees an emptied graph when only the scraper's role lost a privilege, the pre-4.6.0 misreport R050 removed from the text report. An operator script that gates on `ready_for_bfs` or `ready_for_edge_search` refuses work the namespace can do. A narrow monitoring role is the normal way to give a dashboard read access.
+
+Repair proposal (not implemented): carry `unknown` into `/server`; in `/metrics` leave out a gauge whose part is unknown (or add an `ivg_status_unknown{part=…}` gauge); name a part for a failed labels, props or edge-vector count; make a readiness flag unknown (None) when its count is unknown. Preserve: completed counts and the errors list; the text report's behavior. Writers and readers: `_status_probes` → `EngineStatus` → `report()`, readiness properties, `/server`, `/metrics`, `ivg status`. Distinguishing case: the native-only user above. Controls `metrics-marks-unknown` and `readiness-unknown-not-false` check the direction in the model only. Governing statements: [install.status.readers](../ontology/concepts/install.g5.md#install.status.readers), [install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness).
+
 <a id="bug-tmp-103"></a>
 ### A distinct-target count answers at least 11 for any window that holds a target, so one target reads as 11
 
@@ -1198,6 +1225,25 @@ Observed: `InternLabelSet` writes each string value as `"` + value + `"` and eac
 Consequence: two distinct attribute sets stored for retention share one hash, and the first one interned decides the resolved text; a caller that resolves the hash of the injected set gets the other set's attributes. Attribute values from users or upstream systems can trigger it.
 
 Repair proposal (not implemented): build the canonical text with JSON escaping and JSON number text (for example from the `%DynamicObject` with sorted keys), keeping existing hashes for texts that need no escaping. Preserve: key-order independence, type fidelity, append-only storage. Distinguishing case: the two sets above get different hashes. Governing statement: [temporal.labelset](../ontology/features/temporal.g5.md#temporal.labelset).
+
+<a id="bug-tmp-105"></a>
+### A label set holding a nested object or list gets a new hash on every call, and different nested values can share one
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: independent review round 2 (session d548b72a, review of commit 8d8d9ae4, probe p51b; item M1). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `theorem_nested_value_hash_per_call`, `theorem_nested_content_ignored` (general), valid neighbor `theorem_scalar_sets_idempotent`; control `nested-serialized-as-json`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 53 ([probe](../uplift/consolidated/iteration-53/temporal/temporal-observed-20261117T044748Z.json) `M1`; [binding](results/temporal_stats/20261117T045124Z-binding/receipt.json) `nested`). `intern_label_set({"k": {"b": 1}})` twice returns two hashes, resolving to `{"k":"10@%Library.DynamicObject"}` and `{"k":"12@%Library.DynamicObject"}`; a list (`[1, 2]`) and a mixed set (`{"a": "v", "z": [1]}`) behave the same with `%Library.DynamicArray`. `{"k": {}}` and `{"k": {"b": 1}}`, each interned first in its call, share one hash. Passing neighbors: a string, number, boolean or null value interns to one hash on every call and resolves to its JSON value. Not JSON: `InternLabelSet("{not json")` throws a parsing error rather than returning `""`.
+
+Expected: "Idempotent" and "Type fidelity" (`TemporalIndex.cls:1336-1338`); "Canonicalize, hash, and intern an attribute dict" (`_engine/temporal.py:835-846`); spec 204 FR-012 (the canonical form is JSON). Equal sets share one hash; different sets get different hashes.
+
+Observed: the value branch for anything other than a number, boolean or null concatenates `val` (`TemporalIndex.cls:1376-1378`). For an object or array `%Get` returns an object reference, whose text (`NN@%Library.DynamicObject`) depends on the call, not on the value. The stored text therefore has neither the nested content nor a stable form.
+
+Consequence: re-interning the same attributes yields a new hash each time, so callers that compare or group by hash split one set into many; each call appends another entry to the append-only `^KG("labelset")`, which no purge removes; and two different nested values can resolve to the same text, so the stored attributes are lost.
+
+Repair proposal (not implemented): write an object or array value as its canonical JSON (`val.%ToJSON()`, with sorted keys for objects), or refuse nested values with a clear error. Preserve: the hashes of sets with scalar values, key-order independence, append-only storage. Distinguishing case: `{"k": {"b": 1}}` twice gives one hash and resolves to `{"k":{"b":1}}`, and `{"k": {}}` gets a different hash (control `nested-serialized-as-json` checks the model's direction only; the proposal was not run on the product). Governing statement: [temporal.labelset](../ontology/features/temporal.g5.md#temporal.labelset).
 
 <a id="bug-str-004"></a>
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
@@ -3364,6 +3410,25 @@ Consequence: an ordinary write is refused with an internal error that names no C
 
 Repair proposal (not implemented): build the list in SQL from translated elements (as `SET` translates scalars), or refuse with a `CypherError` naming the property. Preserve: constant lists and row-literal lists. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
 
+<a id="bug-tmp-106"></a>
+### A millisecond-class edge is counted by the seconds readers' whole buckets although its time is outside the window
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: independent review round 2 (session d548b72a, probe p51; item m1). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `theorem_ms_edge_in_seconds_whole_bucket` (general, with the seconds-class neighbor); control `ms-buckets-apart`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 53 ([probe](../uplift/consolidated/iteration-53/temporal/temporal-observed-20261117T044748Z.json) `m1_*`; [binding](results/temporal_stats/20261117T045124Z-binding/receipt.json) `ms_in_sec_*`). `TemporalIndexMS.InsertEdge` at (T+50)·1000 ms, then the seconds readers over [T, T+299]: `get_temporal_aggregate` count 1, sum 2.0, one `get_bucket_groups` row, `get_edge_velocity` 1, `get_distinct_count` 11; while `get_edges_in_window` and `get_bucket_group_targets` over the same window answer nothing and the cut window [T, T+298] counts 0. The converse holds: the millisecond class's whole-bucket `GetAggregate` counts a seconds edge (1; cut window 0).
+
+Expected: aggregate and group reads answer exactly the requested window, and velocity counts whole buckets of the reader's own unit ([temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window)); the millisecond class is a "supported" separate unit (`TemporalIndexMS.cls:1-3`).
+
+Observed: both classes write the same `^KG("tagg")` and `^KG("bucket")` nodes keyed by bucket number, and x·1000 / 300000 equals x / 300 for every x, so a millisecond event lands in the seconds bucket of its seconds value. The raw store keeps the millisecond timestamp, so exact readers miss it.
+
+Consequence: in a graph written through both classes, whole-bucket statistics, groups, velocity and bursts mix units and disagree with the raw window. The Python engine calls only the seconds class, so this needs a direct ObjectScript caller of `TemporalIndexMS` on the same graph.
+
+Repair proposal (not implemented): keep the millisecond class's statistics under their own subscript (or refuse mixed units per graph). Preserve: each class's own whole/cut agreement. Distinguishing case: the event above counts 0 in the seconds whole bucket (control `ms-buckets-apart` checks the model's direction only). Governing statement: [temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window).
+
 <a id="bug-plt-117"></a>
 ### engine.capabilities says ^KG and ^NKG are not built on a namespace set up before it held edges, whatever sync() does, until setup runs again
 
@@ -3409,6 +3474,28 @@ Observed: `start_label_id = 0` and `end_label_id = 0` are kept when the sampled 
 Consequence: Neo4j Browser-style schema views (`/schema` consumers, `db.schema.visualization`) show a relationship attached to an unrelated label. Low: documented in the docstring, and the diagram is sampled anyway.
 
 Repair proposal (not implemented): number labels from 1, or give an unlabeled end its own placeholder node. Preserve: one node per label and one relationship per predicate. Control `viz-none-distinct` checks the direction in the model only. Governing statement: [install.status.diagram](../ontology/concepts/install.g5.md#install.status.diagram).
+
+<a id="bug-plt-120"></a>
+### The ledger line shows "0 commits · 0 rejections" when the ledger counters cannot be read, and reports no error
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: independent review round 2 (session `d548b72a`, item M3), source reading (`ledger/client.py:543-575`, `_engine/ledger.py:39-67`); [operator_reports](models/operator_reports/NOTES.md) `theorem_ledger_stats_failure_reads_zero`, `theorem_enable_two_commits_one_reject`; control `ledger-read-reported`.
+
+Reproduced by: **E2E reproduced** in iteration 53 on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, in `I53` ([probe](../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) users `i53_native`, `i53_part`, `i53_noledger`) and `I53B` ([binding](results/operator_reports/20261117T045659Z-binding/receipt.json) `s18_ledger`, `s19_i53_bnoledger`). After `ledger.enable()`, two commits and one commit refused for a stale head:
+- `_SYSTEM` reads "Ledger: enabled · head seq 3 · 3 commits · 1 rejections", and `ledger.stats()` agrees.
+- A user with SELECT on every IVG table except `ledger_stats` reads "enabled · head seq 3 · 0 commits · 0 rejections"; `unknown` is empty and `errors` says nothing about the ledger. Its `engine.ledger.stats()` returns `commits_ok 0` without raising.
+- Passing neighbor: a user without the Native API resources fails the Meta read, and the report says "Ledger: unknown (see Probe errors)", as documented.
+
+Expected: `_ledger_status`'s docstring (`_engine/ledger.py:41-42`): "a read that fails is reported to `errors` … (4.6.0 R160: both reads were silent)", and ADMIN_GUIDE's unknown rule for the ledger (`docs/ADMIN_GUIDE.md:950-958`).
+
+Observed: `GraphLedger.stats()` catches any exception from the `ledger_stats` SELECT and returns the zero counters (`ledger/client.py:549-563`), so `_ledger_status`'s own `except` (60-66) never runs.
+
+Consequence: an operator auditing the ledger reads no rejections where there were some, from a role that may not read the counters. Low: it needs a role split at one table, the head sequence still shows, and the ledger's own history is unaffected.
+
+Repair proposal (not implemented): let `stats()` raise (or return a flag) when the read fails, so `_ledger_status` reports it and names `ledger`. Preserve: `stats()` on a never-enabled ledger; the Prometheus ledger hook. Control `ledger-read-reported` checks the direction in the model only. Governing statement: [install.status.ledger](../ontology/concepts/install.g5.md#install.status.ledger).
 
 <a id="bug-cyp-115"></a>
 ### A map value read by a key answers numbers and booleans as text

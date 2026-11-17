@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "guard: bootstrap_kg_global sets the markers with no rows to build from",
+    "expect_fail_in": [
+      "theorem_markers_never_set_after_empty_setup"
+    ],
+    "find": "if ns.rows.len() > 0 && !ns.marker_kg {",
+    "name": "setup-marks-empty",
+    "replace": "if !ns.marker_kg {"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_markers_never_set_after_empty_setup"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "849497e78bd6d4d2681e9180c8d6b00ab12500ea32fe9159ffef0e87b135e9eb",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/setup-marks-empty/20261117T045413Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_markers_never_set_after_empty_setup": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045413Z-control-setup-marks-empty-theorem_markers_never_set_after_empty_setup.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045413Z-control-setup-marks-empty.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045415Z-control-setup-marks-empty/logs/20261117T045413Z-control-setup-marks-empty-theorem_markers_never_set_after_empty_setup.log": "0b55ce8fae301d4c76dadb2bf02af454c6d1b3e98efe7fb93886afa86c7f5f5e",
+    ".g5/Verus_verification/results/operator_reports/20261117T045415Z-control-setup-marks-empty/logs/20261117T045413Z-control-setup-marks-empty.log": "0e82b18f7aa7b9a6eff03966533598b80989b7317fa869cdd92b7dafb1b4a3e2"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

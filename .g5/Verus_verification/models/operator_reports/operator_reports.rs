@@ -44,6 +44,25 @@ pub struct Ns {
     pub routes: Seq<Route>,
     pub hnsw: bool,                 // an HNSW index on the legacy table
     pub bm25: Set<int>,             // BM25 index names (BM25Index.List)
+    pub label_rows: nat,            // rdf_labels rows (a count input; its writers are not modeled here)
+    pub prop_rows: nat,             // rdf_props rows (a count input)
+    pub edge_legacy: nat,           // kg_EdgeEmbeddings rows
+    pub edge_routes: Seq<Route>,    // routed edge-vector tables kg_eemb_<16 hex> and their rows
+    pub led: Led,                   // the revision ledger's meta and ledger_stats counters
+}
+
+/// The revision ledger: Meta (state, head seq) and the ledger_stats row (commits, rejections).
+pub struct Led { pub enabled: bool, pub seq: nat, pub commits: nat, pub rejections: nat }
+
+/// Which status probes the caller's privileges let succeed (iteration 53, review M2/M3). `native`: the Native API
+/// resources (globals and class methods: KGEdgeCount, NKGPopulated, BM25 List, ledger Meta); the rest are SQL SELECTs:
+/// `census` the nodes and rdf_edges counts, `labels`, `props`, `node_vec` the node-vector tables, `edge_vec` the
+/// edge-vector tables, `ledger_stats` the ledger_stats row. A failed SQL count answers 0 (`_count`'s default).
+pub struct Probes { pub native: bool, pub census: bool, pub labels: bool, pub props: bool, pub node_vec: bool,
+                    pub edge_vec: bool, pub ledger_stats: bool }
+
+pub open spec fn all_ok() -> Probes {
+    Probes { native: true, census: true, labels: true, props: true, node_vec: true, edge_vec: true, ledger_stats: true }
 }
 
 /// One engine's own memory: the pending-sync flag and its cached capabilities (None until first read).
@@ -123,7 +142,8 @@ pub open spec fn setup(ns: Ns) -> Ns {
 pub open spec fn fresh_setup() -> Ns {
     setup(Ns { rows: Seq::empty(), node_graphs: Seq::empty(), nkg_skeleton: false, nkg_dict: false,
                nkg_triples: |t: (int, int, int)| false, nkg_count: 0, marker_kg: false, marker_nkg: false, legacy_vecs: 0,
-               routes: Seq::empty(), hnsw: false, bm25: Set::empty() })
+               routes: Seq::empty(), hnsw: false, bm25: Set::empty(), label_rows: 0, prop_rows: 0, edge_legacy: 0,
+               edge_routes: Seq::empty(), led: Led { enabled: false, seq: 0, commits: 0, rejections: 0 } })
 }
 
 /// create_edge: the row (and ^KG with it); Adjacency.Put interns into ^NKG only when the skeleton exists.
@@ -170,6 +190,29 @@ pub open spec fn bm25_build(ns: Ns, name: int) -> Ns { Ns { bm25: ns.bm25.insert
 
 pub open spec fn bm25_drop(ns: Ns, name: int) -> Ns { Ns { bm25: ns.bm25.remove(name), ..ns } }
 
+/// store_edge_embeddings(graph=g): a routed edge table kg_eemb_<16 hex> and its registry row (kind 'edge').
+pub open spec fn store_edge_routed(ns: Ns, r: Route) -> Ns { Ns { edge_routes: ns.edge_routes.push(r), ..ns } }
+
+/// store_edge_embeddings() in the default graph: the legacy edge table.
+pub open spec fn store_edge_legacy(ns: Ns, n: nat) -> Ns { Ns { edge_legacy: ns.edge_legacy + n, ..ns } }
+
+pub open spec fn annotate(ns: Ns, l: nat, p: nat) -> Ns { Ns { label_rows: ns.label_rows + l, prop_rows: ns.prop_rows + p, ..ns } }
+
+/// ledger.enable(): the genesis revision is the first commit (observed: commits_ok counts it).
+pub open spec fn ledger_enable(ns: Ns) -> Ns {
+    if ns.led.enabled { ns } else { Ns { led: Led { enabled: true, seq: 1, commits: 1, rejections: 0 }, ..ns } }
+}
+
+/// ledger.commit(): an accepted revision advances the head and the commit counter.
+pub open spec fn ledger_commit(ns: Ns) -> Ns {
+    if ns.led.enabled { Ns { led: Led { seq: ns.led.seq + 1, commits: ns.led.commits + 1, ..ns.led }, ..ns } } else { ns }
+}
+
+/// ledger.commit() refused (a stale or unknown expected head): one rejection counted, the head unchanged.
+pub open spec fn ledger_reject(ns: Ns) -> Ns {
+    if ns.led.enabled { Ns { led: Led { rejections: ns.led.rejections + 1, ..ns.led }, ..ns } } else { ns }
+}
+
 // =============================================================== the registry reader and its provider
 pub open spec fn up(c: int) -> int { if 97 <= c <= 122 { c - 32 } else { c } }
 
@@ -185,6 +228,20 @@ pub open spec fn is_route(n: Seq<int>) -> bool {
 }
 
 pub open spec fn counted(r: Route) -> nat { if is_route(registry_text(r.name)) { r.rows } else { 0 } }
+
+/// security.is_routed_edge_embedding_table: ^kg_eemb_[0-9a-f]{16}$ (case-sensitive).
+pub open spec fn is_eroute(n: Seq<int>) -> bool {
+    n.len() == 24 && n[0] == 107 && n[1] == 103 && n[2] == 95 && n[3] == 101 && n[4] == 101 && n[5] == 109
+        && n[6] == 98 && n[7] == 95 && forall|i: int| 8 <= i < 24 ==> lower_hex(#[trigger] n[i])
+}
+
+pub open spec fn ecounted(r: Route) -> nat { if is_eroute(registry_text(r.name)) { r.rows } else { 0 } }
+
+pub open spec fn erouted_sum(rs: Seq<Route>) -> nat
+    decreases rs.len()
+{
+    if rs.len() == 0 { 0 } else { erouted_sum(rs.drop_last()) + ecounted(rs.last()) }
+}
 
 pub open spec fn routed_sum(rs: Seq<Route>) -> nat
     decreases rs.len()
@@ -203,27 +260,71 @@ pub open spec fn route_rows(rs: Seq<Route>, g: int) -> nat
 pub enum Path { None, ObjectScript }
 pub enum IdxState { Absent, Empty, Ready }
 pub enum SyncLine { InSync, NeedsSync }
+/// The parts of the report EngineStatus.unknown can name that this model decides (STATUS_PARTS' graph, vector_index,
+/// sync, fulltext_index, ledger): true when the part is named.
+pub struct Unk { pub graph: bool, pub vector_index: bool, pub sync: bool, pub fulltext: bool, pub ledger: bool }
+pub open spec fn none_unknown() -> Unk { Unk { graph: false, vector_index: false, sync: false, fulltext: false, ledger: false } }
+/// The report's "Ledger:" line: not enabled, unknown, or enabled with head seq, commits and rejections.
+pub enum LedgerLine { NotEnabled, Unknown, Shown(nat, nat, nat) }
 
 pub struct Status {
     pub nodes: nat, pub edges: nat, pub node_vecs: nat,
     pub kg_populated: bool, pub kg_edge_count: nat, pub nkg_populated: bool,
     pub bfs_path: Path, pub pending: bool, pub hnsw: bool, pub bm25: Set<int>,
+    pub labels: nat, pub props: nat, pub edge_vecs: nat, pub unknown: Unk, pub ledger: LedgerLine,
+}
+
+/// _status_probes 449-466: `_count` answers 0 on a failed SELECT and names a part only for the nodes and rdf_edges
+/// counts ("graph"); `_failed` names "vector_index" when the node-vector count adds an error; the labels, props and
+/// edge-vector counts (472-476) name nothing. A failed Native API probe leaves ^KG unknown (sync), the BM25 list
+/// unknown (fulltext_index), the HNSW read unknown (vector_index) and the ledger Meta unknown (ledger).
+pub open spec fn unknown_of(pr: Probes) -> Unk {
+    Unk { graph: !pr.census, vector_index: !pr.node_vec || !pr.native, sync: !pr.native, fulltext: !pr.native,
+          ledger: !pr.native }
+}
+
+/// _ledger_status (_engine/ledger.py 39-67): Meta through the Native API (a failure is reported and names "ledger"),
+/// then GraphLedger.stats() (ledger/client.py 543-575), which catches a failed ledger_stats SELECT and answers the
+/// zero counters, so _ledger_status sees no exception and reports nothing.
+pub open spec fn ledger_line(ns: Ns, pr: Probes) -> LedgerLine {
+    if !pr.native { LedgerLine::Unknown }
+    else if !ns.led.enabled { LedgerLine::NotEnabled }
+    else if !pr.ledger_stats { LedgerLine::Shown(ns.led.seq, 0, 0) }
+    else { LedgerLine::Shown(ns.led.seq, ns.led.commits, ns.led.rejections) }
 }
 
 /// _status_probes over a namespace whose classes are deployed and whose adjacency index is declared (so ^KG holds
-/// exactly the rows: KGEdgeCount = rows, below its 10000 cap).
-pub open spec fn status(ns: Ns, eng: Eng) -> Status {
-    let kgp = ns.rows.len() > 0;
+/// exactly the rows: KGEdgeCount = rows, below its 10000 cap), for a caller whose privileges let the probes `pr`
+/// succeed.
+pub open spec fn status_p(ns: Ns, eng: Eng, pr: Probes) -> Status {
+    let kgp = pr.native && ns.rows.len() > 0;
     Status {
-        nodes: ns.node_graphs.len(), edges: ns.rows.len(), node_vecs: ns.legacy_vecs + routed_sum(ns.routes),
-        kg_populated: kgp, kg_edge_count: ns.rows.len(), nkg_populated: ns.nkg_dict,
-        bfs_path: if kgp { Path::ObjectScript } else { Path::None }, pending: eng.dirty, hnsw: ns.hnsw, bm25: ns.bm25,
+        nodes: if pr.census { ns.node_graphs.len() } else { 0 },
+        edges: if pr.census { ns.rows.len() } else { 0 },
+        node_vecs: if pr.node_vec { ns.legacy_vecs + routed_sum(ns.routes) } else { 0 },
+        kg_populated: kgp, kg_edge_count: if pr.native { ns.rows.len() } else { 0 },
+        nkg_populated: pr.native && ns.nkg_dict,
+        bfs_path: if kgp { Path::ObjectScript } else { Path::None }, pending: eng.dirty, hnsw: ns.hnsw,
+        bm25: if pr.native { ns.bm25 } else { Set::empty() },
+        labels: if pr.labels { ns.label_rows } else { 0 },
+        props: if pr.props { ns.prop_rows } else { 0 },
+        edge_vecs: if pr.edge_vec { ns.edge_legacy + erouted_sum(ns.edge_routes) } else { 0 },
+        unknown: unknown_of(pr),
+        ledger: ledger_line(ns, pr),
     }
 }
+
+/// status() for a caller whose every probe succeeds (the iteration-52 frame).
+pub open spec fn status(ns: Ns, eng: Eng) -> Status { status_p(ns, eng, all_ok()) }
 
 pub open spec fn ready_for_bfs(s: Status) -> bool { s.kg_populated && s.edges > 0 }
 pub open spec fn ready_for_multihop_bfs(s: Status) -> bool { ready_for_bfs(s) && s.bfs_path != Path::None }
 pub open spec fn ready_for_vector_search(s: Status) -> bool { s.node_vecs > 0 }
+pub open spec fn ready_for_edge_search(s: Status) -> bool { s.edge_vecs > 0 }
+/// report(): the "Graph:" line prints the counts, or "unknown (see Probe errors)" when "graph" is unknown (R050).
+pub open spec fn graph_line(s: Status) -> Option<(nat, nat)> {
+    if s.unknown.graph { None } else { Some((s.nodes, s.edges)) }
+}
 pub open spec fn ready_for_full_text(s: Status) -> bool { s.bm25 != Set::<int>::empty() }
 pub open spec fn vector_state(s: Status) -> IdxState {
     if s.node_vecs == 0 { IdxState::Absent } else if s.hnsw { IdxState::Ready } else { IdxState::Empty }
@@ -253,7 +354,8 @@ pub open spec fn detect(ns: Ns) -> Caps { Caps { os: true, kg_built: ns.marker_k
 /// engine.capabilities: detected once, then this engine's cache.
 pub open spec fn caps_of(ns: Ns, eng: Eng) -> Caps { match eng.caps { Some(c) => c, None => detect(ns) } }
 
-pub enum Act { Create(Edge), Sync, Delete(Seq<Edge>), Bulk(Seq<Edge>), Routed(Route), Legacy(nat), Build(int), Drop(int) }
+pub enum Act { Create(Edge), Sync, Delete(Seq<Edge>), Bulk(Seq<Edge>), Routed(Route), Legacy(nat), Build(int), Drop(int),
+               EdgeRouted(Route), EdgeLegacy(nat), Annotate(nat, nat), LEnable, LCommit, LReject }
 
 pub open spec fn step(ns: Ns, a: Act) -> Ns {
     match a {
@@ -265,6 +367,12 @@ pub open spec fn step(ns: Ns, a: Act) -> Ns {
         Act::Legacy(n) => store_legacy(ns, n),
         Act::Build(x) => bm25_build(ns, x),
         Act::Drop(x) => bm25_drop(ns, x),
+        Act::EdgeRouted(r) => store_edge_routed(ns, r),
+        Act::EdgeLegacy(n) => store_edge_legacy(ns, n),
+        Act::Annotate(l, p) => annotate(ns, l, p),
+        Act::LEnable => ledger_enable(ns),
+        Act::LCommit => ledger_commit(ns),
+        Act::LReject => ledger_reject(ns),
     }
 }
 
@@ -281,10 +389,17 @@ pub open spec fn count_in(gs: Seq<int>, g: int) -> nat
     if gs.len() == 0 { 0 } else { count_in(gs.drop_last(), g) + if gs.last() == g { 1nat } else { 0nat } }
 }
 
-/// GET /server: part of status(); GET /metrics: the same fields as gauges; GET /stats: the default graph's nodes.
-pub struct Server { pub nodes: nat, pub edges: nat, pub embeddings: nat, pub kg: bool, pub nkg: bool }
+/// GET /server (cypher_api.py 498-524): part of status() plus its errors list, without `unknown`; GET /metrics (527-554):
+/// the counts as gauge numbers, without `unknown` or `errors`; GET /stats: the default graph's nodes.
+pub struct Server { pub nodes: nat, pub edges: nat, pub labels: nat, pub embeddings: nat, pub kg: bool, pub nkg: bool }
 pub open spec fn server(s: Status) -> Server {
-    Server { nodes: s.nodes, edges: s.edges, embeddings: s.node_vecs, kg: s.kg_populated, nkg: s.nkg_populated }
+    Server { nodes: s.nodes, edges: s.edges, labels: s.labels, embeddings: s.node_vecs, kg: s.kg_populated,
+             nkg: s.nkg_populated }
+}
+/// A gauge value; None would be a sample left out (Prometheus' way to say "not known").
+pub struct Metrics { pub nodes: Option<nat>, pub edges: Option<nat>, pub embeddings: Option<nat> }
+pub open spec fn metrics(s: Status) -> Metrics {
+    Metrics { nodes: Some(s.nodes), edges: Some(s.edges), embeddings: Some(s.node_vecs) }
 }
 pub open spec fn metrics_nkg(s: Status) -> int { if s.nkg_populated { 1 } else { 0 } }
 pub open spec fn stats_nodes(ns: Ns) -> nat { count_in(ns.node_graphs, 0) }
@@ -568,6 +683,154 @@ pub proof fn theorem_snapshot_info_matches_restore(ns: Ns, later: Ns, eng: Eng)
         let s = status(restore(later, ns), eng);
         &&& i.nodes == status(ns, eng).nodes && i.edges == status(ns, eng).edges
         &&& s.nodes == i.nodes && s.edges == i.edges
+    }),
+{
+}
+
+// =============================================================== theorems: failed probes (iteration 53, review M2)
+/// A failed nodes/rdf_edges count: the human report says the graph size is unknown, but /server and /metrics answer 0
+/// nodes and 0 edges as numbers, and ready_for_bfs reads False while the adjacency index holds the edges and a traversal
+/// answers. The same namespace read with every probe succeeding is ready (the neighbor).
+pub proof fn theorem_failed_census_unknown_only_in_report(ns: Ns, eng: Eng, pr: Probes)
+    requires !pr.census, pr.native, ns.rows.len() > 0, ns.node_graphs.len() > 0,
+    ensures ({
+        let s = status_p(ns, eng, pr);
+        &&& s.unknown.graph && graph_line(s).is_none()
+        &&& metrics(s).nodes == Some(0nat) && metrics(s).edges == Some(0nat)
+        &&& server(s).nodes == 0 && server(s).edges == 0
+        &&& s.kg_populated && !ready_for_bfs(s) && !ready_for_multihop_bfs(s)
+        &&& ready_for_bfs(status(ns, eng)) && graph_line(status(ns, eng)) == Some((ns.node_graphs.len(), ns.rows.len()))
+    }),
+{
+}
+
+/// A failed node-vector count: vector_index is unknown in the report, but ready_for_vector_search reads False and
+/// /server and /metrics answer 0 embeddings, while the legacy table holds vectors.
+pub proof fn theorem_failed_vector_count_reads_zero(ns: Ns, eng: Eng, pr: Probes)
+    requires !pr.node_vec, ns.legacy_vecs > 0,
+    ensures ({
+        let s = status_p(ns, eng, pr);
+        &&& s.unknown.vector_index
+        &&& !ready_for_vector_search(s) && server(s).embeddings == 0 && metrics(s).embeddings == Some(0nat)
+        &&& ready_for_vector_search(status(ns, eng))
+    }),
+{
+}
+
+/// A failed labels, props or edge-vector count changes no unknown part: the count reads 0 (named only in errors), and a
+/// failed edge-vector count makes ready_for_edge_search False.
+pub proof fn theorem_failed_side_counts_silent(ns: Ns, eng: Eng, pr: Probes)
+    ensures ({
+        let s = status_p(ns, eng, pr);
+        &&& s.unknown == unknown_of(Probes { labels: true, props: true, edge_vec: true, ..pr })
+        &&& !pr.labels ==> s.labels == 0 && server(s).labels == 0
+        &&& !pr.props ==> s.props == 0
+        &&& !pr.edge_vec ==> s.edge_vecs == 0 && !ready_for_edge_search(s)
+    }),
+{
+}
+
+/// The neighbor: every probe succeeds, nothing is unknown, and every reader answers the namespace's counts.
+pub proof fn theorem_all_probes_ok_counts(ns: Ns, eng: Eng)
+    ensures ({
+        let s = status(ns, eng);
+        &&& s.unknown == none_unknown()
+        &&& graph_line(s) == Some((ns.node_graphs.len(), ns.rows.len()))
+        &&& metrics(s).nodes == Some(ns.node_graphs.len()) && server(s).labels == ns.label_rows
+    }),
+{
+}
+
+// =============================================================== theorems: routed edge vectors (review m7)
+pub proof fn lemma_upper_never_eroute(n: Seq<int>)
+    ensures !is_eroute(registry_text(n)),
+{
+    if n.len() > 0 {
+        let t = registry_text(n);
+        assert(t[0] == up(n[0]));
+        assert(t[0] != 107);
+    }
+}
+
+pub proof fn lemma_erouted_sum_zero(rs: Seq<Route>)
+    ensures erouted_sum(rs) == 0,
+    decreases rs.len()
+{
+    if rs.len() > 0 {
+        lemma_erouted_sum_zero(rs.drop_last());
+        lemma_upper_never_eroute(rs.last().name);
+    }
+}
+
+/// status() never counts a routed edge table's vectors: edge_embeddings is the legacy edge table's rows (bug-plt-115's
+/// edge trigger).
+pub proof fn theorem_routed_edges_never_counted(ns: Ns, eng: Eng)
+    ensures status(ns, eng).edge_vecs == ns.edge_legacy,
+{
+    lemma_erouted_sum_zero(ns.edge_routes);
+}
+
+/// Routed edge vectors only: ready_for_edge_search is False while an edge search on that graph reads them.
+pub proof fn theorem_routed_edges_only_not_ready_but_searchable(ns: Ns, eng: Eng, r: Route)
+    requires ns.edge_legacy == 0, r.rows > 0,
+    ensures ({
+        let n2 = store_edge_routed(ns, r);
+        &&& !ready_for_edge_search(status(n2, eng))
+        &&& route_rows(n2.edge_routes, r.g) > 0
+    }),
+{
+    lemma_erouted_sum_zero(ns.edge_routes.push(r));
+    assert(ns.edge_routes.push(r).drop_last() == ns.edge_routes);
+}
+
+/// The neighbor: an edge vector in the legacy table makes ready_for_edge_search True.
+pub proof fn theorem_legacy_edge_vectors_ready(ns: Ns, eng: Eng, n: nat)
+    requires n > 0,
+    ensures ready_for_edge_search(status(store_edge_legacy(ns, n), eng)),
+{
+    lemma_erouted_sum_zero(ns.edge_routes);
+}
+
+// =============================================================== theorems: the ledger line (review M3)
+/// A failed ledger_stats read: the report shows the enabled ledger's head with "0 commits · 0 rejections", and neither
+/// `unknown` nor the line says the counters were not read; with every probe succeeding it shows the real counters.
+pub proof fn theorem_ledger_stats_failure_reads_zero(ns: Ns, eng: Eng, pr: Probes)
+    requires pr.native, !pr.ledger_stats, ns.led.enabled, ns.led.commits > 0,
+    ensures ({
+        let s = status_p(ns, eng, pr);
+        &&& s.ledger == LedgerLine::Shown(ns.led.seq, 0, 0)
+        &&& !s.unknown.ledger
+        &&& status(ns, eng).ledger == LedgerLine::Shown(ns.led.seq, ns.led.commits, ns.led.rejections)
+    }),
+{
+}
+
+/// A failed Meta read (no Native API access) is reported: the line says unknown and `unknown` names the ledger.
+pub proof fn theorem_ledger_meta_failure_unknown(ns: Ns, eng: Eng, pr: Probes)
+    requires !pr.native,
+    ensures status_p(ns, eng, pr).ledger == LedgerLine::Unknown, status_p(ns, eng, pr).unknown.ledger,
+{
+}
+
+/// Every accepted commit after enable() adds one to the head and the counter, and a refused one adds a rejection only.
+pub proof fn theorem_ledger_counters_follow_commits(ns: Ns)
+    requires ns.led.enabled,
+    ensures
+        ledger_commit(ns).led.seq == ns.led.seq + 1 && ledger_commit(ns).led.commits == ns.led.commits + 1,
+        ledger_reject(ns).led.seq == ns.led.seq && ledger_reject(ns).led.rejections == ns.led.rejections + 1,
+        ledger_reject(ns).led.commits == ns.led.commits,
+{
+}
+
+/// Witness of the documented flow (the binding's history): enable, two commits, one refused commit on a namespace
+/// whose ledger was never enabled reads "head seq 3 · 3 commits · 1 rejections" for a caller who may read ledger_stats
+/// and "head seq 3 · 0 commits · 0 rejections" for one who may not.
+pub proof fn theorem_enable_two_commits_one_reject(ns: Ns, eng: Eng, pr: Probes)
+    requires !ns.led.enabled, pr.native, !pr.ledger_stats,
+    ensures ({
+        let n2 = ledger_reject(ledger_commit(ledger_commit(ledger_enable(ns))));
+        &&& status(n2, eng).ledger == LedgerLine::Shown(3, 3, 1)
+        &&& status_p(n2, eng, pr).ledger == LedgerLine::Shown(3, 0, 0)
     }),
 {
 }

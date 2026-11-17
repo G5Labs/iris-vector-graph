@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/cut-reads-tagg/20261117T045010Z/models/temporal_stats/temporal_stats.rs:364:13
+    |
+362 | pub proof fn theorem_cut_bucket_is_exact(st: St, g: int, s: int, p: int, lo: int, hi: int)
+    | ------------------------------------------------------------------------------------------ at the end of the function body
+363 |     requires lo <= hi, lo / 300 == hi / 300, !whole(lo / 300, lo, hi, 300),
+364 |     ensures exact_rule(st, 300, g, s, p, lo, hi),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

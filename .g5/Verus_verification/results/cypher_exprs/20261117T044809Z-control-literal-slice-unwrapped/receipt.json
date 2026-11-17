@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the GREATEST(0, len + n) wrap of a literal negative bound removed",
+    "expect_fail_in": [
+      "theorem_literal_slice_follows_rule"
+    ],
+    "find": "        Syntax::Literal => if n < 0 { if len + n > 0 { len + n } else { 0 } } else { n },",
+    "name": "literal-slice-unwrapped",
+    "replace": "        Syntax::Literal => n,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_literal_slice_follows_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_exprs/cypher_exprs.rs": "4731f182abab78e482004c40abb80ffa3091292c8be8a1aa94e623ec44004bd4",
+    ".g5/Verus_verification/models/cypher_exprs/model.json": "58bba2eaa683bdcd4ade413b8ba72272c08bb67f6861c5c67775459665b1060f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/literal-slice-unwrapped/20261117T044808Z/models/cypher_exprs/cypher_exprs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_literal_slice_follows_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T044808Z-control-literal-slice-unwrapped-theorem_literal_slice_follows_rule.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T044808Z-control-literal-slice-unwrapped.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_exprs/20261117T044809Z-control-literal-slice-unwrapped/logs/20261117T044808Z-control-literal-slice-unwrapped-theorem_literal_slice_follows_rule.log": "b142ab911167a2ad6085f13b249c939303aca1b17e54a3ec2c6a184ada6b692f",
+    ".g5/Verus_verification/results/cypher_exprs/20261117T044809Z-control-literal-slice-unwrapped/logs/20261117T044808Z-control-literal-slice-unwrapped.log": "e66ed1eb773b8a0bcad2ad6ecd8ed69c5251af16d8177141766b3b7dbf793639"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,33 @@
+verification results:: 56 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T044958Z/models/temporal_stats/temporal_stats.rs:418:1
+    |
+418 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T044958Z/models/temporal_stats/temporal_stats.rs:420:13
+    |
+418 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+419 |     requires occupied(st.raw, e),
+420 |     ensures write(st, 300, hf, Mode::Insert, e) == st, write(st, 300, hf, Mode::Skip, e) == st,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T044958Z/models/temporal_stats/temporal_stats.rs:420:56
+    |
+418 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+419 |     requires occupied(st.raw, e),
+420 |     ensures write(st, 300, hf, Mode::Insert, e) == st, write(st, 300, hf, Mode::Skip, e) == st,
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T044958Z/models/temporal_stats/temporal_stats.rs:993:1
+    |
+993 | pub proof fn theorem_nested_value_hash_per_call(store: Set<Seq<char>>, ps: Seq<(Seq<char>, LVal)>, r1: Seq<Seq<char>>, r2: Seq<Seq<char>>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,185 @@
+{
+ "prefix": "rv52_043604_",
+ "cases": {
+  "setup": {
+   "q": "CREATE (n:RV52043604 {id:'rv52_043604_c', l:[1,2,3], s1:'1', i1:1})",
+   "params": null,
+   "r": {
+    "rows": [],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "idx_null_row": {
+   "q": "WITH [1,2,3] AS l UNWIND [null] AS i RETURN l[i]",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      "1"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "idx_null_prop": {
+   "q": "MATCH (n {id:'rv52_043604_c'}) RETURN n.l[null]",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      "1"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "idx_null_prop_missing": {
+   "q": "MATCH (n {id:'rv52_043604_c'}) RETURN n.l[n.nope]",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      "1"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "idx_null_lit": {
+   "q": "RETURN [1,2,3][null]",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      null
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "idx_null_param": {
+   "q": "WITH [1,2,3] AS l RETURN l[$i]",
+   "params": {
+    "i": null
+   },
+   "r": {
+    "rows": [],
+    "raw_type": "IVGResult",
+    "err": "<ARGUMENT ERROR> Bad argument given; Details: Incorrect number of parameters"
+   }
+  },
+  "case_prop_str_when_num": {
+   "q": "MATCH (n {id:'rv52_043604_c'}) RETURN CASE n.s1 WHEN 1 THEN 'num' WHEN '1' THEN 'str' ELSE 'other' END",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      "num"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "case_prop_num_when_str": {
+   "q": "MATCH (n {id:'rv52_043604_c'}) RETURN CASE n.i1 WHEN '1' THEN 'str' ELSE 'other' END",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      "str"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "case_generic": {
+   "q": "MATCH (n {id:'rv52_043604_c'}) RETURN CASE WHEN n.s1 = 1 THEN 'num' ELSE 'other' END",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      "other"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "case_param_test": {
+   "q": "RETURN CASE $t WHEN 1 THEN 'num' ELSE 'other' END",
+   "params": {
+    "t": "1"
+   },
+   "r": {
+    "rows": [
+     [
+      "num"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "case_lit_lit": {
+   "q": "RETURN CASE '1' WHEN 1 THEN 'num' ELSE 'other' END",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      "other"
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "eq_prop": {
+   "q": "MATCH (n {id:'rv52_043604_c'}) RETURN n.s1 = 1",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      false
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "rel_param": {
+   "q": "CREATE (a:RV52043604A {id:'rv52_043604_a'})-[r:RP043604 {k: $k, lit: 1}]->(b:RV52043604A {id:'rv52_043604_b'})",
+   "params": {
+    "k": 5
+   },
+   "r": {
+    "rows": [],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  },
+  "rel_param_read": {
+   "q": "MATCH (a {id:'rv52_043604_a'})-[r:RP043604]->(b) RETURN r.k, r.lit, keys(r)",
+   "params": null,
+   "r": {
+    "rows": [
+     [
+      null,
+      1,
+      [
+       "lit"
+      ]
+     ]
+    ],
+    "raw_type": "IVGResult",
+    "err": null
+   }
+  }
+ }
+}

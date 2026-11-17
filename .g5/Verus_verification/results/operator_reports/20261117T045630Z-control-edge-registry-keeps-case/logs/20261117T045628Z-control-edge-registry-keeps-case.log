@@ -1,0 +1,15 @@
+verification results:: 47 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/edge-registry-keeps-case/20261117T045628Z/models/operator_reports/operator_reports.rs:756:13
+    |
+756 |       ensures erouted_sum(rs) == 0,
+    |               ^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+759 | /     if rs.len() > 0 {
+760 | |         lemma_erouted_sum_zero(rs.drop_last());
+761 | |         lemma_upper_never_eroute(rs.last().name);
+762 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/unreadable-taken-as-absent/20261117T044831Z/models/cypher_exprs/cypher_exprs.rs:372:9
+    |
+368 | pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    | ----------------------------------------------------------------------------- at the end of the function body
+...
+372 |         node_update(prop_set_deployed(None, DictCheck::Unreadable), old, new) == new,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

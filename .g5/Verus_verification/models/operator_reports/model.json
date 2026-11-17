@@ -1,7 +1,7 @@
 {
   "name": "operator_reports",
   "root": "operator_reports.rs",
-  "expected_verified": 34,
+  "expected_verified": 48,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -10,9 +10,10 @@
       "find": "pub open spec fn registry_text(name: Seq<int>) -> Seq<int> { Seq::new(name.len(), |i: int| up(name[i])) }",
       "replace": "pub open spec fn registry_text(name: Seq<int>) -> Seq<int> { name }",
       "expect_fail_in": [
-        "lemma_upper_never_route"
+        "lemma_upper_never_route",
+        "lemma_upper_never_eroute"
       ],
-      "classification": "provider: the registry read answers the stored (lower-case) name, as SQLite or an EXACT collation would (the bug-plt-115 repair direction: compare case-insensitively)"
+      "classification": "provider: the registry read answers the stored (lower-case) name, as SQLite or an EXACT collation would (the bug-plt-115 repair direction: compare case-insensitively); iteration 53: the same provider premise decides the edge-vector routes (lemma_upper_never_eroute)"
     },
     {
       "name": "verify-counts-distinct-rows",
@@ -161,6 +162,71 @@
         "theorem_setup_with_edges_sets_markers"
       ],
       "classification": "effect: initialize_schema never bootstraps the markers (only sync() would build)"
+    },
+    {
+      "name": "metrics-marks-unknown",
+      "find": "Metrics { nodes: Some(s.nodes), edges: Some(s.edges), embeddings: Some(s.node_vecs) }",
+      "replace": "Metrics { nodes: if s.unknown.graph { None } else { Some(s.nodes) }, edges: if s.unknown.graph { None } else { Some(s.edges) }, embeddings: if s.unknown.vector_index { None } else { Some(s.node_vecs) } }",
+      "expect_fail_in": [
+        "theorem_failed_census_unknown_only_in_report",
+        "theorem_failed_vector_count_reads_zero"
+      ],
+      "classification": "reader (repair direction, bug-plt-119): /metrics leaves out a gauge whose part is unknown instead of printing 0"
+    },
+    {
+      "name": "readiness-unknown-not-false",
+      "find": "pub open spec fn ready_for_bfs(s: Status) -> bool { s.kg_populated && s.edges > 0 }",
+      "replace": "pub open spec fn ready_for_bfs(s: Status) -> bool { s.kg_populated && (s.edges > 0 || s.unknown.graph) }",
+      "expect_fail_in": [
+        "theorem_failed_census_unknown_only_in_report"
+      ],
+      "classification": "reader (repair direction, bug-plt-119): ready_for_bfs does not read an unknown edge count as zero"
+    },
+    {
+      "name": "failed-count-not-zero",
+      "find": "nodes: if pr.census { ns.node_graphs.len() } else { 0 },",
+      "replace": "nodes: ns.node_graphs.len(),",
+      "expect_fail_in": [
+        "theorem_failed_census_unknown_only_in_report"
+      ],
+      "classification": "guard: _count's failure default (0) removed; the zero the HTTP readers print comes from it"
+    },
+    {
+      "name": "side-count-marks-unknown",
+      "find": "Unk { graph: !pr.census,",
+      "replace": "Unk { graph: !pr.census || !pr.labels || !pr.props || !pr.edge_vec,",
+      "expect_fail_in": [
+        "theorem_failed_side_counts_silent"
+      ],
+      "classification": "effect: a failed labels, props or edge-vector count names a part in unknown (it names none as built)"
+    },
+    {
+      "name": "edge-registry-keeps-case",
+      "find": "pub open spec fn ecounted(r: Route) -> nat { if is_eroute(registry_text(r.name)) { r.rows } else { 0 } }",
+      "replace": "pub open spec fn ecounted(r: Route) -> nat { if is_eroute(r.name) { r.rows } else { 0 } }",
+      "expect_fail_in": [
+        "lemma_erouted_sum_zero"
+      ],
+      "classification": "reader (repair direction, bug-plt-115 edge trigger): the edge route test sees the stored name; the theorems rely on this lemma (first receipt 20261117T045439Z attributed the failure to the theorems: FAIL_ELSEWHERE, kept)"
+    },
+    {
+      "name": "ledger-read-reported",
+      "find": "else if !pr.ledger_stats { LedgerLine::Shown(ns.led.seq, 0, 0) }",
+      "replace": "else if !pr.ledger_stats { LedgerLine::Unknown }",
+      "expect_fail_in": [
+        "theorem_ledger_stats_failure_reads_zero",
+        "theorem_enable_two_commits_one_reject"
+      ],
+      "classification": "reader (repair direction, bug-plt-120): a failed ledger_stats read is reported as unknown, as _ledger_status's docstring says"
+    },
+    {
+      "name": "meta-failure-silent",
+      "find": "if !pr.native { LedgerLine::Unknown }",
+      "replace": "if false { LedgerLine::Unknown }",
+      "expect_fail_in": [
+        "theorem_ledger_meta_failure_unknown"
+      ],
+      "classification": "guard: _ledger_status's Meta failure branch removed (the documented R050 path that works)"
     }
   ]
 }

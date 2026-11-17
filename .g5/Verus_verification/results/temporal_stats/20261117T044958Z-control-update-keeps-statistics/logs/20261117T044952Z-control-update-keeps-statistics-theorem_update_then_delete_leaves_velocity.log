@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/update-keeps-statistics/20261117T044952Z/models/temporal_stats/temporal_stats.rs:771:13
+    |
+769 |   pub proof fn theorem_update_then_delete_leaves_velocity(hf: spec_fn(int) -> (int, int), e0: Ev, w1: int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+770 |       requires 0 <= e0.ts,
+771 |       ensures ({
+    |  _____________^
+772 | |         let e1 = Ev { w: w1, ..e0 };
+773 | |         let st2 = write(write(empty_st(), 300, hf, Mode::Insert, e0), 300, hf, Mode::Update, e1);
+774 | |         let st3 = delete_at(st2, 300, hf, 0);
+...   |
+777 | |         &&& !st3.cnt.contains_key(k4(e0, 300))
+778 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,21 @@
+verification results:: 56 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/small-range-correction/20261117T045042Z/models/temporal_stats/temporal_stats.rs:818:13
+    |
+816 | pub proof fn theorem_distinct_nonempty_at_least_eleven(r: Seq<int>)
+    | ------------------------------------------------------------------- at the end of the function body
+817 |     requires wf_regs(r), any_set(r),
+818 |     ensures estimate(r) >= 11,
+    |             ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/small-range-correction/20261117T045042Z/models/temporal_stats/temporal_stats.rs:831:13
+    |
+829 | pub proof fn theorem_distinct_one_target_is_eleven(h: (int, int))
+    | ----------------------------------------------------------------- at the end of the function body
+830 |     requires wf_hash(h),
+831 |     ensures estimate(hll_add(hll_empty(), h)) == 11,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

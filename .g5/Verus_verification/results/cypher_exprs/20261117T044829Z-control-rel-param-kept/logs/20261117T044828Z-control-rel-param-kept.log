@@ -1,0 +1,27 @@
+verification results:: 21 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/rel-param-kept/20261117T044828Z/models/cypher_exprs/cypher_exprs.rs:226:1
+    |
+226 | pub proof fn theorem_inline_rel_param_dropped()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/rel-param-kept/20261117T044828Z/models/cypher_exprs/cypher_exprs.rs:228:9
+    |
+226 | pub proof fn theorem_inline_rel_param_dropped()
+    | ----------------------------------------------- at the end of the function body
+227 |     ensures
+228 |         create_rel_value(RelValue::Param) == WriteOut::WrittenWithoutProperty,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/rel-param-kept/20261117T044828Z/models/cypher_exprs/cypher_exprs.rs:229:9
+    |
+226 | pub proof fn theorem_inline_rel_param_dropped()
+    | ----------------------------------------------- at the end of the function body
+...
+229 |         create_rel_value(RelValue::Param) != rule_write(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

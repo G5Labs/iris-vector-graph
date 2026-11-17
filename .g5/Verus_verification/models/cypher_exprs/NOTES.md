@@ -119,3 +119,19 @@ Not modeled (observed only): a list literal holding a property read in `SET`/`CR
 ([bug-cyp-128](../../bugs_issues.md#bug-cyp-128)); `trim`'s whitespace ([bug-cyp-130](../../bugs_issues.md#bug-cyp-130));
 a parameter list sliced by parameter bounds ([bug-cyp-125](../../bugs_issues.md#bug-cyp-125), driver premise plus the
 null-guard marker order).
+
+## Iteration 53 (review 50-52 m4, m5)
+
+- **m5, the lexer premise is now observed.** `tokens_after_lower` was a constant table "as observed". The binding now
+  reads the lexer's two tokens after the identifier for `a..3`, `a..b` and `a..]` (cases `lex_Int`, `lex_Ident`,
+  `lex_Close`: `[Dot, FloatLit]`, `[Dot, Dot]`, `[Dot, Dot]`) and compares them with the table; the mutation
+  `lexer_table_altered` (the integer form lexed as two dots) is detected. The table stays a premise of the model; it
+  is observed at the pin, not derived from `Lexer._tokenize_number`, so the lexer is not claimed as a bound member.
+- **m4, `_create_resolve_prop_value` relabeled.** Its crosswalk row is now a delegate of `folds`: it forwards the
+  folded value and otherwise returns the call's AST. Whether an unfolded value is written is decided by `folds` and
+  the driver premise `driver_accepts_ast`; the member's own choice to return the AST instead of refusing cleanly would
+  leave the outcome (`RefusedNothingWritten`) and the binding unchanged, so the model does not distinguish it.
+
+Binding: **AGREES 236 cases**, all 23 mutations and the tamper check detected
+([receipt](../../results/cypher_exprs/20261117T044717Z-binding/receipt.json)). The model file is unchanged; prove and controls were
+re-run on it for currency.

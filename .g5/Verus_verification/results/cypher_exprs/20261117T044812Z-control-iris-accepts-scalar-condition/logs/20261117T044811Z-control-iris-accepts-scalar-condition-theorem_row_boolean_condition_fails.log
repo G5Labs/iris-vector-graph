@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/iris-accepts-scalar-condition/20261117T044811Z/models/cypher_exprs/cypher_exprs.rs:116:1
+    |
+116 | pub proof fn theorem_row_boolean_condition_fails(v: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/iris-accepts-scalar-condition/20261117T044811Z/models/cypher_exprs/cypher_exprs.rs:118:9
+    |
+116 | pub proof fn theorem_row_boolean_condition_fails(v: bool)
+    | --------------------------------------------------------- at the end of the function body
+117 |     ensures
+118 |         case_when(Syntax::RowVar, v) == CaseOut::PrepareFails,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/iris-accepts-scalar-condition/20261117T044811Z/models/cypher_exprs/cypher_exprs.rs:119:9
+    |
+116 | pub proof fn theorem_row_boolean_condition_fails(v: bool)
+    | --------------------------------------------------------- at the end of the function body
+...
+119 |         case_when(Syntax::Param, v) == CaseOut::PrepareFails,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

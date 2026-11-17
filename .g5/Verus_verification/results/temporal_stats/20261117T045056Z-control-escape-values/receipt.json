@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: InternLabelSet escapes string values (the F-0509 / bug-tmp-104 repair)",
+    "expect_fail_in": [
+      "theorem_label_sets_collide"
+    ],
+    "find": "pub open spec fn enc(v: Seq<char>) -> Seq<char> { qt() + v + qt() }",
+    "name": "escape-values",
+    "replace": "pub open spec fn enc(v: Seq<char>) -> Seq<char> { qt() + esc(v) + qt() }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_label_sets_collide"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "a6722cd994d1ac8658d2a35ac179bf459504348d97175250d4b7e3cd7de4f425",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "d991a56fb04bd65be13b39aff5d04d8d11a78a68927318964f29334e0d1e9104"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/escape-values/20261117T045053Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_label_sets_collide": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045053Z-control-escape-values-theorem_label_sets_collide.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045053Z-control-escape-values.log",
+    "timed_out": false,
+    "verified": 56
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T045056Z-control-escape-values/logs/20261117T045053Z-control-escape-values-theorem_label_sets_collide.log": "35a75876be4dd0af768bea9a1305f625eaacd59d5d759161b4f88a18bea47dd7",
+    ".g5/Verus_verification/results/temporal_stats/20261117T045056Z-control-escape-values/logs/20261117T045053Z-control-escape-values.log": "3b410cef2f8253ad999856d8032806c64250a640406016f5597c724e3c34cefa"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/heal-rereads/20261117T045402Z/models/operator_reports/operator_reports.rs:446:13
+    |
+444 |   pub proof fn theorem_heal_claims_in_sync_then_drift(n0: Ns, eng: Eng, other: Eng, i: int, j: int)
+    |   ------------------------------------------------------------------------------------------------- at the end of the function body
+445 |       requires 0 <= i < j < n0.rows.len(), tri(n0.rows[i]) == tri(n0.rows[j]), !other.dirty,
+446 |       ensures ({
+    |  _____________^
+447 | |         let ns = sync_ns(n0);
+448 | |         let e1 = sync_eng(n0, eng);
+449 | |         let (r, ns2, eng2) = verify_heal(ns, e1);
+...   |
+453 | |         &&& !verify(ns2, other).in_sync
+454 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

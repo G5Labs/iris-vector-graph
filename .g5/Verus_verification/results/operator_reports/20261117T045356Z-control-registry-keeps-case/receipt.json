@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "provider: the registry read answers the stored (lower-case) name, as SQLite or an EXACT collation would (the bug-plt-115 repair direction: compare case-insensitively); iteration 53: the same provider premise decides the edge-vector routes (lemma_upper_never_eroute)",
+    "expect_fail_in": [
+      "lemma_upper_never_route",
+      "lemma_upper_never_eroute"
+    ],
+    "find": "pub open spec fn registry_text(name: Seq<int>) -> Seq<int> { Seq::new(name.len(), |i: int| up(name[i])) }",
+    "name": "registry-keeps-case",
+    "replace": "pub open spec fn registry_text(name: Seq<int>) -> Seq<int> { name }"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_upper_never_route",
+      "lemma_upper_never_eroute"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "849497e78bd6d4d2681e9180c8d6b00ab12500ea32fe9159ffef0e87b135e9eb",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/registry-keeps-case/20261117T045354Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_upper_never_eroute": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045354Z-control-registry-keeps-case-lemma_upper_never_eroute.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_upper_never_route": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045354Z-control-registry-keeps-case-lemma_upper_never_route.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045354Z-control-registry-keeps-case.log",
+    "timed_out": false,
+    "verified": 46
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045356Z-control-registry-keeps-case/logs/20261117T045354Z-control-registry-keeps-case-lemma_upper_never_eroute.log": "a4bed54e0470f751f19ba764f76d1026eed9287145c609cb89eeffc0ebd9f046",
+    ".g5/Verus_verification/results/operator_reports/20261117T045356Z-control-registry-keeps-case/logs/20261117T045354Z-control-registry-keeps-case-lemma_upper_never_route.log": "d9f4903e444373a5eb2b413423942f57baf7c94979232ac0d13f64f65a1cad72",
+    ".g5/Verus_verification/results/operator_reports/20261117T045356Z-control-registry-keeps-case/logs/20261117T045354Z-control-registry-keeps-case.log": "a36fa1dde297ecab51667418c7385b931b1a1444c216b7f581de61e40511c497"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

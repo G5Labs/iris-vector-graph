@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/side-count-marks-unknown/20261117T045434Z/models/operator_reports/operator_reports.rs:723:13
+    |
+722 |   pub proof fn theorem_failed_side_counts_silent(ns: Ns, eng: Eng, pr: Probes)
+    |   ---------------------------------------------------------------------------- at the end of the function body
+723 |       ensures ({
+    |  _____________^
+724 | |         let s = status_p(ns, eng, pr);
+725 | |         &&& s.unknown == unknown_of(Probes { labels: true, props: true, edge_vec: true, ..pr })
+726 | |         &&& !pr.labels ==> s.labels == 0 && server(s).labels == 0
+727 | |         &&& !pr.props ==> s.props == 0
+728 | |         &&& !pr.edge_vec ==> s.edge_vecs == 0 && !ready_for_edge_search(s)
+729 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

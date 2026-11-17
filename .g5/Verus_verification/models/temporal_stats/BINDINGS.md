@@ -1,6 +1,6 @@
 # temporal stats
 
-Temporal statistics readers: whole versus cut buckets, update and rollback effects on the statistics, raw and bucket-range purges, velocity and bursts, the distinct-target estimate, label-set interning
+Temporal statistics readers: whole versus cut buckets, update and rollback effects on the statistics, raw and bucket-range purges, velocity and bursts, the distinct-target estimate, label-set interning (every value kind, iteration 53), the millisecond writer read by the seconds readers (iteration 53)
 
 Evidence status: active. Variant: as-built bounded transcription.
 

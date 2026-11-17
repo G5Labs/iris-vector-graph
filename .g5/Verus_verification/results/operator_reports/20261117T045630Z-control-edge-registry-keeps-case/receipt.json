@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "reader (repair direction, bug-plt-115 edge trigger): the edge route test sees the stored name; the theorems rely on this lemma (first receipt 20261117T045439Z attributed the failure to the theorems: FAIL_ELSEWHERE, kept)",
+    "expect_fail_in": [
+      "lemma_erouted_sum_zero"
+    ],
+    "find": "pub open spec fn ecounted(r: Route) -> nat { if is_eroute(registry_text(r.name)) { r.rows } else { 0 } }",
+    "name": "edge-registry-keeps-case",
+    "replace": "pub open spec fn ecounted(r: Route) -> nat { if is_eroute(r.name) { r.rows } else { 0 } }"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_erouted_sum_zero"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "6696f2a7c394da66d8031c0b5a1200e66fdc975d666b971a101b0c1f85419113",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "2f3bef180515cd22e7d779da0397641b217f218481926c9790bd6d9f7b145ebb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/edge-registry-keeps-case/20261117T045628Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_erouted_sum_zero": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045628Z-control-edge-registry-keeps-case-lemma_erouted_sum_zero.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T045628Z-control-edge-registry-keeps-case.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T045630Z-control-edge-registry-keeps-case/logs/20261117T045628Z-control-edge-registry-keeps-case-lemma_erouted_sum_zero.log": "6fbf8eaaa6f6eb8a5e389862791aefb78c19d3a03a3182968a96b5023bd906ef",
+    ".g5/Verus_verification/results/operator_reports/20261117T045630Z-control-edge-registry-keeps-case/logs/20261117T045628Z-control-edge-registry-keeps-case.log": "8c180b401816af19cfd21675f0a2215e0b9e1842d5700d71dea1b53811195321"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

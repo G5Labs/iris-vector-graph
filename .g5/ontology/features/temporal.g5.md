@@ -140,6 +140,8 @@ Aggregate, group and target reads answer exactly the requested window, both ends
 - A group read returns one row per source and predicate that has something in the window, and no row for one that has nothing. A row carries no target.
 - A target read lists the distinct targets of one source's edges in exactly the window, read from the edges themselves, so a raw purge empties it and a bucket-range purge does not.
 - Each read sees only its own graph.
+- An empty predicate in a group or target read means every predicate. An aggregate read needs a source and a predicate: today an empty one fails with a server subscript error, unless the window only cuts buckets and no edge falls in the cut part, which answers 0.
+- These reads assume seconds. Today an edge written by the millisecond entry point lands in the seconds bucket of its time in seconds, because both entry points share the statistics. Whole-bucket counts, groups, velocity and distinct estimates then include it, while target reads, edge-by-edge reads and cut windows do not ([bug-tmp-106](../../Verus_verification/bugs_issues.md#bug-tmp-106)).
 
 
 <a id="temporal.stats.writers"></a>
@@ -162,12 +164,14 @@ Velocity and burst reads count events from the per-source event counters of ever
 - A burst read lists a source when its total reaches the threshold, the threshold itself included, and only sources holding a counter in those buckets.
 - Now is the caller's timestamp when one is given, otherwise the wall clock in seconds.
 - In the millisecond entry point the default now is still in seconds, so an event stored in milliseconds is never counted unless the caller passes now.
+- In the millisecond entry point the window is in milliseconds too, although the parameter is named in seconds: a window of 300 reaches back 0.3 seconds.
 
 
 <a id="temporal.stats.distinct"></a>
 [I · temporal.stats.distinct]
 
 A distinct-target read estimates how many distinct targets one source's edges of one predicate reach, or every source's when no source is named.
+- With no source named, an empty predicate means every predicate. With a source named, today an empty predicate fails with a server subscript error.
 - It merges the sketches of every bucket the window touches, so a target outside the window in a touched bucket counts.
 - An empty window answers 0, and the estimate must stay within about a quarter of the true number.
 - Today any window that holds at least one target answers at least 11, so one target answers 11 and the error is large below about 40 targets.
@@ -385,11 +389,13 @@ The server handle of a paged read is freed exactly once, by whichever comes firs
 <a id="temporal.labelset"></a>
 [I · temporal.labelset]
 
-Interning a set of attributes stores its canonical JSON text once and returns the SHA-1 hash of that text, so equal sets share one hash and different sets get different hashes.
+Interning a set of attributes stores its canonical JSON text once and returns the SHA-1 hash of that text. Equal sets must share one hash and different sets must get different hashes. Today this fails for nested objects and lists, and for strings that hold a quote (both below).
 - Keys are sorted; numbers stay numbers, booleans booleans and null null, and key order does not change the hash.
 - Resolving a known hash returns the canonical text, and an unknown hash returns an empty string.
 - Interned sets are append-only: no purge removes them.
 - Today string values are written without JSON escaping and a fraction below one is written as `.5`. A value holding a quote can therefore produce the same text and hash as a different set, and some resolved texts are not JSON.
+- Today a nested object or list is written as an internal object reference such as `"12@%Library.DynamicObject"`, which changes from call to call and ignores the content. The same set then gets a new hash, and a new stored entry, on every call, and two different nested values can share a hash ([bug-tmp-105](../../Verus_verification/bugs_issues.md#bug-tmp-105)).
+- Text that is not JSON fails with a parsing error rather than returning an empty hash. The Python entry point always sends JSON.
 
 
 ## Retention and erasure
@@ -591,9 +597,11 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - agent
 - user-facing-behavior
 - design-verified
-- Formal: [`theorem_cut_bucket_is_exact`, `theorem_one_whole_bucket_reads_statistics`, `theorem_empty_answer_raises`, `theorem_group_row_absent`, `theorem_targets_follow_raw`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+- Formal: [`theorem_cut_bucket_is_exact`, `theorem_one_whole_bucket_reads_statistics`, `theorem_empty_answer_raises`, `theorem_group_row_absent`, `theorem_targets_follow_raw`, `theorem_ms_edge_in_seconds_whole_bucket`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
-Findings: [bug-tmp-009](../../Verus_verification/bugs_issues.md#bug-tmp-009) (strengthened in iteration 51: an unknown metric, and a whole bucket left with a count but no extremes, raise too).
+Findings: [bug-tmp-009](../../Verus_verification/bugs_issues.md#bug-tmp-009) (strengthened in iteration 51: an unknown metric, and a whole bucket left with a count but no extremes, raise too); [bug-tmp-106](../../Verus_verification/bugs_issues.md#bug-tmp-106) (the millisecond writer; found by independent review round 2, reproduced and modeled in iteration 53).
+
+The empty-key cases (review round 2, m2) are owned as built and observed by the [iteration-53 probe](../../uplift/consolidated/iteration-53/temporal/temporal-observed-20261117T044748Z.json) (`m2_*`); they are not modeled. No document promises a wildcard for the aggregate read; the group read's docstring says an empty predicate matches all.
 
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
@@ -619,7 +627,7 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - design-verified
 - Formal: [`theorem_velocity_counts_touched_buckets`, `theorem_velocity_boundaries`, `theorem_bursts_ignore_predicate`, `theorem_burst_threshold_inclusive`, `theorem_ms_default_now_misses`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
-Findings: [F-0508](../../Verus_verification/bugs_issues.md#F-0508) (the ignored predicate; now formal). The millisecond default is a recorded divergence, not a separate finding.
+Findings: [F-0508](../../Verus_verification/bugs_issues.md#F-0508) (the ignored predicate; now formal). The millisecond default is a recorded divergence, not a separate finding. The millisecond window unit (review round 2, m9) follows from `velocity`, which is general in bucket width and window; the [temporal_stats binding](../../Verus_verification/results/temporal_stats/20261117T045124Z-binding/receipt.json) observes it (`ms_vel_window_300` 1, `ms_vel_window_300000` 2). Premise: the Python engine calls only the seconds entry point.
 
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
@@ -631,7 +639,7 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - design-verified
 - Formal: [`theorem_distinct_empty_is_zero`, `theorem_distinct_nonempty_at_least_eleven`, `theorem_distinct_one_target_is_eleven`, `theorem_same_target_twice`, `theorem_distinct_window_rounded_out`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
-Findings: [bug-tmp-103](../../Verus_verification/bugs_issues.md#bug-tmp-103) (new in iteration 51). The register choice comes from SHA-1 (a provider computed the same way in the binding).
+Findings: [bug-tmp-103](../../Verus_verification/bugs_issues.md#bug-tmp-103) (new in iteration 51). The empty-predicate cases (review round 2, m2) are owned as built from the iteration-53 probe and not modeled. The register choice comes from SHA-1 (a provider computed the same way in the binding).
 
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
@@ -878,9 +886,9 @@ State machines: [temporal window reader](../../Verus_verification/models/tempora
 - agent
 - data-integrity
 - design-verified
-- Formal: [`theorem_label_sets_collide`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+- Formal: [`theorem_label_sets_collide`, `theorem_nested_value_hash_per_call`, `theorem_nested_content_ignored`, `theorem_scalar_sets_idempotent`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
-Findings: [bug-tmp-104](../../Verus_verification/bugs_issues.md#bug-tmp-104) (new in iteration 51), [F-0509](../../Verus_verification/bugs_issues.md#F-0509) (strengthened: a fraction below one also gives non-JSON text). The number text `.5` is an IRIS provider rule, observed and not modeled.
+Findings: [bug-tmp-105](../../Verus_verification/bugs_issues.md#bug-tmp-105) (nested values; found by independent review round 2, reproduced and modeled in iteration 53), [bug-tmp-104](../../Verus_verification/bugs_issues.md#bug-tmp-104) (new in iteration 51), [F-0509](../../Verus_verification/bugs_issues.md#F-0509) (strengthened: a fraction below one also gives non-JSON text). The number text `.5` is an IRIS provider rule, observed and not modeled.
 
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 

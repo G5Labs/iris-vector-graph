@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "guard: a delete rebuilds only statistics that exist (one answer to the q-tmp-002 mirror)",
+    "expect_fail_in": [
+      "theorem_delete_after_bucket_purge_recreates",
+      "theorem_delete_rebuilds_from_survivors"
+    ],
+    "find": "    rebuild(st1, div, hf, k4(e, div))",
+    "name": "delete-skips-missing-statistics",
+    "replace": "    if st.cnt.contains_key(k4(e, div)) { rebuild(st1, div, hf, k4(e, div)) } else { st1 }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_delete_after_bucket_purge_recreates",
+      "theorem_delete_rebuilds_from_survivors"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "a6722cd994d1ac8658d2a35ac179bf459504348d97175250d4b7e3cd7de4f425",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "d991a56fb04bd65be13b39aff5d04d8d11a78a68927318964f29334e0d1e9104"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/delete-skips-missing-statistics/20261117T045023Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": true,
+    "per_function": {
+      "theorem_delete_after_bucket_purge_recreates": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045023Z-control-delete-skips-missing-statistics-theorem_delete_after_bucket_purge_recreates.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_delete_rebuilds_from_survivors": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045023Z-control-delete-skips-missing-statistics-theorem_delete_rebuilds_from_survivors.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T045023Z-control-delete-skips-missing-statistics.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T045029Z-control-delete-skips-missing-statistics/logs/20261117T045023Z-control-delete-skips-missing-statistics-theorem_delete_after_bucket_purge_recreates.log": "5ebf3a74741cc9135f92af0918c38cc7e9c740afc2150f2a311e7a650c2bcd31",
+    ".g5/Verus_verification/results/temporal_stats/20261117T045029Z-control-delete-skips-missing-statistics/logs/20261117T045023Z-control-delete-skips-missing-statistics-theorem_delete_rebuilds_from_survivors.log": "913b74230d230e4500a8f92f1719447158e61f8e70fd853f62de213d8c07ab2c",
+    ".g5/Verus_verification/results/temporal_stats/20261117T045029Z-control-delete-skips-missing-statistics/logs/20261117T045023Z-control-delete-skips-missing-statistics.log": "20b9e9c231acc8f7daa9db092a1b3c8c6467d5b33b0b3374e33fdcfc33c5ff0b"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
