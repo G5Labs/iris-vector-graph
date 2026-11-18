@@ -10,8 +10,8 @@ Blocks in the ontology: 406. Complete: 119. Partial: 0. Not started: 287.
 
 | scope | blocks | full | partial | absent | unassessed | total | full/total (lower) | (full+unassessed)/total (upper) | proved, full scope | proved | bounded | refuted | unchecked |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| enumerated (complete + partial) | 119 | 224 | 123 | 188 | 0 | 535 | 41.9% | 41.9% | 101 | 265 | 0 | 38 | 0 |
-| complete blocks only | 119 | 224 | 123 | 188 | 0 | 535 | 41.9% | 41.9% | 101 | 265 | 0 | 38 | 0 |
+| enumerated (complete + partial) | 119 | 246 | 119 | 170 | 0 | 535 | 46.0% | 46.0% | 116 | 279 | 0 | 44 | 0 |
+| complete blocks only | 119 | 246 | 119 | 170 | 0 | 535 | 46.0% | 46.0% | 116 | 279 | 0 | 44 | 0 |
 
 `proved, full scope`: obligations whose design check is a proof over their full stated scope. `bounded` (finite domain), `refuted` (a modeled counterexample of the as-built design) and `unchecked` are counted separately; `proved` includes proofs over a narrowed scope.
 
@@ -22,9 +22,9 @@ Blocks in the ontology: 406. Complete: 119. Partial: 0. Not started: 287.
 | architecture/adapters.g5.md (2 complete, 0 partial of 2) | 2 | 10 | 3 | 1 | 0 | 14 | 71.4% | 71.4% | 8 | 9 | 0 | 1 | 0 |
 | architecture/adjacency-and-derived-data.g5.md (0 complete, 0 partial of 26) | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | 0 | 0 | 0 | 0 | 0 |
 | architecture/algorithm-execution.g5.md (0 complete, 0 partial of 13) | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | 0 | 0 | 0 | 0 | 0 |
-| architecture/query-execution.g5.md (17 complete, 0 partial of 17) | 17 | 15 | 24 | 31 | 0 | 70 | 21.4% | 21.4% | 6 | 17 | 0 | 9 | 0 |
+| architecture/query-execution.g5.md (17 complete, 0 partial of 17) | 17 | 37 | 19 | 14 | 0 | 70 | 52.9% | 52.9% | 21 | 30 | 0 | 15 | 0 |
 | architecture/search-storage-and-indexes.g5.md (0 complete, 0 partial of 18) | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | 0 | 0 | 0 | 0 | 0 |
-| concepts/access.g5.md (13 complete, 0 partial of 13) | 13 | 12 | 5 | 27 | 0 | 44 | 27.3% | 27.3% | 0 | 11 | 0 | 6 | 0 |
+| concepts/access.g5.md (13 complete, 0 partial of 13) | 13 | 12 | 6 | 26 | 0 | 44 | 27.3% | 27.3% | 0 | 12 | 0 | 6 | 0 |
 | concepts/graph-scope.g5.md (14 complete, 0 partial of 14) | 14 | 8 | 12 | 19 | 0 | 39 | 20.5% | 20.5% | 2 | 15 | 0 | 2 | 0 |
 | features/algorithms.g5.md (0 complete, 0 partial of 22) | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | 0 | 0 | 0 | 0 | 0 |
 | features/client-interfaces.g5.md (10 complete, 0 partial of 10) | 10 | 34 | 9 | 8 | 0 | 51 | 66.7% | 66.7% | 20 | 29 | 0 | 13 | 0 |
@@ -53,15 +53,15 @@ Blocks in the ontology: 406. Complete: 119. Partial: 0. Not started: 287.
 | adapters.embedded | complete | 2 | 3 | 1 | 0 | 6 | 33.3% | 33.3% | 1 |  |
 | adapters.embedded.no_data | complete | 8 | 0 | 0 | 0 | 8 | 100.0% | 100.0% | 0 |  |
 | query.paths | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 2 |  |
-| query.native | complete | 0 | 0 | 3 | 0 | 3 | 0.0% | 0.0% | 1 |  |
-| query.native.gates | complete | 1 | 0 | 4 | 0 | 5 | 20.0% | 20.0% | 1 |  |
-| query.native.privileges | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 1 |  |
-| query.native.reads-only | complete | 0 | 1 | 4 | 0 | 5 | 0.0% | 0.0% | 0 |  |
-| query.native.equal-answers | complete | 2 | 0 | 3 | 0 | 5 | 40.0% | 40.0% | 0 |  |
+| query.native | complete | 3 | 0 | 0 | 0 | 3 | 100.0% | 100.0% | 1 |  |
+| query.native.gates | complete | 5 | 0 | 0 | 0 | 5 | 100.0% | 100.0% | 1 |  |
+| query.native.privileges | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 1 |  |
+| query.native.reads-only | complete | 5 | 0 | 0 | 0 | 5 | 100.0% | 100.0% | 0 |  |
+| query.native.equal-answers | complete | 3 | 2 | 0 | 0 | 5 | 60.0% | 60.0% | 0 |  |
 | query.native.sql-first | complete | 0 | 0 | 0 | 0 | 0 | N/A | N/A | 3 | process rule (rationale) and two restatements of equal-answers/query.values/query.conformance |
-| query.native.fallback | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 0 |  |
-| query.native.route | complete | 3 | 5 | 7 | 0 | 15 | 20.0% | 20.0% | 3 |  |
-| query.shadow | complete | 0 | 4 | 1 | 0 | 5 | 0.0% | 0.0% | 3 |  |
+| query.native.fallback | complete | 2 | 0 | 0 | 0 | 2 | 100.0% | 100.0% | 0 |  |
+| query.native.route | complete | 4 | 5 | 6 | 0 | 15 | 26.7% | 26.7% | 3 |  |
+| query.shadow | complete | 5 | 0 | 0 | 0 | 5 | 100.0% | 100.0% | 3 |  |
 | query.compiled | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | query.compiled.equal-answers | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | query.compiled.modes | complete | 0 | 2 | 2 | 0 | 4 | 0.0% | 0.0% | 2 |  |
@@ -69,7 +69,7 @@ Blocks in the ontology: 406. Complete: 119. Partial: 0. Not started: 287.
 | query.compiled.deploy-discards | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 0 |  |
 | query.compiled.fallback | complete | 2 | 4 | 2 | 0 | 8 | 25.0% | 25.0% | 1 |  |
 | query.compiled.integrity | complete | 3 | 0 | 0 | 0 | 3 | 100.0% | 100.0% | 1 |  |
-| access.iris_boundary | complete | 2 | 2 | 2 | 0 | 6 | 33.3% | 33.3% | 1 |  |
+| access.iris_boundary | complete | 2 | 3 | 1 | 0 | 6 | 33.3% | 33.3% | 1 |  |
 | access.graph_id | complete | 0 | 0 | 1 | 0 | 1 | 0.0% | 0.0% | 1 |  |
 | access.api_key | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | access.api_key.every_route | complete | 0 | 0 | 6 | 0 | 6 | 0.0% | 0.0% | 0 |  |
