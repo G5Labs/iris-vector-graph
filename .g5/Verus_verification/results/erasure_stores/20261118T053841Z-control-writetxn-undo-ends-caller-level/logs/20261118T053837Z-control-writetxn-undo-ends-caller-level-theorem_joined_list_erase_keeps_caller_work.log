@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/writetxn-undo-ends-caller-level/20261118T053837Z/models/erasure_stores/erasure_stores.rs:1033:9
+     |
+1029 | / pub proof fn theorem_joined_list_erase_keeps_caller_work(base: St, w: Seq<E>, g: Option<Str>, chunks: Seq<Seq<Str>>,
+1030 | |     fail_at: int, f: Fault)
+     | |___________________________- at the end of the function body
+...
+1033 | /         !(list_erase_joined(base, w, g, chunks, fail_at, f, true).0 is Count)
+1034 | |             ==> list_erase_joined(base, w, g, chunks, fail_at, f, true).1.rows == base.rows + w,
+     | |_______________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

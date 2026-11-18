@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_prefix_selects_node_rows",
+      "witness_prefix_leaves_event_ids_remove"
+    ],
+    "find": "|id: Str| exists|i: int| 0 <= i < r.len() && (#[trigger] r[i]).k == K::Node && in_g(r[i], c)\n        && r[i].s == id && has_prefix(id, pfx)",
+    "name": "prefix-from-names",
+    "replace": "|id: Str| has_prefix(id, pfx)",
+    "why": "the prefix erase selects IDs by name alone, not through node rows of the graph"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_prefix_selects_node_rows",
+      "witness_prefix_leaves_event_ids_remove"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "032de67744456daf75397b478b46ad192182f1ca47ac1c7701c54ee8f6341d52",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "25e37887fb60a7e38bdb1a99350a9bb88e6dc4e78c605613b172e58f942f28e2"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/prefix-from-names/20261118T053732Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_prefix_selects_node_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T053732Z-control-prefix-from-names-theorem_prefix_selects_node_rows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_prefix_leaves_event_ids_remove": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T053732Z-control-prefix-from-names-witness_prefix_leaves_event_ids_remove.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T053732Z-control-prefix-from-names.log",
+    "timed_out": false,
+    "verified": 64
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T053736Z-control-prefix-from-names/logs/20261118T053732Z-control-prefix-from-names-theorem_prefix_selects_node_rows.log": "fdffb1d7fd24194a5fd731ed2ff6903a72f302b1c64d28d52d10797ec96ce767",
+    ".g5/Verus_verification/results/erasure_stores/20261118T053736Z-control-prefix-from-names/logs/20261118T053732Z-control-prefix-from-names-witness_prefix_leaves_event_ids_remove.log": "ebad3413345347cfd604396b14bd33ebd2db4ca0c57a4b55721b86234f1870f3",
+    ".g5/Verus_verification/results/erasure_stores/20261118T053736Z-control-prefix-from-names/logs/20261118T053732Z-control-prefix-from-names.log": "05d4a507856b7c959995e2bb7d61ceba561b3880e13ed51dfec8a8695bbc2db3"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

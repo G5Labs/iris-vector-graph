@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_chained_part_runs_natively",
+      "theorem_read_part_of_chained_write_runs_natively"
+    ],
+    "find": "Query { chained: false, ..parent }",
+    "name": "chained-part-keeps-chain",
+    "replace": "Query { chained: parent.chained, ..parent }",
+    "why": "repair of the as-built dispatch: a chained part is planned with its chain"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_chained_part_runs_natively",
+      "theorem_read_part_of_chained_write_runs_natively"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1075b77516a96378680aed4d4fb95f0e99591a10826e45c5ac29f6442047279d",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/chained-part-keeps-chain/20261118T053631Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_chained_part_runs_natively": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T053631Z-control-chained-part-keeps-chain-theorem_chained_part_runs_natively.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_read_part_of_chained_write_runs_natively": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T053631Z-control-chained-part-keeps-chain-theorem_read_part_of_chained_write_runs_natively.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T053631Z-control-chained-part-keeps-chain.log",
+    "timed_out": false,
+    "verified": 60
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T053635Z-control-chained-part-keeps-chain/logs/20261118T053631Z-control-chained-part-keeps-chain-theorem_chained_part_runs_natively.log": "24e7e7c772d121f55aa84cbf8715fcf53aa65d29b38f2d3fc32aa91ee9f4b4b2",
+    ".g5/Verus_verification/results/native_admission/20261118T053635Z-control-chained-part-keeps-chain/logs/20261118T053631Z-control-chained-part-keeps-chain-theorem_read_part_of_chained_write_runs_natively.log": "501e4955d3241565ca75aa8a481f3c4116cc8ce580cf3cc9b5f128799a326cc3",
+    ".g5/Verus_verification/results/native_admission/20261118T053635Z-control-chained-part-keeps-chain/logs/20261118T053631Z-control-chained-part-keeps-chain.log": "987b3521f360595934b706d1f731753d959beab88a1a0af6c2b9a39d7315711c"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

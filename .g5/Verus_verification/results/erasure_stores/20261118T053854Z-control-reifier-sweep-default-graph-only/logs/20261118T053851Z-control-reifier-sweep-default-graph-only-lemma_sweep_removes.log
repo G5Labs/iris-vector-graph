@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/reifier-sweep-default-graph-only/20261118T053851Z/models/erasure_stores/erasure_stores.rs:1432:13
+     |
+1432 |       ensures !sweep(r, r1, gs, rs).contains(e),
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1436 | /     if gs[0] == h {
+1437 | |         lemma_not_in_filter(r, |x: E| keep_ids(r, gs[0], held_sel(r1, gs[0], rs), x), e);
+1438 | |         if sweep(r2, r1, gs.drop_first(), rs).contains(e) { lemma_sweep_sub(r2, r1, gs.drop_first(), rs, e); }
+1439 | |     } else {
+...    |
+1442 | |         lemma_sweep_removes(r2, r1, gs.drop_first(), rs, h, e);
+1443 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

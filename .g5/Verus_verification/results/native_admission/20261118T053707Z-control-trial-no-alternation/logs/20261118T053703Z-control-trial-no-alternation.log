@@ -1,0 +1,32 @@
+verification results:: 60 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/trial-no-alternation/20261118T053703Z/models/native_admission/native_admission.rs:858:13
+    |
+856 |   pub proof fn theorem_route_trial_alternates_answers(e: Engine, w: World, q: Query)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+857 |       requires warm_engine(e), open_world(w), admissible(q), w.sql is Rows,
+858 |       ensures ({
+    |  _____________^
+859 | |         let c1 = call_routed(e, w, q, None);
+860 | |         let c2 = call_routed(c1.1, w, q, c1.2);
+861 | |         let c3 = call_routed(c2.1, w, q, c2.2);
+...   |
+867 | |         && answer_rows(c5.0) == w.native_rows && answer_rows(c6.0) == rows_of(w.sql)
+868 | |         && (w.native_rows != rows_of(w.sql) ==> answer_rows(c5.0) != answer_rows(c6.0)) }),
+    | |__________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/trial-no-alternation/20261118T053703Z/models/native_admission/native_admission.rs:887:13
+    |
+884 |   pub proof fn theorem_successive_calls_differ_in_trial(e: Engine, w: World, q: Query, r: RouteT)
+    |   ----------------------------------------------------------------------------------------------- at the end of the function body
+...
+887 |       ensures ({ let a = call_routed(e, w, q, Some(r)); let b = call_routed(a.1, w, q, a.2);
+    |  _____________^
+888 | |         answer_rows(a.0) != answer_rows(b.0)
+889 | |         && (answer_rows(a.0) == w.native_rows || answer_rows(a.0) == rows_of(w.sql))
+890 | |         && (answer_rows(b.0) == w.native_rows || answer_rows(b.0) == rows_of(w.sql)) }),
+    | |_______________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

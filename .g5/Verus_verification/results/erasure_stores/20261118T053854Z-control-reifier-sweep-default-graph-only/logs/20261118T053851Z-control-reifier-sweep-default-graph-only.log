@@ -1,0 +1,39 @@
+verification results:: 63 verified, 3 errors
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/reifier-sweep-default-graph-only/20261118T053851Z/models/erasure_stores/erasure_stores.rs:1424:9
+     |
+1418 |     requires sweep(r, r1, gs, rs).contains(e),
+     |              -------------------------------- failed precondition
+...
+1424 |         lemma_sweep_sub(r2, r1, gs.drop_first(), rs, e);
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/reifier-sweep-default-graph-only/20261118T053851Z/models/erasure_stores/erasure_stores.rs:1432:13
+     |
+1432 |       ensures !sweep(r, r1, gs, rs).contains(e),
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1436 | /     if gs[0] == h {
+1437 | |         lemma_not_in_filter(r, |x: E| keep_ids(r, gs[0], held_sel(r1, gs[0], rs), x), e);
+1438 | |         if sweep(r2, r1, gs.drop_first(), rs).contains(e) { lemma_sweep_sub(r2, r1, gs.drop_first(), rs, e); }
+1439 | |     } else {
+...    |
+1442 | |         lemma_sweep_removes(r2, r1, gs.drop_first(), rs, h, e);
+1443 | |     }
+     | |_____- at the end of the function body
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/reifier-sweep-default-graph-only/20261118T053851Z/models/erasure_stores/erasure_stores.rs:1550:13
+     |
+1550 |       ensures sweep(r, r1, gs, rs).contains(e),
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1553 | /     if gs.len() > 0 {
+1554 | |         lemma_erase_ids_keeps_never(r, gs[0], held_sel(r1, gs[0], rs), e);
+1555 | |         lemma_sweep_keeps_never(erase_ids(r, gs[0], held_sel(r1, gs[0], rs)), r1, gs.drop_first(), rs, e);
+1556 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 3 previous errors
+

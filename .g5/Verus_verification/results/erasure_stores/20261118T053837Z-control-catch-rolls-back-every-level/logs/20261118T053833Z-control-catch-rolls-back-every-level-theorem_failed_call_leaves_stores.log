@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/catch-rolls-back-every-level/20261118T053833Z/models/erasure_stores/erasure_stores.rs:965:1
+    |
+965 | pub proof fn theorem_failed_call_leaves_stores(t: Tx, ep: Ep, f: Fault, df: Set<int>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/catch-rolls-back-every-level/20261118T053833Z/models/erasure_stores/erasure_stores.rs:969:9
+    |
+965 | pub proof fn theorem_failed_call_leaves_stores(t: Tx, ep: Ep, f: Fault, df: Set<int>)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+...
+969 |         eraser(t, ep, f, df).1.st.rows == t.st.rows,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/catch-rolls-back-every-level/20261118T053833Z/models/erasure_stores/erasure_stores.rs:970:9
+    |
+965 | pub proof fn theorem_failed_call_leaves_stores(t: Tx, ep: Ep, f: Fault, df: Set<int>)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+...
+970 |         eraser(t, ep, f, df).1.lv == t.lv,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

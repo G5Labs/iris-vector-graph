@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_comparator_sound_off_partial_aggregate_order",
+      "theorem_blind_spot_is_partial_aggregate_order"
+    ],
+    "find": "else { q.order_by }, limited: q.limit",
+    "name": "plan-drops-order",
+    "replace": "else { false }, limited: q.limit",
+    "why": "plan_query no longer marks a non-aggregate ORDER BY ordered: the comparator would then compare an ordered read as a multiset, and the soundness theorem off the blind spot fails"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_comparator_sound_off_partial_aggregate_order",
+      "theorem_blind_spot_is_partial_aggregate_order"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1075b77516a96378680aed4d4fb95f0e99591a10826e45c5ac29f6442047279d",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-drops-order/20261118T053714Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_blind_spot_is_partial_aggregate_order": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T053714Z-control-plan-drops-order-theorem_blind_spot_is_partial_aggregate_order.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_comparator_sound_off_partial_aggregate_order": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T053714Z-control-plan-drops-order-theorem_comparator_sound_off_partial_aggregate_order.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T053714Z-control-plan-drops-order.log",
+    "timed_out": false,
+    "verified": 59
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T053719Z-control-plan-drops-order/logs/20261118T053714Z-control-plan-drops-order-theorem_blind_spot_is_partial_aggregate_order.log": "e6b98de66b85ca0623f0a0472b1b2d7aec93e874feab8f2b0c3486b4513ed34d",
+    ".g5/Verus_verification/results/native_admission/20261118T053719Z-control-plan-drops-order/logs/20261118T053714Z-control-plan-drops-order-theorem_comparator_sound_off_partial_aggregate_order.log": "383b60a95d48c58ee96fcaea1d2a448f7e74f18c837e165ee67c8e0834565bba",
+    ".g5/Verus_verification/results/native_admission/20261118T053719Z-control-plan-drops-order/logs/20261118T053714Z-control-plan-drops-order.log": "78b9ed96ffea6ab2af95be5181c028865ede9eb9a34bc31a4da43f43af4c5bfe"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

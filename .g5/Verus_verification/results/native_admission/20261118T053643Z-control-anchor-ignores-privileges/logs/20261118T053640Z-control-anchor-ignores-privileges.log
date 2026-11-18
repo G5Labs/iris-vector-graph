@@ -1,0 +1,14 @@
+verification results:: 61 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/anchor-ignores-privileges/20261118T053640Z/models/native_admission/native_admission.rs:507:13
+    |
+502 |   pub proof fn theorem_revoke_reaches_sql_anchor_only(e: Engine, w: World, q: Query)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+...
+507 |       ensures q.anchor == Anchor::PropLookup ==> exec_parsed(e, w, q).0 == sql_out(w, Path::Sql)
+    |  _____________^
+508 | |             && exec_parsed(e, w, q).1.log.len() == e.log.len() + 1,
+    | |__________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

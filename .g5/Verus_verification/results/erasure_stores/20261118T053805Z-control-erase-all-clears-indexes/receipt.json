@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_erase_all_keeps_named_indexes"
+    ],
+    "find": "K::Quar | K::Rec | K::FhirReg | K::Bm25 | K::Ivf | K::Plaid | K::VecIdx => true,",
+    "name": "erase-all-clears-indexes",
+    "replace": "K::Quar | K::Rec | K::FhirReg => true,",
+    "why": "repair of search.erasure.indexes bullet 2: EraseAll empties the named search indexes"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_erase_all_keeps_named_indexes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "032de67744456daf75397b478b46ad192182f1ca47ac1c7701c54ee8f6341d52",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "25e37887fb60a7e38bdb1a99350a9bb88e6dc4e78c605613b172e58f942f28e2"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/erase-all-clears-indexes/20261118T053801Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_erase_all_keeps_named_indexes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T053801Z-control-erase-all-clears-indexes-witness_erase_all_keeps_named_indexes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T053801Z-control-erase-all-clears-indexes.log",
+    "timed_out": false,
+    "verified": 64
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T053805Z-control-erase-all-clears-indexes/logs/20261118T053801Z-control-erase-all-clears-indexes-witness_erase_all_keeps_named_indexes.log": "62a1136a7106dc51d529e6c6db099e16664664b8236cd9a371ea7c1ac27e34d0",
+    ".g5/Verus_verification/results/erasure_stores/20261118T053805Z-control-erase-all-clears-indexes/logs/20261118T053801Z-control-erase-all-clears-indexes.log": "598ddb89d3b8894cb92383f8ee6d5f8e4ad27d572611068260d163cbda10d8de"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

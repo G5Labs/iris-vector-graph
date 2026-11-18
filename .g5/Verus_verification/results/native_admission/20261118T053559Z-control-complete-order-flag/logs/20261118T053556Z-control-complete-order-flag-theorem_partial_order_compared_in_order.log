@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/complete-order-flag/20261118T053556Z/models/native_admission/native_admission.rs:686:13
+    |
+684 |   pub proof fn theorem_partial_order_compared_in_order(c: Seq<nat>, a: Row, b: Row, k: Seq<nat>, lim: bool)
+    |   --------------------------------------------------------------------------------------------------------- at the end of the function body
+685 |       requires a != b, okey(a, k) == okey(b, k),
+686 |       ensures ({ let q = Query { order_by: true, complete_order: false, limit: lim, ..plain_read(0) };
+    |  _____________^
+687 | |         plan(q).unwrap().ordered
+688 | |         && compare(c, seq![a, b], c, seq![b, a], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) is Fail
+689 | |         && fr013_equal(Some(k), false, seq![a, b], seq![a, b], seq![b, a]) }),
+    | |_____________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

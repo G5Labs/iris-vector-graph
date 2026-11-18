@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-returns-difference/20261118T053529Z/models/native_admission/native_admission.rs:566:13
+    |
+563 | pub proof fn theorem_shadow_difference_raises(w: World, p: Plan, native: Seq<Row>, m: Mismatch)
+    | ----------------------------------------------------------------------------------------------- at the end of the function body
+...
+566 |     ensures shadow_out(w, p, native) == Out::Raise(Err::Mismatch(m)), m.names_plan, m.names_params, !m.names_query,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

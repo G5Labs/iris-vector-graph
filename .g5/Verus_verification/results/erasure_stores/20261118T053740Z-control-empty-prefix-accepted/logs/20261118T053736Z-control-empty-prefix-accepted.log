@@ -1,0 +1,15 @@
+verification results:: 65 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/empty-prefix-accepted/20261118T053736Z/models/erasure_stores/erasure_stores.rs:688:9
+    |
+688 |           pfx.len() == 0 ==> call(st, Ep::Prefix { g: Some(g), pfx }, f, df) == (Out::Refused, st),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+689 |   {
+690 | /     if g.len() == 1 && (g[0] == 1 || g[0] == 133) {
+691 | |         assert(ctl(g[0]));
+692 | |         assert(!valid(g));
+693 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

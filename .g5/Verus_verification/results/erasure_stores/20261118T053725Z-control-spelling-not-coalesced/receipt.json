@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_default_graph_both_spellings"
+    ],
+    "find": "match sp { Sp::Null => Seq::<int>::empty(), Sp::S(n) => n }",
+    "name": "spelling-not-coalesced",
+    "replace": "match sp { Sp::Null => seq![0int], Sp::S(n) => n }",
+    "why": "the graph predicate compares the raw cell: a NULL graph_id is not the default graph"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_default_graph_both_spellings"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "032de67744456daf75397b478b46ad192182f1ca47ac1c7701c54ee8f6341d52",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "25e37887fb60a7e38bdb1a99350a9bb88e6dc4e78c605613b172e58f942f28e2"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/spelling-not-coalesced/20261118T053721Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_default_graph_both_spellings": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T053721Z-control-spelling-not-coalesced-theorem_default_graph_both_spellings.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T053721Z-control-spelling-not-coalesced.log",
+    "timed_out": false,
+    "verified": 65
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T053725Z-control-spelling-not-coalesced/logs/20261118T053721Z-control-spelling-not-coalesced-theorem_default_graph_both_spellings.log": "0154bf6cd0c1694eea3ca325ccbd12ab77cb7c134868f52639f3960e3eb57c41",
+    ".g5/Verus_verification/results/erasure_stores/20261118T053725Z-control-spelling-not-coalesced/logs/20261118T053721Z-control-spelling-not-coalesced.log": "5e16ff01f014ca0ba48a01c2e3de0ba0740187df17bde70e50a8fd1f4a23dcfa"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

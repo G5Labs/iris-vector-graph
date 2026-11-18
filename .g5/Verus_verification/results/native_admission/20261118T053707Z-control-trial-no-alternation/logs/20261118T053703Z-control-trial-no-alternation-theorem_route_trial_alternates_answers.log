@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/trial-no-alternation/20261118T053703Z/models/native_admission/native_admission.rs:858:13
+    |
+856 |   pub proof fn theorem_route_trial_alternates_answers(e: Engine, w: World, q: Query)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+857 |       requires warm_engine(e), open_world(w), admissible(q), w.sql is Rows,
+858 |       ensures ({
+    |  _____________^
+859 | |         let c1 = call_routed(e, w, q, None);
+860 | |         let c2 = call_routed(c1.1, w, q, c1.2);
+861 | |         let c3 = call_routed(c2.1, w, q, c2.2);
+...   |
+867 | |         && answer_rows(c5.0) == w.native_rows && answer_rows(c6.0) == rows_of(w.sql)
+868 | |         && (w.native_rows != rows_of(w.sql) ==> answer_rows(c5.0) != answer_rows(c6.0)) }),
+    | |__________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,21 @@
+verification results:: 60 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/limit-skips-spent-check/20261118T053643Z/models/native_admission/native_admission.rs:670:13
+    |
+668 | pub proof fn theorem_limit_outside_row_raises(c: Seq<nat>, a: Row, b: Row, z: Row)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+669 |     requires a != z, b != z,
+670 |     ensures compare(c, seq![a], c, seq![z], false, true, Some(seq![a, b])) == fail(What::NotReturnable, Some(z)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/limit-skips-spent-check/20261118T053643Z/models/native_admission/native_admission.rs:733:9
+    |
+712 |     requires cnt(b, x) > 0,
+    |              ------------- failed precondition
+...
+733 |         lemma_cnt_remove1(b, n[0], r);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

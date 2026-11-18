@@ -1,0 +1,1947 @@
+{
+  "detection": {
+    "b1_version_moved": true,
+    "mutant_count_ids_includes_edges": true,
+    "mutant_delete_node_is_erase_ids": true,
+    "mutant_edge_row_kills_closed": true,
+    "mutant_edges_erase_temporal": true,
+    "mutant_frame_ignores_graph": true,
+    "mutant_prefix_from_names": true,
+    "observed_field_changed": true,
+    "observed_history_changed": true,
+    "observed_other_graph_dropped": true,
+    "observed_reifier_other_graph_kept": true
+  },
+  "fixture": {
+    "container": "ivg-cov-20261118-a-iris",
+    "host": "127.0.0.1",
+    "iris": "IRIS Community 2026.1 (Build 234U)",
+    "kind": "run-own",
+    "port": 36481,
+    "unit": "g5-ontology-coverage-20261117-iris-vector-graph"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/binding.py": "8903911dffd3ec19120e9a7c72547aa875dc0c5f2ead34704a9f50058f788f13",
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "032de67744456daf75397b478b46ad192182f1ca47ac1c7701c54ee8f6341d52",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    "iris_src/src/Graph/KG/Adjacency.cls": "3402d4ba769813d0a2f52c8d62c29d51f7629ff6d11bb89bc752d0ce07a9729e",
+    "iris_src/src/Graph/KG/Eraser.cls": "454918a0349cdd7fb765ff0e5f6e4ab03c5c7777d882c6c71ca076fb9dade4b1",
+    "iris_src/src/Graph/KG/GraphKey.cls": "1cdbed292fcd906526b775cd82ed659021c83d0f17622bb31c0a91224da964c4",
+    "iris_src/src/Graph/KG/GraphStores.cls": "9d9858fd546261be959e6bbe3ada17c94bd34863a123dbc6ed3f1e26df1c6b49",
+    "iris_src/src/Graph/KG/TemporalIndex.cls": "4b00154628b5b77ae3bbae26c857f81d934d09d73bc271f65cb1e202d616cb54",
+    "iris_vector_graph/_engine/nodes_edges.py": "7eb2ea4761f66c683db0dd8b55132bb5c2347855acb14ab5ed0f8210543857c7",
+    "iris_vector_graph/_validate.py": "0392e48267ed251d6bab1af4259df8aa55603bd4597148f850be420658300835",
+    "iris_vector_graph/_write_txn.py": "aa23bd77e53b7a303de3ebfe0713f7dd6bd8f5e70ae9f2bc9ea62baa9592ea0c",
+    "iris_vector_graph/engine.py": "89d5bc083ddf15315eef449fb1896c8d9864f5a125ba2515b1a0b39deb8a3eba",
+    "iris_vector_graph/stores/iris_sql_store.py": "737df8a794a979d2c2e4f3af100508fd05c1907893ec2fa65f2fc440e34ff153"
+  },
+  "kind": "binding",
+  "live_cases": [
+    {
+      "agrees": true,
+      "case": "B0_null_spelling_reachability",
+      "model": "Sp::Null is representable; which tables accept it is a schema fact recorded here",
+      "observed": {
+        "docs": " <'graph_id' in table 'Graph_KG.docs' is a required field>]",
+        "nodes": " <'graph_id' in table 'Graph_KG.nodes' is a required field>]",
+        "rdf_edges": " <'graph_id' in table 'Graph_KG.rdf_edges' is a required field>]",
+        "rdf_labels": " <'graph_id' in table 'Graph_KG.rdf_labels' is a required field>]",
+        "rdf_props": " <'graph_id' in table 'Graph_KG.rdf_props' is a required field>]"
+      }
+    },
+    {
+      "agrees": true,
+      "case": "B1_erase_graph_g1",
+      "entry_point": [
+        "graph",
+        "g1"
+      ],
+      "error": null,
+      "expected_return": 7,
+      "nkg_invalidated": [
+        0,
+        1
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 214,
+      "post_kinds": {
+        "Adj": 10,
+        "Bm25": 96,
+        "Degc": 4,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 5,
+        "FhirReg": 2,
+        "FhirSide": 1,
+        "GMode": 1,
+        "Gen": 4,
+        "KLabel": 6,
+        "Label": 6,
+        "NRoute": 1,
+        "NoLock": 1,
+        "Node": 11,
+        "Prop": 11,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 4,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 3,
+        "TAgg": 9,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 3
+      },
+      "pre_entries": 315,
+      "pre_kinds": {
+        "ACache": 1,
+        "Adj": 16,
+        "Bm25": 96,
+        "Degc": 6,
+        "Degw": 3,
+        "Doc": 2,
+        "Edge": 8,
+        "FhirReg": 2,
+        "FhirSide": 2,
+        "GMode": 2,
+        "Gen": 6,
+        "KLabel": 8,
+        "Label": 8,
+        "NRoute": 3,
+        "Nkg": 5,
+        "NkgOther": 37,
+        "NoLock": 2,
+        "Node": 15,
+        "Prop": 15,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 5,
+        "Reif": 2,
+        "RouteTable": 3,
+        "Stmt": 5,
+        "TAgg": 26,
+        "TStruct": 1,
+        "Temporal": 3,
+        "Tuple": 5
+      },
+      "returned": 7,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        37,
+        44
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B1_reader_reifier_node_after_erase",
+      "model": "witness_named_erase_keeps_reifier_node: the reifier node (default graph) keeps the edge's properties",
+      "observed": {
+        "id": "reif-g1",
+        "labels": [
+          "Reification"
+        ],
+        "p_id": "reif-g1",
+        "why": "secret-g1"
+      }
+    },
+    {
+      "agrees": true,
+      "case": "B1_reader_is_multigraph_after_erase",
+      "model": "graph_kill(GMode): g1's mode cleared, g2's kept",
+      "observed": {
+        "g1": false,
+        "g2": true
+      }
+    },
+    {
+      "agrees": true,
+      "case": "B1_reader_bm25_after_erase",
+      "model": "witness_empty_digest_bm25_survives: the BM25 index recorded for g1 still answers",
+      "observed": [
+        [
+          "a",
+          0.20035335911423582
+        ],
+        [
+          "b",
+          0.16726748329720612
+        ]
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B1_reader_digest_after_erase",
+      "model": "theorem_graph_erase_digest_empty + witness_digest_reports_kept_setting: only configuration",
+      "observed": {
+        "^IVG.TemporalStructural": 1
+      }
+    },
+    {
+      "agrees": true,
+      "case": "B2_drop_graph_g2",
+      "entry_point": [
+        "graph",
+        "g2"
+      ],
+      "error": null,
+      "expected_return": 7,
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "drop_graph is erase_graph (theorem_drop_graph_is_erase_graph)",
+      "outcome_agrees": true,
+      "post_entries": 166,
+      "post_kinds": {
+        "Adj": 4,
+        "Bm25": 96,
+        "Degc": 2,
+        "Degw": 1,
+        "Edge": 2,
+        "FhirReg": 2,
+        "Gen": 2,
+        "KLabel": 4,
+        "Label": 4,
+        "Node": 7,
+        "Prop": 7,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "Stmt": 1,
+        "TStruct": 1,
+        "Tuple": 1
+      },
+      "pre_entries": 214,
+      "pre_kinds": {
+        "Adj": 10,
+        "Bm25": 96,
+        "Degc": 4,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 5,
+        "FhirReg": 2,
+        "FhirSide": 1,
+        "GMode": 1,
+        "Gen": 4,
+        "KLabel": 6,
+        "Label": 6,
+        "NRoute": 1,
+        "NoLock": 1,
+        "Node": 11,
+        "Prop": 11,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 4,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 3,
+        "TAgg": 9,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 3
+      },
+      "returned": 7,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        44,
+        51
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B3_erase_default_none",
+      "entry_point": [
+        "graph",
+        null
+      ],
+      "error": null,
+      "expected_return": 9,
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "both spellings: rows with graph_id '' and NULL",
+      "outcome_agrees": true,
+      "post_entries": 131,
+      "post_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "pre_entries": 166,
+      "pre_kinds": {
+        "Adj": 4,
+        "Bm25": 96,
+        "Degc": 2,
+        "Degw": 1,
+        "Edge": 2,
+        "FhirReg": 2,
+        "Gen": 2,
+        "KLabel": 4,
+        "Label": 4,
+        "Node": 7,
+        "Prop": 7,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "Stmt": 1,
+        "TStruct": 1,
+        "Tuple": 1
+      },
+      "returned": 9,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        51,
+        59
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B4_refuse_zero",
+      "entry_point": [
+        "graph",
+        "0"
+      ],
+      "error": "ValueError: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+      "expected_return": "refused",
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 131,
+      "post_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "pre_entries": 131,
+      "pre_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "returned": null,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        59,
+        59
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B5_refuse_control",
+      "entry_point": [
+        "graph",
+        "bad\u0001"
+      ],
+      "error": "ValueError: graph name 'bad\\x01' contains a control character (0x01), which cannot be used as a subscript",
+      "expected_return": "refused",
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 131,
+      "post_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "pre_entries": 131,
+      "pre_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "returned": null,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        59,
+        59
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B6_eraser_refuses_zero_natively",
+      "entry_point": [
+        "graph",
+        "0"
+      ],
+      "error": "RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: graph name \"0\" is reserved: IRIS canonicalizes the subscript \"0\" to the integer 0 that keys the default graph",
+      "expected_return": "refused",
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "the Eraser's own GraphKey refusal (Python refuses first on the engine path)",
+      "outcome_agrees": true,
+      "post_entries": 131,
+      "post_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "pre_entries": 131,
+      "pre_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "returned": null,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        59,
+        59
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B7_erase_empty_graph",
+      "entry_point": [
+        "graph",
+        "g9"
+      ],
+      "error": null,
+      "expected_return": 0,
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 131,
+      "post_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "pre_entries": 131,
+      "pre_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "returned": 0,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        59,
+        61
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "B8_refuse_c1_control",
+      "entry_point": [
+        "graph",
+        "bad\u0085"
+      ],
+      "error": "RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: graph name contains a control character, which cannot be used as a subscript",
+      "expected_return": "refused",
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "iteration 66 (R1-CB-07): Python's check passes a C1 control; GraphKey refuses it before TSTART",
+      "outcome_agrees": true,
+      "post_entries": 131,
+      "post_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "pre_entries": 131,
+      "pre_kinds": {
+        "Bm25": 96,
+        "FhirReg": 2,
+        "Quar": 1,
+        "Rec": 27,
+        "Registry": 3,
+        "RouteTable": 1,
+        "TStruct": 1
+      },
+      "returned": null,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        61,
+        61
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C1_prefix_acme_bar",
+      "entry_point": [
+        "prefix",
+        "g1",
+        "'acme|'"
+      ],
+      "error": null,
+      "expected_return": 2,
+      "nkg_invalidated": [
+        0,
+        1
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 311,
+      "post_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 23,
+        "Label": 23,
+        "NRoute": 1,
+        "Node": 23,
+        "Prop": 47,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 18,
+        "TStruct": 1,
+        "Temporal": 2,
+        "Tuple": 10
+      },
+      "pre_entries": 432,
+      "pre_kinds": {
+        "Adj": 32,
+        "Degc": 11,
+        "Degw": 2,
+        "Doc": 2,
+        "Edge": 16,
+        "Gen": 11,
+        "KLabel": 25,
+        "Label": 25,
+        "NRoute": 2,
+        "Nkg": 12,
+        "NkgOther": 63,
+        "Node": 25,
+        "Prop": 51,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 14,
+        "TAgg": 26,
+        "TStruct": 1,
+        "Temporal": 3,
+        "Tuple": 14
+      },
+      "returned": 2,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        87,
+        102
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C2_refuse_empty_prefix",
+      "entry_point": [
+        "prefix",
+        "g1",
+        "''"
+      ],
+      "error": "ValueError: delete_nodes_by_prefix refuses an empty prefix, which would erase the whole graph; use erase_graph(graph) for that",
+      "expected_return": "refused",
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 311,
+      "post_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 23,
+        "Label": 23,
+        "NRoute": 1,
+        "Node": 23,
+        "Prop": 47,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 18,
+        "TStruct": 1,
+        "Temporal": 2,
+        "Tuple": 10
+      },
+      "pre_entries": 311,
+      "pre_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 23,
+        "Label": 23,
+        "NRoute": 1,
+        "Node": 23,
+        "Prop": 47,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 18,
+        "TStruct": 1,
+        "Temporal": 2,
+        "Tuple": 10
+      },
+      "returned": null,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        102,
+        102
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C3_ids_without_node_rows",
+      "entry_point": [
+        "ids",
+        "g1",
+        "['acme|9', 'acme|8']"
+      ],
+      "error": null,
+      "expected_return": 0,
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "explicit IDs reach the temporal-only event and the orphan property row the prefix erase left",
+      "outcome_agrees": true,
+      "post_entries": 301,
+      "post_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 23,
+        "Label": 23,
+        "NRoute": 1,
+        "Node": 23,
+        "Prop": 46,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 10
+      },
+      "pre_entries": 311,
+      "pre_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 23,
+        "Label": 23,
+        "NRoute": 1,
+        "Node": 23,
+        "Prop": 47,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 18,
+        "TStruct": 1,
+        "Temporal": 2,
+        "Tuple": 10
+      },
+      "returned": 0,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        102,
+        104
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C4_delete_node",
+      "entry_point": [
+        "ids",
+        "g1",
+        "['x1']"
+      ],
+      "error": null,
+      "expected_return": true,
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "delete_in_scope (no reified incident relationship: the sweep is empty)",
+      "outcome_agrees": true,
+      "post_entries": 296,
+      "post_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 22,
+        "Label": 22,
+        "NRoute": 1,
+        "Node": 22,
+        "Prop": 44,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 10
+      },
+      "pre_entries": 301,
+      "pre_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 23,
+        "Label": 23,
+        "NRoute": 1,
+        "Node": 23,
+        "Prop": 46,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 10
+      },
+      "returned": true,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        104,
+        107
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C5_bulk_delete_nodes",
+      "entry_point": [
+        "ids",
+        "g1",
+        "['x2', 'x3']"
+      ],
+      "error": null,
+      "expected_return": [
+        2,
+        0
+      ],
+      "nkg_invalidated": [
+        1,
+        1
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 279,
+      "post_kinds": {
+        "Adj": 20,
+        "Degc": 9,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 10,
+        "Gen": 9,
+        "KLabel": 20,
+        "Label": 20,
+        "NRoute": 1,
+        "Node": 20,
+        "Prop": 40,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 9,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 9
+      },
+      "pre_entries": 296,
+      "pre_kinds": {
+        "Adj": 22,
+        "Degc": 10,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 11,
+        "Gen": 10,
+        "KLabel": 22,
+        "Label": 22,
+        "NRoute": 1,
+        "Node": 22,
+        "Prop": 44,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 10,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 10
+      },
+      "returned": [
+        2,
+        0
+      ],
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        107,
+        114
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C6_store_delete_edges",
+      "entry_point": [
+        "edges",
+        "g1",
+        "[('k1', 'R', 'k2')]"
+      ],
+      "error": null,
+      "expected_return": 1,
+      "nkg_invalidated": [
+        1,
+        0
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 274,
+      "post_kinds": {
+        "Adj": 18,
+        "Degc": 9,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 9,
+        "Gen": 9,
+        "KLabel": 20,
+        "Label": 20,
+        "NRoute": 1,
+        "Node": 20,
+        "Prop": 40,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 8,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 8
+      },
+      "pre_entries": 279,
+      "pre_kinds": {
+        "Adj": 20,
+        "Degc": 9,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 10,
+        "Gen": 9,
+        "KLabel": 20,
+        "Label": 20,
+        "NRoute": 1,
+        "Node": 20,
+        "Prop": 40,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 9,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 9
+      },
+      "returned": 1,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        114,
+        118
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C7_delete_edge_bypass",
+      "entry_point": [
+        "delete_edge",
+        "g1",
+        "('k3', 'R', 'k4')"
+      ],
+      "error": null,
+      "expected_return": true,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "bypass: the statement, tuple lookup and reification stay (bug-str-013)",
+      "outcome_agrees": true,
+      "post_entries": 271,
+      "post_kinds": {
+        "Adj": 16,
+        "Degc": 9,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 8,
+        "Gen": 9,
+        "KLabel": 20,
+        "Label": 20,
+        "NRoute": 1,
+        "Node": 20,
+        "Prop": 40,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 8,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 8
+      },
+      "pre_entries": 274,
+      "pre_kinds": {
+        "Adj": 18,
+        "Degc": 9,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 9,
+        "Gen": 9,
+        "KLabel": 20,
+        "Label": 20,
+        "NRoute": 1,
+        "Node": 20,
+        "Prop": 40,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 8,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 8
+      },
+      "returned": true,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        118,
+        119
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "C8_bulk_delete_adjacency",
+      "entry_point": [
+        "bda",
+        "*",
+        "['m1']"
+      ],
+      "error": null,
+      "expected_return": 1,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "EraseEdges per graph holding an incident edge; returns len(ids)",
+      "outcome_agrees": true,
+      "post_entries": 261,
+      "post_kinds": {
+        "Adj": 12,
+        "Degc": 9,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 6,
+        "Gen": 9,
+        "KLabel": 20,
+        "Label": 20,
+        "NRoute": 1,
+        "Node": 20,
+        "Prop": 40,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 6,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 6
+      },
+      "pre_entries": 271,
+      "pre_kinds": {
+        "Adj": 16,
+        "Degc": 9,
+        "Degw": 2,
+        "Doc": 1,
+        "Edge": 8,
+        "Gen": 9,
+        "KLabel": 20,
+        "Label": 20,
+        "NRoute": 1,
+        "Node": 20,
+        "Prop": 40,
+        "Rec": 89,
+        "Registry": 5,
+        "Reif": 1,
+        "RouteTable": 2,
+        "Stmt": 8,
+        "TAgg": 10,
+        "TStruct": 1,
+        "Temporal": 1,
+        "Tuple": 8
+      },
+      "returned": 1,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        119,
+        127
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "D1_erase_all",
+      "entry_point": [
+        "all"
+      ],
+      "error": null,
+      "expected_return": 13,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "",
+      "outcome_agrees": true,
+      "post_entries": 126,
+      "post_kinds": {
+        "Bm25": 95,
+        "FhirReg": 1,
+        "Quar": 1,
+        "Rec": 19,
+        "VecIdx": 10
+      },
+      "pre_entries": 246,
+      "pre_kinds": {
+        "ACache": 1,
+        "Adj": 10,
+        "Bm25": 95,
+        "Degc": 3,
+        "Degw": 2,
+        "Edge": 5,
+        "FhirReg": 1,
+        "FhirSide": 1,
+        "GMode": 1,
+        "Gen": 3,
+        "KLabel": 4,
+        "Label": 4,
+        "NEmb": 1,
+        "NRoute": 1,
+        "Nkg": 4,
+        "NkgOther": 32,
+        "Node": 8,
+        "Prop": 8,
+        "Quar": 1,
+        "Rec": 19,
+        "Registry": 4,
+        "RouteTable": 1,
+        "Stmt": 3,
+        "TAgg": 18,
+        "TStruct": 1,
+        "Temporal": 2,
+        "Tuple": 3,
+        "VecIdx": 10
+      },
+      "returned": 13,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        23,
+        34
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "D1_reader_bm25_after_erase_all",
+      "model": "witness_erase_all_keeps_named_indexes",
+      "observed": [
+        [
+          "a",
+          0.18232155679395462
+        ],
+        [
+          "b",
+          0.18232155679395462
+        ]
+      ]
+    },
+    {
+      "agrees": true,
+      "caller_write_after": false,
+      "caller_write_expected": false,
+      "case": "E1_joined_erase_caller_rollback",
+      "entry_point": [
+        "graph",
+        "g1"
+      ],
+      "error": null,
+      "expected_return": 3,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "joined_then commit=false: rows == base.rows",
+      "outcome_agrees": true,
+      "post_entries": 20,
+      "post_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 2,
+        "Label": 2,
+        "NRoute": 1,
+        "Node": 2,
+        "Prop": 4,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "pre_entries": 20,
+      "pre_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 2,
+        "Label": 2,
+        "NRoute": 1,
+        "Node": 2,
+        "Prop": 4,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "returned": 3,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        5,
+        11
+      ]
+    },
+    {
+      "agrees": true,
+      "caller_write_after": true,
+      "caller_write_expected": true,
+      "case": "E2_joined_erase_caller_commit",
+      "entry_point": [
+        "graph",
+        "g1"
+      ],
+      "error": null,
+      "expected_return": 3,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "joined_then commit=true: rows == effect(base + w); ^NKG/caches of the caller's write not compared",
+      "outcome_agrees": true,
+      "post_entries": 3,
+      "post_kinds": {
+        "Registry": 3
+      },
+      "pre_entries": 20,
+      "pre_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 2,
+        "Label": 2,
+        "NRoute": 1,
+        "Node": 2,
+        "Prop": 4,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "returned": 3,
+      "skip_kinds": [
+        "ACache",
+        "Degc",
+        "Degw",
+        "Gen",
+        "Nkg",
+        "NkgOther"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        11,
+        17
+      ]
+    },
+    {
+      "agrees": true,
+      "caller_write_after": true,
+      "caller_write_expected": true,
+      "case": "E3_joined_list_failure_caller_commit",
+      "entry_point": [
+        "ids",
+        "g1",
+        "['a', 'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+      ],
+      "error": "RuntimeError: <THROW>",
+      "expected_return": null,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "joined_then fail=Some, commit=true: rows == base + w (the erase rolled back its own level)",
+      "outcome_agrees": true,
+      "post_entries": 20,
+      "post_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 2,
+        "Label": 2,
+        "NRoute": 1,
+        "Node": 2,
+        "Prop": 4,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "pre_entries": 20,
+      "pre_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 2,
+        "Label": 2,
+        "NRoute": 1,
+        "Node": 2,
+        "Prop": 4,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "returned": null,
+      "skip_kinds": [
+        "ACache",
+        "Degc",
+        "Degw",
+        "Gen",
+        "Nkg",
+        "NkgOther"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        20,
+        21
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "E4_unjoined_chunk_commits",
+      "entry_point": [
+        "ids",
+        "g1",
+        "'500 + [long, n0500]'"
+      ],
+      "error": "RuntimeError: <THROW>",
+      "expected_return": null,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "list_erase fail_at=1: chunk 0 committed, chunk 1 rolled back, raised",
+      "outcome_agrees": true,
+      "post_entries": 24,
+      "post_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 3,
+        "Label": 3,
+        "NRoute": 1,
+        "Node": 3,
+        "Prop": 5,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "pre_entries": 2024,
+      "pre_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 503,
+        "Label": 503,
+        "NRoute": 1,
+        "Node": 503,
+        "Prop": 505,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "returned": null,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        526,
+        1527
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "E5_graph_erase_fails_fk",
+      "entry_point": [
+        "graph",
+        "g1"
+      ],
+      "error": "RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: erase failed on nodes with SQLCODE -124; nothing was erased",
+      "expected_return": null,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "call fail=Some(late?): rows unchanged, raised after its own rollback",
+      "outcome_agrees": true,
+      "post_entries": 24,
+      "post_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 3,
+        "Label": 3,
+        "NRoute": 1,
+        "Node": 3,
+        "Prop": 5,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "pre_entries": 24,
+      "pre_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 3,
+        "Label": 3,
+        "NRoute": 1,
+        "Node": 3,
+        "Prop": 5,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "returned": null,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        1527,
+        1531
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "E6_dedicated_erase_survives_caller_rollback",
+      "entry_point": [
+        "graph",
+        "g1"
+      ],
+      "error": null,
+      "expected_return": 4,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "dedicated_then commit=false: the erase stands, the caller's write is gone (q-plt-006)",
+      "outcome_agrees": true,
+      "post_entries": 3,
+      "post_kinds": {
+        "Registry": 3
+      },
+      "pre_entries": 24,
+      "pre_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 1,
+        "KLabel": 3,
+        "Label": 3,
+        "NRoute": 1,
+        "Node": 3,
+        "Prop": 5,
+        "Registry": 4,
+        "RouteTable": 1
+      },
+      "returned": 4,
+      "skip_kinds": [],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        1531,
+        1538
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "R1_delete_node_reifier_other_graph",
+      "entry_point": [
+        "ids",
+        "g",
+        "['a']"
+      ],
+      "error": null,
+      "expected_return": true,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "delete_in_scope: the sweep erases ev1 from h and from the default graph (bug-str-121)",
+      "outcome_agrees": true,
+      "post_entries": 98,
+      "post_kinds": {
+        "Adj": 6,
+        "Edge": 3,
+        "Gen": 3,
+        "KLabel": 7,
+        "Label": 7,
+        "Node": 11,
+        "Prop": 8,
+        "Rec": 34,
+        "Registry": 3,
+        "Reif": 1,
+        "Stmt": 3,
+        "TAgg": 9,
+        "Temporal": 1,
+        "Tuple": 2
+      },
+      "pre_entries": 119,
+      "pre_kinds": {
+        "Adj": 8,
+        "Edge": 4,
+        "Gen": 4,
+        "KLabel": 10,
+        "Label": 10,
+        "Node": 14,
+        "Prop": 13,
+        "Rec": 34,
+        "Registry": 3,
+        "Reif": 2,
+        "Stmt": 4,
+        "TAgg": 9,
+        "Temporal": 1,
+        "Tuple": 3
+      },
+      "returned": true,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        18,
+        29
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "R1_reader_get_node_other_graph",
+      "model": "theorem_delete_node_sweeps_reifier_everywhere / witness_delete_node_erases_reifier_in_other_graph",
+      "observed": {
+        "after": null,
+        "before": {
+          "id": "ev1",
+          "labels": [
+            "Evidence"
+          ],
+          "note": "unrelated, graph h",
+          "p_id": "ev1"
+        }
+      }
+    },
+    {
+      "agrees": true,
+      "case": "R2_bulk_delete_nodes_reifier_other_graph",
+      "entry_point": [
+        "ids",
+        "g",
+        "['c']"
+      ],
+      "error": null,
+      "expected_return": [
+        1,
+        0
+      ],
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "bulk_delete_nodes runs the same _delete_in_scope per batch",
+      "outcome_agrees": true,
+      "post_entries": 78,
+      "post_kinds": {
+        "Adj": 4,
+        "Edge": 2,
+        "Gen": 2,
+        "KLabel": 4,
+        "Label": 4,
+        "Node": 8,
+        "Prop": 4,
+        "Rec": 34,
+        "Registry": 3,
+        "Stmt": 2,
+        "TAgg": 9,
+        "Temporal": 1,
+        "Tuple": 1
+      },
+      "pre_entries": 98,
+      "pre_kinds": {
+        "Adj": 6,
+        "Edge": 3,
+        "Gen": 3,
+        "KLabel": 7,
+        "Label": 7,
+        "Node": 11,
+        "Prop": 8,
+        "Rec": 34,
+        "Registry": 3,
+        "Reif": 1,
+        "Stmt": 3,
+        "TAgg": 9,
+        "Temporal": 1,
+        "Tuple": 2
+      },
+      "returned": [
+        1,
+        0
+      ],
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        29,
+        40
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "R2_reader_get_node_other_graph",
+      "model": "theorem_delete_node_sweeps_reifier_everywhere",
+      "observed": {
+        "after": null,
+        "before": {
+          "id": "ev2",
+          "labels": [
+            "Evidence"
+          ],
+          "note": "unrelated, graph h2",
+          "p_id": "ev2"
+        }
+      }
+    },
+    {
+      "agrees": true,
+      "case": "R3_relationship_erase_keeps_events",
+      "entry_point": [
+        "edges",
+        "g",
+        "[('t1', 'T', 't2')]"
+      ],
+      "error": null,
+      "expected_return": 1,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "theorem_edges_erase_keeps_temporal: the row goes, the triple's event (tout) stays",
+      "outcome_agrees": true,
+      "post_entries": 75,
+      "post_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 2,
+        "KLabel": 4,
+        "Label": 4,
+        "Node": 8,
+        "Prop": 4,
+        "Rec": 34,
+        "Registry": 3,
+        "Stmt": 2,
+        "TAgg": 9,
+        "Temporal": 1,
+        "Tuple": 1
+      },
+      "pre_entries": 78,
+      "pre_kinds": {
+        "Adj": 4,
+        "Edge": 2,
+        "Gen": 2,
+        "KLabel": 4,
+        "Label": 4,
+        "Node": 8,
+        "Prop": 4,
+        "Rec": 34,
+        "Registry": 3,
+        "Stmt": 2,
+        "TAgg": 9,
+        "Temporal": 1,
+        "Tuple": 1
+      },
+      "returned": 1,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        40,
+        44
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "R3_reader_event_after_relationship_erase",
+      "model": "witness_edge_erase_leaves_triple_events: the event stays readable",
+      "observed": [
+        {
+          "o": "t2",
+          "p": "T",
+          "predicate": "T",
+          "s": "t1",
+          "source": "t1",
+          "target": "t2",
+          "timestamp": 1700000300,
+          "ts": 1700000300,
+          "w": 1,
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "R4_relationship_erase_keeps_closed_statement",
+      "entry_point": [
+        "edges",
+        "g",
+        "[('k5', 'R', 'k6')]"
+      ],
+      "error": null,
+      "expected_return": 1,
+      "nkg_invalidated": [
+        0,
+        0
+      ],
+      "note": "witness_list_erase_keeps_closed_statement: the live statement goes, the closed one stays",
+      "outcome_agrees": true,
+      "post_entries": 70,
+      "post_kinds": {
+        "Gen": 2,
+        "KLabel": 4,
+        "Label": 4,
+        "Node": 8,
+        "Prop": 4,
+        "Rec": 34,
+        "Registry": 3,
+        "Stmt": 1,
+        "TAgg": 9,
+        "Temporal": 1
+      },
+      "pre_entries": 75,
+      "pre_kinds": {
+        "Adj": 2,
+        "Edge": 1,
+        "Gen": 2,
+        "KLabel": 4,
+        "Label": 4,
+        "Node": 8,
+        "Prop": 4,
+        "Rec": 34,
+        "Registry": 3,
+        "Stmt": 2,
+        "TAgg": 9,
+        "Temporal": 1,
+        "Tuple": 1
+      },
+      "returned": 1,
+      "skip_kinds": [
+        "TAgg"
+      ],
+      "stores": {
+        "agrees": true,
+        "expected_not_observed": [],
+        "kinds": [],
+        "observed_not_expected": []
+      },
+      "version": [
+        44,
+        48
+      ]
+    }
+  ],
+  "live_mismatches": [],
+  "model": "erasure_stores",
+  "namespaces": [
+    "I65B",
+    "I65C",
+    "I65D",
+    "I65E",
+    "I66E"
+  ],
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "iris_src/src/Graph/KG/Adjacency.cls": true,
+      "iris_src/src/Graph/KG/Eraser.cls": true,
+      "iris_src/src/Graph/KG/GraphKey.cls": true,
+      "iris_src/src/Graph/KG/GraphStores.cls": true,
+      "iris_src/src/Graph/KG/TemporalIndex.cls": true,
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/_validate.py": true,
+      "iris_vector_graph/_write_txn.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true,
+      "iris_vector_graph/stores/iris_sql_store.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/pin"
+  },
+  "platform": "Linux-7.0.0-1014-gcp-x86_64-with-glibc2.39",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.18",
+  "real": "engine erase_graph/drop_graph/erase_all/delete_nodes_by_prefix/delete_node/bulk_delete_nodes (with the reifier sweep)/bulk_delete_adjacency/delete_edge, store delete_nodes/delete_edges, Graph.KG.Eraser.EraseGraph natively, GraphStores.Digest, bm25_search, from_connect engine, on IRIS",
+  "scope": "one process per scenario; disclosed direct-SQL fixture rows (see module docstring); failed post-commit DROP not injected; edge routes (kg_eemb_) not created; temporal aggregates not compared for list erases",
+  "seconds": 110.8,
+  "verdict": "AGREES"
+}
