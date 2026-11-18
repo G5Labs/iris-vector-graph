@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_uncounted_outcomes"
+    ],
+    "find": "        (s, err(Code::RedactionInProgress, None))\n",
+    "name": "redaction-block-counted",
+    "replace": "        refuse(s, err(Code::FailedOp, None), p)\n",
+    "why": "a redaction-blocked commit is counted as a failed operation"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_uncounted_outcomes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/redaction-block-counted/20261118T013930Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_uncounted_outcomes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/20261118T013930Z-control-redaction-block-counted-theorem_uncounted_outcomes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/20261118T013930Z-control-redaction-block-counted.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261118T013933Z-control-redaction-block-counted/logs/20261118T013930Z-control-redaction-block-counted-theorem_uncounted_outcomes.log": "efac109721e353834bf565ecb0b754abfa6f928dacca23a3a5095bba83e2f609",
+    ".g5/Verus_verification/results/ledger_client/20261118T013933Z-control-redaction-block-counted/logs/20261118T013930Z-control-redaction-block-counted.log": "3a8ed15715cc9e1fd0461cd1dc261c1b999be3fefaea61ff9cc76eb86dee43fb"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

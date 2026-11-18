@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/stale-names-expected/20261118T013826Z/models/ledger_client/ledger_client.rs:591:13
+    |
+589 |   pub proof fn theorem_expected_head_outcomes(s: Srv, c: Cs, e: int, p: nat, a: Apply, f: int)
+    |   -------------------------------------------------------------------------------------------- at the end of the function body
+590 |       requires s.state == LState::Enabled, s.holder is None, s.stats_holder is None, c.key is None, c.bad_ref is None, c.ops.len() ...
+591 |       ensures ({
+    |  _____________^
+592 | |         let o = client_commit(s, c, p, a, f);
+593 | |         &&& !s.seq_of.contains_key(e) ==> o.py == Py::Raise(Exc::UnknownRev) && o.srv.cnt == (Cnt { unknown: s.cnt.unknown + 1, ....
+594 | |         &&& s.seq_of.contains_key(e) && e != head_id(s) ==> o.py == Py::Raise(Exc::Stale { current: Some(head_id(s)) })
+595 | |                 && o.srv.cnt == (Cnt { stale: s.cnt.stale + 1, ..s.cnt })
+596 | |         &&& (e != head_id(s) ==> same_ledger(o.srv, s))
+597 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

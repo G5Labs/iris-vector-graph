@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/lookup-before-redaction-check/20261118T013942Z/models/ledger_client/ledger_client.rs:867:9
+    |
+865 |   pub proof fn theorem_revision_readers_resolve_ids(s: Srv, id: int, other: int, c: Cs, p: nat, a: Apply, f: int)
+    |   --------------------------------------------------------------------------------------------------------------- at the end of the function body
+866 |       ensures
+867 | /         s.redacting ==> seq_read(s, id) == Read::Raise(Exc::RedactionInProgress)
+868 | |             && diff_read(s, id, other) == Read::Raise(Exc::RedactionInProgress),
+    | |_______________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

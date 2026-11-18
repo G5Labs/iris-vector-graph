@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "repair (intended): BEGIN opens a transaction whose writes are held until COMMIT; ROLLBACK, RESET and a closed connection discard them",
+    "expect_fail_in": [
+      "theorem_rollback_keeps_writes",
+      "theorem_failed_tx_keeps_earlier_writes",
+      "theorem_reset_or_close_keeps_writes"
+    ],
+    "find": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store + w, failed: false, tx: s.tx }, Ans::Success) },\n                Msg::Pull => (s, Ans::Success),\n                Msg::Commit => (s, Ans::Success),\n                Msg::Rollback => (s, Ans::Success),\n                Msg::Reset => (s, Ans::Success),\n                Msg::Close => (s, Ans::Success),",
+    "name": "atomic-tx",
+    "replace": "            Design::AsBuilt => match m {\n                Msg::Begin => (S { store: s.store, failed: false, tx: Some(0) }, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { match s.tx { Some(p) => (S { store: s.store, failed: false, tx: Some(p + w) }, Ans::Success),\n                                        None => (S { store: s.store + w, failed: false, tx: None }, Ans::Success) } },\n                Msg::Pull => (s, Ans::Success),\n                Msg::Commit => (match s.tx { Some(p) => S { store: s.store + p, failed: false, tx: None }, None => s }, Ans::Success),\n                Msg::Rollback => (S { store: s.store, failed: false, tx: None }, Ans::Success),\n                Msg::Reset => (S { store: s.store, failed: false, tx: None }, Ans::Success),\n                Msg::Close => (S { store: s.store, failed: false, tx: None }, Ans::Success),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rollback_keeps_writes",
+      "theorem_failed_tx_keeps_earlier_writes",
+      "theorem_reset_or_close_keeps_writes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_tx/bolt_tx.rs": "b558e9f5bdc3934a1fb6aff50067acea06bdf7a738bfbb8f19582f3a87f4ce46",
+    ".g5/Verus_verification/models/bolt_tx/model.json": "b6092d1a254a48b10df26f067f81e152812d9ec985b1e4f739bbb5cec3a772c3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/controls/atomic-tx/20261118T013719Z/models/bolt_tx/bolt_tx.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failed_tx_keeps_earlier_writes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/20261118T013719Z-control-atomic-tx-theorem_failed_tx_keeps_earlier_writes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_reset_or_close_keeps_writes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/20261118T013719Z-control-atomic-tx-theorem_reset_or_close_keeps_writes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rollback_keeps_writes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/20261118T013719Z-control-atomic-tx-theorem_rollback_keeps_writes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/20261118T013719Z-control-atomic-tx.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_tx/20261118T013729Z-control-atomic-tx/logs/20261118T013719Z-control-atomic-tx-theorem_failed_tx_keeps_earlier_writes.log": "406cf2e76c5564ec0bd6009e21da0346fed98724221bb03e962703663b770a8e",
+    ".g5/Verus_verification/results/bolt_tx/20261118T013729Z-control-atomic-tx/logs/20261118T013719Z-control-atomic-tx-theorem_reset_or_close_keeps_writes.log": "0c24201e2395c69816aea0f7e4778ea7434c550bc7402c0da3b877cec5fa4ea6",
+    ".g5/Verus_verification/results/bolt_tx/20261118T013729Z-control-atomic-tx/logs/20261118T013719Z-control-atomic-tx-theorem_rollback_keeps_writes.log": "7cee83a9dcdb9157fbc6e190676b153453e30240d5bc045eaa2ecef180353284",
+    ".g5/Verus_verification/results/bolt_tx/20261118T013729Z-control-atomic-tx/logs/20261118T013719Z-control-atomic-tx.log": "61b759c56f4e2ced5a774bec70b21777c16c62c944be88c3a627ef8078333f0d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

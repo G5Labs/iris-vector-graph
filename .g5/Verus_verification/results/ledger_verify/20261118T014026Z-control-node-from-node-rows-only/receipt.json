@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_canonical_wf",
+      "theorem_orphan_property_reports_node"
+    ],
+    "find": "    (exists|g: int| #[trigger] t.node_rows.contains((n, g)))\n    || (exists|l: int| #[trigger] t.label_rows.contains((n, l)))\n    || (exists|k: int| #[trigger] t.prop_rows.contains_key((n, k)) && !reserved(k))\n",
+    "name": "node-from-node-rows-only",
+    "replace": "    (exists|g: int| #[trigger] t.node_rows.contains((n, g)))\n",
+    "why": "the iteration-60 model: a node exists only through a node row (label/property rows ignored)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_canonical_wf",
+      "theorem_orphan_property_reports_node"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/node-from-node-rows-only/20261118T014024Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_canonical_wf": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014024Z-control-node-from-node-rows-only-lemma_canonical_wf.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_orphan_property_reports_node": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014024Z-control-node-from-node-rows-only-theorem_orphan_property_reports_node.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014024Z-control-node-from-node-rows-only.log",
+    "timed_out": false,
+    "verified": 13
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261118T014026Z-control-node-from-node-rows-only/logs/20261118T014024Z-control-node-from-node-rows-only-lemma_canonical_wf.log": "3bd2106643e8820b62d2db109c4e67a9207618010da38b4ef568634c2796d445",
+    ".g5/Verus_verification/results/ledger_verify/20261118T014026Z-control-node-from-node-rows-only/logs/20261118T014024Z-control-node-from-node-rows-only-theorem_orphan_property_reports_node.log": "267718bf82a676e5f942ebd5440b01f81539fee625f3e1583111ad267fceb586",
+    ".g5/Verus_verification/results/ledger_verify/20261118T014026Z-control-node-from-node-rows-only/logs/20261118T014024Z-control-node-from-node-rows-only.log": "1602e6a83e83e534f50d8ccae7a27d3fe99268baaa4cb301d844fb9b012c1c86"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/redaction-block-counted/20261118T013930Z/models/ledger_client/ledger_client.rs:724:13
+    |
+722 |   pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+723 |       requires calls_server(c),
+724 |       ensures ({
+    |  _____________^
+725 | |         let o = client_commit(s, c, p, a, f);
+726 | |         &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+727 | |             && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+...   |
+736 | |         &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+737 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

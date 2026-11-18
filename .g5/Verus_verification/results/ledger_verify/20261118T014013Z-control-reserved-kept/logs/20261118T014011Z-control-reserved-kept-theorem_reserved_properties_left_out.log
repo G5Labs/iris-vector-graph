@@ -1,0 +1,27 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/reserved-kept/20261118T014011Z/models/ledger_verify/ledger_verify.rs:502:1
+    |
+502 | pub proof fn theorem_reserved_properties_left_out(t: Tables, n: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/reserved-kept/20261118T014011Z/models/ledger_verify/ledger_verify.rs:503:13
+    |
+502 | pub proof fn theorem_reserved_properties_left_out(t: Tables, n: int)
+    | -------------------------------------------------------------------- at the end of the function body
+503 |     ensures canonical(t)(Fact::Prop(n, -1)) is None, canonical(t)(Fact::Prop(n, -2)) is None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/reserved-kept/20261118T014011Z/models/ledger_verify/ledger_verify.rs:503:54
+    |
+502 | pub proof fn theorem_reserved_properties_left_out(t: Tables, n: int)
+    | -------------------------------------------------------------------- at the end of the function body
+503 |     ensures canonical(t)(Fact::Prop(n, -1)) is None, canonical(t)(Fact::Prop(n, -2)) is None,
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

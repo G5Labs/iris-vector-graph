@@ -1,0 +1,45 @@
+verification results:: 10 verified, 5 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/new-entity-attributes-dropped/20261118T014006Z/models/ledger_verify/ledger_verify.rs:241:28
+    |
+241 |                     assert(emitted(a, b, f));
+    |                            ^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/new-entity-attributes-dropped/20261118T014006Z/models/ledger_verify/ledger_verify.rs:277:9
+    |
+277 |         compare(a, canonical(t))(Fact::Prop(n, k)) == Some(Some(t.prop_rows[(n, k)])),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+283 |     assert(!canon_node(t0, n)) by {
+    |     ------ at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/new-entity-attributes-dropped/20261118T014006Z/models/ledger_verify/ledger_verify.rs:298:28
+    |
+298 |     assert forall|f: Fact| #[trigger] r(f) == b(f) by {
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/new-entity-attributes-dropped/20261118T014006Z/models/ledger_verify/ledger_verify.rs:396:12
+    |
+396 |     assert(emitted(a, b, f));
+    |            ^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/new-entity-attributes-dropped/20261118T014006Z/models/ledger_verify/ledger_verify.rs:463:13
+    |
+461 |   pub proof fn theorem_entries_for_created_and_deleted_nodes(n: int, l: int, k: int, v: int, m: int, k2: int, v2: int)
+    |   -------------------------------------------------------------------------------------------------------------------- at the end of the function body
+462 |       requires n != m,
+463 |       ensures ({
+    |  _____________^
+464 | |         let d = compare(view_a(m, k2, v2), view_b(n, l, k, v));
+465 | |         &&& d(Fact::Node(n)) == Some(Some(0int)) && d(Fact::Label(n, l)) == Some(Some(0int)) && d(Fact::Prop(n, k)) == Some(Some(v))
+466 | |         &&& d(Fact::Node(m)) == Some(None::<int>)
+467 | |         &&& d(Fact::Prop(m, k2)) is None
+468 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

@@ -1,0 +1,61 @@
+verification results:: 30 verified, 4 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/held-row-not-checked/20261118T013952Z/models/ledger_client/ledger_client.rs:724:13
+    |
+722 |   pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+723 |       requires calls_server(c),
+724 |       ensures ({
+    |  _____________^
+725 | |         let o = client_commit(s, c, p, a, f);
+726 | |         &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+727 | |             && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+...   |
+736 | |         &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+737 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/held-row-not-checked/20261118T013952Z/models/ledger_client/ledger_client.rs:797:13
+    |
+793 |   pub proof fn theorem_nested_lock_timeout_keeps_the_counter_row(s: Srv, c: Cs, d: Cs, p: nat, q: nat, x: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   -------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+797 |       ensures ({
+    |  _____________^
+798 | |         let o1 = txn_commit(s, c, p, a, f1);
+799 | |         let s1 = Srv { holder: None, ..o1.srv };
+800 | |         let o2 = client_commit(s1, d, q, b, f2);
+...   |
+812 | |         &&& n2.srv.cnt == (Cnt { ok: s.cnt.ok + 1, lock: s.cnt.lock + 1, ..s.cnt })
+813 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/held-row-not-checked/20261118T013952Z/models/ledger_client/ledger_client.rs:825:9
+    |
+820 |   pub proof fn theorem_held_counter_row_refuses_a_valid_commit(s: Srv, d: Cs, q: nat, b: Apply, f: int)
+    |   ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+825 | /         client_commit(s, d, q, b, f)
+826 | |             == (Out { srv: s, py: Py::Raise(Exc::Inconsistent), events: seq![Ev::Refused(Code::Inconsistent)] }),
+    | |________________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/held-row-not-checked/20261118T013952Z/models/ledger_client/ledger_client.rs:841:13
+    |
+838 |   pub proof fn theorem_in_transaction_row_save_blocks_other_writers(s: Srv, d: Cs, p: nat, q: nat, b: Apply, f: int, level: nat, count: bool)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+841 |       ensures ({
+    |  _____________^
+842 | |         let s1 = row_save(s, p, Via::CallerConn, level, count);
+843 | |         let o = client_commit(s1, d, q, b, f);
+844 | |         let r = txn_rollback(s, o.srv, p);
+...   |
+855 | |         &&& count ==> s1.cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+856 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

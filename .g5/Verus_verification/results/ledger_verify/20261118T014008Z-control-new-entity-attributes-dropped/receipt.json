@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_adopt_agrees",
+      "theorem_entries_for_created_and_deleted_nodes",
+      "theorem_orphan_property_reports_node"
+    ],
+    "find": "a(f) != b(f) && !(owner(f) is Some && a(owner(f)->Some_0) is Some && b(owner(f)->Some_0) is None)",
+    "name": "new-entity-attributes-dropped",
+    "replace": "a(f) != b(f) && !(owner(f) is Some && a(owner(f)->Some_0) is Some && b(owner(f)->Some_0) is None) && !(owner(f) is Some && a(owner(f)->Some_0) is None)",
+    "why": "an entity only in the tables gets its existence entry alone"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_adopt_agrees",
+      "theorem_entries_for_created_and_deleted_nodes",
+      "theorem_orphan_property_reports_node"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/new-entity-attributes-dropped/20261118T014006Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_adopt_agrees": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014006Z-control-new-entity-attributes-dropped-lemma_adopt_agrees.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_entries_for_created_and_deleted_nodes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014006Z-control-new-entity-attributes-dropped-theorem_entries_for_created_and_deleted_nodes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_orphan_property_reports_node": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014006Z-control-new-entity-attributes-dropped-theorem_orphan_property_reports_node.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014006Z-control-new-entity-attributes-dropped.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261118T014008Z-control-new-entity-attributes-dropped/logs/20261118T014006Z-control-new-entity-attributes-dropped-lemma_adopt_agrees.log": "02bf7f6c9d09aebb84a3de70201afcab4cebb8a00f749b697fdc2b3a8905d2cd",
+    ".g5/Verus_verification/results/ledger_verify/20261118T014008Z-control-new-entity-attributes-dropped/logs/20261118T014006Z-control-new-entity-attributes-dropped-theorem_entries_for_created_and_deleted_nodes.log": "68727c3df9b0338322605af0f06780d3ee07d92e7cd0d5474248178ac89fb111",
+    ".g5/Verus_verification/results/ledger_verify/20261118T014008Z-control-new-entity-attributes-dropped/logs/20261118T014006Z-control-new-entity-attributes-dropped-theorem_orphan_property_reports_node.log": "209650269a18520157c2495e6243ffcfea7e380e636dc538e0d8b578cda9cbda",
+    ".g5/Verus_verification/results/ledger_verify/20261118T014008Z-control-new-entity-attributes-dropped/logs/20261118T014006Z-control-new-entity-attributes-dropped.log": "a3981b275f7c026e3d4654ef77c9c258c771a3f679fc4430a21da29f943a1a32"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

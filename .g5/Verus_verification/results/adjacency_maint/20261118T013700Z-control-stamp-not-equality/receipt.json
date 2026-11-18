@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: Fresh accepts a stamp older than ^KG(\"__version\")",
+    "expect_fail_in": [
+      "theorem_write_makes_stale"
+    ],
+    "find": "pub open spec fn fresh(built_at: int, version: int) -> bool { built_at == version }",
+    "name": "stamp-not-equality",
+    "replace": "pub open spec fn fresh(built_at: int, version: int) -> bool { built_at <= version }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_write_makes_stale"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "0ab9710fff509082f6e960e4d0f59d7805203fc878e7fef42b58ecd63edffa90"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/adjacency_maint/controls/stamp-not-equality/20261118T013656Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_write_makes_stale": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/adjacency_maint/20261118T013656Z-control-stamp-not-equality-theorem_write_makes_stale.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/adjacency_maint/20261118T013656Z-control-stamp-not-equality.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261118T013700Z-control-stamp-not-equality/logs/20261118T013656Z-control-stamp-not-equality-theorem_write_makes_stale.log": "e4c3753b914319b828c2c1573abdd35b7db1c880454a3036ee36cc83771d3b88",
+    ".g5/Verus_verification/results/adjacency_maint/20261118T013700Z-control-stamp-not-equality/logs/20261118T013656Z-control-stamp-not-equality.log": "89b3408ffd3d150381c5735c1f0d431dcdce764f78b69be647dda84674c93685"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

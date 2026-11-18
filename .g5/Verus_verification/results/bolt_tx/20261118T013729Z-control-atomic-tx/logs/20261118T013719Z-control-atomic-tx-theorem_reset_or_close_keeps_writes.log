@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/controls/atomic-tx/20261118T013719Z/models/bolt_tx/bolt_tx.rs:335:9
+    |
+332 | pub proof fn theorem_reset_or_close_keeps_writes(s: S, inner: Seq<Msg>, end: Msg)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+335 |         exec(Design::AsBuilt, s, seq![Msg::Begin] + inner + seq![end]).0.store == s.store + total(inner),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

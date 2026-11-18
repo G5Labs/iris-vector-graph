@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/statement-ids-compared/20261118T014017Z/models/ledger_verify/ledger_verify.rs:508:1
+    |
+508 | pub proof fn theorem_statement_ids_not_compared(r: Tup, q: Map<int, int>, i: int, j: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/statement-ids-compared/20261118T014017Z/models/ledger_verify/ledger_verify.rs:516:12
+    |
+516 |     assert(live_id(s1, r, i));
+    |            ^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/statement-ids-compared/20261118T014017Z/models/ledger_verify/ledger_verify.rs:517:12
+    |
+517 |     assert(live_id(s2, r, j));
+    |            ^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

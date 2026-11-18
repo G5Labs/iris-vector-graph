@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_retry_with_new_metadata_replays"
+    ],
+    "find": "    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+    "name": "expected-head-before-idempotency",
+    "replace": "    } else if c.expected is Some && c.expected->Some_0 != head_id(s) {\n        refuse(s, err(Code::StaleHead, Some(head_id(s))), p)\n    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+    "why": "the stale-head check runs before the key check"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_retry_with_new_metadata_replays"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/expected-head-before-idempotency/20261118T013815Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_retry_with_new_metadata_replays": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/20261118T013815Z-control-expected-head-before-idempotency-theorem_retry_with_new_metadata_replays.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/20261118T013815Z-control-expected-head-before-idempotency.log",
+    "timed_out": false,
+    "verified": 32
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261118T013818Z-control-expected-head-before-idempotency/logs/20261118T013815Z-control-expected-head-before-idempotency-theorem_retry_with_new_metadata_replays.log": "ca71e7173c1ae54133ebf306cf882dfcf7473f9a061a5feeb53c1ce612957fac",
+    ".g5/Verus_verification/results/ledger_client/20261118T013818Z-control-expected-head-before-idempotency/logs/20261118T013815Z-control-expected-head-before-idempotency.log": "ef55d2fbd937ced37c833eda3fd7a1db72056062374170ee86a1a637e70a6006"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

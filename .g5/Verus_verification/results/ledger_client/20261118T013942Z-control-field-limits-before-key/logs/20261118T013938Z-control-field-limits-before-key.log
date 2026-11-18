@@ -1,0 +1,83 @@
+verification results:: 29 verified, 5 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/field-limits-before-key/20261118T013938Z/models/ledger_client/ledger_client.rs:523:13
+    |
+521 |   pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr: int, e: Option<int>, ml: Lens, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+522 |       requires admits(s, c, p, a), c.key is Some, s.holder is None,
+523 |       ensures ({
+    |  _____________^
+524 | |         let o1 = client_commit(s, c, p, a, f1);
+525 | |         let d = Cs { message: m, correlation: corr, expected: e, lens: ml, ..c };
+526 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+...   |
+531 | |         &&& o2.events == seq![Ev::Replayed(s.head + 1)]
+532 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/field-limits-before-key/20261118T013938Z/models/ledger_client/ledger_client.rs:579:13
+    |
+574 |   pub proof fn theorem_refused_key_stays_free(s: Srv, c: Cs, d: Cs, k: int, e: int, p: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+579 |       ensures ({
+    |  _____________^
+580 | |         let o1 = client_commit(s, c, p, a, f1);
+581 | |         let o2 = client_commit(o1.srv, d, p, b, f2);
+582 | |         &&& o1.py == Py::Raise(Exc::Stale { current: Some(head_id(s)) })
+583 | |         &&& o2.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+584 | |         &&& o2.srv.idem[k] == (s.head + 1, fingerprint(d))
+585 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/field-limits-before-key/20261118T013938Z/models/ledger_client/ledger_client.rs:593:13
+    |
+591 |   pub proof fn theorem_expected_head_outcomes(s: Srv, c: Cs, e: int, p: nat, a: Apply, f: int)
+    |   -------------------------------------------------------------------------------------------- at the end of the function body
+592 |       requires s.state == LState::Enabled, s.holder is None, s.stats_holder is None, c.key is None, c.bad_ref is None, c.ops.len() ...
+593 |       ensures ({
+    |  _____________^
+594 | |         let o = client_commit(s, c, p, a, f);
+595 | |         &&& !s.seq_of.contains_key(e) ==> o.py == Py::Raise(Exc::UnknownRev) && o.srv.cnt == (Cnt { unknown: s.cnt.unknown + 1, ....
+596 | |         &&& s.seq_of.contains_key(e) && e != head_id(s) ==> o.py == Py::Raise(Exc::Stale { current: Some(head_id(s)) })
+597 | |                 && o.srv.cnt == (Cnt { stale: s.cnt.stale + 1, ..s.cnt })
+598 | |         &&& (e != head_id(s) ==> same_ledger(o.srv, s))
+599 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/field-limits-before-key/20261118T013938Z/models/ledger_client/ledger_client.rs:726:13
+    |
+724 |   pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+725 |       requires calls_server(c),
+726 |       ensures ({
+    |  _____________^
+727 | |         let o = client_commit(s, c, p, a, f);
+728 | |         &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+729 | |             && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+...   |
+738 | |         &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+739 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/field-limits-before-key/20261118T013938Z/models/ledger_client/ledger_client.rs:747:13
+    |
+745 |   pub proof fn theorem_field_limits_checked_after_the_key(s: Srv, c: Cs, ml: Lens, p: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+746 |       requires admits(s, c, p, a), c.key is Some, s.holder is None, ml.message > 4000,
+747 |       ensures ({
+    |  _____________^
+748 | |         let o1 = client_commit(s, c, p, a, f1);
+749 | |         let d = Cs { lens: ml, ..c };
+750 | |         &&& !fits(d)
+751 | |         &&& client_commit(o1.srv, d, p, b, f2).py == Py::Res { seq: s.head + 1, replayed: true, stmts: false }
+752 | |         &&& client_commit(s, d, p, a, f1).py == Py::Raise(Exc::Inconsistent)
+753 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

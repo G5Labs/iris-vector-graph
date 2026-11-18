@@ -1,0 +1,21 @@
+verification results:: 14 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/graph-scoped-node-identity/20261118T014010Z/models/ledger_verify/ledger_verify.rs:486:1
+    |
+486 | pub proof fn theorem_node_identity_ignores_graph(t: Tables, n: int, g: int, h: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/graph-scoped-node-identity/20261118T014010Z/models/ledger_verify/ledger_verify.rs:495:12
+    |
+495 |     assert(canon_get(t2, Fact::Node(n)) is Some);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/graph-scoped-node-identity/20261118T014010Z/models/ledger_verify/ledger_verify.rs:496:12
+    |
+496 |     assert(canon_get(t, Fact::Node(n)) is Some);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

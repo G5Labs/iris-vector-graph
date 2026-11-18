@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_expected_head_outcomes"
+    ],
+    "find": "    } else if c.expected is Some && !s.seq_of.contains_key(c.expected->Some_0) {\n",
+    "name": "unknown-as-stale",
+    "replace": "    } else if false {\n",
+    "why": "an ID that is no revision is treated as a stale head"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_expected_head_outcomes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/unknown-as-stale/20261118T013830Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_expected_head_outcomes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/20261118T013830Z-control-unknown-as-stale-theorem_expected_head_outcomes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/20261118T013830Z-control-unknown-as-stale.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261118T013833Z-control-unknown-as-stale/logs/20261118T013830Z-control-unknown-as-stale-theorem_expected_head_outcomes.log": "843f5de86101c74b5eba5ef8f3becc9b12d43072b7c5209fd120ff2ed91d7305",
+    ".g5/Verus_verification/results/ledger_client/20261118T013833Z-control-unknown-as-stale/logs/20261118T013830Z-control-unknown-as-stale.log": "37bdaa2e4e71f3881c4ba47711b78c67d32f6d790e6bddbf3c2b853b68351038"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

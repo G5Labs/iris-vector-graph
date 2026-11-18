@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_node_identity_ignores_graph"
+    ],
+    "find": "    (exists|g: int| #[trigger] t.node_rows.contains((n, g)))\n",
+    "name": "graph-scoped-node-identity",
+    "replace": "    t.node_rows.contains((n, 0))\n",
+    "why": "nodes are matched in the default graph only (and only by node rows)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_node_identity_ignores_graph"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/graph-scoped-node-identity/20261118T014010Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_node_identity_ignores_graph": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014010Z-control-graph-scoped-node-identity-theorem_node_identity_ignores_graph.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014010Z-control-graph-scoped-node-identity.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261118T014011Z-control-graph-scoped-node-identity/logs/20261118T014010Z-control-graph-scoped-node-identity-theorem_node_identity_ignores_graph.log": "1c2b383f2ec4a4d9b0cf31c7d4e1434cf8060526a918c31c2da897ed02fdf4cd",
+    ".g5/Verus_verification/results/ledger_verify/20261118T014011Z-control-graph-scoped-node-identity/logs/20261118T014010Z-control-graph-scoped-node-identity.log": "ab877b66c9bd4c35261511da181ae6ce12b2a79b1544152000b42792fb135d39"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

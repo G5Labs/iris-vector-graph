@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/stale-names-expected/20261118T013826Z/models/ledger_client/ledger_client.rs:577:13
+    |
+572 |   pub proof fn theorem_refused_key_stays_free(s: Srv, c: Cs, d: Cs, k: int, e: int, p: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+577 |       ensures ({
+    |  _____________^
+578 | |         let o1 = client_commit(s, c, p, a, f1);
+579 | |         let o2 = client_commit(o1.srv, d, p, b, f2);
+580 | |         &&& o1.py == Py::Raise(Exc::Stale { current: Some(head_id(s)) })
+581 | |         &&& o2.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+582 | |         &&& o2.srv.idem[k] == (s.head + 1, fingerprint(d))
+583 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

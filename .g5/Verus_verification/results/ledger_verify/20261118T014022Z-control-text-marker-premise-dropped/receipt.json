@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_adoption_closes_the_difference"
+    ],
+    "find": "    requires wf(a), wf(b), no_text_marker(b),\n",
+    "name": "text-marker-premise-dropped",
+    "replace": "    requires wf(a), wf(b),\n",
+    "why": "the iteration-60 unconditional claim: adoption closes every difference"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_adoption_closes_the_difference"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/controls/text-marker-premise-dropped/20261118T014021Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_adoption_closes_the_difference": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014021Z-control-text-marker-premise-dropped-theorem_adoption_closes_the_difference.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_verify/20261118T014021Z-control-text-marker-premise-dropped.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261118T014022Z-control-text-marker-premise-dropped/logs/20261118T014021Z-control-text-marker-premise-dropped-theorem_adoption_closes_the_difference.log": "9c9c72a5264bb118a66f622904e3d0219fdd41cea4f9aa1399178f0082b041b8",
+    ".g5/Verus_verification/results/ledger_verify/20261118T014022Z-control-text-marker-premise-dropped/logs/20261118T014021Z-control-text-marker-premise-dropped.log": "a5c40b27c326cd952d2ef8b6ff9aec8262868ad26e7015a5780bb2721a9cfc57"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

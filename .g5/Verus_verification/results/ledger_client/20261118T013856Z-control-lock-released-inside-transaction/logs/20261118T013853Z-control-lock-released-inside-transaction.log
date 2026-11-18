@@ -1,0 +1,35 @@
+verification results:: 32 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/lock-released-inside-transaction/20261118T013853Z/models/ledger_client/ledger_client.rs:676:13
+    |
+672 |   pub proof fn theorem_caller_transaction_holds_the_head(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+676 |       ensures ({
+    |  _____________^
+677 | |         let o1 = txn_commit(s, c, p, a, f1);
+678 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+679 | |         let o3 = client_commit(txn_rollback(s, o2.srv, p), d, q, b, f2);
+...   |
+690 | |         &&& o4.srv.parent[s.head + 2] == f1
+691 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ledger_client/controls/lock-released-inside-transaction/20261118T013853Z/models/ledger_client/ledger_client.rs:704:13
+    |
+699 |   pub proof fn theorem_uncounted_nested_refusal_leaves_the_counter_row(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+704 |       ensures ({
+    |  _____________^
+705 | |         let o1 = txn_commit(s, c, p, a, f1);
+706 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+707 | |         &&& o1.py == Py::Raise(Exc::Inconsistent) && o1.events == seq![Ev::Refused(Code::Inconsistent)]
+...   |
+712 | |         &&& txn_rollback(s, o2.srv, p).cnt.lock == s.cnt.lock + 1
+713 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "answer 401-402: status 200 even when a statement failed (the errors array alone reports it)",
+    "expect_fail_in": [
+      "theorem_http_batch_keeps_writes_around_failure",
+      "theorem_http_witness_failing_middle"
+    ],
+    "find": "        HOut { store: r.0, ran: r.1, errors: r.2, status: if r.2 == 0 { HStatus::Ok200 } else { HStatus::Bad400 } }",
+    "name": "http-status-ok-on-error",
+    "replace": "        HOut { store: r.0, ran: r.1, errors: r.2, status: HStatus::Ok200 }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_http_batch_keeps_writes_around_failure",
+      "theorem_http_witness_failing_middle"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_tx/bolt_tx.rs": "b558e9f5bdc3934a1fb6aff50067acea06bdf7a738bfbb8f19582f3a87f4ce46",
+    ".g5/Verus_verification/models/bolt_tx/model.json": "b6092d1a254a48b10df26f067f81e152812d9ec985b1e4f739bbb5cec3a772c3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/controls/http-status-ok-on-error/20261118T013758Z/models/bolt_tx/bolt_tx.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_http_batch_keeps_writes_around_failure": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/20261118T013758Z-control-http-status-ok-on-error-theorem_http_batch_keeps_writes_around_failure.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_http_witness_failing_middle": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/20261118T013758Z-control-http-status-ok-on-error-theorem_http_witness_failing_middle.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/bolt_tx/20261118T013758Z-control-http-status-ok-on-error.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_tx/20261118T013801Z-control-http-status-ok-on-error/logs/20261118T013758Z-control-http-status-ok-on-error-theorem_http_batch_keeps_writes_around_failure.log": "3d4d4ee4133d774b79b59bdd2dd0b488ea61c04ffb4166563afa91f87993e1c5",
+    ".g5/Verus_verification/results/bolt_tx/20261118T013801Z-control-http-status-ok-on-error/logs/20261118T013758Z-control-http-status-ok-on-error-theorem_http_witness_failing_middle.log": "14f8389e13c00f179cfc135fee69892b2c681f56a8d162744498c6ca35074d2a",
+    ".g5/Verus_verification/results/bolt_tx/20261118T013801Z-control-http-status-ok-on-error/logs/20261118T013758Z-control-http-status-ok-on-error.log": "164445fdfe6a2d0ffbef6ab78d2f402e3cc3c07343d17e3a563f01b8070d3ae4"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

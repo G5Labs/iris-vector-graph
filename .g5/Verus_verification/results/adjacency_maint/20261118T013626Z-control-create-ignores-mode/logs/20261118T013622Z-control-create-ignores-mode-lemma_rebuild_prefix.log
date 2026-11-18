@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/adjacency_maint/controls/create-ignores-mode/20261118T013622Z/models/adjacency_maint/adjacency_maint.rs:388:9
+    |
+388 |           (i >= 2 && multi) ==> rebuild(multi, rows, order.take(i)) == Some(Entry { leaf: lowest_w(rows), kids: rows }),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+398 | /     if i == 1 {
+399 | |         assert(order.take(0) =~= Seq::<int>::empty());
+400 | |         assert(prev == None::<Entry>);
+401 | |     } else {
+...   |
+412 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+
