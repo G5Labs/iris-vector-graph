@@ -1,0 +1,50 @@
+verification results:: 45 verified, 4 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/failed-call-partial/20261118T043332Z/models/erasure_stores/erasure_stores.rs:612:13
+    |
+612 |       ensures call(st, ep, fail, df).1.rows.contains(st.rows[i]),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+615 | /     if refused(ep) || fail.is_some() {
+616 | |         assert(r[i] == r[i]);
+617 | |         assert(r.contains(r[i]));
+618 | |     } else {
+...   |
+632 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/failed-call-partial/20261118T043332Z/models/erasure_stores/erasure_stores.rs:794:60
+    |
+792 | pub proof fn theorem_failed_call_leaves_stores(st: St, ep: Ep, late: bool, df: Set<int>)
+    | ---------------------------------------------------------------------------------------- at the end of the function body
+793 |     requires !refused(ep),
+794 |     ensures call(st, ep, Some(late), df).0 == Out::Failed, call(st, ep, Some(late), df).1.rows == st.rows,
+    |                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/failed-call-partial/20261118T043332Z/models/erasure_stores/erasure_stores.rs:805:9
+    |
+801 | pub proof fn theorem_joined_caller_decides(base: St, w: Seq<E>, ep: Ep, fail: Option<bool>, df: Set<int>)
+    | --------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+805 |         fail.is_some() ==> joined_then(base, w, ep, fail, df, true).1.rows == base.rows + w,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/failed-call-partial/20261118T043332Z/models/erasure_stores/erasure_stores.rs:1028:13
+     |
+1027 |   pub proof fn witness_list_erase_commits_earlier_chunk()
+     |   ------------------------------------------------------- at the end of the function body
+1028 |       ensures ({
+     |  _____________^
+1029 | |         let st = St { rows: seq![ent(K::Node, g1(), n_a(), none(), 0, 0), ent(K::Node, g1(), n_b(), none(), 0, 0)], version: 0 };
+1030 | |         let chunks = seq![seq![n_a()], seq![n_b()]];
+1031 | |         let (o, s2) = list_erase(st, Some(g1()), chunks, 1, 0);
+...    |
+1034 | |         &&& oj == Out::Failed &&& sj.rows == st.rows
+1035 | |     }),
+     | |______^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

@@ -4244,7 +4244,7 @@ Description: `erase_all` empties every content table and every graph-keyed globa
 
 Found by: iteration-63 census source reading (§6.1 #3); iteration 65 [erasure_stores](models/erasure_stores/NOTES.md) `witness_erase_all_keeps_named_indexes`, control `erase-all-clears-indexes`.
 
-Reproduced by: **E2E reproduced** on the run-own fixture, namespace I65D ([binding receipt](results/erasure_stores/20261118T042401Z-binding/receipt.json), cases `D1_erase_all` (95 `^BM25Idx` and 10 `^VecIdx` nodes before and after; every content store empty) and `D1_reader_bm25_after_erase_all` (`bm25_search` still answers the erased nodes)). IVF and PLAID were not built on the fixture; the source kills neither.
+Reproduced by: **E2E reproduced** on the run-own fixture, namespace I65D ([binding receipt](results/erasure_stores/20261118T043516Z-binding/receipt.json), cases `D1_erase_all` (95 `^BM25Idx` and 10 `^VecIdx` nodes before and after; every content store empty) and `D1_reader_bm25_after_erase_all` (`bm25_search` still answers the erased nodes)). IVF and PLAID were not built on the fixture; the source kills neither.
 
 Expected: [search.erasure.indexes](../ontology/features/search.g5.md#search.erasure.indexes): "Erasing every graph empties every named index, so a restore that replaces the database starts from empty indexes".
 
@@ -7076,7 +7076,7 @@ Description: Erasing one graph drops `^NKG`, a store that belongs to no single g
 
 Found by: iteration 65 source read of `Eraser.cls` `InvalidateDerived` (1038-1053) and `GraphEdgesInNKG`/`GraphNodesInNKG` (868-956); [erasure_stores](models/erasure_stores/NOTES.md) `witness_graph_erase_drops_unscoped_nkg`, `theorem_erase_clears_algo_cache`, control `graph-erase-keeps-nkg`.
 
-Reproduced by: **E2E reproduced** on the run-own fixture, namespace I65B ([binding receipt](results/erasure_stores/20261118T042401Z-binding/receipt.json), case `B1_erase_graph_g1`: `^NKG("$NI")` 5 entries and 37 other `^NKG` nodes before `erase_graph("g1")`, none after (only `^NKG("$meta","invalidated")` and DropNKG's version stamp); the default graph's `^IVG.AlgoCache` entry (from `kg_WCC`) gone; graph g2's rows, adjacency and temporal entries kept).
+Reproduced by: **E2E reproduced** on the run-own fixture, namespace I65B ([binding receipt](results/erasure_stores/20261118T043516Z-binding/receipt.json), case `B1_erase_graph_g1`: `^NKG("$NI")` 5 entries and 37 other `^NKG` nodes before `erase_graph("g1")`, none after (only `^NKG("$meta","invalidated")` and DropNKG's version stamp); the default graph's `^IVG.AlgoCache` entry (from `kg_WCC`) gone; graph g2's rows, adjacency and temporal entries kept).
 
 Expected: [erasure.kept](../ontology/features/erasure.g5.md#erasure.kept): "A graph erase keeps configuration and stores that belong to no single graph."
 
@@ -7099,7 +7099,7 @@ Description: `EraseGraph` drops the routed tables its registry claims "after the
 
 Found by: iteration 65 runtime probe (namespace I65Y) after the source read of `Eraser.cls` 258-299; [erasure_stores](models/erasure_stores/NOTES.md) `joined_then`, `theorem_joined_caller_decides`.
 
-Reproduced by: **E2E reproduced (ordering)** on the run-own fixture, namespace I65E ([binding receipt](results/erasure_stores/20261118T042401Z-binding/receipt.json), case `E1_joined_erase_caller_rollback`): inside the caller's transaction the routed table and its registry row were gone; after the caller's rollback the table, its rows, the registry row and every other store came back, so on IRIS 2026.1 Community no damage was observed. The failure the comment fears was not reproduced.
+Reproduced by: **E2E reproduced (ordering)** on the run-own fixture, namespace I65E ([binding receipt](results/erasure_stores/20261118T043516Z-binding/receipt.json), case `E1_joined_erase_caller_rollback`): inside the caller's transaction the routed table and its registry row were gone; after the caller's rollback the table, its rows, the registry row and every other store came back, so on IRIS 2026.1 Community no damage was observed. The failure the comment fears was not reproduced.
 
 Expected: [erasure.atomic.routes](../ontology/features/erasure.g5.md#erasure.atomic.routes): routed tables are "dropped after it commits".
 

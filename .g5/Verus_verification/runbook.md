@@ -819,3 +819,31 @@ observation is the binding's `priv_rev_running_engine_props_anchor` (an error re
 `theorem_shadow_difference_raises` → `_engine/query.py::QueryMixin._shadow_compare` (2226-2249) and
 `cypher/native_shadow.py::_fail`; control `names-query`; observation `shadow_order_empty_string` (`names_plan` true,
 `names_cypher` false).
+
+Iteration 65 (erasure across stores; [handoff](../uplift/consolidated/iteration-65/HANDOFF.md)), on the run's own fixture
+`ivg-cov-20261118-a-iris` (127.0.0.1:36481). The binding drops and re-creates namespaces `I65B`-`I65E` from %SYS
+(docker exec on that container only), creates the table `I65App.Ref` in `I65E` and opens one `from_connect` engine.
+From the repository root:
+
+```sh
+export RUN_DIR=$HOME/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a
+export PYTHONDONTWRITEBYTECODE=1 G5_GUIDE=$G5_HARNESS/guidance
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/erasure_stores       # PASS 49
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/erasure_stores    # 20 EXPECTED_FAIL
+CONTROL=graph-erase-keeps-nkg python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/erasure_stores
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD IVG_PIN_DIR=$PWD $RUN_DIR/venv/bin/python -B $RUN_DIR/run_binding.py \
+  $OLDPWD/.g5/Verus_verification/models/erasure_stores/binding.py)                                   # AGREES 28 live cases, 5/5 detection
+python3 .g5/uplift/consolidated/iteration-65/regrade-tools/regrade.py   # census regrade; replays on the iteration-64 TSVs (git checkout 97020aa3 -- .g5/Verus_verification/census/{obligations,blocks,excluded}.tsv first)
+python3 .g5/Verus_verification/tools/census.py                                                       # PASS
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after65                     # 824/4130
+```
+
+Worked lookup (iteration 65): `erasure.kept` → `erasure_stores.rs::witness_graph_erase_drops_unscoped_nkg` → the rows for
+`iris_src/src/Graph/KG/Eraser.cls::InvalidateDerived` (1038-1053, decision: DropNKG when the erase may have touched
+^NKG; Kill ^IVG.AlgoCache always) and `::GraphEdgesInNKG` (868-919, the risk test) in `crosswalk/decision-links.tsv`; in
+reverse, those keys in the recount's `bindings.json` list the claims. The distinguishing control is
+`graph-erase-keeps-nkg`; the product observation is the binding's `B1_erase_graph_g1` (`Nkg` 5 and `NkgOther` 37 entries
+before, none after; graph g2's rows kept). Second lookup: `erasure.atomic` → `witness_list_erase_commits_earlier_chunk`
+→ `iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.delete_nodes` (1320-1362) and `::_eraser_txn`
+(1451-1473); control `chunks-all-or-nothing`; observations `E4_unjoined_chunk_commits` (500 erased, the second chunk
+raised) beside `E3_joined_list_failure_caller_commit` (nothing erased, the caller's write kept).

@@ -74,7 +74,7 @@ erasure.kept#x04	erasure.kept	working-assumption 2: 'Keep these retained copies 
 erasure.kept#x05	erasure.kept	bullet 1: 'so a re-ingest behaves as before'	rationale		reason for keeping settings	61
 erasure.kept#x06	erasure.kept	bullet 2: 'because its rows are the only copy of vectors whose graph is unknown'	rationale		reason	61
 erasure.atomic#x01	erasure.atomic	working-assumption 1: 'prefer an explicit consistent join-or-refuse contract'	undecided-alternative		preferred policy (q-plt-006)	61
-erasure.atomic#x02	erasure.atomic	working-assumption 2: 'Erasure, ledger commits and redaction share the ledger head lock'	undecided-alternative		proposed serialisation (HD-1201, q-004 open); as built Eraser.cls takes no ^IVG.Ledger(head) lock and LedgerRedact's opening LiveRows runs outside it — not current behaviour (finding for the master)	61
+erasure.atomic#x02	erasure.atomic	working-assumption 2: 'Erasure, ledger commits and redaction share the ledger head lock'	undecided-alternative		the intended serialisation (HD-1201, q-004 open); its Today half is erasure.atomic#o06	65
 erasure.count#x01	erasure.count	working-assumption 1: 'any stronger public count needs a defined unit'	undecided-alternative		q-007 open	61
 erasure.entry-points#x01	erasure.entry-points	bullet 1: 'Erase a graph: everything in one graph'	restatement	erasure.scope#o01	the graph erase's reach is owned by erasure.scope	61
 erasure.entry-points#x02	erasure.entry-points	bullet 2: 'plus the stores that cannot be split by graph'	restatement	erasure.kept#o07	owned by erasure.kept	61

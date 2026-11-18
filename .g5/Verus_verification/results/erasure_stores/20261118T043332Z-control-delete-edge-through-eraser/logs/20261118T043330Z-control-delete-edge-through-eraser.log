@@ -1,0 +1,18 @@
+verification results:: 48 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/delete-edge-through-eraser/20261118T043330Z/models/erasure_stores/erasure_stores.rs:987:13
+    |
+986 |   pub proof fn witness_delete_edge_leaves_statement()
+    |   --------------------------------------------------- at the end of the function body
+987 |       ensures ({
+    |  _____________^
+988 | |         let r = seq![ent(K::Edge, g1(), n_a(), n_b(), 7, 0), ent(K::Stmt, g1(), n_a(), n_b(), 0, 0),
+989 | |                      ent(K::Reif, none(), none(), none(), 7, 0), ent(K::EEmb, g1(), n_a(), n_b(), 0, 0)];
+990 | |         let post = delete_edge(r, g1(), (n_a(), 1, n_b()));
+991 | |         &&& !post.contains(r[0]) &&& post.contains(r[1]) &&& post.contains(r[2]) &&& post.contains(r[3])
+992 | |         &&& !erase_edges(r, g1(), |x: (Str, int, Str)| x == (n_a(), 1int, n_b())).contains(r[1])
+993 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

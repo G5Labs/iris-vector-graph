@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_no_erase_touches_kind"
+    ],
+    "find": "K::Quar | K::Rec | K::FhirReg | K::Bm25 | K::Ivf | K::Plaid | K::VecIdx => true,",
+    "name": "erase-all-quarantine",
+    "replace": "K::Rec | K::FhirReg | K::Bm25 | K::Ivf | K::Plaid | K::VecIdx => true,",
+    "why": "EraseAll empties the embedding quarantine"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_no_erase_touches_kind"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "65064cf1c18e431828682d8989ba667a3bc46ba1e736587205d746858b0c0f74",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "ce881b102638cc5d858fd204d1a577dcc1f70ca5953eef3927925a21bdf24fa9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/erase-all-quarantine/20261118T043310Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_no_erase_touches_kind": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T043310Z-control-erase-all-quarantine-theorem_no_erase_touches_kind.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T043310Z-control-erase-all-quarantine.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T043313Z-control-erase-all-quarantine/logs/20261118T043310Z-control-erase-all-quarantine-theorem_no_erase_touches_kind.log": "2abd7860b9f3a9642c75f6b5e0c0d2793796d002249739a5dc84835a0cb00331",
+    ".g5/Verus_verification/results/erasure_stores/20261118T043313Z-control-erase-all-quarantine/logs/20261118T043310Z-control-erase-all-quarantine.log": "285e059b950e4276003e152c0262f83a7519ba8efc3bbb3c9ecffd6acf7c6466"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

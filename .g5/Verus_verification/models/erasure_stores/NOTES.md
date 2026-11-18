@@ -118,6 +118,6 @@ the Community licence's limit; its `BEFORE DELETE` trigger injection is not a pr
 
 ## Latest receipts
 
-- proof `results/erasure_stores/20261118T042417Z-prove/receipt.json` PASS 49
-- controls `results/erasure_stores/20261118T0424*-control-*/receipt.json` 20 EXPECTED_FAIL
-- binding `results/erasure_stores/20261118T042401Z-binding/receipt.json` AGREES 28 cases, 5/5 detection
+- proof `results/erasure_stores/20261118T043243Z-prove/receipt.json` PASS 49
+- controls `results/erasure_stores/20261118T043246Z..043338Z-control-*/receipt.json` 20 EXPECTED_FAIL (earlier runs 040716Z.., 042419Z.. kept)
+- binding `results/erasure_stores/20261118T043516Z-binding/receipt.json` AGREES 28 cases, 5/5 detection

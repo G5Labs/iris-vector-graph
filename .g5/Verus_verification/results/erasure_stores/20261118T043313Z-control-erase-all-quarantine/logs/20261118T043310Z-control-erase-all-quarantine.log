@@ -1,0 +1,12 @@
+verification results:: 48 verified, 1 errors
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/erase-all-quarantine/20261118T043310Z/models/erasure_stores/erasure_stores.rs:629:17
+    |
+453 |     requires 0 <= i < r.len(), f(m(r[i])),
+    |                                ---------- failed precondition
+...
+629 |                 lemma_in_mapped(r, |x: E| reset_all(x), |x: E| keep_all(r, df, x), i);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 1 previous error
+

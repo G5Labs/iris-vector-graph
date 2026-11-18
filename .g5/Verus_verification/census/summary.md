@@ -10,10 +10,10 @@ enumeration complete
 
 | scope | blocks | full | partial | absent | unassessed | total | full/total (lower) | (full+unassessed)/total (upper) | proved, full scope | proved | bounded | refuted | unchecked |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| enumerated (complete + partial) | 406 | 744 | 686 | 667 | 0 | 2097 | 35.5% | 35.5% | 196 | 1105 | 1 | 145 | 0 |
-| complete blocks only | 406 | 744 | 686 | 667 | 0 | 2097 | 35.5% | 35.5% | 196 | 1105 | 1 | 145 | 0 |
+| enumerated (complete + partial) | 406 | 794 | 666 | 640 | 0 | 2100 | 37.8% | 37.8% | 227 | 1138 | 1 | 152 | 0 |
+| complete blocks only | 406 | 794 | 666 | 640 | 0 | 2100 | 37.8% | 37.8% | 227 | 1138 | 1 | 152 | 0 |
 
-**Whole foundation (all 406 blocks enumerated):** full 744, partial 686, absent 667, unassessed 0 of 2097 obligations; full/total 35.5% (lower bound), (full+unassessed)/total 35.5% (upper bound). Passing design checks over the full stated scope (proved, full scope): 196. Proved (including narrowed) 1105, bounded 1, refuted 145, unchecked 0. Blocks with an empty denominator (N/A): 2.
+**Whole foundation (all 406 blocks enumerated):** full 794, partial 666, absent 640, unassessed 0 of 2100 obligations; full/total 37.8% (lower bound), (full+unassessed)/total 37.8% (upper bound). Passing design checks over the full stated scope (proved, full scope): 227. Proved (including narrowed) 1138, bounded 1, refuted 152, unchecked 0. Blocks with an empty denominator (N/A): 2.
 
 `proved, full scope`: obligations whose design check is a proof over their full stated scope. `bounded` (finite domain), `refuted` (a modeled counterexample of the as-built design) and `unchecked` are counted separately; `proved` includes proofs over a narrowed scope.
 
@@ -22,8 +22,8 @@ enumeration complete
 | page | blocks | full | partial | absent | unassessed | total | full/total (lower) | (full+unassessed)/total (upper) | proved, full scope | proved | bounded | refuted | unchecked |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | architecture/adapters.g5.md (2 complete, 0 partial of 2) | 2 | 7 | 6 | 1 | 0 | 14 | 50.0% | 50.0% | 3 | 9 | 0 | 1 | 0 |
-| architecture/adjacency-and-derived-data.g5.md (26 complete, 0 partial of 26) | 26 | 68 | 38 | 25 | 0 | 131 | 51.9% | 51.9% | 14 | 81 | 0 | 9 | 0 |
-| architecture/algorithm-execution.g5.md (13 complete, 0 partial of 13) | 13 | 9 | 3 | 29 | 0 | 41 | 22.0% | 22.0% | 0 | 10 | 0 | 2 | 0 |
+| architecture/adjacency-and-derived-data.g5.md (26 complete, 0 partial of 26) | 26 | 69 | 37 | 25 | 0 | 131 | 52.7% | 52.7% | 15 | 82 | 0 | 9 | 0 |
+| architecture/algorithm-execution.g5.md (13 complete, 0 partial of 13) | 13 | 10 | 3 | 28 | 0 | 41 | 24.4% | 24.4% | 0 | 11 | 0 | 2 | 0 |
 | architecture/query-execution.g5.md (17 complete, 0 partial of 17) | 17 | 34 | 24 | 12 | 0 | 70 | 48.6% | 48.6% | 7 | 32 | 0 | 14 | 0 |
 | architecture/search-storage-and-indexes.g5.md (18 complete, 0 partial of 18) | 18 | 21 | 35 | 31 | 0 | 87 | 24.1% | 24.1% | 10 | 32 | 0 | 5 | 0 |
 | concepts/access.g5.md (13 complete, 0 partial of 13) | 13 | 8 | 22 | 14 | 0 | 44 | 18.2% | 18.2% | 0 | 20 | 0 | 6 | 0 |
@@ -32,12 +32,12 @@ enumeration complete
 | features/client-interfaces.g5.md (10 complete, 0 partial of 10) | 10 | 27 | 16 | 8 | 0 | 51 | 52.9% | 52.9% | 11 | 29 | 0 | 13 | 0 |
 | features/cypher.g5.md (50 complete, 0 partial of 50) | 50 | 107 | 92 | 123 | 0 | 322 | 33.2% | 33.2% | 24 | 156 | 0 | 29 | 0 |
 | features/data-interchange.g5.md (11 complete, 0 partial of 11) | 11 | 41 | 26 | 22 | 0 | 89 | 46.1% | 46.1% | 4 | 58 | 0 | 4 | 0 |
-| features/erasure.g5.md (10 complete, 0 partial of 10) | 10 | 2 | 19 | 26 | 0 | 47 | 4.3% | 4.3% | 0 | 11 | 0 | 3 | 0 |
+| features/erasure.g5.md (10 complete, 0 partial of 10) | 10 | 45 | 2 | 2 | 0 | 49 | 91.8% | 91.8% | 26 | 38 | 0 | 9 | 0 |
 | features/fhir.g5.md (18 complete, 0 partial of 18) | 18 | 18 | 22 | 41 | 0 | 81 | 22.2% | 22.2% | 7 | 33 | 0 | 1 | 0 |
 | features/graph-structure.g5.md (20 complete, 0 partial of 20) | 20 | 29 | 30 | 40 | 0 | 99 | 29.3% | 29.3% | 5 | 55 | 0 | 0 | 0 |
 | features/ledger.g5.md (19 complete, 0 partial of 19) | 19 | 61 | 46 | 16 | 0 | 123 | 49.6% | 49.6% | 18 | 102 | 0 | 3 | 0 |
 | features/redaction.g5.md (28 complete, 0 partial of 28) | 28 | 27 | 39 | 45 | 0 | 111 | 24.3% | 24.3% | 14 | 47 | 0 | 2 | 0 |
-| features/search.g5.md (27 complete, 0 partial of 27) | 27 | 56 | 57 | 19 | 0 | 132 | 42.4% | 42.4% | 22 | 78 | 0 | 13 | 0 |
+| features/search.g5.md (27 complete, 0 partial of 27) | 27 | 61 | 55 | 17 | 0 | 133 | 45.9% | 45.9% | 26 | 82 | 0 | 14 | 0 |
 | features/temporal.g5.md (29 complete, 0 partial of 29) | 29 | 68 | 59 | 42 | 0 | 169 | 40.2% | 40.2% | 30 | 105 | 0 | 6 | 0 |
 | operations/ledger.g5.md (6 complete, 0 partial of 6) | 6 | 19 | 13 | 4 | 0 | 36 | 52.8% | 52.8% | 10 | 28 | 0 | 2 | 0 |
 | operations/search-indexes.g5.md (3 complete, 0 partial of 3) | 3 | 8 | 7 | 1 | 0 | 16 | 50.0% | 50.0% | 1 | 9 | 0 | 4 | 0 |
@@ -64,7 +64,7 @@ enumeration complete
 | structure.adjacency.declare | complete | 5 | 1 | 0 | 0 | 6 | 83.3% | 83.3% | 1 |  |
 | structure.degree.cache | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 2 |  |
 | structure.degree.cache.uncommitted | complete | 1 | 3 | 0 | 0 | 4 | 25.0% | 25.0% | 0 |  |
-| structure.degree.cache.erase | complete | 1 | 1 | 0 | 0 | 2 | 50.0% | 50.0% | 0 |  |
+| structure.degree.cache.erase | complete | 2 | 0 | 0 | 0 | 2 | 100.0% | 100.0% | 0 |  |
 | structure.degree.cache.warm | complete | 4 | 4 | 1 | 0 | 9 | 44.4% | 44.4% | 1 |  |
 | structure.rebuilt | complete | 1 | 0 | 3 | 0 | 4 | 25.0% | 25.0% | 3 |  |
 | structure.rebuilt.token | complete | 0 | 2 | 2 | 0 | 4 | 0.0% | 0.0% | 1 |  |
@@ -91,7 +91,7 @@ enumeration complete
 | algorithms.cache | complete | 1 | 2 | 1 | 0 | 4 | 25.0% | 25.0% | 0 |  |
 | algorithms.cache.token | complete | 2 | 0 | 2 | 0 | 4 | 50.0% | 50.0% | 3 |  |
 | algorithms.cache.pagerank | complete | 6 | 0 | 0 | 0 | 6 | 100.0% | 100.0% | 2 |  |
-| algorithms.cache.erasure | complete | 0 | 0 | 1 | 0 | 1 | 0.0% | 0.0% | 0 |  |
+| algorithms.cache.erasure | complete | 1 | 0 | 0 | 0 | 1 | 100.0% | 100.0% | 0 |  |
 | algorithms.cache.concurrency | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | query.paths | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 2 |  |
 | query.native | complete | 3 | 0 | 0 | 0 | 3 | 100.0% | 100.0% | 1 |  |
@@ -248,16 +248,16 @@ enumeration complete
 | install.export.prov | complete | 2 | 2 | 2 | 0 | 6 | 33.3% | 33.3% | 0 |  |
 | install.export.rdf.cypher | complete | 2 | 2 | 5 | 0 | 9 | 22.2% | 22.2% | 0 |  |
 | install.shacl | complete | 3 | 1 | 2 | 0 | 6 | 50.0% | 50.0% | 0 |  |
-| erasure.scope | complete | 0 | 6 | 2 | 0 | 8 | 0.0% | 0.0% | 4 |  |
-| erasure.live-statements | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 0 |  |
-| erasure.history | complete | 0 | 1 | 2 | 0 | 3 | 0.0% | 0.0% | 4 |  |
-| erasure.kept | complete | 0 | 2 | 5 | 0 | 7 | 0.0% | 0.0% | 6 |  |
-| erasure.atomic | complete | 0 | 2 | 3 | 0 | 5 | 0.0% | 0.0% | 2 |  |
-| erasure.atomic.routes | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 0 |  |
-| erasure.count | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 1 |  |
-| erasure.entry-points | complete | 0 | 3 | 3 | 0 | 6 | 0.0% | 0.0% | 3 |  |
-| erasure.entry-points.single-path | complete | 1 | 0 | 2 | 0 | 3 | 33.3% | 33.3% | 2 |  |
-| erasure.prefix-match | complete | 0 | 4 | 0 | 0 | 4 | 0.0% | 0.0% | 3 |  |
+| erasure.scope | complete | 8 | 0 | 0 | 0 | 8 | 100.0% | 100.0% | 4 |  |
+| erasure.live-statements | complete | 3 | 0 | 0 | 0 | 3 | 100.0% | 100.0% | 0 |  |
+| erasure.history | complete | 2 | 0 | 1 | 0 | 3 | 66.7% | 66.7% | 4 |  |
+| erasure.kept | complete | 7 | 0 | 0 | 0 | 7 | 100.0% | 100.0% | 6 |  |
+| erasure.atomic | complete | 5 | 0 | 1 | 0 | 6 | 83.3% | 83.3% | 2 |  |
+| erasure.atomic.routes | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 0 |  |
+| erasure.count | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 1 |  |
+| erasure.entry-points | complete | 6 | 0 | 0 | 0 | 6 | 100.0% | 100.0% | 3 |  |
+| erasure.entry-points.single-path | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 2 |  |
+| erasure.prefix-match | complete | 2 | 2 | 0 | 0 | 4 | 50.0% | 50.0% | 3 |  |
 | fhir.graph | complete | 0 | 2 | 3 | 0 | 5 | 0.0% | 0.0% | 3 |  |
 | fhir.graph.install | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 0 |  |
 | fhir.graph.lifecycle | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 5 |  |
@@ -368,8 +368,8 @@ enumeration complete
 | search.fusion.vector_graph | complete | 4 | 2 | 0 | 0 | 6 | 66.7% | 66.7% | 0 |  |
 | search.fusion.rest | complete | 0 | 2 | 1 | 0 | 3 | 0.0% | 0.0% | 0 |  |
 | search.fusion.multi_vector | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 0 |  |
-| search.erasure | complete | 1 | 2 | 1 | 0 | 4 | 25.0% | 25.0% | 3 |  |
-| search.erasure.indexes | complete | 2 | 0 | 2 | 0 | 4 | 50.0% | 50.0% | 4 |  |
+| search.erasure | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 3 |  |
+| search.erasure.indexes | complete | 4 | 0 | 1 | 0 | 5 | 80.0% | 80.0% | 4 |  |
 | temporal.edge | complete | 4 | 2 | 0 | 0 | 6 | 66.7% | 66.7% | 1 |  |
 | temporal.edge.clock | complete | 11 | 0 | 0 | 0 | 11 | 100.0% | 100.0% | 0 |  |
 | temporal.edge.graph-scope | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 1 |  |

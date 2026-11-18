@@ -1,0 +1,125 @@
+{"runtime": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/runtime.py", "fixture": {"container": "ivg-cov-20261118-a-iris", "host": "127.0.0.1", "port": 36481, "kind": "run-own", "unit": "g5-ontology-coverage-20261117-iris-vector-graph", "iris": "IRIS Community 2026.1 (Build 234U)"}}
+WARNING:root:IRISINSTALLDIR or ISC_PACKAGE_INSTALLDIR environment variable is not set
+WARNING:root:Embedded Python not configured; call iris.connect(path=...) to configure it
+[I65B] graph erase
+INFO:iris_vector_graph._engine.schema:IVG ready in namespace I65B, IVG Schema Graph_KG: 66 classes deployed; 3 skipped: Graph.KG.MCPService (needs %AI.MCP.Service, not installed on this server), Graph.KG.MCPToolSet (needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server), Graph.KG.MCPTools (needs %AI.Tool, not installed on this server); embedding dimension 8; Arno library not loaded (optional): algorithms run in ObjectScript
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+INFO:iris_vector_graph.ledger:ledger.commit outcome=success revision_id=b1e9eb8ae30711f1821d32767ca01df1 actor=i65 op_count=5 duration_ms=218.246
+INFO:iris_vector_graph._engine.schema:^KG adjacency index rebuilt successfully
+  NULL graph_id: {'nodes': " <'graph_id' in table 'Graph_KG.nodes' is a required field>]", 'rdf_props': " <'graph_id' in table 'Graph_KG.rdf_props' is a required field>]", 'rdf_labels': " <'graph_id' in table 'Graph_KG.rdf_labels' is a required field>]", 'rdf_edges': " <'graph_id' in table 'Graph_KG.rdf_edges' is a required field>]", 'docs': " <'graph_id' in table 'Graph_KG.docs' is a required field>]"}
+  B1_erase_graph_g1: AGREES returned=7 expected=7 err='None' []
+  digest after erase (non-empty): {'^IVG.TemporalStructural': 1}
+  B2_drop_graph_g2: AGREES returned=7 expected=7 err='None' []
+  B3_erase_default_none: AGREES returned=9 expected=9 err='None' []
+  B4_refuse_zero: AGREES returned=None expected='refused' err='ValueError: graph name "0" is reserved: IRIS canonicalizes the subscript "0" to ' []
+  B5_refuse_control: AGREES returned=None expected='refused' err="ValueError: graph name 'bad\\x01' contains a control character (0x01), which cann" []
+  B6_eraser_refuses_zero_natively: AGREES returned=None expected='refused' err='RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: graph name "0" is' []
+  B7_erase_empty_graph: AGREES returned=0 expected=0 err='None' []
+[I65C] prefix / ID / relationship erases and delete_edge
+INFO:iris_vector_graph._engine.schema:IVG ready in namespace I65C, IVG Schema Graph_KG: 66 classes deployed; 3 skipped: Graph.KG.MCPService (needs %AI.MCP.Service, not installed on this server), Graph.KG.MCPToolSet (needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server), Graph.KG.MCPTools (needs %AI.Tool, not installed on this server); embedding dimension 8; Arno library not loaded (optional): algorithms run in ObjectScript
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+INFO:iris_vector_graph.ledger:ledger.commit outcome=success revision_id=bce089d7e30711f1821d32767ca01df1 actor=i65 op_count=10 duration_ms=122.256
+INFO:iris_vector_graph._engine.schema:^KG adjacency index rebuilt successfully
+  C1_prefix_acme_bar: AGREES returned=2 expected=2 err='None' []
+  C2_refuse_empty_prefix: AGREES returned=None expected='refused' err='ValueError: delete_nodes_by_prefix refuses an empty prefix, which would erase th' []
+  C3_ids_without_node_rows: AGREES returned=0 expected=0 err='None' []
+  C4_delete_node: AGREES returned=True expected=True err='None' []
+  C5_bulk_delete_nodes: AGREES returned=[2, 0] expected=[2, 0] err='None' []
+  C6_store_delete_edges: AGREES returned=1 expected=1 err='None' []
+  C7_delete_edge_bypass: AGREES returned=True expected=True err='None' []
+/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/iris-vector-graph/iris-vector-graph/.g5/Verus_verification/models/erasure_stores/binding.py:662: DeprecationWarning: bulk_delete_adjacency is deprecated and deletes rows: every Graph_KG.rdf_edges row with one of these nodes as source or target, in every graph. Use delete_node / bulk_delete_nodes to remove the nodes too.
+  run(c, ns, "C8_bulk_delete_adjacency", ("bda", "*", ["m1"]), lambda: e.bulk_delete_adjacency(["m1"]),
+  C8_bulk_delete_adjacency: AGREES returned=1 expected=1 err='None' []
+[I65D] erase-all
+INFO:iris_vector_graph._engine.schema:IVG ready in namespace I65D, IVG Schema Graph_KG: 66 classes deployed; 3 skipped: Graph.KG.MCPService (needs %AI.MCP.Service, not installed on this server), Graph.KG.MCPToolSet (needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server), Graph.KG.MCPTools (needs %AI.Tool, not installed on this server); embedding dimension 8; Arno library not loaded (optional): algorithms run in ObjectScript
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+INFO:iris_vector_graph.ledger:ledger.commit outcome=success revision_id=c64e26e4e30711f1821d32767ca01df1 actor=i65 op_count=3 duration_ms=133.974
+INFO:iris_vector_graph._engine.schema:^KG adjacency index rebuilt successfully
+  D1_erase_all: AGREES returned=13 expected=13 err='None' []
+[I65E] caller transactions, chunk commits, injected failures
+INFO:iris_vector_graph._engine.schema:IVG ready in namespace I65E, IVG Schema Graph_KG: 66 classes deployed; 3 skipped: Graph.KG.MCPService (needs %AI.MCP.Service, not installed on this server), Graph.KG.MCPToolSet (needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server), Graph.KG.MCPTools (needs %AI.Tool, not installed on this server); embedding dimension 8; Arno library not loaded (optional): algorithms run in ObjectScript
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+  E1_joined_erase_caller_rollback: AGREES returned=3 expected=3 err='None' []
+  E2_joined_erase_caller_commit: AGREES returned=3 expected=3 err='None' []
+  E3_joined_list_failure_caller_commit: DISAGREES returned=None expected=None err='RuntimeError: <THROW>' []
+  E4_unjoined_chunk_commits: DISAGREES returned=None expected=None err='RuntimeError: <THROW>' []
+  E5_graph_erase_fails_fk: DISAGREES returned=None expected=None err='RuntimeError: <THROW> *%Exception.StatusException ERROR #5001: erase failed on n' []
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+  E6_dedicated_erase_survives_caller_rollback: AGREES returned=4 expected=4 err='None' []
+  final B0_null_spelling_reachability: AGREES
+  final B1_erase_graph_g1: AGREES
+  final B1_reader_reifier_node_after_erase: AGREES
+  final B1_reader_is_multigraph_after_erase: AGREES
+  final B1_reader_bm25_after_erase: AGREES
+  final B1_reader_digest_after_erase: AGREES
+  final B2_drop_graph_g2: AGREES
+  final B3_erase_default_none: AGREES
+  final B4_refuse_zero: AGREES
+  final B5_refuse_control: AGREES
+  final B6_eraser_refuses_zero_natively: AGREES
+  final B7_erase_empty_graph: AGREES
+  final C1_prefix_acme_bar: AGREES
+  final C2_refuse_empty_prefix: AGREES
+  final C3_ids_without_node_rows: AGREES
+  final C4_delete_node: AGREES
+  final C5_bulk_delete_nodes: AGREES
+  final C6_store_delete_edges: AGREES
+  final C7_delete_edge_bypass: AGREES
+  final C8_bulk_delete_adjacency: AGREES
+  final D1_erase_all: AGREES
+  final D1_reader_bm25_after_erase_all: AGREES
+  final E1_joined_erase_caller_rollback: AGREES
+  final E2_joined_erase_caller_commit: AGREES
+  final E3_joined_list_failure_caller_commit: AGREES
+  final E4_unjoined_chunk_commits: AGREES
+  final E5_graph_erase_fails_fk: AGREES
+  final E6_dedicated_erase_survives_caller_rollback: AGREES
+  final B0_null_spelling_reachability: AGREES
+  final B1_erase_graph_g1: AGREES
+  final B1_reader_reifier_node_after_erase: AGREES
+  final B1_reader_is_multigraph_after_erase: AGREES
+  final B1_reader_bm25_after_erase: AGREES
+  final B1_reader_digest_after_erase: AGREES
+  final B2_drop_graph_g2: AGREES
+  final B3_erase_default_none: AGREES
+  final B4_refuse_zero: AGREES
+  final B5_refuse_control: AGREES
+  final B6_eraser_refuses_zero_natively: AGREES
+  final B7_erase_empty_graph: AGREES
+  final C1_prefix_acme_bar: AGREES
+  final C2_refuse_empty_prefix: AGREES
+  final C3_ids_without_node_rows: AGREES
+  final C4_delete_node: AGREES
+  final C5_bulk_delete_nodes: AGREES
+  final C6_store_delete_edges: AGREES
+  final C7_delete_edge_bypass: AGREES
+  final C8_bulk_delete_adjacency: AGREES
+  final D1_erase_all: AGREES
+  final D1_reader_bm25_after_erase_all: AGREES
+  final E1_joined_erase_caller_rollback: AGREES
+  final E2_joined_erase_caller_commit: AGREES
+  final E3_joined_list_failure_caller_commit: AGREES
+  final E4_unjoined_chunk_commits: AGREES
+  final E5_graph_erase_fails_fk: AGREES
+  final E6_dedicated_erase_survives_caller_rollback: AGREES
+erasure_stores: AGREES, 28 cases (0 disagree: []), detection {'observed_field_changed': True, 'observed_other_graph_dropped': True, 'mutant_frame_ignores_graph': True, 'mutant_count_ids_includes_edges': True, 'mutant_prefix_from_names': True}; /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/iris-vector-graph/iris-vector-graph/.g5/Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/erase-all-clears-indexes/20261118T043313Z/models/erasure_stores/erasure_stores.rs:921:5
+    |
+453 |     requires 0 <= i < r.len(), f(m(r[i])),
+    |                                ---------- failed precondition
+...
+921 |     lemma_in_mapped(r, |x: E| reset_all(x), |x: E| keep_all(r, Set::empty(), x), 0);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 1 previous error
+

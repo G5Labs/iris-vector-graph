@@ -1,0 +1,18 @@
+verification results:: 48 verified, 1 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/chunks-all-or-nothing/20261118T043316Z/models/erasure_stores/erasure_stores.rs:1028:13
+     |
+1027 |   pub proof fn witness_list_erase_commits_earlier_chunk()
+     |   ------------------------------------------------------- at the end of the function body
+1028 |       ensures ({
+     |  _____________^
+1029 | |         let st = St { rows: seq![ent(K::Node, g1(), n_a(), none(), 0, 0), ent(K::Node, g1(), n_b(), none(), 0, 0)], version: 0 };
+1030 | |         let chunks = seq![seq![n_a()], seq![n_b()]];
+1031 | |         let (o, s2) = list_erase(st, Some(g1()), chunks, 1, 0);
+...    |
+1034 | |         &&& oj == Out::Failed &&& sj.rows == st.rows
+1035 | |     }),
+     | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

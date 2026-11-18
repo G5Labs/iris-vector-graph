@@ -1,0 +1,31 @@
+verification results:: 47 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/prefix-from-names/20261118T043251Z/models/erasure_stores/erasure_stores.rs:744:13
+    |
+743 |   pub proof fn theorem_prefix_selects_node_rows(r: Seq<E>, c: Str, pfx: Str, id: Str)
+    |   ----------------------------------------------------------------------------------- at the end of the function body
+744 |       ensures (prefix_sel(r, c, pfx))(id) <==>
+    |  _____________^
+745 | |         (has_prefix(id, pfx) && exists|i: int| 0 <= i < r.len() && (#[trigger] r[i]).k == K::Node && in_g(r[i], c) && r[i].s == id),
+    | |___________________________________________________________________________________________________________________________________^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/prefix-from-names/20261118T043251Z/models/erasure_stores/erasure_stores.rs:965:1
+    |
+965 | pub proof fn witness_prefix_leaves_event_ids_remove()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/prefix-from-names/20261118T043251Z/models/erasure_stores/erasure_stores.rs:974:12
+    |
+974 |     assert(!dp(n_a()));
+    |            ^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/prefix-from-names/20261118T043251Z/models/erasure_stores/erasure_stores.rs:975:12
+    |
+975 |     assert(!dp(n_b()));
+    |            ^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

@@ -750,7 +750,7 @@ State machines: [retrieval compose](../../Verus_verification/models/retrieval_co
 
 Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001)
 
-Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json)): documents and routed vectors of the erased graph went, the other graph's stayed; the BM25 index built for the graph still answered (`B1_reader_bm25_after_erase`).
+Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json)): documents and routed vectors of the erased graph went, the other graph's stayed; the BM25 index built for the graph still answered (`B1_reader_bm25_after_erase`).
 
 State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 

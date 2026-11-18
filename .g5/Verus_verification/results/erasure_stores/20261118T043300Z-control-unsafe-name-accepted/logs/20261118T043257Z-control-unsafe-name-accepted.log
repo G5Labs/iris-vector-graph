@@ -1,0 +1,27 @@
+verification results:: 48 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/unsafe-name-accepted/20261118T043257Z/models/erasure_stores/erasure_stores.rs:547:1
+    |
+547 | pub proof fn theorem_unsafe_or_empty_refused(st: St, g: Str, pfx: Str, fail: Option<bool>, df: Set<int>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/unsafe-name-accepted/20261118T043257Z/models/erasure_stores/erasure_stores.rs:549:9
+    |
+549 |           g == seq![48int] ==> call(st, Ep::Graph { g: Some(g) }, fail, df) == (Out::Refused, st),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+553 | /     if g.len() == 1 && g[0] == 1 {
+554 | |         assert(ctl(g[0]));
+555 | |         assert(!valid(g));
+556 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/unsafe-name-accepted/20261118T043257Z/models/erasure_stores/erasure_stores.rs:555:16
+    |
+555 |         assert(!valid(g));
+    |                ^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

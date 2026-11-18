@@ -601,9 +601,10 @@ pub proof fn theorem_no_erase_touches_history(st: St, ep: Ep, fail: Option<bool>
     theorem_no_erase_touches_kind(st, ep, fail, df, i);
 }
 
-/// The kinds no entry point ever removes or rewrites: history, the quarantine and the graphless search indexes.
+/// The kinds no entry point ever removes or rewrites: history, the quarantine and every named search index
+/// (search.erasure.indexes "Today no erase empties a named index"; bug-srch-117, bug-srch-001).
 pub open spec fn never_kind(k: K) -> bool {
-    match k { K::Rec | K::Quar | K::Ivf | K::Plaid | K::VecIdx => true, _ => false }
+    match k { K::Rec | K::Quar | K::Bm25 | K::Ivf | K::Plaid | K::VecIdx => true, _ => false }
 }
 
 pub proof fn theorem_no_erase_touches_kind(st: St, ep: Ep, fail: Option<bool>, df: Set<int>, i: int)

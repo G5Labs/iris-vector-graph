@@ -381,7 +381,7 @@ Findings: [ADR-0012 does not mention the lockless-writer fallback that 4.7.0 add
 
 State machines: [graph structure](../../Verus_verification/models/graph_structure/manifest.json), [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 
-Iteration 65: bullet 3 corrected. `Adjacency.RemoveGraph` and `RemoveAll` kill `^IVG.AdjNoLock` (Adjacency.cls 440, 465), so a graph erase also turns caching back on ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json) `B1_erase_graph_g1`; `witness_graph_erase_clears_nolock`).
+Iteration 65: bullet 3 corrected. `Adjacency.RemoveGraph` and `RemoveAll` kill `^IVG.AdjNoLock` (Adjacency.cls 440, 465), so a graph erase also turns caching back on ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json) `B1_erase_graph_g1`; `witness_graph_erase_clears_nolock`).
 
 ### structure.degree.cache.erase
 
@@ -395,7 +395,7 @@ Live coverage: [erase clears generations and cached degrees](../../../tests/e2e/
 
 Findings: [A degree cached before a node is deleted and re-created can be served afterwards as current](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-003)
 
-Iteration 65: graph erase kills the graph's gen and degc, an ID erase the IDs' (`theorem_graph_erase_removes_scoped`, `theorem_ids_erase`; [erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json)).
+Iteration 65: graph erase kills the graph's gen and degc, an ID erase the IDs' (`theorem_graph_erase_removes_scoped`, `theorem_ids_erase`; [erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json)).
 
 State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 
