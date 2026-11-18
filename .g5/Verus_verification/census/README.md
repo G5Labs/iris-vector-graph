@@ -76,4 +76,8 @@ Per block, per page and pooled over the enumerated scope (complete + partial blo
 count of obligations proved over their full stated scope, with proved, bounded, refuted and unchecked counted
 separately. A block with an empty denominator is N/A. Not-started blocks count zero obligations (not N/A). While any
 block is not-started or partial the tool prints "enumeration incomplete: whole-foundation percentage unmeasured" with
-the enumerated block count and never prints a whole-foundation percentage.
+the enumerated block count and never prints a whole-foundation percentage. When every block is complete (since
+iteration 63) it prints "enumeration complete" and one **Whole foundation** line under the pooled table: the four grade
+counts, lower and upper bound, obligations proved over their full stated scope, proved/bounded/refuted/unchecked and
+the number of N/A blocks. This addition does not change any rule, column or check, and the output for an incomplete
+census is byte-identical to before.

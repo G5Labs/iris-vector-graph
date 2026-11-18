@@ -408,6 +408,17 @@ def main(argv):
     P(line("enumerated (complete + partial)", enumerated, len(enumerated)))
     P(line("complete blocks only", st["complete"], len(st["complete"])))
     P("")
+    if not (st["partial"] or st["not-started"]):  # added iteration 63; prints nothing while enumeration is incomplete
+        t, c, fs = tally(set(enumerated))
+        tot = sum(t.values())
+        na = sum(1 for b in enumerated if not any(r["block"] == b for r in orows))
+        P(f"**Whole foundation (all {len(blocks)} blocks enumerated):** full {t['full']}, partial {t['partial']}, "
+          f"absent {t['absent']}, unassessed {t['unassessed']} of {tot} obligations; full/total "
+          f"{pct(t['full'], tot)} (lower bound), (full+unassessed)/total {pct(t['full'] + t['unassessed'], tot)} "
+          f"(upper bound). Passing design checks over the full stated scope (proved, full scope): {fs}. Proved "
+          f"(including narrowed) {c['proved']}, bounded {c['bounded']}, refuted {c['refuted']}, unchecked "
+          f"{c['unchecked']}. Blocks with an empty denominator (N/A): {na}.")
+        P("")
     P("`proved, full scope`: obligations whose design check is a proof over their full stated scope. `bounded` "
       "(finite domain), `refuted` (a modeled counterexample of the as-built design) and `unchecked` are counted "
       "separately; `proved` includes proofs over a narrowed scope.")
