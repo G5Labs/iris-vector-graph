@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/joined-commits-own/20261118T042458Z/models/erasure_stores/erasure_stores.rs:803:9
+    |
+800 | pub proof fn theorem_joined_caller_decides(base: St, w: Seq<E>, ep: Ep, fail: Option<bool>, df: Set<int>)
+    | --------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+803 |         joined_then(base, w, ep, fail, df, false).1.rows == base.rows,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

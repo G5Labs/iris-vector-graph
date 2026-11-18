@@ -1,0 +1,27 @@
+verification results:: 47 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/joined-commits-own/20261118T042458Z/models/erasure_stores/erasure_stores.rs:803:9
+    |
+800 | pub proof fn theorem_joined_caller_decides(base: St, w: Seq<E>, ep: Ep, fail: Option<bool>, df: Set<int>)
+    | --------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+803 |         joined_then(base, w, ep, fail, df, false).1.rows == base.rows,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/joined-commits-own/20261118T042458Z/models/erasure_stores/erasure_stores.rs:1056:13
+     |
+1055 |   pub proof fn witness_dedicated_erase_survives_caller_rollback()
+     |   --------------------------------------------------------------- at the end of the function body
+1056 |       ensures ({
+     |  _____________^
+1057 | |         let base = St { rows: seq![ent(K::Node, g1(), n_a(), none(), 0, 0)], version: 0 };
+1058 | |         let w = seq![ent(K::Node, g2(), n_b(), none(), 0, 0)];
+1059 | |         let ep = Ep::Graph { g: Some(g1()) };
+1060 | |         &&& !dedicated_then(base, w, ep, None, Set::empty(), false).1.rows.contains(base.rows[0])
+1061 | |         &&& joined_then(base, w, ep, None, Set::empty(), false).1.rows.contains(base.rows[0])
+1062 | |     }),
+     | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

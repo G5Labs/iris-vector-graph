@@ -1,0 +1,190 @@
+{
+ "name": "erasure_stores",
+ "root": "erasure_stores.rs",
+ "expected_verified": 49,
+ "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "controls": [
+  {
+   "name": "spelling-not-coalesced",
+   "why": "the graph predicate compares the raw cell: a NULL graph_id is not the default graph",
+   "find": "match sp { Sp::Null => Seq::<int>::empty(), Sp::S(n) => n }",
+   "replace": "match sp { Sp::Null => seq![0int], Sp::S(n) => n }",
+   "expect_fail_in": [
+    "theorem_default_graph_both_spellings"
+   ]
+  },
+  {
+   "name": "frame-ignores-graph",
+   "why": "EraseGraph's scoped deletes lose their graph predicate",
+   "find": "if graph_kill(e.k) && in_g(e, c) { false }",
+   "replace": "if graph_kill(e.k) { false }",
+   "expect_fail_in": [
+    "theorem_graph_erase_frame"
+   ]
+  },
+  {
+   "name": "reif-of-all-graphs",
+   "why": "EraseGraph deletes every reification, not those of its own edges",
+   "find": "else if e.k == K::Reif { !reif_of_graph(r, c, e.eid) }",
+   "replace": "else if e.k == K::Reif { false }",
+   "expect_fail_in": [
+    "theorem_graph_erase_keeps_other_reifications"
+   ]
+  },
+  {
+   "name": "prefix-from-names",
+   "why": "the prefix erase selects IDs by name alone, not through node rows of the graph",
+   "find": "|id: Str| exists|i: int| 0 <= i < r.len() && (#[trigger] r[i]).k == K::Node && in_g(r[i], c)\n        && r[i].s == id && has_prefix(id, pfx)",
+   "replace": "|id: Str| has_prefix(id, pfx)",
+   "expect_fail_in": [
+    "theorem_prefix_selects_node_rows",
+    "witness_prefix_leaves_event_ids_remove"
+   ]
+  },
+  {
+   "name": "empty-prefix-accepted",
+   "why": "EraseNodes no longer refuses an empty prefix",
+   "find": "Ep::Prefix { g, pfx } => pfx.len() == 0 || !valid(gname(g)),",
+   "replace": "Ep::Prefix { g, pfx } => !valid(gname(g)),",
+   "expect_fail_in": [
+    "theorem_unsafe_or_empty_refused"
+   ]
+  },
+  {
+   "name": "unsafe-name-accepted",
+   "why": "GraphKey.Validate accepts every name",
+   "find": "n != seq![48int] && forall|i: int| 0 <= i < n.len() ==> !ctl(#[trigger] n[i])",
+   "replace": "true",
+   "expect_fail_in": [
+    "theorem_unsafe_or_empty_refused"
+   ]
+  },
+  {
+   "name": "count-includes-labels",
+   "why": "the graph count adds label rows (a derived store)",
+   "find": "pub open spec fn row_of(e: E, c: Str) -> bool { (e.k == K::Node || e.k == K::Edge) && in_g(e, c) }",
+   "replace": "pub open spec fn row_of(e: E, c: Str) -> bool { (e.k == K::Node || e.k == K::Edge || e.k == K::Label) && in_g(e, c) }",
+   "expect_fail_in": [
+    "theorem_count_ignores_derived"
+   ]
+  },
+  {
+   "name": "count-ids-includes-edges",
+   "why": "repair of q-007's node-erase case: EraseIdSet also counts the relationship rows it removes",
+   "find": "r.filter(|e: E| e.k == K::Node && in_g(e, c) && d(e.s)).len()",
+   "replace": "r.filter(|e: E| (e.k == K::Node && in_g(e, c) && d(e.s)) || incident(e, c, d)).len()",
+   "expect_fail_in": [
+    "witness_id_erase_count_omits_relationships"
+   ]
+  },
+  {
+   "name": "orphan-dropped",
+   "why": "the post-commit DROP takes every collected routed table, claimed or orphan",
+   "find": "else if e.k == K::RouteTable { !(claimed(r, c, e.tbl) && !df.contains(e.tbl)) }",
+   "replace": "else if e.k == K::RouteTable { df.contains(e.tbl) }",
+   "expect_fail_in": [
+    "theorem_graph_erase_routes"
+   ]
+  },
+  {
+   "name": "registry-before-drop",
+   "why": "the registry row goes even when its table's DROP fails",
+   "find": "else if e.k == K::Registry && in_g(e, c) { !(claimed(r, c, e.tbl) && !df.contains(e.tbl)) }",
+   "replace": "else if e.k == K::Registry && in_g(e, c) { !claimed(r, c, e.tbl) }",
+   "expect_fail_in": [
+    "theorem_graph_erase_routes"
+   ]
+  },
+  {
+   "name": "erase-all-quarantine",
+   "why": "EraseAll empties the embedding quarantine",
+   "find": "K::Quar | K::Rec | K::FhirReg | K::Bm25 | K::Ivf | K::Plaid | K::VecIdx => true,",
+   "replace": "K::Rec | K::FhirReg | K::Bm25 | K::Ivf | K::Plaid | K::VecIdx => true,",
+   "expect_fail_in": [
+    "theorem_no_erase_touches_kind"
+   ]
+  },
+  {
+   "name": "erase-all-clears-indexes",
+   "why": "repair of search.erasure.indexes bullet 2: EraseAll empties the named search indexes",
+   "find": "K::Quar | K::Rec | K::FhirReg | K::Bm25 | K::Ivf | K::Plaid | K::VecIdx => true,",
+   "replace": "K::Quar | K::Rec | K::FhirReg => true,",
+   "expect_fail_in": [
+    "witness_erase_all_keeps_named_indexes"
+   ]
+  },
+  {
+   "name": "chunks-all-or-nothing",
+   "why": "repair of bug-led-011: an unjoined list erase rolls every chunk back on a failure",
+   "find": "Out::Count(n) => list_erase(s1, g, chunks.drop_first(), fail_at - 1, acc + n),",
+   "replace": "Out::Count(n) => { let (o2, s3) = list_erase(s1, g, chunks.drop_first(), fail_at - 1, acc + n); match o2 { Out::Count(m) => (o2, s3), _ => (o2, St { rows: st.rows, version: s3.version }) } },",
+   "expect_fail_in": [
+    "witness_list_erase_commits_earlier_chunk"
+   ]
+  },
+  {
+   "name": "edge-row-keeps-statement",
+   "why": "EraseEdgeRow leaves the live statement and tuple lookup",
+   "find": "else if (e.k == K::EEmb || e.k == K::ERoute || e.k == K::Stmt || e.k == K::Tuple) && in_g(e, c) {\n        !incident_triple(r, c, d, e)",
+   "replace": "else if (e.k == K::EEmb || e.k == K::ERoute) && in_g(e, c) {\n        !incident_triple(r, c, d, e)",
+   "expect_fail_in": [
+    "theorem_ids_erase_statements"
+   ]
+  },
+  {
+   "name": "graph-erase-keeps-nkg",
+   "why": "repair of erasure.kept#o01: a single-graph erase never drops the unscoped ^NKG",
+   "find": "else if e.k == K::Nkg { !at_risk_graph(r, c) }",
+   "replace": "else if e.k == K::Nkg { true }",
+   "expect_fail_in": [
+    "witness_graph_erase_drops_unscoped_nkg"
+   ]
+  },
+  {
+   "name": "fhir-watermark-kept",
+   "why": "the graph erase leaves the FHIR watermarks",
+   "find": "if e.k == K::FhirReg && in_g(e, c) { E { wm: 0, ..e } } else { e }",
+   "replace": "e",
+   "expect_fail_in": [
+    "theorem_graph_erase_keeps_settings"
+   ]
+  },
+  {
+   "name": "joined-commits-own",
+   "why": "the joined erase commits on its own: the caller's rollback no longer restores it",
+   "find": "(o, if commit { p2 } else { St { rows: base.rows, version: p2.version } })",
+   "replace": "(o, p2)",
+   "expect_fail_in": [
+    "theorem_joined_caller_decides",
+    "witness_dedicated_erase_survives_caller_rollback"
+   ]
+  },
+  {
+   "name": "delete-edge-through-eraser",
+   "why": "repair (simp-str-001): delete_edge deletes through EraseEdges",
+   "find": "r.filter(|e: E| !((e.k == K::Edge || e.k == K::Adj) && in_g(e, c) && tri(e) == x))",
+   "replace": "erase_edges(r, c, |y: (Str, int, Str)| y == x)",
+   "expect_fail_in": [
+    "witness_delete_edge_leaves_statement"
+   ]
+  },
+  {
+   "name": "failed-call-partial",
+   "why": "a failed call keeps what it removed before the failing step",
+   "find": "Some(late) => (Out::Failed, St { rows: st.rows,",
+   "replace": "Some(late) => (Out::Failed, St { rows: effect(st.rows, ep, df),",
+   "expect_fail_in": [
+    "theorem_failed_call_leaves_stores"
+   ]
+  },
+  {
+   "name": "graph-erase-keeps-nolock",
+   "why": "RemoveGraph no longer clears ^IVG.AdjNoLock",
+   "find": "| K::Gen | K::Degc | K::Degw | K::NoLock | K::KLabel",
+   "replace": "| K::Gen | K::Degc | K::Degw | K::KLabel",
+   "expect_fail_in": [
+    "witness_graph_erase_clears_nolock"
+   ]
+  }
+ ]
+}

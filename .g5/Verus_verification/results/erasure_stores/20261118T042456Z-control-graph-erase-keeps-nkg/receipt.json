@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_graph_erase_drops_unscoped_nkg"
+    ],
+    "find": "else if e.k == K::Nkg { !at_risk_graph(r, c) }",
+    "name": "graph-erase-keeps-nkg",
+    "replace": "else if e.k == K::Nkg { true }",
+    "why": "repair of erasure.kept#o01: a single-graph erase never drops the unscoped ^NKG"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_graph_erase_drops_unscoped_nkg"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "38e8ba10f6f6fdbae085c3f502239558eaa237d13b5b80711bc5704bd0579344",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "ce881b102638cc5d858fd204d1a577dcc1f70ca5953eef3927925a21bdf24fa9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/graph-erase-keeps-nkg/20261118T042453Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_graph_erase_drops_unscoped_nkg": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T042453Z-control-graph-erase-keeps-nkg-witness_graph_erase_drops_unscoped_nkg.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T042453Z-control-graph-erase-keeps-nkg.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T042456Z-control-graph-erase-keeps-nkg/logs/20261118T042453Z-control-graph-erase-keeps-nkg-witness_graph_erase_drops_unscoped_nkg.log": "31c35202d60b737336e668d1f1f8fcc3eb07ff0a2c085371a988978f476ad147",
+    ".g5/Verus_verification/results/erasure_stores/20261118T042456Z-control-graph-erase-keeps-nkg/logs/20261118T042453Z-control-graph-erase-keeps-nkg.log": "f3df2b90d0d50b45f753bf87c73ea1d41e88dfa70d7fc065e0c5f9f6be4e7c2b"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

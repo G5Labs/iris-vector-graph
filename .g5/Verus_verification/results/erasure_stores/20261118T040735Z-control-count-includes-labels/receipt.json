@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_count_ignores_derived"
+    ],
+    "find": "pub open spec fn row_of(e: E, c: Str) -> bool { (e.k == K::Node || e.k == K::Edge) && in_g(e, c) }",
+    "name": "count-includes-labels",
+    "replace": "pub open spec fn row_of(e: E, c: Str) -> bool { (e.k == K::Node || e.k == K::Edge || e.k == K::Label) && in_g(e, c) }",
+    "why": "the graph count adds label rows (a derived store)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_count_ignores_derived"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "38e8ba10f6f6fdbae085c3f502239558eaa237d13b5b80711bc5704bd0579344",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "6846187dd0548b21cdad8b540a0fd610550cdb4f1aa8b0124c2b6433e1f1f0c4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/count-includes-labels/20261118T040732Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_count_ignores_derived": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T040732Z-control-count-includes-labels-theorem_count_ignores_derived.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T040732Z-control-count-includes-labels.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T040735Z-control-count-includes-labels/logs/20261118T040732Z-control-count-includes-labels-theorem_count_ignores_derived.log": "8f650e2ae54c3443d1983a236541c64fad7d244912ad3f8d3a5a2a373b766ae4",
+    ".g5/Verus_verification/results/erasure_stores/20261118T040735Z-control-count-includes-labels/logs/20261118T040732Z-control-count-includes-labels.log": "ffe286e7529f61803ae9dbb708433492db19072389a5d3ae5d43c1c1b94a34ee"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -99,7 +99,7 @@ A cached degree never includes an edge that was later rolled back.
 
 - Each graph has one writer lock. Writers hold it shared, so writers never wait for each other, and keep it until their transaction ends.
 - A reader stores its count only when it could take that lock alone at once, and the node's generation did not move while it counted.
-- A writer that cannot get the lock within 5 seconds still writes, and turns degree caching off for its graph until the next rebuild.
+- A writer that cannot get the lock within 5 seconds still writes, and turns degree caching off for its graph until the next rebuild or erase of that graph.
 
 <a id="structure.degree.cache.erase"></a>
 [I · structure.degree.cache.erase]
@@ -379,7 +379,9 @@ Live coverage: [rollback race over two connections](../../../tests/e2e/test_degr
 
 Findings: [ADR-0012 does not mention the lockless-writer fallback that 4.7.0 added](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-008)
 
-State machines: [graph structure](../../Verus_verification/models/graph_structure/manifest.json)
+State machines: [graph structure](../../Verus_verification/models/graph_structure/manifest.json), [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
+
+Iteration 65: bullet 3 corrected. `Adjacency.RemoveGraph` and `RemoveAll` kill `^IVG.AdjNoLock` (Adjacency.cls 440, 465), so a graph erase also turns caching back on ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json) `B1_erase_graph_g1`; `witness_graph_erase_clears_nolock`).
 
 ### structure.degree.cache.erase
 
@@ -392,6 +394,10 @@ State machines: [graph structure](../../Verus_verification/models/graph_structur
 Live coverage: [erase clears generations and cached degrees](../../../tests/e2e/test_degree_cache_live.py). The spec claims a recheck after storing closes the erase window. Observed divergence, suspected: a reader whose recount spans an erase and enough rewrites to bring the generation back to its starting value passes both checks and stores an old count ([stage-A notes, F2](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
 
 Findings: [A degree cached before a node is deleted and re-created can be served afterwards as current](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-003)
+
+Iteration 65: graph erase kills the graph's gen and degc, an ID erase the IDs' (`theorem_graph_erase_removes_scoped`, `theorem_ids_erase`; [erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json)).
+
+State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 
 ### structure.degree.cache.warm
 

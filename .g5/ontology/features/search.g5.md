@@ -271,6 +271,7 @@ Erasing a graph also removes its content from every BM25 index recorded for that
 
 - VecIndex, PLAID and IVF indexes record no graph. Erasing every graph empties them; what a single-graph erase must do to them is [open](../../Verus_verification/open_questions.md#search.erasure.indexes.graphless).
 - Erasing every graph empties every named index, so a restore that replaces the database starts from empty indexes before it loads the archive's.
+- Today no erase empties a named index: after erasing every graph, BM25 and VecIndex indexes still hold the erased entries ([finding](../../Verus_verification/bugs_issues.md#bug-srch-117)).
 - Ordinary node deletes are different: the caller keeps indexes in step with those ([index upkeep](../architecture/search-storage-and-indexes.g5.md#search.scope.indexes.upkeep)).
 
 - Working assumption: Unchanged: model retained index contents as observable after erasure unless purged; graph-owned indexes require invalidation or deletion on erase; caller-fed indexes need an explicit owner/exposure statement. Refined with the graph-derived (IVF) vs caller-fed (VecIndex, PLAID) split.
@@ -749,6 +750,10 @@ State machines: [retrieval compose](../../Verus_verification/models/retrieval_co
 
 Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001)
 
+Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json)): documents and routed vectors of the erased graph went, the other graph's stayed; the BM25 index built for the graph still answered (`B1_reader_bm25_after_erase`).
+
+State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
+
 ### search.erasure.indexes
 
 - uncertain
@@ -764,3 +769,8 @@ Findings: [Search indexes keep answering with content that was erased, and a re-
 Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001); [A replacing restore leaves the live search indexes in place and merges the archive's into them](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-024)
 
 Open questions: [Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?](../../Verus_verification/open_questions.md#HD-0601), [What must erasing one graph do to a VecIndex, PLAID or IVF index, which records no graph?](../../Verus_verification/open_questions.md#search.erasure.indexes.graphless)
+
+Findings: [Erasing every graph leaves every named search index, so its postings and vectors outlive the content](../../Verus_verification/bugs_issues.md#bug-srch-117).
+
+State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_id_erase_count_omits_relationships"
+    ],
+    "find": "r.filter(|e: E| e.k == K::Node && in_g(e, c) && d(e.s)).len()",
+    "name": "count-ids-includes-edges",
+    "replace": "r.filter(|e: E| (e.k == K::Node && in_g(e, c) && d(e.s)) || incident(e, c, d)).len()",
+    "why": "repair of q-007's node-erase case: EraseIdSet also counts the relationship rows it removes"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_id_erase_count_omits_relationships"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "38e8ba10f6f6fdbae085c3f502239558eaa237d13b5b80711bc5704bd0579344",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "6846187dd0548b21cdad8b540a0fd610550cdb4f1aa8b0124c2b6433e1f1f0c4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/count-ids-includes-edges/20261118T040735Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_id_erase_count_omits_relationships": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T040735Z-control-count-ids-includes-edges-witness_id_erase_count_omits_relationships.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T040735Z-control-count-ids-includes-edges.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T040737Z-control-count-ids-includes-edges/logs/20261118T040735Z-control-count-ids-includes-edges-witness_id_erase_count_omits_relationships.log": "44cf323f6b4704bb5b5fe928bdcc8d9f4c770414ea13dccc45244d3298506894",
+    ".g5/Verus_verification/results/erasure_stores/20261118T040737Z-control-count-ids-includes-edges/logs/20261118T040735Z-control-count-ids-includes-edges.log": "1f4f338004b373cf61c23f6f05690ca1877d83aee86e72bf38339a43c10e9dc2"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,132 @@
+{"runtime": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/runtime.py", "fixture": {"container": "ivg-cov-20261118-a-iris", "host": "127.0.0.1", "port": 36481, "kind": "run-own", "unit": "g5-ontology-coverage-20261117-iris-vector-graph", "iris": "IRIS Community 2026.1 (Build 234U)"}}
+WARNING:root:IRISINSTALLDIR or ISC_PACKAGE_INSTALLDIR environment variable is not set
+WARNING:root:Embedded Python not configured; call iris.connect(path=...) to configure it
+INFO:iris_vector_graph._engine.schema:IVG ready in namespace I65X, IVG Schema Graph_KG: 66 classes deployed; 3 skipped: Graph.KG.MCPService (needs %AI.MCP.Service, not installed on this server), Graph.KG.MCPToolSet (needs %AI.Policy.ConsoleAudit, %AI.ToolSet, not installed on this server), Graph.KG.MCPTools (needs %AI.Tool, not installed on this server); embedding dimension 768; Arno library not loaded (optional): algorithms run in ObjectScript
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+WARNING:root:Class or module 'gref' not found in iris_embedded_python. Returning a mock object. Make sure you local installation is correct.
+INFO:iris_vector_graph._engine.schema:^KG adjacency index rebuilt successfully
+INFO:iris_vector_graph.ledger:ledger.commit outcome=success revision_id=1182ea44e30411f1821d32767ca01df1 actor=t op_count=4 duration_ms=134.590
+OK node g1 a True
+OK node g1 b True
+OK node g2 a True
+OK node g2 b True
+OK node def a True
+OK edge g1 True
+OK edge g2 True
+OK edge def True
+OK bulk edges def 1
+OK bulk nodes def ['x', 'y']
+OK temporal g1 True
+ERR temporal-only set ValueError graph must be a string or None, got bool (False)
+OK temporal-only ev True
+OK multigraph g1 None
+OK emb g1 True
+OK emb def True
+OK edge id g1 ((1,), (5,), (6,))
+OK reify g1 'reif:1'
+OK bm25 g1 {'indexed': 2, 'avgdl': 1, 'vocab_size': 2, 'graph': 'g1'}
+OK bm25 search [('a', 0.6931471805599453)]
+OK ledger CommitResult(revision=RevisionInfo(seq=2, revision_id='1182ea44e30411f1821d32767ca01df1', parent_id='116e4abce30411f1821d32767ca01df1', kind='changeset', actor='t', actor_type='system', conn_user='_SY
+OK count nodes (('', 7), ('g1', 6), ('g2', 4))
+OK count rdf_edges (('', 2), ('g1', 4), ('g2', 2))
+OK count rdf_labels (('', 3), ('g1', 2), ('g2', 2))
+OK count rdf_props (('', 6), ('g1', 4), ('g2', 4))
+OK count kg_NodeEmbeddings (('', 1),)
+OK count embedding_registry (('', 3), ('G1', 1))
+OK count rdf_reifications ((1,),)
+OK count docs ()
+ERR count embedding_quarantine ProgrammingError <SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]
+[Location: <Prepare>]
+[%msg: < Field 'GRAPH_ID' not found in the applicable tables^SELECT CASE WHEN graph_id IS>]
+ERR count fhir_graphs ProgrammingError <SQL ERROR>; Details: [SQLCODE: <-30>:<Table or view not found>]
+[Location: <Prepare>]
+[%msg: < Table 'GRAPH_KG.FHIR_GRAPHS' not found>]
+ERR count fhir_unresolved ProgrammingError <SQL ERROR>; Details: [SQLCODE: <-30>:<Table or view not found>]
+[Location: <Prepare>]
+[%msg: < Table 'GRAPH_KG.FHIR_UNRESOLVED' not found>]
+OK registry (('', 'kg_NodeEmbeddings', None, 'node'), ('', 'kg_NodeEmbeddings_optimized', None, 'node'), ('', 'kg_EdgeEmbeddings', None, 'edge'), ('g1', 'kg_emb_78f7a87c4c5daf4c', None, 'node'))
+OK routed tables (('kg_emb_78f7a87c4c5daf4c',),)
+OK tables ['code_crosswalk', 'docs', 'embedding_quarantine', 'embedding_registry', 'fhir_bridges', 'kg_EdgeEmbeddings', 'kg_NodeEmbeddings', 'kg_NodeEmbeddings_optimized', 'kg_emb_78f7a87c4c5daf4c', 'ledger_rev
+{
+"out@g1": 4,
+"in@g1": 4,
+"gen@g1": 3,
+"degc@g1": 2,
+"degw@g1": 1,
+"label@g1": 2,
+"prop@g1": 0,
+"deg2p@g1": 0,
+"deg2p_exact@g1": 0,
+"tout@g1": 2,
+"tin@g1": 2,
+"bucket@g1": 2,
+"tagg@g1": 10,
+"edgeprop@g1": 0,
+"tlast@g1": 3,
+"IVG.GraphMode@g1": 1,
+"IVG.TemporalStructural@g1": 0,
+"IVG.AlgoCache@g1": 0,
+"IVG.AdjNoLock@g1": 0,
+"out@g2": 2,
+"in@g2": 2,
+"gen@g2": 2,
+"degc@g2": 2,
+"degw@g2": 1,
+"label@g2": 2,
+"prop@g2": 0,
+"deg2p@g2": 0,
+"deg2p_exact@g2": 0,
+"tout@g2": 0,
+"tin@g2": 0,
+"bucket@g2": 0,
+"tagg@g2": 0,
+"edgeprop@g2": 0,
+"tlast@g2": 0,
+"IVG.GraphMode@g2": 0,
+"IVG.TemporalStructural@g2": 0,
+"IVG.AlgoCache@g2": 0,
+"IVG.AdjNoLock@g2": 0,
+"out@0": 2,
+"in@0": 2,
+"gen@0": 2,
+"degc@0": 4,
+"degw@0": 1,
+"label@0": 3,
+"prop@0": 0,
+"deg2p@0": 0,
+"deg2p_exact@0": 0,
+"tout@0": 0,
+"tin@0": 0,
+"bucket@0": 0,
+"tagg@0": 0,
+"edgeprop@0": 0,
+"tlast@0": 0,
+"IVG.GraphMode@0": 0,
+"IVG.TemporalStructural@0": 0,
+"IVG.AlgoCache@0": 0,
+"IVG.AdjNoLock@0": 0,
+"^NKG": 59,
+"^ArnoKG": 0,
+"^BM25Idx": 92,
+"^IVF": 0,
+"^PLAID": 0,
+"^VecIdx": 0,
+"^IVG.GraphMode": 1,
+"^IVG.TemporalStructural": 0,
+"^IVG.AlgoCache": 0,
+"^IVG.AdjNoLock": 0,
+"^EmbedQueue": 0,
+"^IVG.FHIRGraph": 0,
+"^IVG.BuiltFrom": 2,
+"version": 29,
+"nkg_invalidated": "",
+"ledger_head": 2,
+"stmt_by_graph": {
+"g:g1": 2,
+"g:g2": 2,
+"g:\u0000": 2
+}
+}

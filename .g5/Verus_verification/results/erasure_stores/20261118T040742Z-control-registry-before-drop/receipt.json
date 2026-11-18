@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_graph_erase_routes"
+    ],
+    "find": "else if e.k == K::Registry && in_g(e, c) { !(claimed(r, c, e.tbl) && !df.contains(e.tbl)) }",
+    "name": "registry-before-drop",
+    "replace": "else if e.k == K::Registry && in_g(e, c) { !claimed(r, c, e.tbl) }",
+    "why": "the registry row goes even when its table's DROP fails"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_graph_erase_routes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "38e8ba10f6f6fdbae085c3f502239558eaa237d13b5b80711bc5704bd0579344",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "6846187dd0548b21cdad8b540a0fd610550cdb4f1aa8b0124c2b6433e1f1f0c4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/registry-before-drop/20261118T040740Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_graph_erase_routes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T040740Z-control-registry-before-drop-theorem_graph_erase_routes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T040740Z-control-registry-before-drop.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T040742Z-control-registry-before-drop/logs/20261118T040740Z-control-registry-before-drop-theorem_graph_erase_routes.log": "f18cc01147b52487af43bb9008062810026b77d98986e2c4ac8ba6b6203b5597",
+    ".g5/Verus_verification/results/erasure_stores/20261118T040742Z-control-registry-before-drop/logs/20261118T040740Z-control-registry-before-drop.log": "ea645513bfe6d03f42bcdcf0852e4f5ab56b62985ca9e73cc5e0e805ef1d4d6a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

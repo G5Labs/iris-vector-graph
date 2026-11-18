@@ -4233,6 +4233,29 @@ Consequence: while one caller keeps such a transaction open, every other writer'
 
 Repair proposal (not implemented): keep counter and verify bookkeeping out of the caller's transaction, for example `$Increment` on a global outside the row, or a save on a separate process. Do not make a commit's outcome depend on the counter save: count after the commit, and do not fail the commit when the count fails. Preserve: the caller's rollback still takes back the caller's own written revision. Distinguishing case: S1 and S3 above must let B commit at once. Sibling of [bug-led-014](#bug-led-014) (same counter-row lock, which there loses counts). Governing statements: [ledger.commit.caller-transaction](../ontology/features/ledger.g5.md#ledger.commit.caller-transaction), [ledger.observability](../ontology/operations/ledger.g5.md#ledger.observability).
 
+<a id="bug-srch-117"></a>
+### Erasing every graph leaves every named search index, so its postings and vectors outlive the content
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-18 (iteration 65)
+
+Description: `erase_all` empties every content table and every graph-keyed global, but kills none of `^BM25Idx`, `^IVF`, `^PLAID` or `^VecIdx`. After it, a BM25 index still answers the erased nodes and a VecIndex still holds their vectors.
+
+Found by: iteration-63 census source reading (§6.1 #3); iteration 65 [erasure_stores](models/erasure_stores/NOTES.md) `witness_erase_all_keeps_named_indexes`, control `erase-all-clears-indexes`.
+
+Reproduced by: **E2E reproduced** on the run-own fixture, namespace I65D ([binding receipt](results/erasure_stores/20261118T042401Z-binding/receipt.json), cases `D1_erase_all` (95 `^BM25Idx` and 10 `^VecIdx` nodes before and after; every content store empty) and `D1_reader_bm25_after_erase_all` (`bm25_search` still answers the erased nodes)). IVF and PLAID were not built on the fixture; the source kills neither.
+
+Expected: [search.erasure.indexes](../ontology/features/search.g5.md#search.erasure.indexes): "Erasing every graph empties every named index, so a restore that replaces the database starts from empty indexes".
+
+Observed: `Eraser.cls` `EraseAll` 709-845 names no index global; `GraphStores.Inventory` lists none.
+
+Consequence: erased text and vectors stay searchable after an erase of everything; a replacing restore merges the archive's indexes into the old ones ([bug-plt-024](audits/register-20261115/bugs-review.md#bug-plt-024)).
+
+Repair proposal (not implemented): kill the four index globals in `EraseAll` (and list them in the inventory). Distinguishing case: `D1_erase_all`.
+
+Governing statement: [search.erasure.indexes](../ontology/features/search.g5.md#search.erasure.indexes).
+
 <a id="bug-plt-124"></a>
 ### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors
 
@@ -7041,6 +7064,75 @@ Observed: `errors.py:90` (root, `IVGError`) and `ledger/errors.py:91` (`Changese
 Consequence: callers following the reference miss the error (it propagates as an unexpected exception) and the message points them at the wrong operation. No data is wrong; the commit is refused either way. Low: misleading documentation and text.
 
 Repair proposal (not implemented): make the ledger class a subclass of both `ChangesetOperationError` and the root `NodeNotFoundError` (or document the ledger class in the API reference), and word the message from the failing operation's kind. Governing statement: [ledger.commit](../ontology/features/ledger.g5.md#ledger.commit).
+
+<a id="bug-str-118"></a>
+### A single-graph erase drops the whole ^NKG interning and every graph's cached algorithm answers
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-18 (iteration 65)
+
+Description: Erasing one graph drops `^NKG`, a store that belongs to no single graph, whenever the erased graph has an interned node or edge, and kills `^IVG.AlgoCache` for every graph. Both are derived and rebuilt on the next read, so no answer is wrong, but the owner says a graph erase keeps the stores that belong to no single graph.
+
+Found by: iteration 65 source read of `Eraser.cls` `InvalidateDerived` (1038-1053) and `GraphEdgesInNKG`/`GraphNodesInNKG` (868-956); [erasure_stores](models/erasure_stores/NOTES.md) `witness_graph_erase_drops_unscoped_nkg`, `theorem_erase_clears_algo_cache`, control `graph-erase-keeps-nkg`.
+
+Reproduced by: **E2E reproduced** on the run-own fixture, namespace I65B ([binding receipt](results/erasure_stores/20261118T042401Z-binding/receipt.json), case `B1_erase_graph_g1`: `^NKG("$NI")` 5 entries and 37 other `^NKG` nodes before `erase_graph("g1")`, none after (only `^NKG("$meta","invalidated")` and DropNKG's version stamp); the default graph's `^IVG.AlgoCache` entry (from `kg_WCC`) gone; graph g2's rows, adjacency and temporal entries kept).
+
+Expected: [erasure.kept](../ontology/features/erasure.g5.md#erasure.kept): "A graph erase keeps configuration and stores that belong to no single graph."
+
+Observed: `EraseGraph` calls `InvalidateDerived(tNkgAtRisk)`, which runs `GraphIndex.DropNKG` (Kill ^NKG) and always `Kill ^IVG.AlgoCache`. The Eraser's own comment chooses an absent `^NKG` over a stale one.
+
+Consequence: after any graph erase, every other graph's ^NKG-based fast paths fall back or rebuild, and every graph's cached algorithm answers are recomputed. No content of another graph is lost.
+
+Repair proposal (not implemented): narrow the owner to "keeps configuration and the content of stores that belong to no single graph; it may drop derived ones (^NKG, cached answers) for a rebuild", or keep ^NKG and mark it stale per graph. Distinguishing case: `B1_erase_graph_g1`.
+
+Governing statement: [erasure.kept](../ontology/features/erasure.g5.md#erasure.kept).
+
+<a id="bug-str-119"></a>
+### Inside a caller's transaction, a graph erase drops its routed tables before the caller commits
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-18 (iteration 65)
+
+Description: `EraseGraph` drops the routed tables its registry claims "after the commit". When it joins a caller's transaction, its own `TCOMMIT` only closes its nested level, so the `DROP TABLE` and the registry delete run inside the caller's still-open transaction. The Eraser's own comment says a DDL rollback is not dependable in IRIS.
+
+Found by: iteration 65 runtime probe (namespace I65Y) after the source read of `Eraser.cls` 258-299; [erasure_stores](models/erasure_stores/NOTES.md) `joined_then`, `theorem_joined_caller_decides`.
+
+Reproduced by: **E2E reproduced (ordering)** on the run-own fixture, namespace I65E ([binding receipt](results/erasure_stores/20261118T042401Z-binding/receipt.json), case `E1_joined_erase_caller_rollback`): inside the caller's transaction the routed table and its registry row were gone; after the caller's rollback the table, its rows, the registry row and every other store came back, so on IRIS 2026.1 Community no damage was observed. The failure the comment fears was not reproduced.
+
+Expected: [erasure.atomic.routes](../ontology/features/erasure.g5.md#erasure.atomic.routes): routed tables are "dropped after it commits".
+
+Observed: the drop loop (`Eraser.cls` 282-299) does not check `$TLevel`; `_iris_obj` is the caller's connection unless the engine was made with `from_connect` (`engine.py` 1894-1943).
+
+Consequence: the "DDL outside the transaction" design does not hold for a joined erase. Today the caller's rollback restored the table on this fixture; whether that is dependable is the open premise.
+
+Repair proposal (not implemented): drop claimed routes only when `$TLevel` was 0 on entry, and otherwise leave them empty for a later sweep, or say in the owner that a joined erase defers the drop to the caller's commit. Distinguishing case: `E1_joined_erase_caller_rollback`.
+
+Governing statement: [erasure.atomic.routes](../ontology/features/erasure.g5.md#erasure.atomic.routes).
+
+<a id="bug-str-120"></a>
+### Erase-all deletes the registry before dropping the routed tables, so a failed drop leaves a table nothing names
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-18 (iteration 65)
+
+Description: `EraseAll` deletes the whole embedding registry inside its transaction and drops the claimed routed tables after the commit. If a drop fails, the empty table survives with no registry row: an orphan, not "an empty table with its registry row".
+
+Found by: iteration 65 source read of `Eraser.cls` `EraseAll` 753-760 and 828-842; [erasure_stores](models/erasure_stores/NOTES.md) `theorem_erase_all_failed_drop`.
+
+Reproduced by: **modeled only**. No failed DROP was injected on the fixture (not established), so there is no product observation.
+
+Expected: [erasure.atomic.routes](../ontology/features/erasure.g5.md#erasure.atomic.routes): "If a drop fails, the erase still counts as complete and leaves an empty table with its registry row."
+
+Observed: graph erase keeps the registry row on a failed drop (`Eraser.cls` 287-298); erase-all has already deleted it (759).
+
+Consequence: the next resolve after a failed erase-all cannot reuse the route at its recorded width; the table shows up as an orphan, which no erase ever drops.
+
+Repair proposal (not implemented): delete each claimed route's registry row only after its drop, as `EraseGraph` does, or scope the owner's sentence to a graph erase. Distinguishing case: a failed drop in erase-all (needs a production-reachable DROP failure, for example a role without the DROP privilege on a route another user created).
+
+Governing statement: [erasure.atomic.routes](../ontology/features/erasure.g5.md#erasure.atomic.routes).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections

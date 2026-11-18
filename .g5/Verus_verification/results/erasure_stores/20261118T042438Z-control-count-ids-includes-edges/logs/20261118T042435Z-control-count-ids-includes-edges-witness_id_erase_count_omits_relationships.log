@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/count-ids-includes-edges/20261118T042435Z/models/erasure_stores/erasure_stores.rs:929:13
+    |
+928 |   pub proof fn witness_id_erase_count_omits_relationships()
+    |   --------------------------------------------------------- at the end of the function body
+929 |       ensures ({
+    |  _____________^
+930 | |         let r = seq![ent(K::Node, g1(), n_a(), none(), 0, 0), ent(K::Edge, g1(), n_a(), n_b(), 7, 0)];
+931 | |         &&& count_ids(r, g1(), list_sel(seq![n_a()])) == 1
+932 | |         &&& count_graph(r, g1()) == 2
+933 | |         &&& !erase_ids(r, g1(), list_sel(seq![n_a()])).contains(r[1])
+934 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

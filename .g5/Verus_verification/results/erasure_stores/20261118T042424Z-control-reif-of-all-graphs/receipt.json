@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_graph_erase_keeps_other_reifications"
+    ],
+    "find": "else if e.k == K::Reif { !reif_of_graph(r, c, e.eid) }",
+    "name": "reif-of-all-graphs",
+    "replace": "else if e.k == K::Reif { false }",
+    "why": "EraseGraph deletes every reification, not those of its own edges"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_graph_erase_keeps_other_reifications"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "38e8ba10f6f6fdbae085c3f502239558eaa237d13b5b80711bc5704bd0579344",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "ce881b102638cc5d858fd204d1a577dcc1f70ca5953eef3927925a21bdf24fa9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/reif-of-all-graphs/20261118T042422Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_graph_erase_keeps_other_reifications": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T042422Z-control-reif-of-all-graphs-theorem_graph_erase_keeps_other_reifications.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T042422Z-control-reif-of-all-graphs.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T042424Z-control-reif-of-all-graphs/logs/20261118T042422Z-control-reif-of-all-graphs-theorem_graph_erase_keeps_other_reifications.log": "3c6e3eec8e7438a339f075cc68ffcdf2b41a44ac825d958bd49e31c882778f97",
+    ".g5/Verus_verification/results/erasure_stores/20261118T042424Z-control-reif-of-all-graphs/logs/20261118T042422Z-control-reif-of-all-graphs.log": "a92e5609787a5eed44f9d0128ac6211ac21942f58bd0425a61525d1239d6cf2e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

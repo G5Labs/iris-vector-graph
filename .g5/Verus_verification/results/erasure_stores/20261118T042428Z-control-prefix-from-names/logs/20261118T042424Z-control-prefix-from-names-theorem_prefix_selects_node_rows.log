@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/prefix-from-names/20261118T042424Z/models/erasure_stores/erasure_stores.rs:743:13
+    |
+742 |   pub proof fn theorem_prefix_selects_node_rows(r: Seq<E>, c: Str, pfx: Str, id: Str)
+    |   ----------------------------------------------------------------------------------- at the end of the function body
+743 |       ensures (prefix_sel(r, c, pfx))(id) <==>
+    |  _____________^
+744 | |         (has_prefix(id, pfx) && exists|i: int| 0 <= i < r.len() && (#[trigger] r[i]).k == K::Node && in_g(r[i], c) && r[i].s == id),
+    | |___________________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

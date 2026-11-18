@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_ids_erase_statements"
+    ],
+    "find": "else if (e.k == K::EEmb || e.k == K::ERoute || e.k == K::Stmt || e.k == K::Tuple) && in_g(e, c) {\n        !incident_triple(r, c, d, e)",
+    "name": "edge-row-keeps-statement",
+    "replace": "else if (e.k == K::EEmb || e.k == K::ERoute) && in_g(e, c) {\n        !incident_triple(r, c, d, e)",
+    "why": "EraseEdgeRow leaves the live statement and tuple lookup"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_ids_erase_statements"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "38e8ba10f6f6fdbae085c3f502239558eaa237d13b5b80711bc5704bd0579344",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "ce881b102638cc5d858fd204d1a577dcc1f70ca5953eef3927925a21bdf24fa9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/edge-row-keeps-statement/20261118T042451Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_ids_erase_statements": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T042451Z-control-edge-row-keeps-statement-theorem_ids_erase_statements.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T042451Z-control-edge-row-keeps-statement.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T042453Z-control-edge-row-keeps-statement/logs/20261118T042451Z-control-edge-row-keeps-statement-theorem_ids_erase_statements.log": "bcb4ab754215eed6b7647dadcdf803b17dfeaca141076adec854d59534fe1b51",
+    ".g5/Verus_verification/results/erasure_stores/20261118T042453Z-control-edge-row-keeps-statement/logs/20261118T042451Z-control-edge-row-keeps-statement.log": "598ffb43ee3a35e58469340643dbdd8a57d4c8c6404153c211168a3bfa21e2e5"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -276,6 +276,10 @@ State machines: [pagerank admission](../../Verus_verification/models/pagerank_ad
 
 Live coverage: the erase cases in `tests/integration/test_236_token_write_paths.py`.
 
+Iteration 65: every erase that removed something kills `^IVG.AlgoCache` for every graph (`theorem_erase_clears_algo_cache`; [erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T042401Z-binding/receipt.json) `B1_erase_graph_g1`: the default graph's cached WCC answer went when g1 was erased).
+
+State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
+
 ### algorithms.cache.concurrency
 
 - Sources: [Spec 236 Edge Cases](../../../specs/236-arno-callout-adoption/spec.md); [ADMIN_GUIDE §3 (reading role)](../../../docs/ADMIN_GUIDE.md)
