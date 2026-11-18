@@ -1,0 +1,27 @@
+verification results:: 48 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T020714Z/models/native_admission/native_admission.rs:385:13
+    |
+383 | pub proof fn theorem_no_write_is_planned(q: Query)
+    | -------------------------------------------------- at the end of the function body
+384 |     requires wf(q), writes(q),
+385 |     ensures plan(q).is_none(),
+    |             ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T020714Z/models/native_admission/native_admission.rs:392:12
+    |
+392 |     assert(try_native(e, w, q).0.is_none());
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T020714Z/models/native_admission/native_admission.rs:414:13
+    |
+412 | pub proof fn theorem_write_read_steps(e: Engine, w: World, whole: Query)
+    | ------------------------------------------------------------------------ at the end of the function body
+413 |     requires whole.mutation,
+414 |     ensures plan(whole).is_none(), !native_path(exec_parsed(e, w, count_step(whole)).0),
+    |             ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

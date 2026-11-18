@@ -98,8 +98,13 @@ pub struct Query {
     pub limit: bool,
     pub labels: Set<nat>,      // every label named in a node pattern
     pub transactional: bool, pub width_ok: bool, // the shared translation
+    pub hidden_alias: bool,    // a RETURN alias starting "__" (count_create's __rows, merge_rows' __rm<i>): not a column
+    pub anchor: Anchor,        // how Exec finds the walk's first nodes (the plan's anchor)
     pub shape: nat,            // _native_key (parsed repr, parameter types)
 }
+// Exec.Anchors: a property lookup reads Graph_KG.rdf_props and an id without a label reads Graph_KG.nodes through
+// dynamic SQL (%SQL.Statement.%ExecDirect, which checks the caller's SELECT); a labelled id or a label scan reads ^KG.
+pub enum Anchor { Scan, LabelledId, PropLookup, IdNoLabel }
 pub open spec fn writes(q: Query) -> bool { q.mutation || q.union_writes || q.subquery_writes }
 pub open spec fn wf(q: Query) -> bool { (q.union_writes ==> q.union) && (q.subquery_writes ==> q.subquery) }
 
@@ -185,10 +190,14 @@ pub open spec fn gate(e: Engine, w: World) -> (Option<Gate>, Engine) {
 pub open spec fn names_mapped(q: Query, w: World) -> bool { exists|l: nat| q.labels.contains(l) && #[trigger] w.mapped.contains(l) }
 
 pub enum RunOut { Rows(Seq<Row>), Raise(Reason) }
-pub open spec fn run(w: World) -> RunOut {
+pub spec const ANCHOR_PROPS_99: nat = 2;
+pub spec const ANCHOR_NODES_99: nat = 3;
+pub open spec fn run(w: World, q: Query) -> RunOut {
     match w.deployed {
         Deployed::Missing => RunOut::Raise(Reason { ty: RUNTIME_ERROR, msg: seq![CLASS_MISSING] }),
         Deployed::Version(v) => if v != PLAN_VERSION { RunOut::Raise(Reason { ty: RUNTIME_ERROR, msg: seq![1000 + v] }) }
+            else if q.anchor == Anchor::PropLookup && !w.sel_props { RunOut::Raise(Reason { ty: RUNTIME_ERROR, msg: seq![ANCHOR_PROPS_99] }) }
+            else if q.anchor == Anchor::IdNoLabel && !w.sel_nodes { RunOut::Raise(Reason { ty: RUNTIME_ERROR, msg: seq![ANCHOR_NODES_99] }) }
             else { match w.fault { Some(r) => RunOut::Raise(r), None => RunOut::Rows(w.native_rows) } },
     }
 }
@@ -202,9 +211,9 @@ pub open spec fn try_native(e: Engine, w: World, q: Query) -> (Option<(Plan, Seq
         None => (None, e),
         Some(p) => {
             let (g, e1) = gate(e, w);
-            if g.is_some() || names_mapped(q, w) || q.transactional || !q.width_ok { (None, e1) }
+            if g.is_some() || names_mapped(q, w) || q.transactional || !q.width_ok || q.hidden_alias { (None, e1) }
             else {
-                match run(w) {
+                match run(w, q) {
                     RunOut::Raise(r) => (None, warn(e1, r)),
                     RunOut::Rows(rows) => (Some((p, rows)), Engine { native_answers: e1.native_answers + 1, ..e1 }),
                 }
@@ -263,9 +272,10 @@ pub open spec fn reader(o: Out, raise_on_error: bool) -> Out {
 }
 // execute_cypher's chained loop: each part runs through _execute_parsed with subsequent_queries emptied
 pub open spec fn chain_part(parent: Query) -> Query { Query { chained: false, ..parent } }
-// count_create's ("count", MATCH ... RETURN count(*)) and merge_rows' prefix: the write's read step is its own
-// query without the write clause
-pub open spec fn read_step(whole: Query) -> Query { Query { mutation: false, ..whole } }
+// count_create's ("count", MATCH ... RETURN count(*) AS __rows) and merge_rows' prefix (RETURN ... AS __rm<i>):
+// the write's read step is its own query without the write clause, returning an internal alias
+pub open spec fn count_step(whole: Query) -> Query { Query { mutation: false, hidden_alias: true, ..whole } }
+pub open spec fn merge_prefix(whole: Query) -> Query { Query { mutation: false, hidden_alias: true, ..whole } }
 pub open spec fn native_path(o: Out) -> bool { o is Answer && o->path == Path::Native }
 
 // ------------------------------------------------------------------ helpers for the theorems
@@ -276,7 +286,8 @@ pub open spec fn open_world(w: World) -> bool {
 pub open spec fn plain_read(shape: nat) -> Query {
     Query { mutation: false, union: false, union_writes: false, procedure: false, chained: false, subquery: false,
         subquery_writes: false, skip: false, shape_ok: true, aggregate: false, order_by: false, order_covers_keys: false,
-        complete_order: false, limit: false, labels: set![7nat], transactional: false, width_ok: true, shape }
+        complete_order: false, limit: false, labels: set![7nat], transactional: false, width_ok: true,
+        hidden_alias: false, anchor: Anchor::PropLookup, shape }
 }
 
 // ================================================================== theorems: switches (query.native#o01-#o03)
@@ -294,7 +305,7 @@ pub proof fn theorem_explicit_true_beats_env_zero(w: World, shape: nat)
 }
 // Per engine: two engines over the same world, one with native_cypher=False.
 pub proof fn theorem_per_engine_switch(w: World, q: Query)
-    requires open_world(w), !w.env_shadow_one, plan(q).is_some(), !q.transactional, q.width_ok,
+    requires open_world(w), !w.env_shadow_one, plan(q).is_some(), !q.transactional, q.width_ok, !q.hidden_alias,
     ensures native_path(exec_parsed(new_engine(None, EnvNative::Unset, false), w, q).0),
         exec_parsed(new_engine(Some(false), EnvNative::Unset, false), w, q).0 == sql_out(w, Path::Sql),
 {
@@ -305,11 +316,11 @@ pub proof fn theorem_per_engine_switch(w: World, q: Query)
 // Admitted implies every gate and every planner/engine check held at the call.
 pub proof fn theorem_admitted_only_through_every_gate(e: Engine, w: World, q: Query)
     requires native_path(exec_parsed(e, w, q).0),
-    ensures plan(q).is_some(), e.native_cypher, !e.in_bulk, !names_mapped(q, w), !q.transactional, q.width_ok,
+    ensures plan(q).is_some(), e.native_cypher, !e.in_bulk, !names_mapped(q, w), !q.transactional, q.width_ok, !q.hidden_alias,
         e.idx_cache == Some(true) || (e.idx_cache.is_none() && w.index_functional),
         e.priv_cache == Some(true) || (e.priv_cache.is_none() && w.sel_nodes && w.sel_labels && w.sel_props && w.sel_edges),
         e.exec_cache == Some(true) || (e.exec_cache.is_none() && !w.version_probe_transient && w.deployed == Deployed::Version(PLAN_VERSION)),
-        run(w) is Rows,
+        run(w, q) is Rows,
 {
     let (tn, e1) = try_native(e, w, q);
     let (g, eg) = gate(e, w);
@@ -318,7 +329,7 @@ pub proof fn theorem_admitted_only_through_every_gate(e: Engine, w: World, q: Qu
 // Any closed gate answers on the SQL path (no route held, shadow off).
 pub proof fn theorem_closed_gate_answers_sql(e: Engine, w: World, q: Query)
     requires !shadow_on(e.shadow_attr, w.env_shadow_one), !e.route_sql.contains(q.shape),
-        gate(e, w).0.is_some() || plan(q).is_none() || names_mapped(q, w) || q.transactional || !q.width_ok,
+        gate(e, w).0.is_some() || plan(q).is_none() || names_mapped(q, w) || q.transactional || !q.width_ok || q.hidden_alias,
     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
 {}
 pub proof fn theorem_bulk_session_keeps_sql(e: Engine, w: World, q: Query)
@@ -395,18 +406,46 @@ pub proof fn theorem_chained_part_runs_natively(w: World, shape: nat)
 {
     assert(!names_mapped(plain_read(shape), w));
 }
-// The read step of a write (count_create's count, merge_rows' prefix) is its own non-mutating query: admitted.
-pub proof fn theorem_read_step_of_write_runs_natively(w: World, shape: nat)
+// The read steps count_create and merge_rows build return an internal alias, so the translation's columns are one
+// short of the plan and the step stays on SQL; a read statement chained after a write is its own part, admitted, and
+// (theorem below) answered natively inside the write's transaction.
+pub proof fn theorem_write_read_steps(e: Engine, w: World, whole: Query)
+    requires whole.mutation,
+    ensures plan(whole).is_none(), !native_path(exec_parsed(e, w, count_step(whole)).0),
+        !native_path(exec_parsed(e, w, merge_prefix(whole)).0),
+{
+    let shadow = shadow_on(e.shadow_attr, w.env_shadow_one);
+    assert(try_native(e, w, count_step(whole)).0.is_none());
+    assert(try_native(e, w, merge_prefix(whole)).0.is_none());
+}
+pub proof fn theorem_read_part_of_chained_write_runs_natively(w: World, shape: nat)
     requires open_world(w), !w.env_shadow_one,
-    ensures ({ let whole = Query { mutation: true, ..plain_read(shape) };
-               plan(whole).is_none() && native_path(exec_parsed(new_engine(None, EnvNative::Unset, false), w, read_step(whole)).0) }),
+    ensures ({ let whole = Query { mutation: true, chained: true, ..plain_read(shape) };
+               let read_part = Query { mutation: false, ..chain_part(whole) };
+               plan(whole).is_none() && native_path(exec_parsed(new_engine(None, EnvNative::Unset, false), w, read_part).0) }),
 {
     assert(!names_mapped(plain_read(shape), w));
+}
+// A REVOKE reaches a running engine's native read only where Exec finds its anchor through SQL: the property-lookup
+// read fails and falls back to the SQL path (one warning); a label scan keeps answering natively.
+pub proof fn theorem_revoke_reaches_sql_anchor_only(e: Engine, w: World, q: Query)
+    requires e.native_cypher, e.idx_cache == Some(true), !e.in_bulk, e.priv_cache == Some(true), e.exec_cache == Some(true),
+        !w.sel_props, w.sel_nodes, w.deployed == Deployed::Version(PLAN_VERSION), w.fault.is_none(), w.mapped.is_empty(),
+        !shadow_on(e.shadow_attr, w.env_shadow_one), !e.route_sql.contains(q.shape),
+        plan(q).is_some(), !q.transactional, q.width_ok, !q.hidden_alias, !e.warned.contains(Reason { ty: RUNTIME_ERROR, msg: seq![ANCHOR_PROPS_99] }),
+    ensures q.anchor == Anchor::PropLookup ==> exec_parsed(e, w, q).0 == sql_out(w, Path::Sql)
+            && exec_parsed(e, w, q).1.log.len() == e.log.len() + 1,
+        q.anchor == Anchor::Scan ==> native_path(exec_parsed(e, w, q).0),
+{
+    assert(!names_mapped(q, w));
+    let k = Reason { ty: RUNTIME_ERROR, msg: seq![ANCHOR_PROPS_99] };
+    assert(key(k) == k);
 }
 
 // ================================================================== theorems: fallback
 pub proof fn theorem_native_failure_answered_by_sql(e: Engine, w: World, q: Query)
-    requires plan(q).is_some(), gate(e, w).0.is_none(), !names_mapped(q, w), !q.transactional, q.width_ok, run(w) is Raise,
+    requires plan(q).is_some(), gate(e, w).0.is_none(), !names_mapped(q, w), !q.transactional, q.width_ok, !q.hidden_alias,
+        run(w, q) is Raise,
         !(!shadow_on(e.shadow_attr, w.env_shadow_one) && e.route_on && e.route_sql.contains(q.shape)),
     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
         exec_parsed(e, w, q).1.native_answers == gate(e, w).1.native_answers,
@@ -467,7 +506,7 @@ pub proof fn theorem_shadow_sql_failure(w: World, p: Plan, native: Seq<Row>, m: 
 // A native failure in shadow mode is answered by SQL, uncompared, and does not raise (q-cyp-002 as built).
 pub proof fn theorem_shadow_native_failure_uncompared(e: Engine, w: World, q: Query)
     requires shadow_on(e.shadow_attr, w.env_shadow_one), plan(q).is_some(), gate(e, w).0.is_none(),
-        !names_mapped(q, w), !q.transactional, q.width_ok, run(w) is Raise, w.sql is Rows,
+        !names_mapped(q, w), !q.transactional, q.width_ok, !q.hidden_alias, run(w, q) is Raise, w.sql is Rows,
     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql), exec_parsed(e, w, q).0 is Answer,
 {}
 

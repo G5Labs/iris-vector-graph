@@ -1,0 +1,27 @@
+verification results:: 48 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/show-internal-alias/20261118T020705Z/models/native_admission/native_admission.rs:319:112
+    |
+317 | pub proof fn theorem_admitted_only_through_every_gate(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+318 |     requires native_path(exec_parsed(e, w, q).0),
+319 |     ensures plan(q).is_some(), e.native_cypher, !e.in_bulk, !names_mapped(q, w), !q.transactional, q.width_ok, !q.hidden_alias,
+    |                                                                                                                ^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/show-internal-alias/20261118T020705Z/models/native_admission/native_admission.rs:333:13
+    |
+330 | pub proof fn theorem_closed_gate_answers_sql(e: Engine, w: World, q: Query)
+    | --------------------------------------------------------------------------- at the end of the function body
+...
+333 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/show-internal-alias/20261118T020705Z/models/native_admission/native_admission.rs:418:12
+    |
+418 |     assert(try_native(e, w, count_step(whole)).0.is_none());
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

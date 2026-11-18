@@ -1,0 +1,56 @@
+verification results:: 47 verified, 4 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/failure-answers-empty/20261118T020741Z/models/native_admission/native_admission.rs:323:9
+    |
+317 | pub proof fn theorem_admitted_only_through_every_gate(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+...
+323 |         run(w, q) is Rows,
+    |         ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/failure-answers-empty/20261118T020741Z/models/native_admission/native_admission.rs:436:13
+    |
+431 |   pub proof fn theorem_revoke_reaches_sql_anchor_only(e: Engine, w: World, q: Query)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+...
+436 |       ensures q.anchor == Anchor::PropLookup ==> exec_parsed(e, w, q).0 == sql_out(w, Path::Sql)
+    |  _____________^
+437 | |             && exec_parsed(e, w, q).1.log.len() == e.log.len() + 1,
+    | |__________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/failure-answers-empty/20261118T020741Z/models/native_admission/native_admission.rs:450:13
+    |
+446 | pub proof fn theorem_native_failure_answered_by_sql(e: Engine, w: World, q: Query)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+...
+450 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/failure-answers-empty/20261118T020741Z/models/native_admission/native_admission.rs:507:1
+    |
+507 | pub proof fn theorem_shadow_native_failure_uncompared(e: Engine, w: World, q: Query)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/failure-answers-empty/20261118T020741Z/models/native_admission/native_admission.rs:510:13
+    |
+507 | pub proof fn theorem_shadow_native_failure_uncompared(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+...
+510 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql), exec_parsed(e, w, q).0 is Answer,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/failure-answers-empty/20261118T020741Z/models/native_admission/native_admission.rs:510:62
+    |
+507 | pub proof fn theorem_shadow_native_failure_uncompared(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+...
+510 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql), exec_parsed(e, w, q).0 is Answer,
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

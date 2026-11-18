@@ -1,0 +1,21 @@
+verification results:: 49 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/warn-every-time/20261118T020716Z/models/native_admission/native_admission.rs:455:13
+    |
+453 | pub proof fn theorem_one_warning_per_reason(e: Engine, r: Reason, s: Reason)
+    | ---------------------------------------------------------------------------- at the end of the function body
+454 |     requires !e.warned.contains(key(r)), !e.warned.contains(key(s)), key(r) != key(s),
+455 |     ensures warn(warn(e, r), r).log == e.log.push(key(r)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/warn-every-time/20261118T020716Z/models/native_admission/native_admission.rs:461:13
+    |
+459 | pub proof fn theorem_reason_is_type_and_160_chars(e: Engine, m: Seq<nat>, a: nat, b: nat)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+460 |     requires m.len() == 160, a != b, !e.warned.contains(Reason { ty: 1, msg: m }), !e.warned.contains(Reason { ty: 2, msg: m }),
+461 |     ensures warn(warn(e, Reason { ty: 1, msg: m.push(a) }), Reason { ty: 1, msg: m.push(b) }).log.len() == e.log.len() + 1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

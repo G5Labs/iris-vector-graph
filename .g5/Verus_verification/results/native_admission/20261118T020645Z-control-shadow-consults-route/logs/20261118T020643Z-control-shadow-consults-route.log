@@ -1,0 +1,30 @@
+verification results:: 48 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-consults-route/20261118T020643Z/models/native_admission/native_admission.rs:450:13
+    |
+446 | pub proof fn theorem_native_failure_answered_by_sql(e: Engine, w: World, q: Query)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+...
+450 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-consults-route/20261118T020643Z/models/native_admission/native_admission.rs:480:13
+    |
+477 | pub proof fn theorem_shadow_bypasses_route(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------- at the end of the function body
+...
+480 |     ensures exec_parsed(e, w, q).0 == shadow_out(w, try_native(e, w, q).0.unwrap().0, try_native(e, w, q).0.unwrap().1),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-consults-route/20261118T020643Z/models/native_admission/native_admission.rs:510:13
+    |
+507 | pub proof fn theorem_shadow_native_failure_uncompared(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+...
+510 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql), exec_parsed(e, w, q).0 is Answer,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

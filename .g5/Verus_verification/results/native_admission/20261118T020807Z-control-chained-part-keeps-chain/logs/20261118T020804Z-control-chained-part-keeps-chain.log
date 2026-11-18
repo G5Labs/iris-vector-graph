@@ -1,0 +1,27 @@
+verification results:: 49 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/chained-part-keeps-chain/20261118T020804Z/models/native_admission/native_admission.rs:403:13
+    |
+401 |   pub proof fn theorem_chained_part_runs_natively(w: World, shape: nat)
+    |   --------------------------------------------------------------------- at the end of the function body
+402 |       requires open_world(w), !w.env_shadow_one,
+403 |       ensures ({ let parent = Query { chained: true, ..plain_read(shape) };
+    |  _____________^
+404 | |                let part = chain_part(parent);
+405 | |                plan(parent).is_none() && native_path(exec_parsed(new_engine(None, EnvNative::Unset, false), w, part).0) }),
+    | |__________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/chained-part-keeps-chain/20261118T020804Z/models/native_admission/native_admission.rs:423:13
+    |
+421 |   pub proof fn theorem_read_part_of_chained_write_runs_natively(w: World, shape: nat)
+    |   ----------------------------------------------------------------------------------- at the end of the function body
+422 |       requires open_world(w), !w.env_shadow_one,
+423 |       ensures ({ let whole = Query { mutation: true, chained: true, ..plain_read(shape) };
+    |  _____________^
+424 | |                let read_part = Query { mutation: false, ..chain_part(whole) };
+425 | |                plan(whole).is_none() && native_path(exec_parsed(new_engine(None, EnvNative::Unset, false), w, read_part).0) }),
+    | |______________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

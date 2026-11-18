@@ -1,0 +1,160 @@
+{
+  "title": "native admission",
+  "question": "Which path answers a Cypher read: switch resolution, the planner's declines, every native gate and its per-engine cache, executor failures and the once-per-reason fallback warning, and the shadow comparator and its raise, through execute_cypher",
+  "ontology_ids": [
+    "query.native",
+    "query.native.gates",
+    "query.native.privileges",
+    "query.native.reads-only",
+    "query.native.fallback",
+    "query.native.equal-answers",
+    "query.native.route",
+    "query.shadow"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 51}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "drop-bulk-gate",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_bulk_session_keeps_sql\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "plan-admits-mutation",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_no_write_is_planned\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "warn-every-time",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_one_warning_per_reason\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "shadow-returns-difference",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_shadow_difference_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "shadow-sql-error-answered",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_shadow_sql_failure\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "key-without-type",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_type_is_part_of_the_value\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "limit-without-count",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_limit_count_names_no_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "env-wins",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_explicit_true_beats_env_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "recheck-privileges",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_revoke_does_not_reach_running_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "setup-resets-privileges",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_revoke_does_not_reach_running_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "complete-order-flag",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_partial_order_compared_in_order\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failure-answers-empty",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_native_failure_answered_by_sql\", \"theorem_shadow_native_failure_uncompared\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "shadow-consults-route",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_shadow_bypasses_route\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "mapped-label-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_mapped_label_keeps_sql\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "version-gate-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_version_gate\", \"theorem_missing_class_gate\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "transient-remembered",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_transient_probe_not_remembered\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "drop-native-off-gate",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_per_engine_switch\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "key-whole-message",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_reason_is_type_and_160_chars\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "names-query",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_shadow_difference_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "chained-part-keeps-chain",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_chained_part_runs_natively\", \"theorem_read_part_of_chained_write_runs_natively\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "show-internal-alias",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_write_read_steps\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "anchor-ignores-privileges",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_revoke_reaches_sql_anchor_only\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

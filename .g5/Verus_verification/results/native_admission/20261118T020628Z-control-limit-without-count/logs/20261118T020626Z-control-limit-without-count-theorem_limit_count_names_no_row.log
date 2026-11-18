@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/limit-without-count/20261118T020626Z/models/native_admission/native_admission.rs:608:13
+    |
+607 | pub proof fn theorem_limit_count_names_no_row(c: Seq<nat>, a: Row, b: Row, u: Seq<Row>)
+    | --------------------------------------------------------------------------------------- at the end of the function body
+608 |     ensures compare(c, seq![a, b], c, seq![a], false, true, Some(u)) == fail(What::RowCount, None),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

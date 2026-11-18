@@ -1,0 +1,3167 @@
+{
+  "comparator_domain": {
+    "comparisons": 2116,
+    "mismatches": []
+  },
+  "detection": {
+    "changed_observed_path": true,
+    "comparator_without_types": true,
+    "warned_set_dropped": true
+  },
+  "equal_answers_sample": [
+    {
+      "columns_equal": true,
+      "native": [
+        [
+          [
+            "str",
+            "i62642d_1"
+          ],
+          [
+            "str",
+            "1"
+          ]
+        ]
+      ],
+      "native_runs": 1,
+      "query": "eq_read",
+      "rows_and_types_equal_as_bag": true,
+      "rows_and_types_equal_in_order": true,
+      "sql": [
+        [
+          [
+            "str",
+            "i62642d_1"
+          ],
+          [
+            "str",
+            "1"
+          ]
+        ]
+      ]
+    },
+    {
+      "columns_equal": true,
+      "native": [
+        [
+          [
+            "str",
+            ""
+          ]
+        ],
+        [
+          [
+            "str",
+            "a"
+          ]
+        ],
+        [
+          [
+            "str",
+            "b"
+          ]
+        ],
+        [
+          [
+            "NoneType",
+            null
+          ]
+        ]
+      ],
+      "native_runs": 0,
+      "query": "order_empty_string",
+      "rows_and_types_equal_as_bag": true,
+      "rows_and_types_equal_in_order": true,
+      "sql": [
+        [
+          [
+            "str",
+            ""
+          ]
+        ],
+        [
+          [
+            "str",
+            "a"
+          ]
+        ],
+        [
+          [
+            "str",
+            "b"
+          ]
+        ],
+        [
+          [
+            "NoneType",
+            null
+          ]
+        ]
+      ]
+    },
+    {
+      "columns_equal": true,
+      "native": [
+        [
+          [
+            "str",
+            "1"
+          ],
+          [
+            "int",
+            1
+          ]
+        ],
+        [
+          [
+            "str",
+            "2"
+          ],
+          [
+            "int",
+            1
+          ]
+        ],
+        [
+          [
+            "int",
+            1
+          ],
+          [
+            "int",
+            1
+          ]
+        ],
+        [
+          [
+            "int",
+            2
+          ],
+          [
+            "int",
+            1
+          ]
+        ]
+      ],
+      "native_runs": 1,
+      "query": "group_mixed_types",
+      "rows_and_types_equal_as_bag": false,
+      "rows_and_types_equal_in_order": false,
+      "sql": [
+        [
+          [
+            "int",
+            1
+          ],
+          [
+            "int",
+            2
+          ]
+        ],
+        [
+          [
+            "int",
+            2
+          ],
+          [
+            "int",
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "columns_equal": true,
+      "native": [
+        [
+          [
+            "str",
+            "i62642d_0"
+          ]
+        ],
+        [
+          [
+            "str",
+            "i62642d_1"
+          ]
+        ]
+      ],
+      "native_runs": 1,
+      "query": "limit_unordered",
+      "rows_and_types_equal_as_bag": true,
+      "rows_and_types_equal_in_order": true,
+      "sql": [
+        [
+          [
+            "str",
+            "i62642d_0"
+          ]
+        ],
+        [
+          [
+            "str",
+            "i62642d_1"
+          ]
+        ]
+      ]
+    },
+    {
+      "columns_equal": true,
+      "native": [
+        [
+          [
+            "str",
+            "i62642d_0"
+          ]
+        ],
+        [
+          [
+            "str",
+            "i62642d_1"
+          ]
+        ],
+        [
+          [
+            "str",
+            "i62642d_3"
+          ]
+        ]
+      ],
+      "native_runs": 1,
+      "query": "order_ties",
+      "rows_and_types_equal_as_bag": true,
+      "rows_and_types_equal_in_order": true,
+      "sql": [
+        [
+          [
+            "str",
+            "i62642d_0"
+          ]
+        ],
+        [
+          [
+            "str",
+            "i62642d_1"
+          ]
+        ],
+        [
+          [
+            "str",
+            "i62642d_3"
+          ]
+        ]
+      ]
+    }
+  ],
+  "f0907_tie_order": {
+    "agrees": true,
+    "limit": {
+      "got": "row 0",
+      "owner_rule_admits": true,
+      "plan_ordered": true,
+      "want": "row 0"
+    },
+    "nolimit": {
+      "got": "row 0",
+      "owner_rule_admits": true,
+      "plan_ordered": true,
+      "want": "row 0"
+    }
+  },
+  "fixture": {
+    "container": "ivg-cov-20261118-a-iris",
+    "host": "127.0.0.1",
+    "iris": "IRIS Community 2026.1 (Build 234U)",
+    "kind": "run-own",
+    "port": 36481,
+    "unit": "g5-ontology-coverage-20261117-iris-vector-graph"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/binding.py": "5ab8cd9333b3c442750ff52bb396649af8cc9841be5e7893cb9eb47fdc342e1f",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "9d013898f9f0f4bc431c3f567e95fe863ca262b2c132e9fa8e64e6447262a407",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    "iris_src/src/Graph/KG/Cypher/Exec.cls": "fb9d10518bdf1ef6c342f63782db906df365a078e9dd64270ec7111d3bfb8213",
+    "iris_vector_graph/_engine/fhir.py": "acbaab7ae79a1dbe3c6e4cc9e81654b6216ca5db44e1fb57c4107c5151226aba",
+    "iris_vector_graph/_engine/nodes_edges.py": "7eb2ea4761f66c683db0dd8b55132bb5c2347855acb14ab5ed0f8210543857c7",
+    "iris_vector_graph/_engine/query.py": "197e7abc8ae204165b363ba4fc17445cb6fc7f789efd3b9dad6d88b0334945a3",
+    "iris_vector_graph/cypher/native_plan.py": "43073cfa2e413162e5c96bbe9103c3faedc9ff572574a6b3cf6857cde8fb91d6",
+    "iris_vector_graph/cypher/native_route.py": "fe85b84bbcb042f9225807d4ae1fc9150b361940cb04b8ef5d0e6ed0b914e403",
+    "iris_vector_graph/cypher/native_shadow.py": "2c6afecf24bc6e041acb8be98d573e108b264b7f82a91f86ca07a8043c9e5252",
+    "iris_vector_graph/engine.py": "89d5bc083ddf15315eef449fb1896c8d9864f5a125ba2515b1a0b39deb8a3eba"
+  },
+  "kind": "binding",
+  "live_cases": [
+    {
+      "agrees": true,
+      "case": "switch_argNone_envunset",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "switch_argFalse_envunset",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "switch_argNone_env0",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "switch_argTrue_env0",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "switch_argNone_env1",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "bulk_before",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "bulk_inside",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "bulk_after",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "read",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "write_set",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": true,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k SET n.z = 'z' RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "union",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": true
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_0"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_1"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_2"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_3"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) RETURN n.k AS k UNION MATCH (n:Pi62642d) RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_0"
+          ],
+          [
+            "i62642d_1"
+          ],
+          [
+            "i62642d_2"
+          ],
+          [
+            "i62642d_3"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "call",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": true,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "label"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "Pi62642d"
+            ]
+          ],
+          [
+            [
+              "str",
+              "Qi62642d"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {},
+      "query": "CALL db.labels() YIELD label RETURN label",
+      "sql_provider": {
+        "cols": [
+          "label"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "Pi62642d"
+          ],
+          [
+            "Qi62642d"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "skip",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": true,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_2"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_3"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) RETURN n.k AS k SKIP 1",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1"
+          ],
+          [
+            "i62642d_2"
+          ],
+          [
+            "i62642d_3"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "chained_parts",
+      "expected": [
+        "parent_declined",
+        true,
+        "native_parts",
+        2
+      ],
+      "observed": [
+        "parent_declined",
+        true,
+        "native_parts",
+        2
+      ],
+      "rows": [
+        [
+          [
+            "str",
+            "i62642d_1"
+          ]
+        ]
+      ]
+    },
+    {
+      "agrees": false,
+      "case": "count_create_step",
+      "expected": [
+        "whole_declined",
+        true,
+        "read_step_native",
+        1
+      ],
+      "observed": [
+        "whole_declined",
+        true,
+        "read_step_native",
+        0
+      ],
+      "write_effect": [
+        [
+          [
+            "int",
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "agrees": false,
+      "case": "row_merge_prefix",
+      "expected": [
+        "whole_declined",
+        true,
+        "read_step_native",
+        1
+      ],
+      "observed": [
+        "whole_declined",
+        true,
+        "read_step_native",
+        0
+      ],
+      "write_effect": [
+        [
+          [
+            "str",
+            "i62642d_2"
+          ]
+        ]
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "mapped_label",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "n"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "Ann"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "n": "Ann"
+      },
+      "query": "MATCH (p:Exti62642d) WHERE p.Name = $n RETURN p.Name AS n",
+      "sql_provider": {
+        "cols": [
+          "n"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "Ann"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "unmapped_label_same_engine",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "shadow_eq_read",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "shadow_order_empty_string",
+      "expected": [
+        "raise",
+        "NativeMismatch:row"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": true,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "fell_back_warnings": 0,
+        "msg": "native and SQL answers differ (row 0) for \"{'family': 'A', 'graph': None, 'nodes': [{'labels': ['Pi62642d'], 'props': [], 'cmp': []}], 'anchor': 0, 'hops': [], 'alts': [{'anchor': 0, 'hops': [], 'acc': False}], 'cross': [], 'acc': False, 'returns': [[0, 's']], 'agg': None, 'width': 1, 'distinct': False, 'multiplicity': True, 'order': [[0, 's', False]], 'limit': None, 'ordered': True, 'limited': Fa",
+        "names_cypher": false,
+        "names_params": true,
+        "names_plan": true,
+        "native_runs": 1,
+        "outcome": "raise",
+        "type": "NativeMismatch",
+        "version_warnings": 0,
+        "what": "row"
+      },
+      "observed": [
+        "raise",
+        "NativeMismatch:row"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) RETURN n.s AS s ORDER BY n.s",
+      "sql_provider": {
+        "cols": [
+          "s"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            ""
+          ],
+          [
+            "a"
+          ],
+          [
+            "b"
+          ],
+          [
+            null
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "shadow_group_mixed_types",
+      "expected": [
+        "raise",
+        "NativeMismatch:missing"
+      ],
+      "features": {
+        "aggregate": true,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "fell_back_warnings": 0,
+        "msg": "native and SQL answers differ (missing from native) for \"{'family': 'A', 'graph': None, 'nodes': [{'labels': ['Pi62642d'], 'props': [], 'cmp': []}], 'anchor': 0, 'hops': [], 'alts': [{'anchor': 0, 'hops': [], 'acc': True}], 'cross': [], 'acc': True, 'returns': [], 'agg': {'keys': [[0, 'v']], 'aggs': [{'kind': 'count'}], 'cols': [['k', 0], ['a', 0]], 'order': []}, 'width': 2, 'distinct': False, 'mu",
+        "names_cypher": false,
+        "names_params": true,
+        "names_plan": true,
+        "native_runs": 1,
+        "outcome": "raise",
+        "type": "NativeMismatch",
+        "version_warnings": 0,
+        "what": "missing"
+      },
+      "observed": [
+        "raise",
+        "NativeMismatch:missing"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) RETURN n.v AS v, count(*) AS c",
+      "sql_provider": {
+        "cols": [
+          "v",
+          "c"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "shadow_limit_unordered",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": true,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_0"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) RETURN n.k AS k LIMIT 2",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_0"
+          ],
+          [
+            "i62642d_1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "shadow_order_ties",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": true,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_0"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_1"
+            ]
+          ],
+          [
+            [
+              "str",
+              "i62642d_3"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) WHERE n.t = 'same' RETURN n.k AS k ORDER BY n.t",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_0"
+          ],
+          [
+            "i62642d_1"
+          ],
+          [
+            "i62642d_3"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "shadow_env_on",
+      "expected": [
+        "raise",
+        "NativeMismatch:row"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": true,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "fell_back_warnings": 0,
+        "msg": "native and SQL answers differ (row 0) for \"{'family': 'A', 'graph': None, 'nodes': [{'labels': ['Pi62642d'], 'props': [], 'cmp': []}], 'anchor': 0, 'hops': [], 'alts': [{'anchor': 0, 'hops': [], 'acc': False}], 'cross': [], 'acc': False, 'returns': [[0, 's']], 'agg': None, 'width': 1, 'distinct': False, 'multiplicity': True, 'order': [[0, 's', False]], 'limit': None, 'ordered': True, 'limited': Fa",
+        "names_cypher": false,
+        "names_params": true,
+        "names_plan": true,
+        "native_runs": 1,
+        "outcome": "raise",
+        "type": "NativeMismatch",
+        "version_warnings": 0,
+        "what": "row"
+      },
+      "observed": [
+        "raise",
+        "NativeMismatch:row"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) RETURN n.s AS s ORDER BY n.s",
+      "sql_provider": {
+        "cols": [
+          "s"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            ""
+          ],
+          [
+            "a"
+          ],
+          [
+            "b"
+          ],
+          [
+            null
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "shadow_env_off",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": true,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "s"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "a"
+            ]
+          ],
+          [
+            [
+              "str",
+              "b"
+            ]
+          ],
+          [
+            [
+              "str",
+              ""
+            ]
+          ],
+          [
+            [
+              "NoneType",
+              null
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {},
+      "query": "MATCH (n:Pi62642d) RETURN n.s AS s ORDER BY n.s",
+      "sql_provider": {
+        "cols": [
+          "s"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            ""
+          ],
+          [
+            "a"
+          ],
+          [
+            "b"
+          ],
+          [
+            null
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "route_held_sql_no_shadow",
+      "expected": [
+        "answer",
+        "routed_sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "routed_sql"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "route_held_sql_shadow",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "route_held_choice",
+      "expected": [
+        "sql"
+      ],
+      "observed": [
+        "sql"
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "shadow_records_no_route",
+      "expected": [
+        0
+      ],
+      "observed": [
+        0
+      ]
+    },
+    {
+      "agrees": true,
+      "case": "priv_i62_all",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "priv_i62_part",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "priv_i62_rev",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_1"
+            ],
+            [
+              "str",
+              "1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "cols": [
+          "k",
+          "v"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_1",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": false,
+      "case": "priv_rev_running_engine_after_revoke",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-99>:<Privilege violation>]\r\n[Error: <<THROW> *%Exception.StatusException ERROR #5001: Cypher anchor SQLCODE -99: User i62_rev is not privileged for the operation>]\r\n[",
+        "fell_back_warnings": 1,
+        "native_runs": 0,
+        "outcome": "error_result",
+        "rows": [],
+        "version_warnings": 0
+      },
+      "observed": [
+        "error_result",
+        null
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "kind": "error"
+      }
+    },
+    {
+      "agrees": false,
+      "case": "priv_rev_running_engine_shadow",
+      "expected": [
+        "raise",
+        "NativeMismatch:SqlFailed"
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-99>:<Privilege violation>]\r\n[Error: <<THROW> *%Exception.StatusException ERROR #5001: Cypher anchor SQLCODE -99: User i62_rev is not privileged for the operation>]\r\n[",
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "error_result",
+        "rows": [],
+        "version_warnings": 0
+      },
+      "observed": [
+        "error_result",
+        null
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "kind": "error"
+      }
+    },
+    {
+      "agrees": true,
+      "case": "priv_rev_new_engine",
+      "expected": [
+        "error_result",
+        null
+      ],
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-99>:<Privilege violation>]\r\n[Location: <Prepare>]\r\n[%msg: <User i62_rev is not privileged for the operation>]",
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "error_result",
+        "rows": [],
+        "version_warnings": 0
+      },
+      "observed": [
+        "error_result",
+        null
+      ],
+      "params": {
+        "k": "i62642d_1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k, n.v AS v",
+      "sql_provider": {
+        "kind": "error"
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_current_admitted",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_current_shadow",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_v2_running_engine_falls_back",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "expected_warnings": 1,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 1,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_v2_same_reason_again",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_v2_shadow_native_failure",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "expected_warnings": 1,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 1,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_missing_running_engine_new_reason",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "expected_warnings": 1,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 1,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_missing_new_engine_gate",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 1
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      },
+      "version_warning_expected": 1
+    },
+    {
+      "agrees": true,
+      "case": "exec_v2_new_engine_gate",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 1
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      },
+      "version_warning_expected": 1
+    },
+    {
+      "agrees": true,
+      "case": "exec_restored_cached_engine_stays_sql",
+      "expected": [
+        "answer",
+        "sql"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 0,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "sql"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_restored_new_engine",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    },
+    {
+      "agrees": true,
+      "case": "exec_restored_after_setup",
+      "expected": [
+        "answer",
+        "native"
+      ],
+      "expected_warnings": 0,
+      "features": {
+        "aggregate": false,
+        "chained": false,
+        "covers": false,
+        "limit": false,
+        "mutation": false,
+        "order_by": false,
+        "parts": 1,
+        "procedure": false,
+        "shape_ok": true,
+        "skip": false,
+        "subquery": false,
+        "union": false
+      },
+      "obs": {
+        "cols": [
+          "k"
+        ],
+        "error": null,
+        "fell_back_warnings": 0,
+        "native_runs": 1,
+        "outcome": "answer",
+        "rows": [
+          [
+            [
+              "str",
+              "i62642d_c1"
+            ]
+          ]
+        ],
+        "version_warnings": 0
+      },
+      "observed": [
+        "answer",
+        "native"
+      ],
+      "params": {
+        "k": "i62642d_c1"
+      },
+      "query": "MATCH (n:Pi62642d) WHERE n.k = $k RETURN n.k AS k",
+      "sql_provider": {
+        "cols": [
+          "k"
+        ],
+        "kind": "rows",
+        "rows": [
+          [
+            "i62642d_c1"
+          ]
+        ]
+      }
+    }
+  ],
+  "live_mismatches": [
+    "count_create_step",
+    "row_merge_prefix",
+    "priv_rev_running_engine_after_revoke",
+    "priv_rev_running_engine_shadow"
+  ],
+  "model": "native_admission",
+  "namespaces": [
+    "I62B",
+    "I62C"
+  ],
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "iris_src/src/Graph/KG/Cypher/Exec.cls": true,
+      "iris_vector_graph/_engine/fhir.py": true,
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/cypher/native_plan.py": true,
+      "iris_vector_graph/cypher/native_route.py": true,
+      "iris_vector_graph/cypher/native_shadow.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/pin"
+  },
+  "planner_domain": [
+    {
+      "agrees": true,
+      "got": {
+        "limited": false,
+        "ordered": false
+      },
+      "query": "MATCH (n:P) WHERE n.k = $k RETURN n.k AS k",
+      "want": {
+        "limited": false,
+        "ordered": false
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "limited": false,
+        "ordered": true
+      },
+      "query": "MATCH (n:P) RETURN n.k AS k ORDER BY n.k",
+      "want": {
+        "limited": false,
+        "ordered": true
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "limited": true,
+        "ordered": true
+      },
+      "query": "MATCH (n:P) RETURN n.k AS k ORDER BY n.t LIMIT 2",
+      "want": {
+        "limited": true,
+        "ordered": true
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "limited": true,
+        "ordered": false
+      },
+      "query": "MATCH (n:P) RETURN n.k AS k LIMIT 2",
+      "want": {
+        "limited": true,
+        "ordered": false
+      }
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MATCH (n:P) RETURN n.k AS k SKIP 1",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": {
+        "limited": false,
+        "ordered": true
+      },
+      "query": "MATCH (n:P) RETURN n.v AS v, count(*) AS c ORDER BY v",
+      "want": {
+        "limited": false,
+        "ordered": true
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "limited": false,
+        "ordered": false
+      },
+      "query": "MATCH (n:P) RETURN n.v AS v, n.w AS w, count(*) AS c ORDER BY v",
+      "want": {
+        "limited": false,
+        "ordered": false
+      }
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MATCH (n:P) SET n.x = 1",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MATCH (n:P) DETACH DELETE n",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MERGE (n:P {id: 'x'})",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "CREATE (n:P)",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "CALL db.labels()",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MATCH (n:P) RETURN n.k AS k UNION MATCH (m:P) RETURN m.k AS k",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MATCH (n:P) RETURN n.k AS k MATCH (m:P) RETURN m.k AS k2",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MATCH (n:P) RETURN someUnknownFunction(n)",
+      "want": null
+    },
+    {
+      "agrees": true,
+      "got": null,
+      "query": "MATCH (n:P) WITH n.k AS k RETURN k",
+      "want": null
+    }
+  ],
+  "platform": "Linux-7.0.0-1014-gcp-x86_64-with-glibc2.39",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.18",
+  "real": "execute_cypher/_execute_parsed/_try_native/_shadow_compare/native_gate/_native_privileges/_native_executor_current/bulk_load_session/map_sql_table on IRIS; plan_query, native_shadow.compare",
+  "scope": "one engine process; label/property reads; disclosed: synthetic NativeRoute timings, Exec recompiled at PLANVERSION 2 or deleted in I62C, SQL tie permutation for F-0907 at unit level",
+  "seconds": 34.0,
+  "verdict": "DISAGREES",
+  "warned_set_unit": {
+    "agrees": true,
+    "got": [
+      1,
+      1,
+      2,
+      2,
+      3
+    ],
+    "want": [
+      1,
+      1,
+      2,
+      2,
+      3
+    ]
+  }
+}

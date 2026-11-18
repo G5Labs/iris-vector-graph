@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_type_is_part_of_the_value"
+    ],
+    "find": "else if s[i as int] != n[i as int] { Some(i) }",
+    "name": "key-without-type",
+    "replace": "else if s[i as int].len() != n[i as int].len() { Some(i) }",
+    "why": "_key drops the value's type: rows equal when they have the same shape"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_type_is_part_of_the_value"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "d80c6fa1756c72f929b37e6050087d9d44c2aaab87fe72d825d440621845c23f",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "b56b913a9329a1a43844ab0b8829b60310fef8e2056f69076c07e6716bbcedf4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T020724Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_type_is_part_of_the_value": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T020724Z-control-key-without-type-theorem_type_is_part_of_the_value.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T020724Z-control-key-without-type.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T020728Z-control-key-without-type/logs/20261118T020724Z-control-key-without-type-theorem_type_is_part_of_the_value.log": "6faf3c940abd0a21cf91b434d7bafdf551cb3770e64f20287603e22acc0c5899",
+    ".g5/Verus_verification/results/native_admission/20261118T020728Z-control-key-without-type/logs/20261118T020724Z-control-key-without-type.log": "9f756dc395f26caf916fca8b516d01b5529945adb06883f1436610cec7ab3c83"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
