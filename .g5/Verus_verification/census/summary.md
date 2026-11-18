@@ -472,3 +472,5 @@ enumeration complete
 ## Checks
 
 PASS: every block is in blocks.tsv; no graded block is STALE; every model locator and cited receipt resolves and is the latest fresh receipt of its kind; counts agree.
+
+Strict-grade lint (LINT-1 untagged gap on a full row; LINT-2a/2b check_scope full over a requires clause not reviewed or over point checks only; LINT-3 full without a cited proof fn): PASS.

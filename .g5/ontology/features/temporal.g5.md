@@ -503,6 +503,7 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - agent
 - operations, data-integrity
 - uncertain
+- design-verified
 - Formal: [`theorem_raw_purge_keeps_statistics`, `theorem_raw_purge_whole_vs_cut`, `theorem_bucket_purge_whole_vs_cut`, `theorem_bucket_purge_reversed_range`, `theorem_delete_after_bucket_purge_recreates`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 - Open question: [q-tmp-002](../../Verus_verification/open_questions.md#q-tmp-002)
 
@@ -516,6 +517,7 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - Expands: [Statistics](#temporal.stats)
 - agent
 - user-facing-behavior
+- design-verified
 - Formal: [`theorem_cut_bucket_is_exact`, `theorem_one_whole_bucket_reads_statistics`, `theorem_empty_answer_raises`, `theorem_group_row_absent`, `theorem_targets_follow_raw`, `theorem_ms_edge_in_seconds_whole_bucket`, `theorem_empty_key_quiet_cut_window_answers_zero`, `theorem_empty_key_raises_with_whole_bucket_or_event`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
 Findings: [bug-tmp-009](../../Verus_verification/bugs_issues.md#bug-tmp-009) (strengthened in iteration 51: an unknown metric, and a whole bucket left with a count but no extremes, raise too); [bug-tmp-106](../../Verus_verification/bugs_issues.md#bug-tmp-106) (the millisecond writer; found by independent review round 2, reproduced and modeled in iteration 53); [bug-tmp-108](../../Verus_verification/bugs_issues.md#bug-tmp-108) (an empty key answers 0 on a quiet cut window; review round 3, modeled and bound in iteration 56).
@@ -530,6 +532,7 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - Expands: [Statistics](#temporal.stats)
 - agent
 - user-facing-behavior
+- design-verified
 - Formal: [`theorem_velocity_counts_touched_buckets`, `theorem_velocity_boundaries`, `theorem_bursts_ignore_predicate`, `theorem_burst_threshold_inclusive`, `theorem_ms_default_now_misses`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
 Findings: [F-0508](../../Verus_verification/bugs_issues.md#F-0508) (the ignored predicate; now formal). The millisecond default is a recorded divergence, not a separate finding. The millisecond window unit (review round 2, m9) follows from `velocity`, which is general in bucket width and window; the [temporal_stats binding](../../Verus_verification/results/temporal_stats/20261117T045124Z-binding/receipt.json) observes it (`ms_vel_window_300` 1, `ms_vel_window_300000` 2). Premise: the Python engine calls only the seconds entry point.
@@ -542,6 +545,7 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - Expands: [Statistics](#temporal.stats)
 - agent
 - user-facing-behavior
+- design-verified
 - Formal: [`theorem_distinct_empty_is_zero`, `theorem_distinct_nonempty_at_least_eleven`, `theorem_distinct_one_target_is_eleven`, `theorem_same_target_twice`, `theorem_distinct_window_rounded_out`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
 Findings: [bug-tmp-103](../../Verus_verification/bugs_issues.md#bug-tmp-103) (new in iteration 51). The empty-predicate cases (review round 2, m2) are owned as built from the iteration-53 probe and not modeled. The register choice comes from SHA-1 (a provider computed the same way in the binding).
@@ -651,6 +655,7 @@ Open questions: [Must a paged temporal window read show one consistent moment wh
 
 ### temporal.window.sources
 
+- design-verified
 - Sources: [spec 255 FR-003, FR-004](../../../specs/255-temporal-window-reader/spec.md#L127-L130); [`iris_vector_graph/_engine/temporal_window.py::window_spec`](../../../iris_vector_graph/_engine/temporal_window.py#L37-L58); [`iris_src/src/Graph/KG/TemporalWindow.cls::Open`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L44-L81) (filter mode 0 only with no source, list or prefix; a list stores its non-empty names, `:56-66`); [`TemporalWindow.cls::NextKey`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L196-L239); unit test [`test_an_empty_source_list_is_a_list_not_every_source`](../../../tests/unit/test_255_temporal_window_reader.py#L99-L101), live test `test_255_window_reader_us1_e2e.py::test_an_empty_list_reads_nothing`
 - Playbook: [TMP-B6.11](../../../experiment/playbook-completion/ontology/05-temporal.md#L217) (same rule; the omitted half added from `window_spec`)
 - Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_spec_sources_omitted_vs_empty`, `theorem_server_filter_sources`, both as-built; controls `empty-list-sends-no-key`, `server-empty-list-reads-all`)
@@ -664,6 +669,7 @@ State machines: [temporal window reader](../../Verus_verification/models/tempora
 
 ### temporal.window.paging
 
+- design-verified
 - Sources: [spec 255 Decisions](../../../specs/255-temporal-window-reader/spec.md#L162-L168), [edge cases](../../../specs/255-temporal-window-reader/spec.md#L107-L118), [Page](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L123-L193), [cursor](../../../iris_vector_graph/_engine/temporal_window.py#L74-L136); live tests: [US1](../../../tests/e2e/test_255_window_reader_us1_e2e.py), [US2](../../../tests/e2e/test_255_window_reader_us2_e2e.py); empty middle page: [`iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__next__`](../../../iris_vector_graph/_engine/temporal_window.py#L102-L113), unit test [`test_an_empty_middle_page_does_not_end_the_read`](../../../tests/unit/test_255_temporal_window_reader.py#L160-L162)
 - Playbook: [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201), [TMP-B6.9](../../../experiment/playbook-completion/ontology/05-temporal.md#L215), [TMP-B6.3](../../../experiment/playbook-completion/ontology/05-temporal.md#L209), [TMP-B6.4](../../../experiment/playbook-completion/ontology/05-temporal.md#L210)
 - Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_yield_is_concat_to_done`, as-built transcription of the Python cursor; control `stop-on-empty-page`)
@@ -679,6 +685,7 @@ State machines: [temporal window reader](../../Verus_verification/models/tempora
 
 ### temporal.window.paging.release
 
+- design-verified
 - Sources: [spec 255 FR-006, FR-009](../../../specs/255-temporal-window-reader/spec.md#L131-L138); [`iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__init__`](../../../iris_vector_graph/_engine/temporal_window.py#L82-L93), [`::TemporalWindowCursor.__next__`](../../../iris_vector_graph/_engine/temporal_window.py#L102-L113), [`::TemporalWindowCursor.close`](../../../iris_vector_graph/_engine/temporal_window.py#L115-L124), [`::TemporalWindowCursor.__exit__`](../../../iris_vector_graph/_engine/temporal_window.py#L129-L130), [`::TemporalWindowCursor.__del__`](../../../iris_vector_graph/_engine/temporal_window.py#L132-L136), [`::_server_call`](../../../iris_vector_graph/_engine/temporal_window.py#L67-L71); server: [`TemporalWindow.cls::Next`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L85-L91), [`::Close`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L94-L97), [`::Page`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L128-L193) (frees at `done`, `:187-191`; a full page stops at `:185`); unit tests [test_255_temporal_window_reader.py `TestCursor`](../../../tests/unit/test_255_temporal_window_reader.py#L131-L201)
 - Playbook: [TMP-B6.6](../../../experiment/playbook-completion/ontology/05-temporal.md#L212), [TMP-B6.8](../../../experiment/playbook-completion/ontology/05-temporal.md#L214), [TMP-B6.15](../../../experiment/playbook-completion/ontology/05-temporal.md#L221), [TMP-B6.16](../../../experiment/playbook-completion/ontology/05-temporal.md#L222), [TMP-B6.7](../../../experiment/playbook-completion/ontology/05-temporal.md#L213) (the handle's process and connection)
 - Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_exhaustion_frees_without_close`, `theorem_close_mid_read_once`, `theorem_failed_page_closes_once`, `theorem_server_full_page_nonempty`; as-built; controls `close-after-exhaustion`, `skip-close-on-failure`, `close-not-idempotent`)
@@ -695,6 +702,7 @@ State machines: [temporal window reader](../../Verus_verification/models/tempora
 - Sources: [InternLabelSet and ResolveLabelSet](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1336-L1397), [docstrings](../../../iris_vector_graph/_engine/temporal.py#L835-L850), [spec 204 FR-012](../../../specs/204-temporal-index-gaps/spec.md)
 - agent
 - data-integrity
+- design-verified
 - Formal: [`theorem_label_sets_collide`, `theorem_nested_value_hash_per_call`, `theorem_nested_content_ignored`, `theorem_scalar_sets_idempotent`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
 Findings: [bug-tmp-105](../../Verus_verification/bugs_issues.md#bug-tmp-105) (nested values; found by independent review round 2, reproduced and modeled in iteration 53), [bug-tmp-104](../../Verus_verification/bugs_issues.md#bug-tmp-104) (new in iteration 51), [F-0509](../../Verus_verification/bugs_issues.md#F-0509) (strengthened: a fraction below one also gives non-JSON text). The number text `.5` is an IRIS provider rule, observed and not modeled.

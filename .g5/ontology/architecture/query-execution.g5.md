@@ -253,6 +253,8 @@ Sources: [spec 253 US4 and FR-007](../../../specs/253-native-cypher-executor/spe
 ### query.native.route
 
 
+- design-verified
+
 - uncertain
 - Playbook: [NAT-T7](../../../experiment/playbook-completion/ontology/09-native-executor.md)
 - Verus: [route_recheck](../../Verus_verification/models/route_recheck/NOTES.md), as-built held-call recheck/reset and permanent SQL-failure rules; trial medians, drift selection and SQL/native answer equality remain unmodeled.
@@ -342,6 +344,8 @@ Wording corrected in iteration 62 (the iteration-61 report, confirmed): "Nothing
 
 ### query.compiled.fallback
 
+
+- design-verified
 
 - uncertain
 - Playbook: [NAT-B5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L172), [NAT-T5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L173)

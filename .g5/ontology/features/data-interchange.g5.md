@@ -121,6 +121,7 @@ Findings: [import_rdf drops a literal's datatype](../../Verus_verification/bugs_
 
 ### install.import.ndjson
 
+- design-verified
 - Sources: [`SnapshotMixin.import_graph_ndjson`](../../../iris_vector_graph/_engine/snapshot.py#L1727-L1855), [`NodesEdgesMixin.create_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1107), [unit tests](../../../tests/unit/test_edgeprop_ndjson.py#L45-L95)
 - Playbook: [WRT-B7.86](../../../experiment/playbook-completion/ontology/03-writes.md#L221), [WRT-T7.87](../../../experiment/playbook-completion/ontology/03-writes.md#L222), [WRT-B2.80](../../../experiment/playbook-completion/ontology/03-writes.md#L92)
 - Verus: [ndjson_import](../../Verus_verification/models/ndjson_import/NOTES.md), as-built node admission, width refusal, prefix preservation and duplicate counts. Edge routing and temporal batching are unit observations only and remain formal gaps; parser behavior is a scoped boundary assumption.
@@ -171,6 +172,8 @@ State machines: [ndjson export](../../Verus_verification/models/ndjson_export/ma
 ### install.export.rdf.scope
 
 
+- design-verified
+
 - Sources: [Semantic Layer selection](../../../docs/SEMANTIC_LAYER.md#L95-L115), [API reference](../../../docs/API_REFERENCE.md#L2253-L2274), [`_build_rdflib_graph`](../../../iris_vector_graph/_engine/_rdf_utils.py#L102-L294)
 - Tests (live): [R099 label filtering](../../../tests/e2e/test_460_rdf_export_label_filter_e2e.py), [R100 graph contexts](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [graph scope unit tests](../../../tests/unit/test_230_rdf_export_scope.py)
 - Related: [graph scope](../concepts/graph-scope.g5.md#graph.default), [content](#install.export.rdf.content), [report](#install.export.rdf.report)
@@ -191,6 +194,8 @@ State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/ma
 
 ### install.export.rdf.content
 
+
+- design-verified
 
 - Sources: [Semantic Layer row/term/qualifier rules](../../../docs/SEMANTIC_LAYER.md#L39-L65), [`_mint_iri`, `graph_iri`, `_to_literal`, `_build_rdflib_graph`](../../../iris_vector_graph/_engine/_rdf_utils.py#L29-L294)
 - Tests (live): [literal/qualifier unit tests](../../../tests/unit/test_rdf_export.py), [R100 generated context contents](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [R122 named-graph IRIs](../../../tests/e2e/test_460_rdf_graph_id_not_an_iri_e2e.py)
@@ -214,6 +219,8 @@ State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/ma
 
 ### install.export.rdf.report
 
+
+- design-verified
 
 - Sources: [Semantic Layer metrics and formats](../../../docs/SEMANTIC_LAYER.md#L67-L93), [`RdfExportMixin.export_rdf`](../../../iris_vector_graph/_engine/rdf_export.py#L96-L157), [format inference](../../../iris_vector_graph/_engine/_rdf_utils.py#L56-L69)
 - Evidence: [sealed13 ordinary union/quad contrast](../../uplift/consolidated/iteration-13/next-reporting-survey.md), [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md)

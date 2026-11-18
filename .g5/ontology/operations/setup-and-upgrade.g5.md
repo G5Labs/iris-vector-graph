@@ -419,6 +419,8 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 ### install.setup.resume
 
 
+- design-verified
+
 - Sources: [Spec 262 Edge Cases (An interrupted upgrade)](../../../specs/262-ivg-owned-sql-schema/spec.md); [KNOWN_ISSUES: After an interrupted setup](../../../docs/KNOWN_ISSUES.md)
 - Tests (live): `tests/e2e/test_262_upgrade_451.py::test_an_interrupted_upgrade_resumes_to_the_same_end` covers only an interruption after the functions exist and before the record is written
 - Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_interrupted_setup_resumes`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)

@@ -287,6 +287,8 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 ### ledger.commit
 
 
+- design-verified
+
 - uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [USER_GUIDE section 9](../../../docs/USER_GUIDE.md#L1052-L1115), [errors.py](../../../iris_vector_graph/ledger/errors.py); ordered application and stop at the first failure: [`iris_src/src/Graph/KG/LedgerApply.cls::ApplyAll`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L18-L48); set property records prior and new, same value writes nothing: [`LedgerApply.cls`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L265-L317); live tests [`test_duplicate_set_property_records_both_and_last_wins`, `test_failing_op_mid_changeset_leaves_everything_unchanged`](../../../tests/integration/test_ledger_us02_rollback.py#L62-L136)
 - Verus (iteration 60): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_failed_operation_reported`, `theorem_error_mapping_fallbacks` (zero-based position, NodeNotFoundError still a ChangesetOperationError, unknown codes a plain LedgerError), `theorem_refusal_writes_nothing`, `theorem_chunked_transport_roundtrip`; the apply outcome is a premise from ledger_apply. Auto-stub position shifts are owner text only.
@@ -310,6 +312,8 @@ State machines: [ledger apply](../../Verus_verification/models/ledger_apply/mani
 ### ledger.commit.admission
 
 
+- design-verified
+
 - Sources: [Ledger.cls CommitInTxn](../../../iris_src/src/Graph/KG/Ledger.cls#L419-L528), [Ledger.cls header](../../../iris_src/src/Graph/KG/Ledger.cls#L16-L17)
 - Verus (iteration 60): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) derives the order from the ledger's own state (binding, revision map, holder): `theorem_retry_with_new_metadata_replays` (control `expected-head-before-idempotency`), `theorem_expected_head_outcomes`, `theorem_disabled_and_never_enabled`, `theorem_size_limit_boundary`.
 - Playbook: [LED-B4.1](../../../experiment/playbook-completion/ontology/11-ledger.md#L144), [LED-B4.7](../../../experiment/playbook-completion/ontology/11-ledger.md#L153)
@@ -324,6 +328,8 @@ State machines: [ledger redaction](../../Verus_verification/models/ledger_redact
 
 ### ledger.commit.serial
 
+
+- design-verified
 
 - Sources: [Ledger.cls LOCKTIMEOUT and lock](../../../iris_src/src/Graph/KG/Ledger.cls#L21), [errors.py LedgerLockTimeoutError](../../../iris_vector_graph/ledger/errors.py#L78-L79)
 - Playbook: [LED-B4.7.5](../../../experiment/playbook-completion/ontology/11-ledger.md#L162), [LED-B4.7.6](../../../experiment/playbook-completion/ontology/11-ledger.md#L166)
@@ -405,6 +411,8 @@ Assumption review evidence: Changed from decisions.md: **no**.
 
 ### ledger.idempotency
 
+
+- design-verified
 
 - Sources: [Ledger.cls idempotency](../../../iris_src/src/Graph/KG/Ledger.cls#L454-L473), [changeset.py fingerprint](../../../iris_vector_graph/ledger/changeset.py#L365-L386), [ledger API contract commit](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L26)
 - Verus (iteration 60): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) derives the binding instead of reading it: `theorem_retry_with_new_metadata_replays`, `theorem_reordered_operations_conflict`, `theorem_refused_key_stays_free`, `theorem_rollback_frees_key_and_seq`, `witness_replay_returns_no_statement_ids` (bug-led-003's observation).
@@ -501,6 +509,8 @@ Assumption review evidence: Changed from decisions.md: **no**.
 ### ledger.readers
 
 
+- design-verified
+
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L27-L31), [client.py readers](../../../iris_vector_graph/ledger/client.py#L585-L739), [export.py](../../../iris_vector_graph/ledger/export.py)
 - Verus (iteration 60; redaction check added in the repair, review 60 FE-6): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_revision_readers_resolve_ids` (control `lookup-before-redaction-check`), `witness_text_source_is_dropped`.
 - Children: [history pages](#ledger.readers.history), [diff](#ledger.readers.diff), [bound during reconstruction](#ledger.readers.bound)
@@ -519,6 +529,8 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 ### ledger.readers.history
 
 
+- design-verified
+
 - uncertain
 - Sources: [history caller](../../../iris_vector_graph/ledger/client.py#L585-L629), [SQL and row producer](../../../iris_vector_graph/ledger/replay.py#L275-L370), [history contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [revision string columns](../../../iris_src/src/Graph/KG/LedgerRevision.cls#L20-L36)
 - Expands: [readers](#ledger.readers)
@@ -533,6 +545,8 @@ State machines: [history paging](../../Verus_verification/models/history_paging/
 
 ### ledger.readers.bound
 
+
+- design-verified
 
 - uncertain
 - Sources: [`GraphLedger.reconstruct`](../../../iris_vector_graph/ledger/client.py#L720-L729), [`::export_reconstruction`](../../../iris_vector_graph/ledger/client.py#L731-L739), [`replay.reconstruct`](../../../iris_vector_graph/ledger/replay.py#L544-L566), [`GraphState.apply`](../../../iris_vector_graph/ledger/replay.py#L172-L212), [numeric metadata producer `Ledger.Meta`](../../../iris_src/src/Graph/KG/Ledger.cls#L143-L151), [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31)
@@ -553,6 +567,8 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 
 ### ledger.readers.diff
 
+
+- design-verified
 
 - uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L29), [GraphLedger.diff](../../../iris_vector_graph/ledger/client.py#L706-L718), [compute_diff and Diff.inverse](../../../iris_vector_graph/ledger/replay.py#L404-L536), [NodeSnapshotJson and DeleteNodeRows](../../../iris_src/src/Graph/KG/LedgerApply.cls#L339-L371)

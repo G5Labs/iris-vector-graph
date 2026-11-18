@@ -322,6 +322,7 @@ The `id` property dates from 4.6.0 (R181), so that `MATCH (n {id: ...})` finds t
 
 ### structure.node.bulk
 
+- design-verified
 - Sources: [bulk writer](../../../iris_vector_graph/_engine/nodes_edges.py#L1648-L1873), [orphan cleanup](../../../iris_vector_graph/_engine/nodes_edges.py#L1617-L1646), [child merge tests](../../../tests/e2e/test_460_bulk_create_nodes_paths_e2e.py), [orphan tests](../../../tests/e2e/test_470_bulk_orphan_props_e2e.py)
 - Expands: [nodes](#structure.node)
 - Formal contract: [bulk children](../../Verus_verification/models/bulk_children/bulk_children.rs)
@@ -346,6 +347,7 @@ State machines: [node edge update](../../Verus_verification/models/node_edge_upd
 
 ### structure.node.delete.bulk
 
+- design-verified
 - Sources: [`NodesEdgesMixin.bulk_delete_nodes`](../../../iris_vector_graph/_engine/nodes_edges.py#L2270-L2299), [`_delete_in_scope`](../../../iris_vector_graph/_engine/nodes_edges.py#L2176-L2200), [`DeleteResult`](../../../iris_vector_graph/_engine/nodes_edges.py#L103-L111), [`_delete_scopes`](../../../iris_vector_graph/_engine/nodes_edges.py#L2202-L2225), [`IRISGraphStore.delete_nodes`](../../../iris_vector_graph/stores/iris_sql_store.py#L1323-L1361)
 - Verus: [bulk_delete](../../Verus_verification/models/bulk_delete/NOTES.md), as-built `theorem_later_batch_runs_after_failure`, `theorem_failed_counts_requested_not_existing`, `theorem_cleanup_failure_is_not_rollback`; raw ID filtering, positive batching and primary/cleanup failure ordering. Provider calls are substituted in the Python comparison; no live erase or implementation proof.
 - Expands: [deleting nodes](#structure.node.delete)
@@ -370,6 +372,8 @@ State machines: [node edge update](../../Verus_verification/models/node_edge_upd
 
 ### structure.node.read
 
+
+- design-verified
 
 - uncertain
 - Sources: [`NodesEdgesMixin.get_nodes`](../../../iris_vector_graph/_engine/nodes_edges.py#L621-L702), [`::get_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L563-L585), [`::create_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1107), [typed node values](../../../iris_vector_graph/prop_values.py#L211-L232)
@@ -410,6 +414,7 @@ Before 4.5.0 a refused edge left its endpoint rows committed and answered False.
 
 ### structure.edge.single
 
+- design-verified
 - Sources: [USER_GUIDE, parallel edges](../../../docs/USER_GUIDE.md#L469-L473), [Known issue: CREATE of an existing relationship](../../../docs/KNOWN_ISSUES.md#a-cypher-create-of-a-relationship-that-already-exists-adds-nothing), [spec 234 context](../../../specs/234-multigraph-parallel-edges/spec.md#L11-L35)
 - Expands: [edges](#structure.edge)
 - Formal contract: [edge acceptance](../../Verus_verification/models/edge_acceptance/edge_acceptance.rs)
@@ -522,6 +527,7 @@ Audit reproduction: [bug-str-008](../../Verus_verification/bugs_issues.md#bug-st
 
 ### structure.multigraph.count
 
+- design-verified
 - Sources: [spec 234 clarifications](../../../specs/234-multigraph-parallel-edges/spec.md#L47-L51), [ADR-0010](../../../docs/adr/0010-degree-is-counted-never-stored.md), [Adj.Count](../../../iris_src/src/Graph/KG/Adj.cls#L108-L133); one-hop rows: [`iris_src/src/Graph/KG/TraversalKHop.cls::KHopNeighborIds`](../../../iris_src/src/Graph/KG/TraversalKHop.cls#L28-L66) (repeats a target `#` times, `:42-44`), [`iris_vector_graph/_engine/query.py::_try_khop_fast_path`](../../../iris_vector_graph/_engine/query.py#L4294-L4330) (answers only when the default graph alone holds edges); live test [test_460_one_hop_parallel_edges_e2e.py](../../../tests/e2e/test_460_one_hop_parallel_edges_e2e.py)
 - Playbook: [GID-B5.4](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L131), [GID-B5.5](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L132), [NAT-B1.6](../../../experiment/playbook-completion/ontology/09-native-executor.md#L75)
 - Verus: no formal contract for the one-hop projection in either arm. `graph_structure` (as-built) models the keyed layout and counts; the playbook's `proofs-d1d` `nread_l2` models native reads of a reviewed design. Neither derives the one-hop row list.

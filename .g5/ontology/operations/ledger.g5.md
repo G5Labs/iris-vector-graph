@@ -85,6 +85,8 @@ Verify compares the structural graph only.
 ### ledger.lifecycle
 
 
+- design-verified
+
 - uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [Ledger.cls Enable/Disable](../../../iris_src/src/Graph/KG/Ledger.cls#L250-L358), [client.py enable](../../../iris_vector_graph/ledger/client.py#L281-L303)
 - Verus (iteration 60): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_enable_lifecycle`, `theorem_disable_and_set_strict`, `witness_strict_set_while_disabled_is_reset_by_enable`, `theorem_head_reader_states`; native binding on the local fixture agrees (enable on an enabled ledger keeps strict; a strict flag set while disabled is reset by the next enable).

@@ -165,6 +165,7 @@ State machines: [service health](../../Verus_verification/models/service_health/
 
 ### install.status
 
+- design-verified
 - Sources: [USER_GUIDE, status counts every graph](../../../docs/USER_GUIDE.md#L1203); [ADMIN_GUIDE, status fields and unknown probes](../../../docs/ADMIN_GUIDE.md#L920); [registry-kind and partial count tests](../../../tests/unit/test_230_status_counts.py); [report graph scope](../../../tests/unit/test_460_r050_status_counts_every_graph.py); [failed census and unknown report](../../../tests/unit/test_460_r050_status_unknown.py)
 - Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_raw_catalog_to_final_report`, `theorem_route_tables_never_double_count`, `theorem_registry_kind_and_shape_both_required`, `theorem_failed_table_keeps_other_counts` and `theorem_failure_is_unknown_not_empty`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). Raw rows and registry/error fields derive partial census and graph/node-vector report knowledge. Actual Python executes local SQL and the final reader under a stable registry view and refusal outcome across the two kind scans; transient per-read registry changes, native/index/schema truth, general IRIS comparison/driver semantics, other report fields and cross-read snapshots remain outside this correspondence. Label/property/edge-vector errors do not by themselves make graph size unknown.
 - agent
@@ -186,6 +187,7 @@ Iteration 52: on IRIS the routed-table count fails ([bug-plt-115](../../Verus_ve
 - Expands: [Status reports](#install.status)
 - agent
 - user-facing-behavior, operations
+- design-verified
 - Formal: [`theorem_ready_for_bfs_iff_rows`, `theorem_fresh_namespace_edges_skip_nkg`, `theorem_routed_only_not_ready_but_searchable`, `theorem_legacy_vectors_ready`, `theorem_full_text_follows_index`, `theorem_routed_edges_only_not_ready_but_searchable`, `theorem_legacy_edge_vectors_ready`, `theorem_failed_census_unknown_only_in_report`, `theorem_failed_vector_count_reads_zero`, `theorem_failed_side_counts_silent`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 Expected results come from ADMIN_GUIDE's field table ("the graph has edges: traversals work", "a BM25 index exists"), its unknown rule (R050, `docs/ADMIN_GUIDE.md#L950-L958`) and spec 230 FR-006 (routed vectors count). The field table's "default embedding table" (L940) predates routing and conflicts with FR-006; FR-006 is kept as the rule. Findings: [bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115), [bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119).
@@ -200,6 +202,7 @@ State machines: [operator reports](../../Verus_verification/models/operator_repo
 - Expands: [Status reports](#install.status)
 - agent
 - user-facing-behavior, operations
+- design-verified
 - Formal: [`theorem_fresh_namespace_edges_skip_nkg`, `theorem_put_after_sync_counted`, `theorem_delete_status_vs_verify`, `theorem_bulk_pending_is_engine_local`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 As built; the documented field meaning ("a bulk load left ^NKG stale") holds. The report gives no sign of an unbuilt integer copy outside `nkg_populated` and the internals view; no product finding is registered for that.
@@ -212,6 +215,7 @@ State machines: [operator reports](../../Verus_verification/models/operator_repo
 - Expands: [Status reports](#install.status)
 - agent
 - user-facing-behavior, operations
+- design-verified
 - Formal: [`theorem_shared_triple_never_in_sync`, `theorem_unique_triples_in_sync_after_sync`, `theorem_heal_claims_in_sync_then_drift`, `theorem_delete_status_vs_verify`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 Expected result from the docstring's documented use. Findings: [bug-plt-116](../../Verus_verification/bugs_issues.md#bug-plt-116). The docstring's list of paths that set the flag (`delete_node`, `drop_graph`) is out of date: those now drop the copy instead.
@@ -225,6 +229,7 @@ State machines: [operator reports](../../Verus_verification/models/operator_repo
 - agent
 - architecture-decision, operations
 - uncertain
+- design-verified
 - Formal: [`theorem_markers_never_set_after_empty_setup`, `theorem_setup_again_sets_markers`, `theorem_setup_with_edges_sets_markers`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 Expected result from the API reference ("What the namespace has deployed: the Graph.KG classes, ^KG, ^NKG"). Findings: [bug-plt-117](../../Verus_verification/bugs_issues.md#bug-plt-117). The store catalogue is observed only (all True, Arno entries absent with Arno not loaded); its intent stays with [HD-1703](../../Verus_verification/open_questions.md#HD-1703).
@@ -237,6 +242,7 @@ State machines: [operator reports](../../Verus_verification/models/operator_repo
 - Expands: [Status reports](#install.status)
 - agent
 - user-facing-behavior, operations
+- design-verified
 - Formal: [`theorem_stats_default_vs_server_every_graph`, `theorem_server_and_metrics_project_status`, `theorem_failed_census_unknown_only_in_report`, `theorem_failed_vector_count_reads_zero`, `theorem_all_probes_ok_counts`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 `/indexes` and the CLI are observed by the iteration-52 probe; the CLI commands print the HTTP answer unchanged (justified delegation in the crosswalk). Iteration 53 observed `ivg status` exiting 0 with probe errors and an empty BM25 index listed `ONLINE` ([probe](../../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json)); neither is modeled. Findings: [bug-plt-119](../../Verus_verification/bugs_issues.md#bug-plt-119).
@@ -249,6 +255,7 @@ State machines: [operator reports](../../Verus_verification/models/operator_repo
 - Expands: [Status reports](#install.status)
 - agent
 - user-facing-behavior, operations
+- design-verified
 - Formal: [`theorem_ledger_stats_failure_reads_zero`, `theorem_ledger_meta_failure_unknown`, `theorem_ledger_counters_follow_commits`, `theorem_enable_two_commits_one_reject`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 Added in iteration 53 for independent review round 2 (M3). The rule comes from `_ledger_status`'s docstring ("a read that fails is reported") and R050. Observed in the [probe](../../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) and the operator_reports binding (namespace I53B). Findings: [bug-plt-120](../../Verus_verification/bugs_issues.md#bug-plt-120).
@@ -261,6 +268,7 @@ State machines: [operator reports](../../Verus_verification/models/operator_repo
 - Expands: [Status reports](#install.status)
 - agent
 - user-facing-behavior
+- design-verified
 - Formal: [`theorem_unlabeled_endpoint_is_first_label`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 The docstring says "0 if none"; that 0 is also the first label's id. Findings: [bug-plt-118](../../Verus_verification/bugs_issues.md#bug-plt-118).
