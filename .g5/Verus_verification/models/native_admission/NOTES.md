@@ -33,7 +33,7 @@ inputs themselves.
 | `reader` | `_engine/query.py` `execute_cypher` 1931-1943 | a plain `RuntimeError` becomes an error result (unless `raise_on_error`); `NativeMismatch` (an `AssertionError`) is raised |
 | `chain_part`, `count_step`, `merge_prefix` | `execute_cypher` 1904-1920; `count_create.py` `plan_count_create` (alias `__rows`); `merge_rows.py` `plan_row_merge` (`__rm<i>`) | a chained part is planned with its chain emptied; a write's count/merge read step returns an internal alias, which the translation hides, so its width check declines it |
 
-## Claims (51 verified, vstd only)
+## Claims (54 verified, vstd only)
 
 As built:
 - **Switches.** `theorem_switch_resolution`; `theorem_per_engine_switch` (one engine with `native_cypher=False` answers
@@ -63,15 +63,15 @@ As built:
 - **Comparator.** `theorem_ordered_pass_iff_equal` (all sizes); `theorem_type_is_part_of_the_value` (`1`, `'1'`, `1.0`,
   `true`); `theorem_columns_checked_first`; `theorem_unordered_permutation_passes`;
   `theorem_unordered_difference_names_missing_row` (bug-cyp-136's shape); `theorem_limit_other_rows_pass`;
-  `theorem_limit_outside_row_raises`; `theorem_limit_count_names_no_row`; `theorem_partial_order_compared_in_order`
+  `theorem_limit_outside_row_raises`; `theorem_limit_count_names_no_row`; `theorem_limit_pass_means_rows_of_full_answer` (all sizes: a passing LIMIT comparison means the same count and every native row spent from the full answer's multiset, through `lemma_fits_bounded`); `theorem_partial_order_compared_in_order`
   (F-0907 and equal-answers#o05: an ORDER BY that leaves ties marks the plan ordered, so a tie permutation the owner's
   rule admits raises, with or without LIMIT); `theorem_skip_never_compared`; `theorem_aggregate_order_flag`.
 
-Controls (22, each failing in its named function): `drop-bulk-gate`, `plan-admits-mutation`, `warn-every-time`,
+Controls (23, each failing in its named function): `drop-bulk-gate`, `plan-admits-mutation`, `warn-every-time`,
 `shadow-returns-difference`, `shadow-sql-error-answered`, `key-without-type`, `limit-without-count`, `env-wins`,
 `recheck-privileges`, `setup-resets-privileges`, `complete-order-flag`, `failure-answers-empty`,
 `shadow-consults-route`, `mapped-label-ignored`, `version-gate-dropped`, `transient-remembered`, `drop-native-off-gate`,
-`key-whole-message`, `names-query`, `chained-part-keeps-chain`, `show-internal-alias`, `anchor-ignores-privileges`.
+`key-whole-message`, `names-query`, `chained-part-keeps-chain`, `show-internal-alias`, `anchor-ignores-privileges`, `limit-skips-spent-check` (caught in `lemma_fits_bounded` and `theorem_limit_outside_row_raises`).
 `env-wins`, `complete-order-flag`, `names-query`, `chained-part-keeps-chain` and `setup-resets-privileges` are the
 owner's or a proposed policy; their failure shows the as-built theorem distinguishes the two, not that the repair is
 chosen.
@@ -96,13 +96,13 @@ namespaces I62B and I62C in `ivg-cov-20261118-a-iris` (from %SYS through `docker
 `i62_part` (no SELECT on `rdf_edges`) and `i62_rev` with roles `i62r_*` and deletes them after. A Python transcription
 of the spec functions above computes each expected outcome from inputs the harness sets or observes (clause flags from
 the parser, the grants it made, the executor class it compiled, the labels it mapped, the environment, each path's own
-answer). Latest receipt: `results/native_admission/20261118T020559Z-binding` (AGREES; 50 live cases, the real planner
+answer). Latest receipt: `results/native_admission/20261118T021610Z-binding` (AGREES; 50 live cases, the real planner
 over 16 queries, the real comparator over 2,116 inputs, F-0907's tie rule, the real `_try_native` warned set at unit
 level; detection: a changed observed path, a comparator without value types and a dropped warned set are each
-caught). Four earlier receipts of the same day are kept as unsuccessful runs: the first two found harness errors, the
+caught); prove `results/native_admission/20261118T021637Z-prove` (PASS 54) and 23 control receipts of the same run. Earlier receipts of the same day are kept: four unsuccessful binding runs the first two found harness errors, the
 third found two real distinctions the transcription lacked (Exec's SQL anchor fails after a REVOKE; the write read
 steps are declined by the width check), which were then added to the model, and the fourth a harness route-threshold
-slip.
+slip; an AGREES binding (020559Z) before the LIMIT soundness theorem was added; and a control run in which `limit-skips-spent-check` failed elsewhere (in the lemma rather than the theorem it serves), after which its expected functions were corrected.
 
 Disclosed substitutions, each reachable in production: the executor class is recompiled at PLANVERSION 2 or deleted in
 I62C (a namespace deployed by another package version, a partial deploy, or another process running setup while an

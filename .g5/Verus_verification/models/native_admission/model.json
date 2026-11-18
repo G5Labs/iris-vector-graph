@@ -1,4 +1,4 @@
-{"name":"native_admission","root":"native_admission.rs","expected_verified":51,"product_baseline":"3eaa79cf77d3e0a879b2cced634cf2729d81499e","controls":[
+{"name":"native_admission","root":"native_admission.rs","expected_verified":54,"product_baseline":"3eaa79cf77d3e0a879b2cced634cf2729d81499e","controls":[
 {"name": "drop-bulk-gate", "why": "native_gate no longer closes inside the engine's own bulk_load_session", "find": "else if e1.in_bulk {", "replace": "else if false {", "expect_fail_in": ["theorem_bulk_session_keeps_sql"]},
 {"name": "plan-admits-mutation", "why": "plan_query no longer declines is_mutation", "find": "if q.mutation || q.procedure", "replace": "if q.procedure", "expect_fail_in": ["theorem_no_write_is_planned"]},
 {"name": "warn-every-time", "why": "the _native_warned set is dropped: every failure logs", "find": "if e.warned.contains(k) { e } else {", "replace": "if false { e } else {", "expect_fail_in": ["theorem_one_warning_per_reason"]},
@@ -20,5 +20,6 @@
 {"name": "names-query", "why": "repair: the mismatch names the Cypher text", "find": "Cmp::Fail(Mismatch { what, names_query: false, names_plan: true,", "replace": "Cmp::Fail(Mismatch { what, names_query: true, names_plan: true,", "expect_fail_in": ["theorem_shadow_difference_raises"]},
 {"name": "chained-part-keeps-chain", "why": "repair of the as-built dispatch: a chained part is planned with its chain", "find": "Query { chained: false, ..parent }", "replace": "Query { chained: parent.chained, ..parent }", "expect_fail_in": ["theorem_chained_part_runs_natively", "theorem_read_part_of_chained_write_runs_natively"]},
 {"name": "show-internal-alias", "why": "the translation's columns keep a __ alias: a write's count/merge read step is admitted", "find": "|| !q.width_ok || q.hidden_alias {", "replace": "|| !q.width_ok {", "expect_fail_in": ["theorem_write_read_steps"]},
-{"name": "anchor-ignores-privileges", "why": "Exec's property-lookup anchor no longer goes through SQL's privilege check", "find": "else if q.anchor == Anchor::PropLookup && !w.sel_props {", "replace": "else if false {", "expect_fail_in": ["theorem_revoke_reaches_sql_anchor_only"]}
+{"name": "anchor-ignores-privileges", "why": "Exec's property-lookup anchor no longer goes through SQL's privilege check", "find": "else if q.anchor == Anchor::PropLookup && !w.sel_props {", "replace": "else if false {", "expect_fail_in": ["theorem_revoke_reaches_sql_anchor_only"]},
+{"name": "limit-skips-spent-check", "why": "the LIMIT loop no longer stops at a row whose count is spent", "find": "else if cnt(budget, native[0]) == 0 { Some(native[0]) }", "replace": "else if false { Some(native[0]) }", "expect_fail_in": ["lemma_fits_bounded", "theorem_limit_outside_row_raises"]}
 ]}

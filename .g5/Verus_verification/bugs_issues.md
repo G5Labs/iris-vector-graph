@@ -4774,7 +4774,7 @@ Description: The process-wide switch is only a default. An engine whose caller p
 
 Found by: iteration 62, prediction PA2 frozen before the source read ([predictions](../uplift/consolidated/iteration-62/PREDICTIONS-builder.md)); [native_admission](models/native_admission/NOTES.md) `theorem_explicit_true_beats_env_zero`, control `env-wins`.
 
-Reproduced by: **E2E reproduced** on the run-own IRIS 2026.1 fixture `ivg-cov-20261118-a-iris` with the unchanged pin, namespace I62B ([binding receipt](results/native_admission/20261118T020559Z-binding/receipt.json), cases `switch_argTrue_env0` (native) beside `switch_argNone_env0` (SQL) and `switch_argNone_envunset` (native)).
+Reproduced by: **E2E reproduced** on the run-own IRIS 2026.1 fixture `ivg-cov-20261118-a-iris` with the unchanged pin, namespace I62B ([binding receipt](results/native_admission/20261118T021610Z-binding/receipt.json), cases `switch_argTrue_env0` (native) beside `switch_argNone_env0` (SQL) and `switch_argNone_envunset` (native)).
 
 Expected: [query.native](../ontology/architecture/query-execution.g5.md#query.native): "every engine in a process with `IVG_NATIVE_CYPHER=0`".
 
@@ -4797,7 +4797,7 @@ Description: The planner declines a query with chained statements, but `execute_
 
 Found by: iteration 62 exploratory probe after the source read; [native_admission](models/native_admission/NOTES.md) `theorem_chained_part_runs_natively`, `theorem_read_part_of_chained_write_runs_natively`, control `chained-part-keeps-chain`.
 
-Reproduced by: **E2E reproduced** on the run-own fixture, namespace I62B ([binding receipt](results/native_admission/20261118T020559Z-binding/receipt.json), cases `chained_parts` (two native runs for a two-statement read) and `chained_write_then_read` (the write statement on SQL, the read statement native, reading the row the uncommitted SET changed)).
+Reproduced by: **E2E reproduced** on the run-own fixture, namespace I62B ([binding receipt](results/native_admission/20261118T021610Z-binding/receipt.json), cases `chained_parts` (two native runs for a two-statement read) and `chained_write_then_read` (the write statement on SQL, the read statement native, reading the row the uncommitted SET changed)).
 
 Expected: [query.native.reads-only](../ontology/architecture/query-execution.g5.md#query.native.reads-only): "a query with ... chained statements takes the SQL path".
 
@@ -4820,7 +4820,7 @@ Description: The owner promises a shadow error naming the query, its parameters 
 
 Found by: iteration 62 exploratory probe after the source read; [native_admission](models/native_admission/NOTES.md) `theorem_shadow_difference_raises`, `theorem_shadow_sql_failure`, `theorem_limit_count_names_no_row`, control `names-query`.
 
-Reproduced by: **E2E reproduced** for the message content on the run-own fixture, namespace I62B ([binding receipt](results/native_admission/20261118T020559Z-binding/receipt.json), cases `shadow_order_empty_string` and `shadow_group_mixed_types`: `names_plan` true, `names_cypher` false, `names_params` true; `priv_rev_running_engine_shadow_scan`: "the SQL path failed where native answered" with neither query nor parameters). The plain-`RuntimeError` branch is modeled only (no live SQL `RuntimeError` behind an admitted plan was constructed).
+Reproduced by: **E2E reproduced** for the message content on the run-own fixture, namespace I62B ([binding receipt](results/native_admission/20261118T021610Z-binding/receipt.json), cases `shadow_order_empty_string` and `shadow_group_mixed_types`: `names_plan` true, `names_cypher` false, `names_params` true; `priv_rev_running_engine_shadow_scan`: "the SQL path failed where native answered" with neither query nor parameters). The plain-`RuntimeError` branch is modeled only (no live SQL `RuntimeError` behind an admitted plan was constructed).
 
 Expected: [query.shadow](../ontology/architecture/query-execution.g5.md#query.shadow).
 

@@ -1,0 +1,27 @@
+verification results:: 53 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/transient-remembered/20261118T021720Z/models/native_admission/native_admission.rs:361:1
+    |
+361 | pub proof fn theorem_transient_probe_not_remembered(e: Engine, w: World)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/transient-remembered/20261118T021720Z/models/native_admission/native_admission.rs:364:53
+    |
+361 | pub proof fn theorem_transient_probe_not_remembered(e: Engine, w: World)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+364 |     ensures gate(e, w).0 == Some(Gate::NotCurrent), gate(e, w).1.exec_cache.is_none(),
+    |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/transient-remembered/20261118T021720Z/models/native_admission/native_admission.rs:365:9
+    |
+361 | pub proof fn theorem_transient_probe_not_remembered(e: Engine, w: World)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+365 |         gate(gate(e, w).1, World { version_probe_transient: false, ..w }).0.is_none(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

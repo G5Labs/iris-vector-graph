@@ -1,0 +1,16 @@
+verification results:: 53 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/complete-order-flag/20261118T021458Z/models/native_admission/native_admission.rs:614:13
+    |
+614 |       ensures ({ let q = Query { order_by: true, complete_order: false, limit: lim, ..plain_read(0) };
+    |  _____________^
+615 | |         plan(q).unwrap().ordered
+616 | |         && compare(c, seq![a, b], c, seq![b, a], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) is Fail
+617 | |         && owner_equal(q.complete_order, false, seq![a, b], seq![a, b], seq![b, a]) }),
+    | |______________________________________________________________________________________^ failed this postcondition
+...
+632 |       assert forall|r: Row| #[trigger] cnt(bb, r) <= cnt(ab, r) by {}
+    |       ------ at the end of the function body
+
+error: aborting due to 1 previous error
+

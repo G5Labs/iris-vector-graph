@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T021430Z/models/native_admission/native_admission.rs:335:1
+    |
+335 | pub proof fn theorem_bulk_session_keeps_sql(e: Engine, w: World, q: Query)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T021430Z/models/native_admission/native_admission.rs:338:13
+    |
+335 | pub proof fn theorem_bulk_session_keeps_sql(e: Engine, w: World, q: Query)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+338 |     ensures gate(e, w).0 == Some(Gate::InBulk), exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T021430Z/models/native_admission/native_admission.rs:338:49
+    |
+335 | pub proof fn theorem_bulk_session_keeps_sql(e: Engine, w: World, q: Query)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+338 |     ensures gate(e, w).0 == Some(Gate::InBulk), exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

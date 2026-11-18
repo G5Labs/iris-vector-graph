@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-consults-route/20261118T021504Z/models/native_admission/native_admission.rs:480:13
+    |
+477 | pub proof fn theorem_shadow_bypasses_route(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------- at the end of the function body
+...
+480 |     ensures exec_parsed(e, w, q).0 == shadow_out(w, try_native(e, w, q).0.unwrap().0, try_native(e, w, q).0.unwrap().1),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

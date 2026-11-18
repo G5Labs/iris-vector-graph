@@ -631,6 +631,39 @@ pub proof fn theorem_partial_order_compared_in_order(c: Seq<nat>, a: Row, b: Row
     assert forall|r: Row| #[trigger] cnt(ab, r) == cnt(ba, r) by {}
     assert forall|r: Row| #[trigger] cnt(bb, r) <= cnt(ab, r) by {}
 }
+proof fn lemma_cnt_remove1(b: Seq<Row>, x: Row, r: Row)
+    requires cnt(b, x) > 0,
+    ensures cnt(remove1(b, x), r) + (if r == x { 1nat } else { 0nat }) == cnt(b, r),
+    decreases b.len()
+{
+    if b.len() > 0 {
+        if b[0] == x {
+        } else {
+            lemma_cnt_remove1(b.drop_first(), x, r);
+            let t = seq![b[0]] + remove1(b.drop_first(), x);
+            assert(t.drop_first() =~= remove1(b.drop_first(), x));
+            assert(t[0] == b[0]);
+        }
+    }
+}
+proof fn lemma_fits_bounded(n: Seq<Row>, b: Seq<Row>, r: Row)
+    requires first_unreturnable(n, b).is_none(),
+    ensures cnt(n, r) <= cnt(b, r),
+    decreases n.len()
+{
+    if n.len() > 0 {
+        lemma_fits_bounded(n.drop_first(), remove1(b, n[0]), r);
+        lemma_cnt_remove1(b, n[0], r);
+    }
+}
+// The LIMIT rule as built is sound for every size: a passing comparison of a limited, unordered plan means the same
+// row count and every native row spent from the full answer's multiset.
+pub proof fn theorem_limit_pass_means_rows_of_full_answer(c: Seq<nat>, s: Seq<Row>, n: Seq<Row>, u: Seq<Row>)
+    requires compare(c, s, c, n, false, true, Some(u)) == Cmp::Pass,
+    ensures s.len() == n.len(), forall|r: Row| #[trigger] cnt(n, r) <= cnt(u, r),
+{
+    assert forall|r: Row| #[trigger] cnt(n, r) <= cnt(u, r) by { lemma_fits_bounded(n, u, r); }
+}
 // SKIP is never compared: the planner declines it.
 pub proof fn theorem_skip_never_compared(e: Engine, w: World, q: Query)
     requires q.skip,

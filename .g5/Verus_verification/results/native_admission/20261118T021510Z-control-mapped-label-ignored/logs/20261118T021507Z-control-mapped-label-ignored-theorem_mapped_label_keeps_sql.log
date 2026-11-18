@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/mapped-label-ignored/20261118T021507Z/models/native_admission/native_admission.rs:342:13
+    |
+340 | pub proof fn theorem_mapped_label_keeps_sql(e: Engine, w: World, q: Query, l: nat)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+341 |     requires q.labels.contains(l), w.mapped.contains(l), !shadow_on(e.shadow_attr, w.env_shadow_one), !e.route_sql.contains(q.shape),
+342 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

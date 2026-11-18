@@ -1,0 +1,134 @@
+verification results:: 48 verified, 6 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:321:9
+    |
+317 | pub proof fn theorem_admitted_only_through_every_gate(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+...
+321 |         e.priv_cache == Some(true) || (e.priv_cache.is_none() && w.sel_nodes && w.sel_labels && w.sel_props && w.sel_edges),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:346:1
+    |
+346 | pub proof fn theorem_version_gate(e: Engine, w: World, v: nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:349:13
+    |
+346 | pub proof fn theorem_version_gate(e: Engine, w: World, v: nat)
+    | -------------------------------------------------------------- at the end of the function body
+...
+349 |     ensures gate(e, w).0 == Some(Gate::NotCurrent), gate(e, w).1.exec_cache == Some(false),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:349:53
+    |
+346 | pub proof fn theorem_version_gate(e: Engine, w: World, v: nat)
+    | -------------------------------------------------------------- at the end of the function body
+...
+349 |     ensures gate(e, w).0 == Some(Gate::NotCurrent), gate(e, w).1.exec_cache == Some(false),
+    |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:356:1
+    |
+356 | pub proof fn theorem_missing_class_gate(e: Engine, w: World)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:359:13
+    |
+356 | pub proof fn theorem_missing_class_gate(e: Engine, w: World)
+    | ------------------------------------------------------------ at the end of the function body
+...
+359 |     ensures gate(e, w).0 == Some(Gate::NotCurrent), gate(e, w).1.exec_cache == Some(false),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:359:53
+    |
+356 | pub proof fn theorem_missing_class_gate(e: Engine, w: World)
+    | ------------------------------------------------------------ at the end of the function body
+...
+359 |     ensures gate(e, w).0 == Some(Gate::NotCurrent), gate(e, w).1.exec_cache == Some(false),
+    |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:361:1
+    |
+361 | pub proof fn theorem_transient_probe_not_remembered(e: Engine, w: World)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:364:13
+    |
+361 | pub proof fn theorem_transient_probe_not_remembered(e: Engine, w: World)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+364 |     ensures gate(e, w).0 == Some(Gate::NotCurrent), gate(e, w).1.exec_cache.is_none(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:365:9
+    |
+361 | pub proof fn theorem_transient_probe_not_remembered(e: Engine, w: World)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+365 |         gate(gate(e, w).1, World { version_probe_transient: false, ..w }).0.is_none(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:375:1
+    |
+375 | pub proof fn theorem_revoke_does_not_reach_running_engine(e: Engine, w: World)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:378:13
+    |
+375 | pub proof fn theorem_revoke_does_not_reach_running_engine(e: Engine, w: World)
+    | ------------------------------------------------------------------------------ at the end of the function body
+...
+378 |     ensures gate(e, w).0.is_none(), gate(setup(e), World { index_functional: true, deployed: Deployed::Version(PLAN_VERSION), versi...
+    |             ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:378:37
+    |
+375 | pub proof fn theorem_revoke_does_not_reach_running_engine(e: Engine, w: World)
+    | ------------------------------------------------------------------------------ at the end of the function body
+...
+378 |     ensures gate(e, w).0.is_none(), gate(setup(e), World { index_functional: true, deployed: Deployed::Version(PLAN_VERSION), version_probe_transient: false, ..w }).0.is_none(),
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:431:1
+    |
+431 | pub proof fn theorem_revoke_reaches_sql_anchor_only(e: Engine, w: World, q: Query)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:436:13
+    |
+431 |   pub proof fn theorem_revoke_reaches_sql_anchor_only(e: Engine, w: World, q: Query)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+...
+436 |       ensures q.anchor == Anchor::PropLookup ==> exec_parsed(e, w, q).0 == sql_out(w, Path::Sql)
+    |  _____________^
+437 | |             && exec_parsed(e, w, q).1.log.len() == e.log.len() + 1,
+    | |__________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T021452Z/models/native_admission/native_admission.rs:438:9
+    |
+431 | pub proof fn theorem_revoke_reaches_sql_anchor_only(e: Engine, w: World, q: Query)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+...
+438 |         q.anchor == Anchor::Scan ==> native_path(exec_parsed(e, w, q).0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 11 previous errors
+

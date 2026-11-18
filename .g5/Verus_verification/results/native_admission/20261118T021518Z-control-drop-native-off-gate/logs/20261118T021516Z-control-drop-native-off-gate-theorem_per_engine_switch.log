@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-native-off-gate/20261118T021516Z/models/native_admission/native_admission.rs:310:9
+    |
+307 | pub proof fn theorem_per_engine_switch(w: World, q: Query)
+    | ---------------------------------------------------------- at the end of the function body
+...
+310 |         exec_parsed(new_engine(Some(false), EnvNative::Unset, false), w, q).0 == sql_out(w, Path::Sql),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

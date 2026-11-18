@@ -1,0 +1,23 @@
+verification results:: 52 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-returns-difference/20261118T021438Z/models/native_admission/native_admission.rs:487:9
+    |
+484 |   pub proof fn theorem_shadow_returns_only_compared(e: Engine, w: World, q: Query)
+    |   -------------------------------------------------------------------------------- at the end of the function body
+...
+487 | /         ({ let (p, rows) = try_native(e, w, q).0.unwrap();
+488 | |            compare(w.sql->Rows_0, w.sql->Rows_1, w.native_cols, rows, p.ordered, p.limited,
+489 | |                    if p.limited && !p.ordered { Some(rows_of(w.sql_unlimited)) } else { None }) == Cmp::Pass }),
+    | |_______________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-returns-difference/20261118T021438Z/models/native_admission/native_admission.rs:495:13
+    |
+492 | pub proof fn theorem_shadow_difference_raises(w: World, p: Plan, native: Seq<Row>, m: Mismatch)
+    | ----------------------------------------------------------------------------------------------- at the end of the function body
+...
+495 |     ensures shadow_out(w, p, native) == Out::Raise(Err::Mismatch(m)), m.names_plan, m.names_params, !m.names_query,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

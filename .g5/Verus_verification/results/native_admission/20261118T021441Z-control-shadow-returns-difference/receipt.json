@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_shadow_difference_raises"
+    ],
+    "find": "Cmp::Fail(m) => Out::Raise(Err::Mismatch(m)),",
+    "name": "shadow-returns-difference",
+    "replace": "Cmp::Fail(m) => Out::Answer { path: Path::Native, cols: w.native_cols, rows: native },",
+    "why": "_shadow_compare's raise removed: a differing native answer is returned"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_shadow_difference_raises"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1724d9595b4039998772c6e3d07c460fd489fbffca65c4d5b23fab6457c4c875",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71da6816530e9cf459667006b06d187bfbd8a11c3663873df0f90807c8185279"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-returns-difference/20261118T021438Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_shadow_difference_raises": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T021438Z-control-shadow-returns-difference-theorem_shadow_difference_raises.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T021438Z-control-shadow-returns-difference.log",
+    "timed_out": false,
+    "verified": 52
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T021441Z-control-shadow-returns-difference/logs/20261118T021438Z-control-shadow-returns-difference-theorem_shadow_difference_raises.log": "9540084d7ef45ac31c7e3a9847a2bc11a84ee69b0365b2faf4795c31f4b1a736",
+    ".g5/Verus_verification/results/native_admission/20261118T021441Z-control-shadow-returns-difference/logs/20261118T021438Z-control-shadow-returns-difference.log": "62101a9ae7cfdd346c4edcb0fb50de2246b4474120387662a9aa0356f5a7f01f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
