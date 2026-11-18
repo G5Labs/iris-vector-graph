@@ -27,7 +27,6 @@ After a target's content has been erased, an operator can remove that content fr
 - Working assumption: List snapshots and legacy ledger copies as outside redaction reach; archive-retention/removal policy remains an owner decision.
 - Working assumption: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
 
-
 <a id="redaction.target"></a>
 [D · redaction.target]
 
@@ -39,7 +38,6 @@ A target is a graph, optionally narrowed to the entity IDs that begin with a pre
 
 - Working assumption: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
 
-
 <a id="redaction.target.nodes"></a>
 [D · redaction.target.nodes]
 
@@ -47,12 +45,10 @@ The ledger records every node in the default graph ([node scope](ledger.g5.md#le
 
 - A relationship delete, or a detach delete of a node, also deletes the relationship's reifier nodes. Inside the tenant's own revision, their delete records carry each reifier's own ID, the default graph and a snapshot of its labels and properties. Unless a reifier ID begins with the tenant's prefix, neither of the tenant's two targets reaches these records.
 
-
 <a id="redaction.target.relationships"></a>
 [D · redaction.target.relationships]
 
 With a prefix, a relationship record belongs to the target when the relationship's source or target ID begins with the match. A qualifier change belongs to the target when its relationship does.
-
 
 <a id="redaction.tenant"></a>
 [D · redaction.tenant]
@@ -65,7 +61,6 @@ Fully redacting a tenant whose relationships live in its own graph takes two tar
 - Working assumption: Treat temporal entries as live content for the intended safety rule; the existing row-only check remains a documented behavior discrepancy pending scope confirmation.
 - Working assumption: Require tenant id prefixes for ledger-governed tenants and document it next to redact(); for a graph target whose erased nodes left graph-blind node records, return an explicit incomplete result (or refuse) instead of complete=true. Model graph-qualified node records for future history separately; a migration of existing history needs trustworthy provenance, which the genesis did not keep.
 
-
 <a id="redaction.call"></a>
 [D · redaction.call]
 
@@ -77,7 +72,6 @@ A redaction call names the graph (none means the default graph), an optional pre
 
 ## Refusals
 
-
 <a id="redaction.after-erasure"></a>
 [D · redaction.after-erasure]
 
@@ -88,14 +82,12 @@ Redaction only follows erasure. It is refused while any row of the target is liv
 
 - Working assumption: Treat temporal entries as live content for the intended safety rule; the existing row-only check remains a documented behavior discrepancy pending scope confirmation.
 
-
 <a id="redaction.after-erasure.default-graph"></a>
 [I · redaction.after-erasure.default-graph]
 
 For a default-graph target, live node, label and property rows count in every graph, because the ledger's node records and verify both ignore graphs. Relationship rows count only in the target graph.
 
 - So the whole default graph, with no prefix, cannot be redacted while any graph holds a node.
-
 
 <a id="redaction.refusals"></a>
 [I · redaction.refusals]
@@ -107,9 +99,7 @@ A redaction is also refused, with nothing changed, when:
 - the graph name is invalid or the separator is empty;
 - a redaction of another target has not finished ([rule](#redaction.batches.competing)).
 
-
 ## Tombstones
-
 
 <a id="redaction.tombstone"></a>
 [D · redaction.tombstone]
@@ -118,7 +108,6 @@ Each of the target's records becomes a tombstone at its own position. The tombst
 
 - Working assumption: Treat auditor-held original canonical records as required to recompute digests; the product does not promise a retained recoverable preimage.
 
-
 <a id="redaction.tombstone.digest"></a>
 [D · redaction.tombstone.digest]
 
@@ -126,39 +115,32 @@ For now the digest is unsalted, so an auditor who holds the original canonical r
 
 - Working assumption: Record the unsalted digest as built and keep its privacy adequacy open; no guessing or confirmability experiment is in scope.
 
-
 <a id="redaction.tombstone.canonical-form"></a>
 [D · redaction.tombstone.canonical-form]
 
 The canonical record is a JSON object with the record's fields in alphabetical order: attribute, entity ID, entity kind, flags (a list), graph, new value, change kind, ordinal, prior value and seq. An absent value and an empty graph are written as null, and seq and ordinal are numbers. The digest is the SHA-256 of that text in UTF-8, written as lowercase hex.
-
 
 <a id="redaction.readers"></a>
 [I · redaction.readers]
 
 Replay, diff and reconstruction treat a tombstone as contributing nothing. Record readers show a tombstone as a redacted change at its position instead of hiding the position. A diff lists the positions of the tombstones in its range.
 
-
 ## Revision metadata and retries
-
 
 <a id="redaction.metadata"></a>
 [D · redaction.metadata]
 
 A revision with any redacted record loses its message, source, correlation ID and idempotency key, even when its other records belong to another tenant. Its seq, revision ID, parent, kind and commit time stay, and so do the other graphs' records.
 
-
 <a id="redaction.metadata.exception"></a>
 [D · redaction.metadata.exception]
 
 Clearing those four fields is the only change ever allowed to a revision row. It is allowed only to the redaction itself, for a revision that already has a tombstone, and only to empty those fields. Every other update and every delete is still refused.
 
-
 <a id="redaction.metadata.actor"></a>
 [D · redaction.metadata.actor]
 
 A revision's actor, actor type and connection user are kept, because they identify the writer, not the tenant. A deployment that puts tenant names in the actor must choose another actor.
-
 
 <a id="redaction.idempotency"></a>
 [D · redaction.idempotency]
@@ -167,15 +149,12 @@ The idempotency key of each revision that gets a tombstone is unbound and kept o
 
 - Working assumption: Preserve refusal of the whole shared revision key and loss of its correlation lookup until the maintainer specifies a tenant-specific retry result.
 
-
 ## The audit and the receipt
-
 
 <a id="redaction.audit"></a>
 [D · redaction.audit]
 
 A finished redaction adds one revision of kind `redaction` to the ledger. It names each redacted revision by seq with its number of tombstones, and holds counts and a digest of the target instead of the target's name. Nothing in it comes from the target.
-
 
 <a id="redaction.receipt"></a>
 [I · redaction.receipt]
@@ -188,7 +167,6 @@ A redaction returns a receipt that says:
 - the redaction revision, once the run completes;
 - what stays out of reach.
 
-
 <a id="redaction.out-of-reach"></a>
 [D · redaction.out-of-reach]
 
@@ -196,9 +174,7 @@ Copies outside the ledger keep the content: exports written before the redaction
 
 - Working assumption: List snapshots and legacy ledger copies as outside redaction reach; archive-retention/removal policy remains an owner decision.
 
-
-## Batches and the in-progress marker
-
+## Resume redaction after an interruption
 
 <a id="redaction.batches"></a>
 [D · redaction.batches]
@@ -211,7 +187,6 @@ A redaction runs in bounded batches, and an in-progress marker records it while 
 - Working assumption: Assume completion by rerun after fixing liveness; abandonment needs an owner-approved recovery meaning for partial tombstones.
 - Working assumption: (a) No generic abandon: tombstones are irreversible, so 'abandon' could only remove the marker and accept a permanently divergent history; the recovery is re-erase and resume, and the docs should say that this also erases content re-created during the run. An explicit, audited cancel that records the partial redaction as a redaction revision is the alternative. (b) Apply the plan's graph-blind liveness check to every default-graph target, so redact(None) without a prefix is refused while any node of any graph is live.
 
-
 <a id="redaction.batches.readers"></a>
 [I · redaction.batches.readers]
 
@@ -221,18 +196,15 @@ While the marker exists, record readers, diffs, reconstructions and exports refu
 
 - Working assumption: Keep the explicit redaction guards and list unguarded readers; do not infer that partial-redaction answers are acceptable.
 
-
 <a id="redaction.batches.commits"></a>
 [I · redaction.batches.commits]
 
 While the marker exists, a commit with any record in the target is refused, and other commits proceed. Today a record whose attribution to the target is unknown, such as a qualifier whose statement endpoints are not known, is let through.
 
-
 <a id="redaction.batches.competing"></a>
 [I · redaction.batches.competing]
 
 A redaction of a different target is refused, with nothing changed, until the unfinished one completes.
-
 
 <a id="redaction.batches.resume"></a>
 [I · redaction.batches.resume]
@@ -241,12 +213,10 @@ Running the same redaction again resumes an unfinished run. Running a finished r
 
 - If the ledger is disabled between batches, the run stops, keeps its marker and resumes after the ledger is enabled again.
 
-
 <a id="redaction.batches.marker-text"></a>
 [D · redaction.batches.marker-text]
 
 While a run is unfinished, the marker holds the target in plain text so that commits can be checked against it. The marker is removed when the run finishes, but IRIS journals keep it.
-
 
 <a id="redaction.batches.speed"></a>
 [I · redaction.batches.speed]
@@ -255,11 +225,18 @@ On the laptop's enterprise container, redacting a tenant with 100,000 records sh
 
 ## Verification after redaction
 
-
 <a id="redaction.verify"></a>
 [I · redaction.verify]
 
 After a target is erased and redacted, verify reports equal again; after the erase alone it reports a divergence. This holds when the ledger matched the store before the erase, nothing was written outside the ledger after it, and the redacted targets cover everything that was erased.
+
+## Earlier links
+
+These links take you to the current sections and statements.
+
+<a id="batches-and-the-in-progress-marker"></a>
+
+[Resume redaction after an interruption](#resume-redaction-after-an-interruption)
 
 ## Metadata
 
@@ -608,9 +585,9 @@ SC-003 is agent-written spec text, not one of the human decisions, so it was mov
 
 ### redaction.verify
 
-- Sources: [ADR-0013 Decision](../../../docs/adr/0013-redaction-removes-content-from-history.md#L17), [spec 256 FR-007 and SC-002](../../../specs/256-ledger-tenant-redaction/spec.md#L123-L145), [ledger verify](ledger.g5.md#ledger.verify)
+- Sources: [ADR-0013 Decision](../../../docs/adr/0013-redaction-removes-content-from-history.md#L17), [spec 256 FR-007 and SC-002](../../../specs/256-ledger-tenant-redaction/spec.md#L123-L145), [ledger verify](../operations/ledger.g5.md#ledger.verify)
 - agent
 - data-integrity, user-facing-behavior
 - test-coverage
 
-"Equal" is verify's comparison ([scope](ledger.g5.md#ledger.verify.scope)): it ignores graphs for nodes, does not compare statement IDs and does not cover the temporal index. The fixture had no genesis content, temporal edges, adoptions or reifications. Live tests: `TestUS2Verifiable::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction`; opt-in SC-002 performance test.
+"Equal" is verify's comparison ([scope](../operations/ledger.g5.md#ledger.verify.scope)): it ignores graphs for nodes, does not compare statement IDs and does not cover the temporal index. The fixture had no genesis content, temporal edges, adoptions or reifications. Live tests: `TestUS2Verifiable::test_verify_diverges_after_the_erase_alone_and_is_equal_after_the_redaction`; opt-in SC-002 performance test.

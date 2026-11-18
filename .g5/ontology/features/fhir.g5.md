@@ -24,12 +24,10 @@ A registered FHIR repository is projected into its own named graph, never the de
 
 - Working assumption: the FHIR graph is an external writer of a rebuildable projection at the pin. verify() keeps reporting its rows (never silently 'equal'); strict mode is not a guarantee for FHIR namespaces until FHIR writes are either refused under strict or recorded.
 
-
 <a id="fhir.graph.install"></a>
 [D · fhir.graph.install]
 
 FHIR support is not a separate install. Its classes compile on every IRIS edition and stay idle where no FHIR server exists. Its tables are created by the first registration, and registration is refused where the namespace has no repository.
-
 
 <a id="fhir.graph.lifecycle"></a>
 [I · fhir.graph.lifecycle]
@@ -40,8 +38,7 @@ An operator registers a repository once, which names its graph, builds the graph
 - Scheduling and unscheduling act only on the graph's own task, and refuse, changing nothing, when the stored task ID names another task.
 - Status reports the graph's counts, pending changes, last sync and rebuild, last error and task.
 
-## Keeping the graph in step
-
+## Synchronize or rebuild a FHIR graph
 
 <a id="fhir.graph.lifecycle.tasks"></a>
 [D · fhir.graph.lifecycle.tasks]
@@ -54,8 +51,6 @@ Scheduling derives ownership from the actual saved task before changing it.
 - Task save/delete precedes registry update; a failure in the later update can leave them disagreeing, so a status ID alone proves neither a live task nor ownership. A new ID equal to an unused stale registry ID can accidentally restore their agreement even on that error.
 - The saved canonical GraphId determines the eligible task invocation target; busy succeeds as an invocation while error, thrown call or invalid reply fails. Scheduling proves neither background activation nor completed sync.
 
-
-
 <a id="fhir.sync"></a>
 [I · fhir.sync]
 
@@ -65,7 +60,6 @@ A sync applies the repository's changes since the graph's watermarks, in batches
 - Working assumption: erase of a FHIR graph must be serialized with an active sync (take ^IVG.FHIRGraph(graph) and answer busy, or have RunBatch abort when the watermark moved backwards); until then the quiet-sync premise must be explicit for erase.
 - Working assumption: Failure without advancing the watermark is the documented contract (not a choice to revisit silently). Surface the offending key (already in last_error) and treat the missing recovery procedure (repair/delete the resource, or json_links=[]) as a documentation gap; do not assume silent skips.
 
-
 <a id="fhir.sync.idempotent"></a>
 [I · fhir.sync.idempotent]
 
@@ -74,24 +68,20 @@ Resyncing a key reads only the repository's current state, so repeating it gives
 - For a live key, resync makes sure the node and its label exist and recomputes its outgoing edges. It also turns unresolved references that point to the key into edges.
 - For a deleted or absent key, resync removes the key's edges, labels, properties, vectors and node, and records its incoming references as unresolved.
 
-
 <a id="fhir.sync.exclusive"></a>
 [I · fhir.sync.exclusive]
 
 Only one sync, rebuild or re-interpretation runs per FHIR graph at a time. A second caller is told the graph is busy and changes nothing.
-
 
 <a id="fhir.sync.behind"></a>
 [I · fhir.sync.behind]
 
 When the repository is behind the graph's watermarks, for example after a reset or a restore from an older backup, a sync rebuilds the graph instead and says so.
 
-
 <a id="fhir.rebuild"></a>
 [I · fhir.rebuild]
 
 A rebuild reconciles the whole graph with the repository by comparing, not by erasing, so vectors on surviving nodes are kept. It then resets both watermarks to the highest values read before the scan. A rebuild is not one transaction; if it fails partway, the next sync replays the changes.
-
 
 <a id="fhir.erase"></a>
 [I · fhir.erase]
@@ -100,9 +90,7 @@ Erasing a FHIR graph keeps its registration but resets its watermarks and interp
 
 - Working assumption: Separate transient clear from decommissioning. Ordinary erase keeps registration and task (supported). For durable tenant removal require, as a stated premise, unschedule before erase and no manual sync afterwards, and verify the graph stays empty before redaction; at the pin there is no single-graph deregistration, so 'deregister' is a new command, not an available step.
 
-
-## Interpretation
-
+## How FHIR resources become graph data
 
 <a id="fhir.interpretation"></a>
 [D · fhir.interpretation]
@@ -113,15 +101,12 @@ A sync adds compartment edges from each resource to its patients, derived from t
 - Erasure, snapshot restore and graph verification (`verify_graph`) treat compartment edges as ordinary edges.
 - Personalized PageRank skips them by default, and status counts them apart from reference edges.
 
-
 <a id="fhir.interpretation.version"></a>
 [I · fhir.interpretation.version]
 
 A graph whose interpretation version is missing or older than the current rules is fully re-derived once, on its next sync or on request. An interrupted re-derivation leaves the old version, so the next sync starts it again.
 
-
 ## Mapped SQL tables
-
 
 <a id="fhir.sql_mapping"></a>
 [D · fhir.sql_mapping]
@@ -135,7 +120,6 @@ An existing SQL table can be mapped to a node label as a read-only view: Cypher 
 
 - Working assumption: Treat mapped SQL labels as namespace-global today; assigning every row to a graph needs mapping metadata and migration policy.
 
-
 <a id="fhir.sql_mapping.relationships"></a>
 [D · fhir.sql_mapping.relationships]
 
@@ -143,21 +127,17 @@ A relationship between two mapped labels can be mapped to SQL, either through a 
 - The key column `target_fk` is read on the target table and holds the source row's id, although the method's documentation puts it on the source table ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-108)).
 - A pattern from a mapped node through a relationship that is not mapped fails with an SQL error ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-109)).
 
-
 <a id="fhir.sql_mapping.adjacency"></a>
 [D · fhir.sql_mapping.adjacency]
 
 Mapped nodes and relationships are not in the adjacency index. Pattern and property queries in Cypher see them, but breadth-first walks, variable-length paths, centrality and the other graph algorithms do not. To use them in algorithms, write them as real nodes and edges instead.
-
 
 <a id="fhir.sql_mapping.embeddings"></a>
 [I · fhir.sql_mapping.embeddings]
 
 A mapped table's text columns can be embedded as vectors for the nodes `<label>:<id>` of one named or default graph. A row whose node does not exist in that graph is counted and skipped, not embedded.
 
-
 ## FHIR events (deprecated)
-
 
 <a id="fhir.event"></a>
 [D · fhir.event]
@@ -166,11 +146,22 @@ The `/fhir-event` route is deprecated and is removed in 5.0, because a registere
 
 - Working assumption: Prefer idempotent repeated FHIR events, while preserving current event behavior as observation; event identity and replay retention need owner choice.
 
-
 <a id="fhir.event.access"></a>
 [I · fhir.event.access]
 
 The FHIR event route needs the API key when one is set. Read-only mode refuses it unless `IVG_ALLOW_FHIR_WRITES=true`.
+
+## Earlier links
+
+These links take you to the current sections and statements.
+
+<a id="keeping-the-graph-in-step"></a>
+
+[Synchronize or rebuild a FHIR graph](#synchronize-or-rebuild-a-fhir-graph)
+
+<a id="interpretation"></a>
+
+[How FHIR resources become graph data](#how-fhir-resources-become-graph-data)
 
 ## Metadata
 
@@ -309,7 +300,7 @@ The spec's clarification answers carry no human attribution.
 ### fhir.sql_mapping
 
 - uncertain
-- Sources: [API_REFERENCE: SQL table mappings](../../../docs/API_REFERENCE.md); [_engine/fhir.py map_sql_table](../../../iris_vector_graph/_engine/fhir.py); [cypher/translator.py](../../../iris_vector_graph/cypher/translator.py); [install.snapshot.scope](../concepts/install.g5.md#install.snapshot.scope)
+- Sources: [API_REFERENCE: SQL table mappings](../../../docs/API_REFERENCE.md); [_engine/fhir.py map_sql_table](../../../iris_vector_graph/_engine/fhir.py); [cypher/translator.py](../../../iris_vector_graph/cypher/translator.py); [install.snapshot.scope](../operations/snapshots-and-bulk-load.g5.md#install.snapshot.scope)
 - Children: [relationships](#fhir.sql_mapping.relationships), [adjacency](#fhir.sql_mapping.adjacency), [embeddings](#fhir.sql_mapping.embeddings), [Which graph do rows of a mapped FHIR SQL table belong to?](../../Verus_verification/open_questions.md#q-plt-018)
 - agent
 - user-facing-behavior, architecture-decision

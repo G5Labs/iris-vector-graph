@@ -5075,7 +5075,7 @@ Audit: Working assumption (agent, unratified): Keep decisions.md: code support a
 
 Canonical owner: [algorithms.routing.capability-policy](#HD-1703).
 
-Iteration 52 evidence (additive): on the continuation fixture with classes deployed and no Arno library, `IRISGraphStore.capabilities()` answered every algorithm True and no `*_arno` key. Meanwhile `engine.capabilities`, the documented report of what is deployed, read `kg_built` and `nkg_built` False on a namespace set up while empty, even after `sync()` ([bug-plt-117](bugs_issues.md#bug-plt-117)). So neither capability object is a live availability report today; `status()` is ([install.status.capabilities](../ontology/concepts/install.g5.md#install.status.capabilities), [probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s17_default_arno`). The working assumption is unchanged.
+Iteration 52 evidence (additive): on the continuation fixture with classes deployed and no Arno library, `IRISGraphStore.capabilities()` answered every algorithm True and no `*_arno` key. Meanwhile `engine.capabilities`, the documented report of what is deployed, read `kg_built` and `nkg_built` False on a namespace set up while empty, even after `sync()` ([bug-plt-117](bugs_issues.md#bug-plt-117)). So neither capability object is a live availability report today; `status()` is ([install.status.capabilities](../ontology/operations/status-and-repair.g5.md#install.status.capabilities), [probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s17_default_arno`). The working assumption is unchanged.
 
 ```g5-question
 schema: 1
@@ -5493,7 +5493,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit resolution: **settled by existing authority at the pin**, not new maintainer approval. The standalone BulkLoader and raw SQL are expressly outside the client strict-mode guard. That exception does not exempt other engine writers. [Sources and history](audits/register-20261115/question-review.md#HD-0301).
 
-Canonical owner: [install.bulk_load.ledger](../ontology/concepts/install.g5.md#install.bulk_load.ledger).
+Canonical owner: [install.bulk_load.ledger](../ontology/operations/snapshots-and-bulk-load.g5.md#install.bulk_load.ledger).
 
 Disposition: resolved with existing authority. See the linked source audit.
 
@@ -5751,7 +5751,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit resolution: **settled by existing authority at the pin**, not new maintainer approval. The low-level raw DB-API helper pads/truncates and coerces non-finite values as documented. Registry-aware engine writes keep their separate strict contract. [Sources and history](audits/register-20261115/question-review.md#HD-1704).
 
-Canonical owner: [search.embedding.width.raw-helpers](../ontology/features/search.g5.md#search.embedding.width.raw-helpers).
+Canonical owner: [search.embedding.width.raw-helpers](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.width.raw-helpers).
 
 
 ## Historical reports and qualified proof debt
@@ -6330,9 +6330,9 @@ Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning? There is no
 
 - Today Bolt's begin, commit and rollback do nothing, so each statement commits on its own and a rollback keeps earlier writes.
 - A Neo4j HTTP batch keeps earlier statements when a later one fails.
-- Iteration 56 (review 53-55 F1): reproduced end to end with the neo4j driver 6.4.1 and a raw Bolt client against the product's own listener ([bug-plt-127](bugs_issues.md#bug-plt-127), [bolt_tx binding](results/bolt_tx/20261117T065936Z-binding/receipt.json)): rollback, a failure then rollback, RESET, a closed connection and an aborted `execute_write` all keep the transaction's writes while every answer is SUCCESS. Both listed answers rule this out; the owner [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions) now states that shared rule (auto-commit statements still commit on their own), and the model checks both repairs (`atomic-tx`, `begin-refused`). Only the choice of repair remains open.
+- Iteration 56 (review 53-55 F1): reproduced end to end with the neo4j driver 6.4.1 and a raw Bolt client against the product's own listener ([bug-plt-127](bugs_issues.md#bug-plt-127), [bolt_tx binding](results/bolt_tx/20261117T065936Z-binding/receipt.json)): rollback, a failure then rollback, RESET, a closed connection and an aborted `execute_write` all keep the transaction's writes while every answer is SUCCESS. Both listed answers rule this out; the owner [access.bolt.transactions](../ontology/features/client-interfaces.g5.md#access.bolt.transactions) now states that shared rule (auto-commit statements still commit on their own), and the model checks both repairs (`atomic-tx`, `begin-refused`). Only the choice of repair remains open.
 
-- Iteration 59 (review 56-58 G1): the HTTP sibling reproduced end to end: a `/db/neo4j/tx/commit` request of CREATE, a failing statement and CREATE answers 400 and keeps both nodes ([bug-plt-136](bugs_issues.md#bug-plt-136), [bolt_tx binding section H](results/bolt_tx/20261117T090118Z-binding/receipt.json)). New owner [access.http_transactions](../ontology/concepts/access.g5.md#access.http_transactions) states the same rule for one request (BEGIN, its statements, COMMIT; `theorem_http_rule_is_bolt_rule`). The read-only refusal already treats a request as one unit.
+- Iteration 59 (review 56-58 G1): the HTTP sibling reproduced end to end: a `/db/neo4j/tx/commit` request of CREATE, a failing statement and CREATE answers 400 and keeps both nodes ([bug-plt-136](bugs_issues.md#bug-plt-136), [bolt_tx binding section H](results/bolt_tx/20261117T090118Z-binding/receipt.json)). New owner [access.http_transactions](../ontology/features/client-interfaces.g5.md#access.http_transactions) states the same rule for one request (BEGIN, its statements, COMMIT; `theorem_http_rule_is_bolt_rule`). The read-only refusal already treats a request as one unit.
 
 Disposition: open. Working assumption (revised in iteration 59, review 56-58 m1; was "Assume per-statement commits on Bolt until an explicit transaction contract is established", which contradicted the newer owners): a Neo4j-compatible transaction, on Bolt or one HTTP `tx/commit` request, keeps its writes only if it commits; IVG either provides that or refuses the explicit transaction (or the multi-statement request) so the client knows each statement commits on its own. Today's per-statement commits are recorded as departures ([bug-plt-127](bugs_issues.md#bug-plt-127), [bug-plt-136](bugs_issues.md#bug-plt-136)), not assumed as intent; auto-commit statements still commit on their own. Only the choice between the two answers stays open.
 

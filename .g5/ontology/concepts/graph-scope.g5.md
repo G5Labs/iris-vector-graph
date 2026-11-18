@@ -19,15 +19,14 @@ Which graph a piece of content belongs to, how each store names a graph, and wha
 
 Every node, structural edge, temporal edge, aggregate and adjacency entry belongs to exactly one graph. The same node ID in two graphs is two nodes, each with its own labels, properties and edges, and an edge connects only nodes of its own graph.
 
-
 <a id="graph.default"></a>
 [I · graph.default]
 
 A read or write that names no graph uses the default graph. In Python, a `graph=` argument that is omitted or None means the default graph, never every graph. These calls are the exceptions:
 
 - A Cypher query without `USE GRAPH` reads every graph ([all-graphs read](#graph.all_graphs_read)) and writes as [all-graphs write](#graph.all_graphs_write) says.
-- [RDF export](install.g5.md#install.export.rdf.scope) uses an omitted or None `graph_id` for every graph; an empty `graph_id` still selects only the default graph.
-- The [status report](install.g5.md#install.status) counts core SQL rows across every graph; its census is separate from a graph-scoped node or edge count.
+- [RDF export](../features/data-interchange.g5.md#install.export.rdf.scope) uses an omitted or None `graph_id` for every graph; an empty `graph_id` still selects only the default graph.
+- The [status report](../operations/status-and-repair.g5.md#install.status) counts core SQL rows across every graph; its census is separate from a graph-scoped node or edge count.
 - Deleting nodes with `graph=` omitted, not None, deletes each ID from the one graph that holds it, meaning a graph with a node row or an edge row naming that ID.
 - In that case an ID that no graph holds deletes nothing and reports False, and an ID that several graphs hold is refused before anything is deleted.
 - Deleting an edge with `all_graphs` set deletes the triple from every graph.
@@ -35,12 +34,10 @@ A read or write that names no graph uses the default graph. In Python, a `graph=
 
 - Working assumption: For graph-aware Python reads, omission selects the default graph. Keep the all-graph id helpers as separate discovery operations with their scope visible. Never hydrate ids from one scope with another scope's records. Model delete_node's 'holding graph or refuse' rule as its own documented operation.
 
-
 <a id="graph.named"></a>
 [I · graph.named]
 
 Two graphs' content never shares an index entry, so content written to one named graph is never visible through another.
-
 
 <a id="graph.tenants"></a>
 [D · graph.tenants]
@@ -49,12 +46,10 @@ A graph keeps two datasets apart, but it is not a security boundary, because any
 
 ## Graph keys
 
-
 <a id="graph.key"></a>
 [D · graph.key]
 
 Inside each native store a graph is identified by a graph key derived from its name. The key is the first part of every graph-scoped entry, so reading or clearing one graph never has to visit another graph's entries.
-
 
 <a id="graph.key.two_forms"></a>
 [D · graph.key.two_forms]
@@ -65,24 +60,20 @@ The stores spell the default graph differently, and each spelling stays:
 - In the revision ledger the default graph's key is the control character with code 1, and a named graph's key is its name.
 - In the SQL tables the default graph's name is the empty string. Older rows that leave the name missing (NULL) also mean the default graph.
 
-
 <a id="graph.key.derive"></a>
 [I · graph.key.derive]
 
 Code that is about to touch a store derives that store's key from the graph name, and never converts one store's key into another's. A key used on the wrong store reads nothing and writes where no reader looks.
-
 
 <a id="graph.key.owner"></a>
 [D · graph.key.owner]
 
 One module owns every graph-key derivation, including the SQL spelling of a graph's name, and no other code derives a key itself. The Python package keeps a single mirror of the native-index rule so it can reject a bad name before calling IRIS.
 
-
 <a id="graph.no_fallthrough"></a>
 [I · graph.no_fallthrough]
 
 A lookup scoped to one graph never falls through to another graph: a wrong or unknown key reads nothing, never another graph's content.
-
 
 <a id="graph.unscoped_snapshot"></a>
 [D · graph.unscoped_snapshot]
@@ -90,7 +81,6 @@ A lookup scoped to one graph never falls through to another graph: a wrong or un
 The interned snapshot has no graph dimension, so it gives the default graph's answer only while no named graph holds an edge. Once any named graph holds an edge, a reader of the snapshot either refuses or reads the default graph's scoped index instead.
 
 ## Graph names
-
 
 <a id="graph.names"></a>
 [I · graph.names]
@@ -104,21 +94,17 @@ A graph name that cannot be stored as a key is refused before anything is writte
 - Working assumption: Preserve refusal of invalid new names and the promised legacy report; require an operator-visible migration plan before claiming old invalid names are supported.
 - Working assumption: Prefer the server GraphKey rule for all new names; control-character normalization versus refusal must be documented consistently.
 
-
 <a id="graph.names.report"></a>
 [D · graph.names.report]
 
 Graph verification must report any existing graph whose name is now refused. Today nothing reports them, verification itself refuses the name `"0"`, and a rebuild of the adjacency index fails on such a row.
 
-
 ## Reads and writes that name no graph
-
 
 <a id="graph.all_graphs_read"></a>
 [D · graph.all_graphs_read]
 
 A Cypher query without `USE GRAPH` reads every graph, and its answer is the union of each graph's own answer. A node keeps its own graph's labels and properties, and an edge meets only nodes of its own graph.
-
 
 <a id="graph.all_graphs_write"></a>
 [D · graph.all_graphs_write]

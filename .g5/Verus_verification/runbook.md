@@ -4,6 +4,29 @@ Initial uplift of iris-vector-graph at product baseline `3eaa79cf77d3e0a879b2cce
 
 Nothing here verifies the product's own executable bodies. The product is ObjectScript and Python; the Verus models are source-bound transcriptions of the as-built mechanism (L2) checked against business rules (L1), and native observations on IRIS connect them to the real operations (L3). No statement is tagged `implementation-verified`.
 
+## Playbook module map
+
+The playbook modules preserve the inspected source ranges and test evidence from the uplift. Use the [statement crosswalk](crosswalk/statements.tsv) to match playbook statement IDs to their current ontology pages and the [sweep log](crosswalk/ontology-sweep.tsv) to see which modules were compared row by row.
+
+| Playbook module | Prefix | Pages here |
+|---|---|---|
+| [00 system](../../experiment/playbook-completion/ontology/00-system.md) | `SYS` | [ontology root](../ontology/root.g5.md), [access](../ontology/concepts/access.g5.md) |
+| [01 install and schema](../../experiment/playbook-completion/ontology/01-install-schema.md) | `INS` | [install](../ontology/operations/setup-and-upgrade.g5.md) |
+| [02 graph identity](../../experiment/playbook-completion/ontology/02-graph-identity.md) | `GID` | [graph scope](../ontology/concepts/graph-scope.g5.md), [graph structure](../ontology/features/graph-structure.g5.md) |
+| [03 writes](../../experiment/playbook-completion/ontology/03-writes.md) | `WRT` | [graph structure](../ontology/features/graph-structure.g5.md), [access](../ontology/concepts/access.g5.md), [install: bulk loads](../ontology/operations/snapshots-and-bulk-load.g5.md#install.bulk_load) |
+| [04 adjacency](../../experiment/playbook-completion/ontology/04-adjacency.md) | `ADJ` | [graph structure](../ontology/features/graph-structure.g5.md), [Index ownership](../ontology/architecture/adjacency-and-derived-data.g5.md) |
+| [05 temporal](../../experiment/playbook-completion/ontology/05-temporal.md) | `TMP` | [temporal](../ontology/features/temporal.g5.md), [adjacency declaration](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.adjacency.declare) |
+| [06 vectors](../../experiment/playbook-completion/ontology/06-vectors.md), [07 text search](../../experiment/playbook-completion/ontology/07-text-search.md) | `VEC`, `TXT` | [search](../ontology/features/search.g5.md), [Search storage and indexes](../ontology/architecture/search-storage-and-indexes.g5.md) |
+| [08 Cypher on SQL](../../experiment/playbook-completion/ontology/08-cypher-sql.md), [09 native executor](../../experiment/playbook-completion/ontology/09-native-executor.md) | `CYP`, `NAT` | [Cypher](../ontology/features/cypher.g5.md), [Query execution](../ontology/architecture/query-execution.g5.md) |
+| [10 algorithms](../../experiment/playbook-completion/ontology/10-algorithms.md) | `ALG` | [algorithms](../ontology/features/algorithms.g5.md), [Algorithm execution](../ontology/architecture/algorithm-execution.g5.md) |
+| [11 ledger](../../experiment/playbook-completion/ontology/11-ledger.md), [14 replay](../../experiment/playbook-completion/ontology/14-replay.md) | `LED`, `RPL` | [ledger](../ontology/features/ledger.g5.md), [Ledger administration](../ontology/operations/ledger.g5.md) |
+| [12 erasure](../../experiment/playbook-completion/ontology/12-erasure.md) | `ERS` | [erasure](../ontology/features/erasure.g5.md) |
+| [13 redaction](../../experiment/playbook-completion/ontology/13-redaction.md) | `RED` | [redaction](../ontology/features/redaction.g5.md) |
+| [15 integrations](../../experiment/playbook-completion/ontology/15-integrations.md) | `INT` | [FHIR](../ontology/features/fhir.g5.md), [install: imports](../ontology/features/data-interchange.g5.md#install.import) |
+| [16 interfaces](../../experiment/playbook-completion/ontology/16-interfaces.md) | `API` | [access](../ontology/concepts/access.g5.md), [Client interfaces](../ontology/features/client-interfaces.g5.md) |
+| [17 operations](../../experiment/playbook-completion/ontology/17-operations.md) | `OPS` | [install](../ontology/operations/setup-and-upgrade.g5.md), [access](../ontology/concepts/access.g5.md), [adapters](../ontology/architecture/adapters.g5.md), [Status and repair](../ontology/operations/status-and-repair.g5.md) |
+| [18 snapshot](../../experiment/playbook-completion/ontology/18-snapshot.md) | `SNP` | [install: snapshots](../ontology/operations/snapshots-and-bulk-load.g5.md#install.snapshot) |
+
 ## Pins
 
 | Item | Value |

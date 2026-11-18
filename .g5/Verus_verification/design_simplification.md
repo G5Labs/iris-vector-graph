@@ -45,7 +45,7 @@ Proposal: name the class by the SHA-256 already computed for its lines (or by a 
 
 Behavior to preserve: one class per shape and layout; interpreted until built; R311's digest check; a deploy and `Gen.DropAll()` still discard every class.
 
-Distinguishing case: two shapes forced to one CRC-32 by a test hook, run alternately in job and sync mode; each run executes only its own shape's code and no rebuild thrash occurs. Governing statement: [query.compiled.integrity](../ontology/features/cypher.g5.md#query.compiled.integrity).
+Distinguishing case: two shapes forced to one CRC-32 by a test hook, run alternately in job and sync mode; each run executes only its own shape's code and no rebuild thrash occurs. Governing statement: [query.compiled.integrity](../ontology/architecture/query-execution.g5.md#query.compiled.integrity).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: one class per shape and layout; interpreted until built; R311's digest check; a deploy and `Gen.DropAll()` still discard every class. Decision/cost: Digest/sequence identity adds class lifetime, collision and stale-layout binding obligations; entry/class matching cannot simply disappear. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-cyp-001).
@@ -917,7 +917,7 @@ Proposal: bump the token before `EndRebuild(1)`.
 
 Behavior to preserve: the token still moves on every rebuild; readers during the rebuild still see it as not current.
 
-Distinguishing case: `AllWarm(g) = 1` right after `BuildKG` with no writer. Governing statement: [structure.degree.cache.warm](../ontology/features/graph-structure.g5.md#structure.degree.cache.warm).
+Distinguishing case: `AllWarm(g) = 1` right after `BuildKG` with no writer. Governing statement: [structure.degree.cache.warm](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.degree.cache.warm).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: the token still moves on every rebuild; readers during the rebuild still see it as not current. Decision/cost: Changing warm/token order still requires no reader to admit an unfinished rebuild; one ordering check replaces another, with no alternate state model. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-str-003).
@@ -937,7 +937,7 @@ Proposal: remove the path, or make the migration delegate to `TemporalPolicy.Bac
 
 Behavior to preserve: an idempotent backfill with a read-only dry run.
 
-Distinguishing case: flag on, predicate opted out, write: with the path removed no row appears. Governing statement: [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
+Distinguishing case: flag on, predicate opted out, write: with the path removed no row appears. Governing statement: [temporal.structural](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.structural).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: an idempotent backfill with a read-only dry run. Decision/cost: Removing the legacy Python path requires opt-out, dry-run/backfill and non-indexed fallback coverage; dropping a supported fallback narrows the operating envelope. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-tmp-001).
@@ -979,7 +979,7 @@ Proposal: raise after the store's Owner fails for every algorithm, and remove th
 
 Behavior to preserve: a native failure still yields the Owner's answer.
 
-Distinguishing case: a store whose Owner raises: every algorithm raises once, with no second Owner call. Governing statement: [algorithms.routing.fallback](../ontology/features/algorithms.g5.md#algorithms.routing.fallback).
+Distinguishing case: a store whose Owner raises: every algorithm raises once, with no second Owner call. Governing statement: [algorithms.routing.fallback](../ontology/architecture/algorithm-execution.g5.md#algorithms.routing.fallback).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: a native failure still yields the Owner's answer. Decision/cost: Uniform fallback still needs per-algorithm numerical parameters, refusal/error policy and native admission; an Owner call is not an interchangeable opaque result. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-plt-002).
@@ -1019,7 +1019,7 @@ Proposal: run one rebuild.
 
 Behavior to preserve: the resulting `^KG`.
 
-Distinguishing case: compare `^KG` dumps and the token delta with one and with two rebuilds. Governing statement: [install.bulk_load.rebuild](../ontology/concepts/install.g5.md#install.bulk_load.rebuild).
+Distinguishing case: compare `^KG` dumps and the token delta with one and with two rebuilds. Governing statement: [install.bulk_load.rebuild](../ontology/operations/snapshots-and-bulk-load.g5.md#install.bulk_load.rebuild).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: the resulting `^KG`. Decision/cost: Batching rebuilds trades repeated work for index-staleness intervals, failure recovery and concurrent-writer handling; final KG equality alone is insufficient. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-plt-004).
@@ -1039,7 +1039,7 @@ Proposal: drop the probe, keep the deploy result per engine, and use a per-call 
 
 Behavior to preserve: the schema rewrite seen by each call.
 
-Distinguishing case: two threads on one engine, one inside `runs_in_ivg_schema`: the other keeps its own connection. Governing statement: [install.deploy](../ontology/concepts/install.g5.md#install.deploy).
+Distinguishing case: two threads on one engine, one inside `runs_in_ivg_schema`: the other keeps its own connection. Governing statement: [install.deploy](../ontology/operations/setup-and-upgrade.g5.md#install.deploy).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: the schema rewrite seen by each call. Decision/cost: Retirement needs a caller census and per-engine schema-state equivalent; process-global state cannot be dropped without proving the replacement lifecycle. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-plt-005).
@@ -1059,7 +1059,7 @@ Proposal: in `RunA`'s caller, mark the entry failed when `Walk1` raises.
 
 Behavior to preserve: the SQL fallback for this call; a deploy or stamp change still allows a fresh build.
 
-Distinguishing case: a shape whose compiled walk raises: the second call is answered by the interpreter, not SQL. Governing statement: [query.compiled.fallback](../ontology/features/cypher.g5.md#query.compiled.fallback).
+Distinguishing case: a shape whose compiled walk raises: the second call is answered by the interpreter, not SQL. Governing statement: [query.compiled.fallback](../ontology/architecture/query-execution.g5.md#query.compiled.fallback).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: the SQL fallback for this call; a deploy or stamp change still allows a fresh build. Decision/cost: Failed-entry state and retry/reset policy are added; one SQL fallback does not establish future builds, concurrent users or error classification. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-cyp-003).
@@ -1158,7 +1158,7 @@ Comparison: none — no complete comparable proposed model establishes net simpl
 
 Scope qualification: the as-built side is `witness_aba_delete_and_recreate_serves_stale_degree`; the proposal side is `witness_s1_set_generation_is_undone_by_rollback`, which shows the proposal reviving an old entry after a rollback. Finite witnesses, not state counts.
 
-Rejected proposal (A-structure S1): `Set ^KG("gen",g,s) = $Increment(^KG("__version"))` in place of the two `$Increment`s. A `Set` is journaled, so a rollback restores the pre-image over a concurrent writer's committed generation and revives an old cache entry; the product's `$Increment` of `gen` is load-bearing (ADR-0012:23-24). The epoch stamp in [bug-str-003](audits/register-20261115/bugs-review.md#bug-str-003) is the proposed repair instead. Governing statement: [structure.degree.cache](../ontology/features/graph-structure.g5.md#structure.degree.cache).
+Rejected proposal (A-structure S1): `Set ^KG("gen",g,s) = $Increment(^KG("__version"))` in place of the two `$Increment`s. A `Set` is journaled, so a rollback restores the pre-image over a concurrent writer's committed generation and revives an old cache entry; the product's `$Increment` of `gen` is load-bearing (ADR-0012:23-24). The epoch stamp in [bug-str-003](audits/register-20261115/bugs-review.md#bug-str-003) is the proposed repair instead. Governing statement: [structure.degree.cache](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.degree.cache).
 
 
 Audit disposition: retired counterproposal. Preserve: Sound degree-cache admission under all competing writers and rollback. Decision/cost: The existing counterexample shows an unrelated writer can produce a reused generation value; key ownership is not repaired by changing the counter source. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-str-005).

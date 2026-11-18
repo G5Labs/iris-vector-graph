@@ -1,6 +1,6 @@
 # Temporal edges
 
-Temporal edges record when events happened between nodes. IVG keeps them in a time index per graph, summarizes them in statistics, and normally makes each one visible as an ordinary structural edge too.
+Start here to record timestamped events or read a time window. For the time index and the structural edges derived from events, see [adjacency and derived data](../architecture/adjacency-and-derived-data.g5.md).
 
 ## Definitions
 
@@ -32,7 +32,6 @@ A temporal edge records when an event happened on a triple in one graph, with a 
 - Both entry points use the same per-graph stores, so a caller must keep one unit per graph; IVG cannot detect a mix.
 - The single Python API currently violates missing-time stamping: omission and None are sent as epoch zero; [clock resolution](#temporal.edge.clock) also distinguishes normal bulk zero from its fallback.
 
-
 <a id="temporal.edge.clock"></a>
 [D · temporal.edge.clock]
 
@@ -45,7 +44,6 @@ so fixed-coordinate repeatability requires the same resolved event times.
 - Numeric short alias `ts=0` defers to a supplied long `timestamp` alias, while text `ts="0"` keeps zero. A present None long alias can fail conversion where an absent long alias defaults to zero.
 - On a duplicate explicit positive timestamp, normal bulk reports a collision and zero writes; fallback counts the successful single call and cannot report the collision. The stored existing event remains unchanged.
 
-
 <a id="temporal.edge.graph-scope"></a>
 [I · temporal.edge.graph-scope]
 
@@ -53,17 +51,10 @@ Every temporal store is kept per graph, and an operation on one graph never read
 - The default graph follows the same rules as a named graph.
 - A graph name that cannot be stored safely, such as `"0"` or a name with control characters, is refused before anything is written.
 
-
-<a id="temporal.owner"></a>
-[D · temporal.owner]
-
-Only the time-index component may access the temporal stores; every other component uses its operations, so a change to the stored layout touches one place. A new cross-graph need becomes a new operation on that component.
-
-
 <a id="temporal.write"></a>
 [I · temporal.write]
 
-Writing a temporal edge stores it with its attributes, updates the statistics and the newest-event index, and asserts the [implied structural edge](#temporal.structural) unless the predicate is temporal-only in that graph. Each write runs in one of three modes, which differ only when the coordinates already hold an edge.
+Writing a temporal edge stores it with its attributes, updates the statistics and the newest-event index, and asserts the [implied structural edge](../architecture/adjacency-and-derived-data.g5.md#temporal.structural) unless the predicate is temporal-only in that graph. Each write runs in one of three modes, which differ only when the coordinates already hold an edge.
 - Insert, the default for direct writes, keeps the existing edge and reports a collision.
 - Update replaces the existing edge's weight and attributes.
 - Skip keeps the existing edge and counts the write as skipped.
@@ -76,12 +67,10 @@ Writing a temporal edge stores it with its attributes, updates the statistics an
 - Working assumption: the statistics keep describing the first write.
 - Working assumption: the parts written before the error stay, because a direct write runs no transaction.
 
-
 <a id="temporal.write.collision"></a>
 [I · temporal.write.collision]
 
 An insert at coordinates that already hold an edge changes nothing anywhere, so the first write wins and the statistics never count the second write. This holds whether the earlier write came from an earlier call or from earlier in the same batch.
-
 
 <a id="temporal.write.repeatable"></a>
 [I · temporal.write.repeatable]
@@ -89,7 +78,6 @@ An insert at coordinates that already hold an edge changes nothing anywhere, so 
 Writing the same set of temporal edges into an empty graph, in any batch size, must leave every store identical, so a graph can be rebuilt from its source events.
 - The order of writes does not matter either when colliding writes are identical and all timestamps of a triple carry one weight.
 - The implied structural edge keeps the weight of the triple's first write.
-
 
 <a id="temporal.write.retry"></a>
 [D · temporal.write.retry]
@@ -101,9 +89,7 @@ normalized item through the single writer and reports only accepted fallback cal
 - A positive explicit timestamp collides at its original coordinate; fallback can report one accepted call while inserting nothing new and reporting no collisions.
 - A completed prefix of a mixed zero/positive batch remains when the whole batch is replayed; the failed prefix's counters are discarded. This describes completed item boundaries and successful fallback calls, not a partial effect inside one write or a real transport failure.
 
-
 ## Statistics and the newest event
-
 
 <a id="temporal.stats"></a>
 [I · temporal.stats]
@@ -118,7 +104,6 @@ The statistics summarize the temporal edges written to each bucket, so windowed 
 
 - Working assumption: Keep retained aggregate history distinct from surviving raw edges; recomputation after partial raw purge needs an explicit history-retention rule.
 
-
 <a id="temporal.stats.after-purge"></a>
 [D · temporal.stats.after-purge]
 
@@ -128,7 +113,6 @@ A raw purge keeps the statistics, so they go on describing the past after the ed
 - A bucket-range purge returns how many buckets in the range held statistics; a range whose start is after its end removes nothing and returns 0.
 - After a bucket-range purge, a read that holds the bucket whole answers nothing for it even while its edges remain, and a read that cuts the bucket still counts those edges.
 - A later delete in a range-purged bucket rebuilds the bucket's aggregates from its surviving edges but not its event counters, so aggregates and velocity then disagree about that bucket. Which rule should win is [open](../../Verus_verification/open_questions.md#q-tmp-002).
-
 
 <a id="temporal.stats.window"></a>
 [I · temporal.stats.window]
@@ -144,18 +128,6 @@ Aggregate, group and target reads answer exactly the requested window, both ends
 - An aggregate read needs a source and a predicate, and a read with an empty one must be refused. Today it fails with a server subscript error when the window holds a whole bucket or any edge of the graph falls in the cut part. Otherwise it answers 0 for a count and 0.0 for a sum, as if the source had no edges ([finding](../../Verus_verification/bugs_issues.md#bug-tmp-108)).
 - These reads assume seconds. Today an edge written by the millisecond entry point lands in the seconds bucket of its time in seconds, because both entry points share the statistics. Whole-bucket counts, groups, velocity and distinct estimates then include it, while target reads, edge-by-edge reads and cut windows do not ([bug-tmp-106](../../Verus_verification/bugs_issues.md#bug-tmp-106)).
 
-
-<a id="temporal.stats.writers"></a>
-[I · temporal.stats.writers]
-
-Each kind of write changes the statistics of the edge's bucket in a fixed way.
-- An insert at free coordinates counts the edge once: count, sum, minimum, maximum, the distinct-target sketch and the source's event counter.
-- An insert or skip at occupied coordinates changes nothing.
-- An update at occupied coordinates counts the edge again in count, sum, extremes and event counter, although one edge remains. The docs say the statistics keep the original value; what they should hold is [open](../../Verus_verification/open_questions.md#temporal.write.update-statistics).
-- A delete rebuilds the bucket's count, sum, extremes and sketch from its surviving edges and lowers the event counter by one, removing it at zero.
-- A write rolled back by its caller leaves its count, sum and event counter, while its edge, extremes and sketch are undone. A whole-bucket read can then report a count with no minimum or maximum.
-
-
 <a id="temporal.stats.velocity"></a>
 [I · temporal.stats.velocity]
 
@@ -167,7 +139,6 @@ Velocity and burst reads count events from the per-source event counters of ever
 - In the millisecond entry point the default now is still in seconds, so an event stored in milliseconds is never counted unless the caller passes now.
 - In the millisecond entry point the window is in milliseconds too, although the parameter is named in seconds: a window of 300 reaches back 0.3 seconds.
 
-
 <a id="temporal.stats.distinct"></a>
 [I · temporal.stats.distinct]
 
@@ -177,7 +148,6 @@ A distinct-target read estimates how many distinct targets one source's edges of
 - An empty window answers 0, and the estimate must stay within about a quarter of the true number.
 - Today any window that holds at least one target answers at least 11, so one target answers 11 and the error is large below about 40 targets.
 - A delete rebuilds the sketch from the surviving edges; a raw purge keeps it; a bucket-range purge removes it.
-
 
 <a id="temporal.latest"></a>
 [D · temporal.latest]
@@ -190,7 +160,6 @@ IVG keeps the newest-event index up to date on every write, so a latest read nev
 - A source with no qualifying edge is left out, never returned empty.
 - A graph written before this index existed answers named sources by searching back through time, and refuses prefix and every-source reads until its index is rebuilt once.
 
-
 <a id="temporal.latest.exact"></a>
 [I · temporal.latest.exact]
 
@@ -198,98 +167,17 @@ The newest-event index must stay exact through every write, single-edge delete, 
 
 - Working assumption: Keep first-write-wins and exactness as requirements; concurrent provider behavior is unestablished, not an approved one-writer exemption.
 
-
 <a id="temporal.delete"></a>
 [I · temporal.delete]
 
 Deleting one temporal edge removes it and everything derived from it, and reports when there was nothing to delete.
 - The statistics of its bucket are recomputed from the remaining edges, and its event counter goes down by one, except in a bucket a raw purge has cut ([open question](../../Verus_verification/open_questions.md#q-tmp-002)).
 - The newest-event index moves back to the newest remaining edge.
-- When it was the triple's last timestamp, the structural edge follows [the end of the implication](#temporal.structural.end).
+- When it was the triple's last timestamp, the structural edge follows [the end of the implication](../architecture/adjacency-and-derived-data.g5.md#temporal.structural.end).
 
 - Working assumption: Keep retained aggregate history distinct from surviving raw edges; recomputation after partial raw purge needs an explicit history-retention rule.
 
-
-## The implied structural edge
-
-
-<a id="temporal.structural"></a>
-[D · temporal.structural]
-
-A temporal edge implies a structural edge for the same triple in the same graph. The triple is then visible to SQL, Cypher `MATCH`, edge counts and traversal while any of its timestamps exist.
-- The structural edge comes with both endpoint nodes in that graph.
-- [Temporal-only predicates](#temporal.optout) are the exception.
-- This needs the adjacency index declared on the edge table. Without it, a write that names no graph leaves only an adjacency entry, which the next rebuild wipes; a write that names a graph also writes an unmarked structural edge and its nodes, which no temporal delete or purge removes and which ignore the temporal-only setting.
-- Whether an explicit edge delete may remove a marked structural edge while timestamps remain is [open](../../Verus_verification/open_questions.md#q-tmp-006).
-
-- Working assumption: Preserve the temporal implication requirement and record the direct-delete exception; the maintainer must decide whether to refuse or repair it.
-- Working assumption: For structural predicates, a triple with surviving timestamps keeps a structural row. A direct delete may remove the explicit assertion, but the row must stay (or revert to marked) while timestamps remain. Model as-built option (a) as the baseline that violates the implication, and keep the ADR-0015 temporal-only opt-out separate (no row ever).
-- Working assumption: Engine-path endpoints: derived, with identifiable provenance (e.g. the 'bare temporal endpoint' rule purge already uses) and excluded from genesis/verify; changeset temporal ops: follow the relationship endpoint rule (refuse a missing endpoint or record a stub). Keep their real effects in the environment model; treat ledger-api.md:92 as stale for the indexed path.
-- Working assumption: Keep the existing ledger rules for node rows until a source extends the marked-edge exemption to endpoints.
-
-
-<a id="temporal.structural.mark"></a>
-[I · temporal.structural.mark]
-
-An implied structural edge carries the temporal mark, so counts, exports and later cleanup can tell it from an explicitly written edge.
-- All timestamps of one triple share one structural edge.
-- The mark, not a count of timestamps, decides whether the edge may be removed; the purge itself checks whether any surviving timestamp still holds the triple.
-
-- Working assumption: no. The mark is bookkeeping (spec 252 planned it as a separate column), so Cypher maps and RDF qualifiers would leave it out while the edge and its weight stay visible.
-
-
-<a id="temporal.structural.mark.readers"></a>
-[I · temporal.structural.mark.readers]
-
-Edge readers treat a marked structural edge differently from the same edge written explicitly.
-- NDJSON export writes no line for it; the temporal export writes the edge instead.
-- RDF export writes the triple plus a reification with a `temporal` qualifier (true) and the weight when it is not 1, so the export report counts 3 more edges and 2 more nodes for it.
-- Cypher `properties(r)` and `r.temporal` return `temporal: true`, with the weight.
-- After an explicit write adopts the edge, every reader sees an ordinary edge with that write's qualifiers. A bulk create adopts with none.
-- The mark is written only when the triple has no row yet: an explicit edge written first is never marked, and a later temporal write never changes the stored weight.
-
-
-<a id="temporal.structural.adopt"></a>
-[I · temporal.structural.adopt]
-
-An explicit structural write of a triple that has a marked structural edge adopts it: the mark is cleared and the explicit write's qualifiers apply.
-- Single and bulk edge creation, a Cypher `CREATE` or `MERGE` between matched nodes, and a ledger relationship create all adopt.
-- After adoption, no temporal delete or purge removes the edge.
-- An adopting `create_edge` reports True, unlike writing an existing unmarked edge again, which reports False.
-- An explicit edge written before any temporal edge is never marked.
-- Observed exception in Python `create_edge` and `store_edge`: caller qualifiers can supply `temporal=True`. A new row then keeps the mark; an adopting `create_edge` also keeps it when supplied again, and repeated marked creates report True and replace qualifiers. This conflicts with the unmarked explicit-edge rule above.
-
-
-<a id="temporal.structural.end"></a>
-[I · temporal.structural.end]
-
-When a triple's last timestamp in a graph goes, by a delete or a purge, that graph's structural edge for the triple goes too while it still carries the mark.
-- The rule is the same in the default graph and in every named graph.
-- An unmarked structural edge stays.
-- Endpoint nodes stay unless the purge is asked to [retire bare nodes](#temporal.purge.bare-nodes).
-
-
-<a id="temporal.structural.upgrade"></a>
-[D · temporal.structural.upgrade]
-
-When an install declares the adjacency index, every triple with temporal edges and no structural edge gets a marked one, except triples of temporal-only predicates.
-- The upgrade never deletes rows and never registers predicates.
-- It remembers a bounded number of triples and re-checks the ones it forgot, so it never misses a row.
-- A row already there is left as it is, so an explicit edge stays unmarked. Running it again writes nothing.
-- The SQL function `backfill_temporal_rows()` runs it for every graph and refuses a caller without INSERT on `nodes` and `rdf_edges`, writing nothing. Setup runs it before declaring the edge index and reports the edges it gave rows as `temporal_rows_backfilled`.
-- Today the count it answers, and setup reports, is every structural temporal triple it walked, whether or not the triple needed a row: a second run answers the same number again ([finding](../../Verus_verification/bugs_issues.md#bug-tmp-107)).
-
-
-<a id="temporal.structural.ledger"></a>
-[D · temporal.structural.ledger]
-
-A marked structural edge is derived from the time index, so it is outside ledger governance. Direct temporal writes create no revisions ([inside a changeset they do](#temporal.ledger)), and the ledger's starting snapshot and its verification both skip marked edges.
-- Ledger strict mode does not change this: a temporal write still succeeds, and with the adjacency index declared it still writes the marked structural edge.
-- Strict mode skips only the engine's older client-side structural step, which runs when the adjacency index is not declared.
-
-
 ## Temporal-only predicates
-
 
 <a id="temporal.optout"></a>
 [D · temporal.optout]
@@ -302,7 +190,6 @@ A graph can register a predicate as temporal-only, so that its temporal edges im
 
 - Working assumption: Treat previous temporal edges as retained until an explicit cleanup or reclassification is authorized.
 
-
 <a id="temporal.optout.effect"></a>
 [I · temporal.optout.effect]
 
@@ -312,7 +199,6 @@ A write of a temporal-only predicate stores only time-index data: no structural 
 - Window, aggregate, newest-event and temporal Cypher reads keep working.
 - An explicit structural create of the triple still writes a normal unmarked edge.
 
-
 <a id="temporal.optout.toggle"></a>
 [D · temporal.optout.toggle]
 
@@ -320,7 +206,6 @@ Changing a registration affects only later writes: existing structural edges sta
 - Writers are never blocked; writes in flight while a predicate is registered may still add marked edges, which the drop removes.
 - Backfilling writes the missing marked edges and their nodes for a predicate made structural again, using its temporal edges as the authority.
 - Backfilling refuses a predicate that is still temporal-only, can be repeated safely, and needs the adjacency index declared.
-
 
 <a id="temporal.optout.drop"></a>
 [I · temporal.optout.drop]
@@ -334,9 +219,7 @@ Dropping removes the marked structural edges of temporal-only predicates in one 
 
 - Working assumption: Keep temporal-only structural row retention at the opt-out boundary and require drop before opt-in; define last-delete behavior separately.
 
-
-## Window reads
-
+## Read and page through a time window
 
 <a id="temporal.window"></a>
 [I · temporal.window]
@@ -354,7 +237,6 @@ A window read returns the temporal edges whose timestamps fall in a range, both 
 
 - Working assumption: Treat a paged read as multiple observations today; a point-in-time promise needs an explicit snapshot/version protocol.
 
-
 <a id="temporal.window.sources"></a>
 [I · temporal.window.sources]
 
@@ -362,7 +244,6 @@ Leaving the source filter out and passing an empty list of sources are different
 - The Python reader sends no `sources` key when the caller passes none, and sends an empty list when the caller passes one.
 - The server reads every source only when the request names no source, no list and no prefix. A list that names nothing, or names only empty strings, reads nothing.
 - Naming more than one of a source, a list and a prefix is refused before any server call.
-
 
 <a id="temporal.window.paging"></a>
 [D · temporal.window.paging]
@@ -372,7 +253,6 @@ Each page is read live from where the last page stopped, so the server holds onl
 - Only a page marked done ends the read. An empty page that is not marked done does not end it: the reader asks for the next page.
 - The events returned are the rows of every page, in order, up to and including the page marked done.
 - A page holds at most the rows asked for (1,000 by default), and stops early once its text nears two million characters.
-
 
 <a id="temporal.window.paging.release"></a>
 [I · temporal.window.paging.release]
@@ -386,9 +266,7 @@ The server handle of a paged read is freed exactly once, by whichever comes firs
 - A handle belongs to the process and connection that opened it: another connection cannot page it, and the handle is freed when that process ends.
 - Today's server never sends an empty page that is not marked done: a page stops only at its row count, its size limit or the end of the window, and each of the first two holds at least one row.
 
-
 ## Label sets
-
 
 <a id="temporal.labelset"></a>
 [I · temporal.labelset]
@@ -401,9 +279,7 @@ Interning a set of attributes stores its canonical JSON text once and returns th
 - Today a nested object or list is written as an internal object reference such as `"12@%Library.DynamicObject"`, which changes from call to call and ignores the content. The same set then gets a new hash, and a new stored entry, on every call, and two different nested values can share a hash ([bug-tmp-105](../../Verus_verification/bugs_issues.md#bug-tmp-105)).
 - Text that is not JSON fails with a parsing error rather than returning an empty hash. The Python entry point always sends JSON.
 
-
 ## Retention and erasure
-
 
 <a id="temporal.purge"></a>
 [I · temporal.purge]
@@ -416,7 +292,6 @@ A raw purge removes one graph's temporal edges in a time range, with their attri
 - The result reports how many edges were deleted and skipped, and how many nodes were retired when that was asked.
 - The legacy whole-store purge acts on the default graph and also removes statistics of buckets before the cutoff's.
 
-
 <a id="temporal.purge.bare-nodes"></a>
 [I · temporal.purge.bare-nodes]
 
@@ -425,7 +300,6 @@ A purge can also delete the endpoint nodes of the structural edges it removed, w
 - A node that gains an edge, label or embedding while the purge runs is kept.
 - The Python interface does this by default; the ObjectScript interface does it only when asked.
 - A separate sweep removes bare nodes that an earlier purge left behind.
-
 
 <a id="temporal.erase"></a>
 [I · temporal.erase]
@@ -436,7 +310,6 @@ Erasing a graph removes all of its temporal data, erasing everything removes eve
 - Today a prefix erase finds IDs through node rows, so a temporal-only event whose endpoints have no node row is not erased; erasing those IDs explicitly, or the whole graph, removes it.
 
 ## Temporal edges in the ledger
-
 
 <a id="temporal.ledger"></a>
 [I · temporal.ledger]
@@ -449,15 +322,63 @@ A changeset can include temporal edge writes, which the ledger applies in the sa
 - Working assumption: Keep insert collision as an effect-free accepted temporal call today; ledger record/no-op policy still needs owner choice.
 - Working assumption: Unchanged reading: record the changeset temporal op in history (audit, redaction); treat temporal tiers, engine temporal writes, purges and temporal replay as outside the structural replay guarantee; model their real effects, including purges deleting endpoint nodes.
 
-
 <a id="temporal.ledger.atomic"></a>
 [I · temporal.ledger.atomic]
 
 If a changeset fails, none of its temporal writes may remain, statistics included.
 
+## Earlier links
+
+These links take you to the current sections and statements.
+
+<a id="the-implied-structural-edge"></a>
+
+[How an event becomes a structural edge](../architecture/adjacency-and-derived-data.g5.md#how-an-event-becomes-a-structural-edge)
+
+<a id="window-reads"></a>
+
+[Read and page through a time window](#read-and-page-through-a-time-window)
+
+<a id="temporal.owner"></a>
+
+[temporal.owner](../architecture/adjacency-and-derived-data.g5.md#temporal.owner)
+
+<a id="temporal.stats.writers"></a>
+
+[temporal.stats.writers](../architecture/adjacency-and-derived-data.g5.md#temporal.stats.writers)
+
+<a id="temporal.structural"></a>
+
+[temporal.structural](../architecture/adjacency-and-derived-data.g5.md#temporal.structural)
+
+<a id="temporal.structural.mark"></a>
+
+[temporal.structural.mark](../architecture/adjacency-and-derived-data.g5.md#temporal.structural.mark)
+
+<a id="temporal.structural.mark.readers"></a>
+
+[temporal.structural.mark.readers](../architecture/adjacency-and-derived-data.g5.md#temporal.structural.mark.readers)
+
+<a id="temporal.structural.adopt"></a>
+
+[temporal.structural.adopt](../architecture/adjacency-and-derived-data.g5.md#temporal.structural.adopt)
+
+<a id="temporal.structural.end"></a>
+
+[temporal.structural.end](../architecture/adjacency-and-derived-data.g5.md#temporal.structural.end)
+
+<a id="temporal.structural.upgrade"></a>
+
+[temporal.structural.upgrade](../architecture/adjacency-and-derived-data.g5.md#temporal.structural.upgrade)
+
+<a id="temporal.structural.ledger"></a>
+
+[temporal.structural.ledger](../architecture/adjacency-and-derived-data.g5.md#temporal.structural.ledger)
+
 ## Metadata
 
 ### temporal.edge
+
 - Sources: [glossary](../../../CONTEXT.md#L65-L76), [bucket unit](../../../specs/204-temporal-index-gaps/spec.md#L113-L159), [InsertEdge](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L46-L65), [ms index](../../../iris_src/src/Graph/KG/TemporalIndexMS.cls); live tests: [index gaps](../../../tests/integration/test_temporal_index_gaps_e2e.py)
 - Children: [graph scope](#temporal.edge.graph-scope)
 - agent
@@ -491,20 +412,12 @@ Findings: [A temporal write with no time lands at epoch 0, not at the current ti
 State machines: [temporal clock](../../Verus_verification/models/temporal_clock/manifest.json)
 
 ### temporal.edge.graph-scope
+
 - Sources: [ADR-0003](../../../docs/adr/0003-two-graph-key-derivations.md), [GraphKey](../../../iris_src/src/Graph/KG/GraphKey.cls), [glossary](../../../CONTEXT.md#L28-L58); live tests: [graph scope](../../../tests/integration/test_223_temporal_graph_scope.py)
 - Expands: [Temporal edge](#temporal.edge)
 - agent
 - data-integrity
 - test-coverage
-
-### temporal.owner
-- Sources: [ADR-0002](../../../docs/adr/0002-temporal-globals-are-not-directly-accessible.md), [spec 239 FR-001](../../../specs/239-alt-temporal-erase/spec.md#L70-L71), [writer guard](../../../tests/unit/test_temporal_single_owner.py)
-- agent
-- architecture-decision
-
-Observed divergence: the paged window reader reads the temporal stores directly, snapshot restore writes them from Python, and the source-text guard checks writers only.
-
-Findings: [Temporal documentation contradicts the code in several places](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-009)
 
 ### temporal.write
 
@@ -524,6 +437,7 @@ Audit reproduction: [bug-tmp-001](../../Verus_verification/bugs_issues.md#bug-tm
 Open questions: [Must temporal writes stay exact when several writers touch the same coordinates or triple at once?](../../Verus_verification/open_questions.md#q-tmp-001), [When a temporal write fails part way, what may it leave behind, and must a retry be able to finish it?](../../Verus_verification/open_questions.md#temporal.write.partial-failure), [What should the statistics say after an update replaces an edge's weight?](../../Verus_verification/open_questions.md#temporal.write.update-statistics)
 
 ### temporal.write.collision
+
 - Sources: [spec 254 Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L142-L149), [FR-003](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L124-L126), [glossary: Collision](../../../CONTEXT.md#L172-L176); live tests: [collisions](../../../tests/e2e/test_254_collisions_e2e.py)
 - Expands: [Writing](#temporal.write)
 - human-verified
@@ -531,6 +445,7 @@ Open questions: [Must temporal writes stay exact when several writers touch the 
 - test-coverage
 
 ### temporal.write.repeatable
+
 - Sources: [spec 254 US3 and Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L79-L149), [sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L86); live tests: [rebuild](../../../tests/e2e/test_254_rebuild_e2e.py)
 - Expands: [Writing](#temporal.write)
 - human-verified
@@ -556,7 +471,7 @@ State machines: [retry replay](../../Verus_verification/models/retry_replay/mani
 
 - uncertain
 - Sources: [GetAggregate](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1442-L1491), [exact window](../../../CHANGELOG.md#L1221-L1224), [distinct count](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L627-L686); live tests: [exact window](../../../tests/e2e/test_460_r217_temporal_aggregate_window_e2e.py)
-- Children: [after purge](#temporal.stats.after-purge), [window reads](#temporal.stats.window), [writers](#temporal.stats.writers), [velocity and bursts](#temporal.stats.velocity), [distinct targets](#temporal.stats.distinct), [After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?](../../Verus_verification/open_questions.md#q-tmp-002)
+- Children: [after purge](#temporal.stats.after-purge), [window reads](#temporal.stats.window), [writers](../architecture/adjacency-and-derived-data.g5.md#temporal.stats.writers), [velocity and bursts](#temporal.stats.velocity), [distinct targets](#temporal.stats.distinct), [After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?](../../Verus_verification/open_questions.md#q-tmp-002)
 - agent
 - user-facing-behavior
 - test-coverage
@@ -582,6 +497,7 @@ Formal (iteration 51): [write history to statistics to reader](../../Verus_verif
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
 ### temporal.stats.after-purge
+
 - Sources: [spec 204 US1](../../../specs/204-temporal-index-gaps/spec.md#L20-L48), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [PurgeBucketRange](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1048-L1066); live tests: [ledger coexistence](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
 - Expands: [Statistics](#temporal.stats)
 - agent
@@ -596,6 +512,7 @@ Iteration 51: the bucket-range return value, the whole-versus-cut reads after ea
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
 ### temporal.stats.window
+
 - Sources: [GetAggregate, GetBucketGroups, BucketGroupsEvents, GetBucketGroupTargets](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1442-L1633), [store conversion](../../../iris_vector_graph/stores/iris_sql_store.py#L2971-L2987), [docstrings](../../../iris_vector_graph/_engine/temporal.py#L934-L1047), [USER_GUIDE aggregates](../../../docs/USER_GUIDE.md#L1011-L1027), [CHANGELOG R217/R249](../../../CHANGELOG.md#L1221-L1224); live tests: [exact window](../../../tests/e2e/test_460_r217_temporal_aggregate_window_e2e.py), [groups](../../../tests/e2e/test_460_r249_counters_default_graph_e2e.py)
 - Expands: [Statistics](#temporal.stats)
 - agent
@@ -609,21 +526,8 @@ The empty-key rule (review round 2, m2; challenged in round 3): no document prom
 
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
-### temporal.stats.writers
-- Sources: [WriteStores, RemoveTemporalRow, RebuildBucketAggregate](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L67-L133), [delete docstring](../../../iris_vector_graph/_engine/temporal.py#L334-L389), [create_edge_temporal docstring](../../../iris_vector_graph/_engine/temporal.py#L246-L333), [USER_GUIDE transactions](../../../docs/USER_GUIDE.md#L236-L275)
-- Expands: [Statistics](#temporal.stats)
-- agent
-- data-integrity
-- uncertain
-- design-verified
-- Formal: [`theorem_update_counts_twice`, `theorem_collision_changes_nothing`, `theorem_update_whole_vs_cut`, `theorem_rolled_back_first_write`, `theorem_rolled_back_group_row`, `theorem_committed_first_write`, `theorem_delete_rebuilds_from_survivors`, `theorem_update_then_delete_leaves_velocity`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
-- Open question: [temporal.write.update-statistics](../../Verus_verification/open_questions.md#temporal.write.update-statistics)
-
-Findings: [bug-tmp-002](../../Verus_verification/bugs_issues.md#bug-tmp-002), [bug-tmp-003](../../Verus_verification/bugs_issues.md#bug-tmp-003) (both strengthened in iteration 51). The rollback rule rests on the observed premise that IRIS does not undo `$Increment` (P-INCR).
-
-State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
-
 ### temporal.stats.velocity
+
 - Sources: [GetVelocity and FindBursts](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L757-L806), [TemporalIndexMS](../../../iris_src/src/Graph/KG/TemporalIndexMS.cls), [docstrings](../../../iris_vector_graph/_engine/temporal.py#L852-L909), [API reference](../../../docs/API_REFERENCE.md#L1910-L1995)
 - Expands: [Statistics](#temporal.stats)
 - agent
@@ -636,6 +540,7 @@ Findings: [F-0508](../../Verus_verification/bugs_issues.md#F-0508) (the ignored 
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
 ### temporal.stats.distinct
+
 - Sources: [GetDistinctCount, HLLAdd, HLLEmpty, UpdateHLL](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L185-L224), [estimator](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L628-L682), [docstring](../../../iris_vector_graph/_engine/temporal.py#L1088-L1111)
 - Expands: [Statistics](#temporal.stats)
 - agent
@@ -648,6 +553,7 @@ Findings: [bug-tmp-103](../../Verus_verification/bugs_issues.md#bug-tmp-103) (ne
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
 ### temporal.latest
+
 - Sources: [spec 255 Decisions](../../../specs/255-temporal-window-reader/spec.md#L162-L168), [US3 and FR-007](../../../specs/255-temporal-window-reader/spec.md#L88-L134), [spec 255 plan](../../../specs/255-temporal-window-reader/plan.md#L41-L52), [Latest](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L291-L443); live tests: [latest per source](../../../tests/e2e/test_255_window_reader_us3_e2e.py)
 - Children: [exact](#temporal.latest.exact)
 - human-verified
@@ -683,108 +589,6 @@ Audit reproduction: [bug-tmp-010](../../Verus_verification/bugs_issues.md#bug-tm
 
 Open questions: [After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?](../../Verus_verification/open_questions.md#q-tmp-002)
 
-### temporal.structural
-
-- uncertain
-- Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L29), [glossary](../../../CONTEXT.md#L65-L76), [spec 252 FR-014](../../../specs/252-adjacency-functional-index/spec.md#L127-L129), [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L560-L618); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
-- Children: [mark](#temporal.structural.mark), [mark readers](#temporal.structural.mark.readers), [adopt](#temporal.structural.adopt), [end](#temporal.structural.end), [upgrade](#temporal.structural.upgrade), [ledger](#temporal.structural.ledger), [Are the endpoint nodes that a temporal write creates, or that a purge retires, governed by the ledger?](../../Verus_verification/open_questions.md#temporal.structural.ledger-nodes), [May an explicit delete_edge remove a marked structural row while its triple still has timestamps?](../../Verus_verification/open_questions.md#q-tmp-006)
-- agent
-- architecture-decision, user-facing-behavior
-- test-coverage
-
-Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001); [A temporal write that races a purge or delete of the same triple can leave a live timestamp with no structural edge](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-011); [Remove the unadopted spec-246 Python path for temporal structural rows](../../Verus_verification/design_simplification.md#simp-tmp-001)
-
-
-The non-indexed mirror is [temporal.py](../../../iris_vector_graph/_engine/temporal.py#L304-L331): with a graph named, no declared index and no spec-246 flag, it inserts endpoint nodes and an unmarked `rdf_edges` row without reading the temporal-only registry (review round 3 R3-reader M17).
-
-Audit reproduction: [bug-tmp-001](../../Verus_verification/bugs_issues.md#bug-tmp-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
-
-Open questions: [May a direct edge delete remove an edge row that a temporal edge still implies?](../../Verus_verification/open_questions.md#HD-0302), [Are the end nodes a temporal write creates governed by the ledger?](../../Verus_verification/open_questions.md#HD-0501), [May an explicit delete_edge remove a marked structural row while its triple still has timestamps?](../../Verus_verification/open_questions.md#q-tmp-006), [Are the endpoint nodes that a temporal write creates, or that a purge retires, governed by the ledger?](../../Verus_verification/open_questions.md#temporal.structural.ledger-nodes)
-
-### temporal.structural.mark
-
-- uncertain
-- Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L42), [spec 254 plan, Decision 1](../../../specs/254-temporal-purge-collisions-rebuild/plan.md#L5-L26); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
-- Expands: [Implied structural edge](#temporal.structural)
-- agent
-- data-integrity, architecture-decision
-- test-coverage
-
-The plan chose the mark over a count because a counter is not undone by a rollback, needs a new store and needs a migration. The upgrade backfill gives an edge the weight of its earliest timestamp, while live writes keep the first-written weight.
-
-Findings: [May an explicit delete_edge remove a marked structural row while its triple still has timestamps?](../../Verus_verification/open_questions.md#q-tmp-006); [A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier](../../Verus_verification/bugs_issues.md#bug-tmp-101)
-
-Open questions: [Should readers show the temporal mark as part of the edge's data?](../../Verus_verification/open_questions.md#temporal.structural.mark.visibility)
-
-### temporal.structural.mark.readers
-
-- design-verified
-- Sources: [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L575-L618), [export_graph_ndjson](../../../iris_vector_graph/_engine/snapshot.py#L1857-L1908), [RDF qualifier loop](../../../iris_vector_graph/_engine/_rdf_utils.py#L264-L284), [Cypher relationship map](../../../iris_vector_graph/cypher/translator.py#L23187-L23191), [create_edge adoption](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1304), [bulk adoption](../../../iris_vector_graph/_engine/nodes_edges.py#L1990-L2001), [changelog: a temporal edge is visible structurally](../../../CHANGELOG.md#L3042-L3047)
-- Expands: [the mark](#temporal.structural.mark)
-- Verus: [temporal_marker.rs](../../Verus_verification/models/temporal_marker/temporal_marker.rs) `theorem_marker_decodes`, `theorem_temporal_never_rewrites_a_row`, `theorem_explicit_adopts_marked_with_own`, `theorem_bulk_adopts_marked_to_null`, `theorem_ndjson_omits_marked_includes_adopted`, `theorem_cypher_reports_marker_key`, `theorem_rdf_marked_row_is_reified` and `theorem_rdf_report_counts`; [scope](../../Verus_verification/models/temporal_marker/NOTES.md)
-- Evidence: [predictions and native observations](../../uplift/consolidated/iteration-15/temporal-marker-PAIRS.md)
-- agent
-- user-facing-behavior, data-integrity
-
-As-built reader behavior, observed on IRIS 2026.1 with the unchanged product for default-graph triples with one row each; a named-graph probe gave the same export results.
-
-Findings: [A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier](../../Verus_verification/bugs_issues.md#bug-tmp-101)
-
-State machines: [temporal marker](../../Verus_verification/models/temporal_marker/manifest.json)
-
-### temporal.structural.adopt
-
-- design-verified
-- Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [spec 254 sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L80), [create_edge adopt](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1300), [ledger adopt](../../../iris_src/src/Graph/KG/LedgerApply.cls#L465-L475); live tests: [purge path matrix](../../../tests/e2e/test_254_purge_e2e.py), [ledger adopt](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
-- Expands: [Implied structural edge](#temporal.structural)
-- Formal contract: [Python marker and adoption cases](../../Verus_verification/models/edge_acceptance/edge_acceptance.rs)
-- Findings: [caller-supplied marker](../../Verus_verification/audits/register-20261115/bugs-review.md#F-C0351)
-- agent
-- data-integrity
-
-Observed divergence: a multigraph `MERGE`, an undirected `MERGE` that matches the reverse row, and a `MERGE` with inline nodes still leave the mark; a bulk create adopts with empty qualifiers.
-
-Audit reproduction: [F-0304](../../Verus_verification/bugs_issues.md#F-0304) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
-
-Findings: [Storing an edge over a marked edge does not take the edge over](../../Verus_verification/bugs_issues.md#F-0304).
-
-State machines: [edge acceptance](../../Verus_verification/models/edge_acceptance/manifest.json), [temporal marker](../../Verus_verification/models/temporal_marker/manifest.json)
-
-### temporal.structural.end
-- Sources: [spec 254 Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L142-L149), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [RetractTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L620-L689); live tests: [purge](../../../tests/e2e/test_254_purge_e2e.py), [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
-- Expands: [Implied structural edge](#temporal.structural)
-- human-verified
-- data-integrity
-- test-coverage
-
-Observed divergence: a write racing the delete or purge can leave a timestamp without its edge, recorded as open. The ObjectScript whole-index purge (`TemporalIndex.Purge`, which calls the temporal `EraseAll` outside the Eraser) removes every timestamp but leaves marked structural edges.
-
-Findings: [Making a temporal-only predicate structural again before dropping its rows strands marked rows that nothing removes](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-005); [A temporal write inside a purge's range that lands after the purge removed the row leaves a marked row with no timestamp](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-013); [Without the adjacency index, deleting a temporal edge removes the adjacency of an explicit edge on the same triple](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-012)
-
-### temporal.structural.upgrade
-- Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [ADR-0015 upgrade](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L105-L110), [BackfillWalk](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L302); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py), [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py); [SqlProcs.backfilltemporalrows](../../../iris_src/src/Graph/KG/SqlProcs.cls#L194-L198), [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls) (the NOT EXISTS guards), [setup's call and report](../../../iris_vector_graph/schema.py#L878-L884), [ADMIN_GUIDE setup report](../../../docs/ADMIN_GUIDE.md#L413), [ADMIN_GUIDE write privilege](../../../docs/ADMIN_GUIDE.md#L577-L579)
-- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `backfill`, `backfill_count`, `theorem_backfill_writes_missing_only`, `theorem_backfill_idempotent_same_count`, `theorem_backfill_count_overstates`, neighbor `theorem_backfill_count_exact_when_all_missing`
-- Evidence: [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) BF1-BF5, [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json) `bf_*`
-- Expands: [Implied structural edge](#temporal.structural)
-- agent
-- operations
-- test-coverage
-
-Iteration 53: the three new bullets were observed in a fresh namespace (counts 3, 3, 3 and 4 for 3, 3, 3 and 4 structural triples, while 0, 0, 1 and 0 rows were written). Premise: fewer distinct triples per graph than the seen limit, 100,000; past it a triple is walked and counted again.
-
-Findings: [backfill_temporal_rows answers the triples it walked, not the rows it wrote](../../Verus_verification/bugs_issues.md#bug-tmp-107)
-
-### temporal.structural.ledger
-- Sources: [glossary](../../../CONTEXT.md#L65-L76), [4.3.0 notes](../../../CHANGELOG.md#L3043-L3047), [replay skip](../../../iris_vector_graph/ledger/replay.py#L610-L622), [genesis skip](../../../iris_src/src/Graph/KG/LedgerGenesis.cls#L38-L45); live tests: [coexistence](../../../tests/integration/test_ledger_us11_temporal_coexist.py), [verify after enable](../../../tests/e2e/test_460_ledger_temporal_edge_e2e.py)
-- Expands: [Implied structural edge](#temporal.structural)
-- human-verified
-- architecture-decision, data-integrity
-- test-coverage
-
-Commit 43efd473 records the decision as "Decided with Tom 2026-10-19". Strict mode: [temporal.py](../../../iris_vector_graph/_engine/temporal.py#L304-L309) skips only the client-side step, and the live strict-mode case in the coexistence test writes a marked row with the tables unchanged for verify. Superseded: the [ledger-api](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L83-L93) sentence that strict mode "skips the structural mirror" predates the declared index and now holds only for that client-side step.
-
-Findings: [A temporal write creates endpoint nodes that the ledger never recorded, so verify diverges after the ledger's own temporal operation](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-004)
-
 ### temporal.optout
 
 - uncertain
@@ -799,6 +603,7 @@ ADR-0015 is "Accepted (2026-10-25, Tom)".
 Open questions: [What should happen to the marked structural edges of a predicate whose timestamps were purged while it was temporal-only, if it is made structural again before the drop?](../../Verus_verification/open_questions.md#temporal.optout.stranded)
 
 ### temporal.optout.effect
+
 - Sources: [ADR-0015 effects](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L52-L70), [warning decision](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L134-L143), [warning module](../../../iris_vector_graph/_engine/temporal_only_warning.py); live tests: [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py)
 - Expands: [Temporal-only predicates](#temporal.optout)
 - human-verified
@@ -810,6 +615,7 @@ Observed divergence: the undocumented engine flag left over from an alternative 
 Findings: [Two Python temporal paths write structural rows for a temporal-only predicate](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-006)
 
 ### temporal.optout.toggle
+
 - Sources: [ADR-0015 API](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L101-L106), [migration and rollback](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L111-L124), [BackfillRows](../../../iris_src/src/Graph/KG/TemporalPolicy.cls#L253-L272); live tests: [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py)
 - Expands: [Temporal-only predicates](#temporal.optout)
 - human-verified
@@ -892,6 +698,7 @@ Public cases M07 and M08. The client half is bound to the real `TemporalWindowCu
 State machines: [temporal window reader](../../Verus_verification/models/temporal_window_reader/manifest.json)
 
 ### temporal.labelset
+
 - Sources: [InternLabelSet and ResolveLabelSet](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1336-L1397), [docstrings](../../../iris_vector_graph/_engine/temporal.py#L835-L850), [spec 204 FR-012](../../../specs/204-temporal-index-gaps/spec.md)
 - agent
 - data-integrity
@@ -903,6 +710,7 @@ Findings: [bug-tmp-105](../../Verus_verification/bugs_issues.md#bug-tmp-105) (ne
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
 ### temporal.purge
+
 - Sources: [spec 254 US1 and Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L38-L149), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [PurgeRawBefore and RetireExpired](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L856-L1046), [PurgeBefore](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L813-L854); live tests: [purge](../../../tests/e2e/test_254_purge_e2e.py)
 - Children: [bare nodes](#temporal.purge.bare-nodes)
 - human-verified
@@ -914,6 +722,7 @@ Superseded: an earlier spec required the raw purge to leave adjacency untouched.
 Findings: [A temporal write that races a purge or delete of the same triple can leave a live timestamp with no structural edge](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-011); [The ObjectScript temporal purge-all and erase-all leave marked structural rows](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-008); [A temporal write inside a purge's range that lands after the purge removed the row leaves a marked row with no timestamp](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-013)
 
 ### temporal.purge.bare-nodes
+
 - Sources: [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L45-L48), [4.7.0 notes](../../../CHANGELOG.md#L21-L22), [Python purge](../../../iris_vector_graph/_engine/temporal.py#L656-L720), [RetireBareNodes](../../../iris_src/src/Graph/KG/Eraser.cls#L1250-L1310); live tests: [purge retires bare](../../../tests/e2e/test_470_purge_retires_bare_e2e.py), [bare nodes](../../../tests/e2e/test_temporal_bare_nodes_e2e.py)
 - Expands: [Raw purge](#temporal.purge)
 - agent
@@ -921,6 +730,7 @@ Findings: [A temporal write that races a purge or delete of the same triple can 
 - test-coverage
 
 ### temporal.erase
+
 - Sources: [spec 239](../../../specs/239-alt-temporal-erase/spec.md#L66-L84), [EraseGraph, EraseAll, EraseNodes](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L362-L447); live tests: [erase owner](../../../tests/e2e/test_temporal_erase_owner.py), [node erasure](../../../tests/e2e/test_255_window_reader_us3_e2e.py)
 - agent
 - data-integrity
@@ -947,6 +757,7 @@ Audit reproduction: [bug-tmp-010](../../Verus_verification/bugs_issues.md#bug-tm
 Open questions: [Is the temporal index inside the ledger's guarantee?](../../Verus_verification/open_questions.md#HD-0502), [What should an insert collision inside a changeset do?](../../Verus_verification/open_questions.md#q-tmp-004)
 
 ### temporal.ledger.atomic
+
 - Sources: [Changeset docstring](../../../iris_vector_graph/ledger/changeset.py#L321-L336), [ADR-0010 context](../../../docs/adr/0010-degree-is-counted-never-stored.md#L17-L24), [user guide](../../../docs/USER_GUIDE.md#L236-L259)
 - Expands: [Ledger](#temporal.ledger)
 - agent

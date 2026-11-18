@@ -1,6 +1,6 @@
-# Graph structure
+# Nodes and relationships
 
-Nodes and structural edges inside one graph, the multigraph option, the adjacency index derived from the edge rows, degree, the stores that are rebuilt rather than kept current, and how drift is repaired and checked. Which graph content belongs to is described in [graph scope](../concepts/graph-scope.g5.md).
+Read about writing and reading nodes and relationships, including parallel edges and reification. For index maintenance, see [adjacency and derived data](../architecture/adjacency-and-derived-data.g5.md).
 
 ## Definitions
 
@@ -41,9 +41,7 @@ Each engine write is its own transaction when the caller has none, and a nested 
 - Working assumption: Allow the observed interleavings on both paths: a native or SQL read may see a writer's uncommitted writes, including part of one transaction, and loses them on rollback. Grant snapshot or all-or-nothing visibility only to paths with an explicit synchronization contract and evidence (none for Cypher reads). The ADR-0012 degree cache is the one guarded structure.
 - Working assumption: Treat transaction membership as dependent on the connection used by the engine.
 
-
 ## Nodes
-
 
 <a id="structure.node"></a>
 [I · structure.node]
@@ -53,7 +51,6 @@ Each engine write is its own transaction when the caller has none, and a nested 
 - When two callers create the same node at once, one creates it and the other reports False.
 - A new node gets an `id` property equal to its ID unless the caller gives one. The ledger reserves that property name ([changesets](ledger.g5.md#ledger.changeset)).
 
-
 <a id="structure.node.bulk"></a>
 [I · structure.node.bulk]
 
@@ -62,8 +59,7 @@ Each engine write is its own transaction when the caller has none, and a nested 
 - Existing nodes gain labels and property keys they lack and keep the values they already hold. Before adding any node row, the batch removes properties left for its IDs whose node row is missing in that graph; repeated IDs then merge into the first occurrence, and other graphs stay unchanged.
 - A None-valued property is omitted. An absent `id` property defaults to the node ID; an explicit None-valued `id` property is omitted too. [Node reads](#structure.node.read) apply the shared type and alias rules.
 - A SQL batch that leaves indexes in place checks every expected parent, label and non-null property key before returning. A missing required row or failed write raises and takes back that SQL operation under the database transaction contract; an existing property's different value is a permitted merge.
-- The native loader's chunk commits and index drop/rebuild follow the separate [bulk-load boundary](../concepts/install.g5.md#install.bulk_load); the SQL rollback rule does not establish those guarantees.
-
+- The native loader's chunk commits and index drop/rebuild follow the separate [bulk-load boundary](../operations/snapshots-and-bulk-load.g5.md#install.bulk_load); the SQL rollback rule does not establish those guarantees.
 
 <a id="structure.node.delete"></a>
 [I · structure.node.delete]
@@ -83,7 +79,6 @@ Bulk node deletion drops None and empty IDs, converts the rest to text and remov
 - The same risk applies when an underlying store call commits some chunks before a later chunk fails ([erasure atomicity](erasure.g5.md#erasure.atomic)). The batch log's claim that everything rolled back is too strong.
 - With an explicit graph only that graph is selected. With graph omitted, an ID held in several graphs is refused before any deletion.
 
-
 <a id="structure.node.update"></a>
 [I · structure.node.update]
 
@@ -93,7 +88,6 @@ Writing a node with `store_node` creates its row if it is missing and always rep
 - Each label it is given is added; existing labels stay.
 - The node gets an `id` property equal to its ID only when it has none yet.
 - The row, properties and labels are one transaction, and a duplicate node or label is not an error.
-
 
 <a id="structure.node.read"></a>
 [D · structure.node.read]
@@ -105,10 +99,6 @@ Writing a node with `store_node` creates its row if it is missing and always rep
 
 - Working assumption: Preserve both accepted property values and structural identity; reserve aliases or introduce a property map only after a compatibility choice.
 
-
-## Edges
-
-
 <a id="structure.node.read.properties"></a>
 [I · structure.node.read.properties]
 
@@ -119,29 +109,27 @@ The property lookups match and return values as they are stored.
 - `get_property_values` and `get_property_pairs` return numbers as numbers. Today they return a stored true as the string "true", where `get_node` returns true.
 - `get_node_properties` is `get_node` without `id` and `labels`; `nodes_exist` looks in every graph; `list_graphs` lists the named graphs that have edges.
 
+## Edges
+
 <a id="structure.edge"></a>
 [I · structure.edge]
 
 An edge connects two nodes of the same graph and may carry qualifiers. Creating an edge adds any missing endpoint to that graph in the same transaction, so a failed edge leaves no node behind.
-
 
 <a id="structure.edge.single"></a>
 [I · structure.edge.single]
 
 Outside multigraph mode a graph holds at most one ordinary edge per triple. An ordinary duplicate changes no edge values: `create_edge` reports False, while `store_edge` accepts it and reports True; neither treats it as an error.
 
-
 <a id="structure.edge.weight"></a>
 [D · structure.edge.weight]
 
 An edge's weight lives in its qualifiers, so the adjacency index, a rebuild and Cypher's `r.weight` all read the same value. An edge with no weight costs 1.0 in weighted walks.
 
-
 <a id="structure.edge.weight.set"></a>
 [I · structure.edge.weight.set]
 
 `set_edge_weight` changes the weight of an existing edge in the default graph only. It updates every edge of the triple in one transaction, and reports False, writing nothing, when the default graph has no such edge.
-
 
 <a id="structure.edge.delete"></a>
 [I · structure.edge.delete]
@@ -152,7 +140,6 @@ Deleting an edge removes the triple's edges from one graph, or from every graph 
 - Deleting an edge from one graph leaves the same triple in every other graph, with its adjacency entry and traversal answers.
 
 ## Reifications
-
 
 <a id="structure.reification"></a>
 [D · structure.reification]
@@ -166,7 +153,6 @@ A reifier node holds properties about one edge row, and each reifier belongs to 
 
 ## Multigraph mode
 
-
 <a id="structure.multigraph"></a>
 [D · structure.multigraph]
 
@@ -175,31 +161,15 @@ Multigraph mode is a per-graph setting, off by default and available for the def
 - Working assumption: Keep direct create as deduplicating at this pin; the specification planned keyed parallel creation, whose public ID-returning interface is unfinished.
 - Working assumption: Keep the spec requirement to refuse ambiguous ledger references; do not accept first-row selection as intended parallel-edge semantics.
 
-
 <a id="structure.multigraph.off"></a>
 [I · structure.multigraph.off]
 
 With the mode off, a graph behaves exactly as before multigraph mode existed, with the same storage, generated SQL and adjacency layout. Every writer uses edge key 0, so such a graph holds at most one edge row per triple.
 
-
 <a id="structure.multigraph.switch"></a>
 [I · structure.multigraph.switch]
 
 Turning multigraph mode on is always allowed. Turning it off is refused while any triple of the graph holds more than one edge, and erasing a graph clears its mode.
-
-
-<a id="structure.multigraph.layout"></a>
-[D · structure.multigraph.layout]
-
-A triple with one edge looks the same in the adjacency index in either mode.
-
-- While a triple has two or more edges, each edge also has its own entry, and the triple records how many edges it holds.
-- The triple's own entry carries the weight of its edge with the lowest edge key.
-- Edge keys are never renumbered, and a live edge's key is never reused.
-- A new edge takes one more than the triple's highest live key, or 0 for the first, so the key of a deleted highest edge can return.
-- When two writers pick the same new key, the loser retries once with a fresh key and fails loudly after a second clash.
-- A rebuild produces the same layout as the writes that led to it.
-- The one-to-two transition keeps the earlier edge as a keyed entry with its own weight, whatever order the rows are written or rebuilt in.
 
 <a id="structure.multigraph.count"></a>
 [D · structure.multigraph.count]
@@ -215,174 +185,112 @@ Degree counts every edge of a multigraph triple, while the interned snapshot kee
 
 A restore brings back each graph's multigraph mode with its edges, so a restored multigraph keeps its parallel edges, their layout and their counts.
 
-## Adjacency index
-
-
-<a id="structure.adjacency"></a>
-[D · structure.adjacency]
-
-The adjacency index is derived from the edge and label rows, which stay authoritative. Every entry is keyed by its graph ([graph keys](../concepts/graph-scope.g5.md#graph.key)).
-
-- Working assumption: Unchanged: at most one publishing rebuild per adjacency structure; a second call waits or gets a documented busy result. Refined: ADMIN_GUIDE's sentence is literally about ^NKG and holds live; the ^KG half is unserialized.
-- The breadth-first walk, its SQL fallback, the ends-only walk and the shortest-path routines each answer from one graph's entries; another graph's edges change no answer.
-- Removing a triple from one graph leaves the interned snapshot's merged edge while another graph still holds the triple.
-
-<a id="structure.adjacency.declared"></a>
-[I · structure.adjacency.declared]
-
-Where the index is declared, every row insert, update or delete, by any path, changes it in the same transaction. A rollback undoes both, and the index holds no entry without a row behind it.
-
-
-<a id="structure.adjacency.undeclared"></a>
-[I · structure.adjacency.undeclared]
-
-Where the index is not declared, such as after a setup that did not finish, only the engine's own edge writers and a rebuild keep it current. Cypher writes, `store_edge` and the store's `write_edges` leave it stale until a rebuild.
-
-
-<a id="structure.adjacency.one_writer"></a>
-[D · structure.adjacency.one_writer]
-
-One module makes every change to the out-edge and in-edge entries, so the rules every such change must follow are written once. A source scan fails on any other writer unless an explicit, justified exception is added.
-
-
-<a id="structure.adjacency.bulk"></a>
-[D · structure.adjacency.bulk]
-
-A bulk path that writes rows without index upkeep must leave no duplicate rows and must rebuild the indexes before it returns, whether it succeeds or fails. Three paths do this:
-
-- `bulk_create_nodes` and `bulk_create_edges`, which drop the indexes for a large batch and rebuild them afterwards;
-- `bulk_load_session`;
-- the bulk loader, whose own contract is on the [install page](../concepts/install.g5.md#install.bulk_load).
-- `bulk_load_session` keeps `^NKG` current when no caller transaction is open. Inside one it leaves `^NKG` to `sync()`, and the loading engine's `status().pending_sync` stays True until then, even after a rollback; another engine or process reports False.
-
-
-<a id="structure.adjacency.scan"></a>
-[I · structure.adjacency.scan]
-
-The SQL function `MatchEdges(source, predicate, shard, graph)` answers one graph's out-edges from the adjacency index, and `MatchEdgesAllGraphs(source, predicate, shard)` answers every graph's, each edge with its graph. A caller without SELECT on `rdf_edges` is refused before anything is read ([who holds SELECT](../concepts/access.g5.md#access.iris_boundary)).
-- An empty source means every source, and an empty or NULL predicate every predicate.
-- For `MatchEdges` a graph of `''`, NULL, 0, `'0'` or none is the default graph alone; no value of it means every graph. SQL hands `''` to the function as a character 0, which it reads as empty.
-- Each edge carries its stored weight, 1.0 when it has none. A triple held by two graphs is answered once for each.
-- The `shard` argument is not read: every value answers the same edges.
-- `IVG_EDGESCAN=1` sends a Cypher hop from a node named by its id, with no `USE GRAPH` or `USE GRAPH ''`, through this scan instead of the edge rows. It must answer what the default plan answers. Today the hop's edges are the same, but every relationship property, `r.weight` included, reads null on the scan ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-133)).
-
 ## Degree
-
-
-<a id="structure.adjacency.declare"></a>
-[D · structure.adjacency.declare]
-
-Setup declares the two adjacency indexes only once their prerequisites exist, declares each one once, and leaves an index that is already declared alone.
-- Nothing is declared while the callback classes are not compiled, while the schema's own procedure class is not compiled, before the edge table has its edge key column, or before both tables have the graph column. Setup skips with a reason, and a later setup declares them.
-- Once every prerequisite exists, both are declared: the edge index first, then the label index.
-- An index already declared as the adjacency index is left alone. A plain index with the same name is dropped and replaced.
-- Before the edge index is built, every triple that has temporal events but no row gets its marked row. The build then fills the index from every row, which also repairs drift.
-
 
 <a id="structure.degree"></a>
 [D · structure.degree]
 
 A node's degree is counted from the adjacency index when asked and is never kept as a stored counter. A stored counter cannot stay exact when transactions roll back, and no reader needs one.
 
+## Earlier links
+
+These links take you to the current sections and statements.
+
+<a id="graph-structure"></a>
+
+[Nodes and relationships](#nodes-and-relationships)
+
+<a id="adjacency-index"></a>
+
+[Who maintains the adjacency index?](../architecture/adjacency-and-derived-data.g5.md#who-maintains-the-adjacency-index)
+
+<a id="rebuilt-stores-and-the-graph-version-token"></a>
+
+[Rebuilt stores and the graph-version token](../architecture/adjacency-and-derived-data.g5.md#rebuilt-stores-and-the-graph-version-token)
+
+<a id="drift-rebuild-and-verification"></a>
+
+[Find and repair index drift](../operations/status-and-repair.g5.md#find-and-repair-index-drift)
+
+<a id="structure.multigraph.layout"></a>
+
+[structure.multigraph.layout](../architecture/adjacency-and-derived-data.g5.md#structure.multigraph.layout)
+
+<a id="structure.adjacency"></a>
+
+[structure.adjacency](../architecture/adjacency-and-derived-data.g5.md#structure.adjacency)
+
+<a id="structure.adjacency.declared"></a>
+
+[structure.adjacency.declared](../architecture/adjacency-and-derived-data.g5.md#structure.adjacency.declared)
+
+<a id="structure.adjacency.undeclared"></a>
+
+[structure.adjacency.undeclared](../architecture/adjacency-and-derived-data.g5.md#structure.adjacency.undeclared)
+
+<a id="structure.adjacency.one_writer"></a>
+
+[structure.adjacency.one_writer](../architecture/adjacency-and-derived-data.g5.md#structure.adjacency.one_writer)
+
+<a id="structure.adjacency.bulk"></a>
+
+[structure.adjacency.bulk](../architecture/adjacency-and-derived-data.g5.md#structure.adjacency.bulk)
+
+<a id="structure.adjacency.scan"></a>
+
+[structure.adjacency.scan](../architecture/adjacency-and-derived-data.g5.md#structure.adjacency.scan)
+
+<a id="structure.adjacency.declare"></a>
+
+[structure.adjacency.declare](../architecture/adjacency-and-derived-data.g5.md#structure.adjacency.declare)
 
 <a id="structure.degree.cache"></a>
-[D · structure.degree.cache]
 
-A counted degree may be cached and served while the node's generation has not moved since the count. Every change to a node's outgoing adjacency moves its generation, and deleting the cache changes no answer.
-
-- Working assumption: Unchanged from decisions.md: invalidation can never make an old degree-cache value valid again; model a monotone generation or a fresh graph epoch across erase and rebuild; keep as-built A (kill) as the baseline with its narrow window.
-
+[structure.degree.cache](../architecture/adjacency-and-derived-data.g5.md#structure.degree.cache)
 
 <a id="structure.degree.cache.uncommitted"></a>
-[I · structure.degree.cache.uncommitted]
 
-A cached degree never includes an edge that was later rolled back.
-
-- Each graph has one writer lock. Writers hold it shared, so writers never wait for each other, and keep it until their transaction ends.
-- A reader stores its count only when it could take that lock alone at once, and the node's generation did not move while it counted.
-- A writer that cannot get the lock within 5 seconds still writes, and turns degree caching off for its graph until the next rebuild.
-
+[structure.degree.cache.uncommitted](../architecture/adjacency-and-derived-data.g5.md#structure.degree.cache.uncommitted)
 
 <a id="structure.degree.cache.erase"></a>
-[I · structure.degree.cache.erase]
 
-Erasing a node or a graph clears its generations and cached degrees. No count cached before the erase may be served after it, even when later writes bring the generation back to an earlier value.
-
+[structure.degree.cache.erase](../architecture/adjacency-and-derived-data.g5.md#structure.degree.cache.erase)
 
 <a id="structure.degree.cache.warm"></a>
-[D · structure.degree.cache.warm]
 
-A rebuild leaves the degree cache filled, so the first reads after it do not recount.
-
-- Standalone `WarmAll(graph)` also fills graphs that exist only in adjacency globals: it enumerates that graph's outgoing sources directly, without SQL node or edge rows. It fills an all-predicate entry and each predicate entry and returns the number of sources filled, not the number of entries; target-only nodes are not sources.
-- A failed exclusive writer-lock probe, a no-lock-writer flag, or a generation change prevents that source from being counted as filled. A generation change detected after storing removes the source's new entries.
-- The whole-graph stamp is replaced only when every visited source filled and the graph-version token stayed equal. Otherwise it is removed and readers use their per-source checks. Empty outgoing globals return zero and may have a current whole-graph stamp; a subsequent token change makes that stamp stale.
-- At the pin a rebuild bumps the token after warming, making the whole-graph stamp stale at once even though the per-source entries remain valid; this departure remains [simp-str-003](../../Verus_verification/design_simplification.md#simp-str-003). Clearing entries alone while keeping a current stamp can return zeros ([F-0406](../../Verus_verification/audits/register-20261115/bugs-review.md#F-0406)).
-
-## Rebuilt stores and the graph-version token
-
+[structure.degree.cache.warm](../architecture/adjacency-and-derived-data.g5.md#structure.degree.cache.warm)
 
 <a id="structure.rebuilt"></a>
-[D · structure.rebuilt]
 
-The interned snapshot, the two-hop statistics, the accelerator's snapshot and cached algorithm results are rebuilt stores. Each records the graph-version token it was built from and is current only while that token is still the live one, so a failed rebuild leaves it stale for every process.
-
-- Working assumption: yes, because the degree cache and the rebuild already treat that case as unsafe. Today the cached result stays current until the next write (observed).
-
+[structure.rebuilt](../architecture/adjacency-and-derived-data.g5.md#structure.rebuilt)
 
 <a id="structure.rebuilt.token"></a>
-[I · structure.rebuilt.token]
 
-Every change to the adjacency index, to its edges or to its labels, increases the graph-version token; a write to node rows or properties alone does not. The token never decreases and a value is never reused, even when the write rolls back. A cached answer that also depends on other content must key on that content too or not be cached ([algorithm cache](algorithms.g5.md#algorithms.cache.token)).
-
+[structure.rebuilt.token](../architecture/adjacency-and-derived-data.g5.md#structure.rebuilt.token)
 
 <a id="structure.rebuilt.stamp"></a>
-[I · structure.rebuilt.stamp]
 
-A rebuilt store is current only when it carries a build stamp and that stamp equals the live token. A store that was never stamped is stale even while the token is still zero, and a store stamped at zero is current until the token moves.
-- An unset token reads as zero, but an unset or empty stamp means "not known", never zero.
-- Asking which of several stores are stale applies the same rule to each store, in the order asked.
-- The two-hop count reader in ObjectScript and the Python freshness module apply this one rule.
-- Today `khop2_count_fast` with a type answers, while the two-hop statistics are current, the sum of the middle nodes' out-degrees, which counts the start reached back and a target once per middle node; after any write it answers the walked count ([finding](../../Verus_verification/bugs_issues.md#bug-str-117)).
+[structure.rebuilt.stamp](../architecture/adjacency-and-derived-data.g5.md#structure.rebuilt.stamp)
 
 <a id="structure.rebuilt.valid"></a>
-[I · structure.rebuilt.valid]
 
-A cached algorithm result is valid only while the token it was computed under is still the live token. The token is read before the computation starts, so a write during the computation leaves the result stale, never wrongly current.
-
+[structure.rebuilt.valid](../architecture/adjacency-and-derived-data.g5.md#structure.rebuilt.valid)
 
 <a id="structure.rebuilt.stale_read"></a>
-[I · structure.rebuilt.stale_read]
 
-A reader never answers from an interned snapshot known to be stale.
-
-- After an erasure, the first algorithm that reads the snapshot rebuilds it once, under a lock, before it answers.
-- A variable-length Cypher query that would read a stale snapshot raises an error asking for a rebuild.
-
-## Drift, rebuild and verification
-
+[structure.rebuilt.stale_read](../architecture/adjacency-and-derived-data.g5.md#structure.rebuilt.stale_read)
 
 <a id="structure.drift"></a>
-[I · structure.drift]
 
-A declared adjacency index cannot drift from its rows, and declaring it on an install that has drifted repairs the drift.
-- With a declared index, a rebuild after any mix of edge creates, single-relationship deletes, edge, node and prefix deletes and weight changes leaves every entry as it was.
+[structure.drift](../operations/status-and-repair.g5.md#structure.drift)
 
 <a id="structure.rebuild"></a>
-[I · structure.rebuild]
 
-A rebuild recreates the adjacency index from the rows and then the interned snapshot from the index, and running it again is safe. With a declared index the adjacency never needs it; the interned snapshot still does after bulk loads and erasures.
-- The SQL function `rebuild_edge_indices(schema)` runs `BUILD INDEX` on `nodes`, `rdf_labels`, `rdf_props` and `rdf_edges` and answers 4; rows and edge reads are unchanged.
-- It refuses a schema that is not an SQL identifier before any statement runs. A caller without `%BUILD_INDEX`, or a schema without these tables, gets an error naming the table, never 0.
-
-- Working assumption: that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
-- Without the accelerator library, `sync()` still rebuilds the interned snapshot with the ObjectScript builder.
-- Today, with a declared index, the rebuild empties the adjacency index and refills it row by row while other sessions read it, so for its duration a k-hop read can answer the start alone, a path length no path, a breadth-first walk blank types, and a native Cypher variable-length count 0; writes made during the rebuild are kept ([finding](../../Verus_verification/bugs_issues.md#bug-str-115)). Working assumption: readers see the old index or the new one, never the emptied one, as the interned snapshot's live rewrite already promises ([open question](../../Verus_verification/open_questions.md#structure.rebuild.failure)).
+[structure.rebuild](../operations/status-and-repair.g5.md#structure.rebuild)
 
 <a id="structure.verify"></a>
-[I · structure.verify]
 
-`verify_graph` reports one graph's adjacency entries with no row behind them, its rows with no adjacency entry, and its current degree-cache entries that disagree with a recount. Its `ok` answers only whether this graph's adjacency agrees with its rows.
+[structure.verify](../operations/status-and-repair.g5.md#structure.verify)
 
 ## Metadata
 
@@ -404,6 +312,7 @@ Open questions: [What may a native read answer while another writer's transactio
 State machines: [write routing](../../Verus_verification/models/write_routing/manifest.json)
 
 ### structure.node
+
 - Sources: [create_node](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1104), [a concurrent duplicate reports False](../../../iris_vector_graph/_engine/nodes_edges.py#L1095-L1104), [ledger reserved names](../../../iris_src/src/Graph/KG/LedgerApply.cls#L68-L71), [API reference](../../../docs/API_REFERENCE.md)
 - Children: [deleting a node](#structure.node.delete), [writing a node](#structure.node.update), [reading nodes](#structure.node.read)
 - agent
@@ -423,6 +332,7 @@ The `id` property dates from 4.6.0 (R181), so that `MATCH (n {id: ...})` finds t
 State machines: [bulk children](../../Verus_verification/models/bulk_children/manifest.json)
 
 ### structure.node.delete
+
 - Sources: [API reference, delete_node](../../../docs/API_REFERENCE.md#L516-L522), [delete_node](../../../iris_vector_graph/_engine/nodes_edges.py#L2227-L2268), [Eraser.EraseIdSet](../../../iris_src/src/Graph/KG/Eraser.cls#L467-L632)
 - Verus: [node_edge_update](../../Verus_verification/models/node_edge_update/NOTES.md) `theorem_delete_node_removes_incident` (as built); [evidence](../../uplift/consolidated/iteration-33/update-delete-PAIRS.md)
 - Expands: [nodes](#structure.node)
@@ -449,6 +359,7 @@ Findings: [inherited partial erase](../../Verus_verification/audits/register-202
 State machines: [bulk delete](../../Verus_verification/models/bulk_delete/manifest.json)
 
 ### structure.node.update
+
 - Sources: [store_node](../../../iris_vector_graph/_engine/nodes_edges.py#L2393-L2530), [API reference, store_node](../../../docs/API_REFERENCE.md#L738-L750)
 - Verus: [node_edge_update](../../Verus_verification/models/node_edge_update/NOTES.md) `theorem_store_node_updates`, `theorem_store_new_gets_id` (as built); [evidence](../../uplift/consolidated/iteration-33/update-delete-PAIRS.md)
 - Expands: [nodes](#structure.node)
@@ -492,6 +403,7 @@ No formal contract: the outcomes are observed natively only.
 Findings: [get_property_values and get_property_pairs return a stored boolean as the string "true"](../../Verus_verification/bugs_issues.md#bug-str-102)
 
 ### structure.edge
+
 - Sources: [CONTEXT.md, Structural Edge](../../../CONTEXT.md#L60-L63), [create_edge](../../../iris_vector_graph/_engine/nodes_edges.py#L1151-L1255), [rdf_edges DDL](../../../iris_vector_graph/schema.py#L34-L45)
 - Children: [one edge per triple](#structure.edge.single), [weight](#structure.edge.weight), [deleting edges](#structure.edge.delete)
 - agent
@@ -513,6 +425,7 @@ An explicit create of a triple whose only row came from a temporal write adopts 
 State machines: [edge acceptance](../../Verus_verification/models/edge_acceptance/manifest.json)
 
 ### structure.edge.weight
+
 - Sources: [ADR-0008, scope of step 2](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L28-L46), [spec 252 FR-006 and FR-015](../../../specs/252-adjacency-functional-index/spec.md#L117-L131), [Adjacency.WeightOf](../../../iris_src/src/Graph/KG/Adjacency.cls#L750-L765)
 - Expands: [edges](#structure.edge)
 - Children: [setting a weight](#structure.edge.weight.set)
@@ -524,6 +437,7 @@ Before 4.3.0 the weight could live in the adjacency alone, so a rebuild lost it.
 Findings: [A ledger qualifier update reweights a multigraph triple's leaf to an edge that is not the lowest](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-012)
 
 ### structure.edge.weight.set
+
 - Sources: [set_edge_weight](../../../iris_vector_graph/_engine/nodes_edges.py#L1306-L1380), [API reference, set_edge_weight](../../../docs/API_REFERENCE.md#L716-L722)
 - Verus: [node_edge_update](../../Verus_verification/models/node_edge_update/NOTES.md) `theorem_set_weight_default_graph_only` (as built); [evidence](../../uplift/consolidated/iteration-33/update-delete-PAIRS.md)
 - Expands: [weight](#structure.edge.weight)
@@ -557,6 +471,7 @@ Open questions: [Should deleting an edge also remove its reifications and edge e
 State machines: [node edge update](../../Verus_verification/models/node_edge_update/manifest.json)
 
 ### structure.reification
+
 - Sources: [reify_edge, get_reifications, delete_reification](../../../iris_vector_graph/_engine/schema.py#L3264-L3392), [API reference](../../../docs/API_REFERENCE.md#L140-L146), [one reifier names one edge](../../../iris_vector_graph/schema.py#L514-L520), [node deletion removes reifiers](../../../iris_vector_graph/_engine/nodes_edges.py#L2176-L2200)
 - agent
 - user-facing-behavior, data-integrity
@@ -569,7 +484,7 @@ Findings: [delete_reification deletes the reifier's rows in every graph](../../V
 
 - uncertain
 - Sources: [spec 234 clarifications, 2026-09-26](../../../specs/234-multigraph-parallel-edges/spec.md#L37-L53), [CONTEXT.md, Multigraph mode](../../../CONTEXT.md#L83-L86), [GraphMode](../../../iris_src/src/Graph/KG/GraphMode.cls), [changelog 4.1.0](../../../CHANGELOG.md#L3835-L3853)
-- Children: [mode off](#structure.multigraph.off), [switching](#structure.multigraph.switch), [layout](#structure.multigraph.layout), [counting](#structure.multigraph.count), [In a multigraph, must create_edge always add a new edge and offer a variant that returns its ID?](../../Verus_verification/open_questions.md#q-str-003), [Until a ledger reference can name one parallel edge, should the ledger refuse relationship operations on a multigraph triple?](../../Verus_verification/open_questions.md#q-str-004), [restore](#structure.multigraph.restore)
+- Children: [mode off](#structure.multigraph.off), [switching](#structure.multigraph.switch), [layout](../architecture/adjacency-and-derived-data.g5.md#structure.multigraph.layout), [counting](#structure.multigraph.count), [In a multigraph, must create_edge always add a new edge and offer a variant that returns its ID?](../../Verus_verification/open_questions.md#q-str-003), [Until a ledger reference can name one parallel edge, should the ledger refuse relationship operations on a multigraph triple?](../../Verus_verification/open_questions.md#q-str-004), [restore](#structure.multigraph.restore)
 - agent
 - user-facing-behavior, architecture-decision
 
@@ -578,6 +493,7 @@ The spec's clarification session records questions and answers without naming wh
 Open questions: [In a multigraph, must create_edge always add a new edge and offer a variant that returns its ID?](../../Verus_verification/open_questions.md#q-str-003), [Until a ledger reference can name one parallel edge, should the ledger refuse relationship operations on a multigraph triple?](../../Verus_verification/open_questions.md#q-str-004)
 
 ### structure.multigraph.off
+
 - Sources: [spec 234 FR-003, FR-016 and story 4](../../../specs/234-multigraph-parallel-edges/spec.md#L145-L175), [create_edge guards on edge key 0](../../../iris_vector_graph/_engine/nodes_edges.py#L1257-L1273), [rebuild writes leaves only outside the mode](../../../iris_src/src/Graph/KG/Adjacency.cls#L832-L855)
 - Expands: [multigraph mode](#structure.multigraph)
 - agent
@@ -591,6 +507,7 @@ Findings: [A single-edge graph can get two rows for one triple from a stale mult
 Audit reproduction: [bug-str-008](../../Verus_verification/bugs_issues.md#bug-str-008) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### structure.multigraph.switch
+
 - Sources: [spec 234 FR-002](../../../specs/234-multigraph-parallel-edges/spec.md#L215-L218), [GraphMode.Set](../../../iris_src/src/Graph/KG/GraphMode.cls#L22-L45), [set_multigraph](../../../iris_vector_graph/_engine/admin.py#L893-L926), [Eraser clears the mode](../../../iris_src/src/Graph/KG/Eraser.cls#L244)
 - Expands: [multigraph mode](#structure.multigraph)
 - agent
@@ -606,22 +523,6 @@ Audit reproduction: [F-0208](../../Verus_verification/bugs_issues.md#F-0208) is 
 Findings: [An engine keeps a graph's mode forever, so another engine's change is not seen](../../Verus_verification/bugs_issues.md#F-0208).
 
 Audit reproduction: [bug-str-008](../../Verus_verification/bugs_issues.md#bug-str-008) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
-
-### structure.multigraph.layout
-- Sources: [spec 234 clarifications and FR-004 to FR-006](../../../specs/234-multigraph-parallel-edges/spec.md#L44-L47), [Adjacency.PutKeyed / RemoveKeyed](../../../iris_src/src/Graph/KG/Adjacency.cls#L197-L321), [spec 252 FR-003](../../../specs/252-adjacency-functional-index/spec.md#L109-L110)
-- Expands: [multigraph mode](#structure.multigraph)
-- agent
-- architecture-decision, data-integrity
-- test-coverage
-- Verus (iteration 57): [adjacency_maint](../../Verus_verification/models/adjacency_maint/NOTES.md) `lemma_create`, `lemma_second`
-
-Key allocation and the retry come from [spec 234 FR-007 and edge cases](../../../specs/234-multigraph-parallel-edges/spec.md#L185-L190) and the [key entity](../../../specs/234-multigraph-parallel-edges/spec.md#L329-L331); Cypher allocates the key in [its keyed inserts](../../../iris_vector_graph/cypher/translator.py#L10368-L10386). Observed divergence: no retry after a key clash was found, so the losing writer's statement fails with a uniqueness error. Live coverage: [one to three edges and back, and rebuild equals 200 random keyed writes](../../../tests/e2e/test_234_multigraph_storage_e2e.py). Observed divergence, suspected: concurrent writers or parallel rebuild jobs on one triple can lose an edge from the count or leave an entry with no row, and a ledger reweight can set the triple's weight from an edge that is not the lowest ([stage-A notes, F4 and F11](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
-
-Findings: [Deleting one of several parallel edges through the ledger removes the adjacency of the edges that remain](../../Verus_verification/bugs_issues.md#bug-str-001); [Concurrent writers of one multigraph triple can lose its multiplicity or leave a ghost edge entry](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-006); [A ledger qualifier update reweights a multigraph triple's leaf to an edge that is not the lowest](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-012)
-
-Iteration9 finite source/native qualification: the actual RowPut callback checks the GraphMode flag, not the graph name or existence of parallel SQL rows. In the retained mode-off fixture, ekey0/weight10 then ekey5/weight1 leaves bare out/in1 with no keyed children; a lowest-key expectation there was withdrawn. With mode enabled before writes, the same rows leave scalar10 and children0=10,5=1,#=2. [Native points and retained mismatch review](../../uplift/consolidated/iteration-9/weighted-projection-review.md). This corroborates the existing mode-off admission boundary and the completed mode-on fragment, without proving concurrent/index/writer histories.
-
-Audit reproduction: [bug-str-001](../../Verus_verification/bugs_issues.md#bug-str-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### structure.multigraph.count
 
@@ -644,6 +545,7 @@ Audit reproduction: [bug-str-001](../../Verus_verification/bugs_issues.md#bug-st
 State machines: [routine reporting](../../Verus_verification/models/routine_reporting/manifest.json)
 
 ### structure.multigraph.restore
+
 - Sources: [spec 234 FR-001 and FR-014](../../../specs/234-multigraph-parallel-edges/spec.md#L209-L214), [snapshot store plan for the mode](../../../iris_vector_graph/_engine/snapshot.py#L157-L160), [restore order](../../../iris_vector_graph/_engine/snapshot.py#L1234-L1300)
 - Expands: [multigraph mode](#structure.multigraph)
 - agent
@@ -653,254 +555,9 @@ Observed divergence, suspected: a restore writes the rows before the mode, so wi
 
 Findings: [Restoring a multigraph archive into an indexed namespace loses its parallel edges' multiplicity](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-007)
 
-### structure.adjacency
-
-- uncertain
-- Sources: [CONTEXT.md, Adjacency Index](../../../CONTEXT.md#L88-L95), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md), [Graph.KG.Adjacency](../../../iris_src/src/Graph/KG/Adjacency.cls)
-- Children: [declared](#structure.adjacency.declared), [not declared](#structure.adjacency.undeclared), [one writer](#structure.adjacency.one_writer), [bulk loads](#structure.adjacency.bulk), [SQL scans](#structure.adjacency.scan), [declaration](#structure.adjacency.declare)
-- agent
-- architecture-decision
-- Verus: [traversal_strategy](../../Verus_verification/models/traversal_strategy/NOTES.md) `theorem_other_graph_edges_invisible` (as built, iteration 57)
-- Verus (iteration 57): [adjacency_maint](../../Verus_verification/models/adjacency_maint/NOTES.md) `theorem_nkg_held_elsewhere`, `theorem_mark_graph_gone`
-
-Open questions: [May two adjacency rebuilds run at the same time?](../../Verus_verification/open_questions.md#HD-0402)
-
-### structure.adjacency.declared
-- Sources: [CONTEXT.md, Adjacency Index](../../../CONTEXT.md#L88-L95), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L12-L16), [spec 252 FR-001, FR-002, FR-016](../../../specs/252-adjacency-functional-index/spec.md#L106-L133), [AdjIndex](../../../iris_src/src/Graph/KG/AdjIndex.cls), [LabelIndex](../../../iris_src/src/Graph/KG/LabelIndex.cls)
-- Expands: [adjacency index](#structure.adjacency)
-- agent
-- data-integrity
-- test-coverage
-
-Live coverage: [every writer path leaves the index equal to a recount](../../../tests/e2e/test_252_writer_paths_e2e.py). Shipped in 4.3.0. Observed divergence, suspected: the database ignores an error status from the index callbacks, and the multigraph writers turn their errors into such statuses, so a row can commit without its entry ([stage-A notes, F10](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
-
-Findings: [Node interning runs inside the functional-index callback, which ADR-0008 rules out](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-010); [The keyed adjacency writers turn errors into statuses that IRIS ignores, so a row can commit without its entry](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-011)
-
-### structure.adjacency.undeclared
-- Sources: [CONTEXT.md, Adjacency Index](../../../CONTEXT.md#L88-L95), [ADMIN_GUIDE, the adjacency indexes](../../../docs/ADMIN_GUIDE.md#L1032-L1037), [create_edge without the index](../../../iris_vector_graph/_engine/nodes_edges.py#L1221-L1249)
-- Expands: [adjacency index](#structure.adjacency)
-- agent
-- operations
-
-In such a namespace the engine writes the index over a separate connection, so a rolled-back edge can leave its entry behind until a rebuild; the engine's error message says so.
-
-Findings: [Without the adjacency index, edge writers write adjacency on a second connection that commits separately from the row](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-015)
-
-
-Review round 3 R3-reader M20: the engine's compensating writes call IVG's `EdgeScan` class, so they need IVG's classes; Cypher writes, `store_edge` and the store's `write_edges` make no compensating call (code reading: no `EdgeScan` call in `_engine/query.py` or `stores/iris_sql_store.py`).
-
-### structure.adjacency.one_writer
-- Sources: [ADR-0011](../../../docs/adr/0011-the-adjacency-index-has-one-writer-module.md), [Graph.KG.Adjacency header](../../../iris_src/src/Graph/KG/Adjacency.cls#L1-L47)
-- Expands: [adjacency index](#structure.adjacency)
-- agent
-- architecture-decision
-- test-coverage
-
-Coverage is a source scan of the ObjectScript classes: [single-writer guard](../../../tests/unit/test_adjacency_single_writer.py). ADR-0011 amends ADR-0001's list of classes that may touch the index directly. The rule covers out-edge and in-edge entries; label entries are outside it. Observed divergence: a snapshot restore into a namespace without the declared index writes these entries from Python, outside the module and the scan. FHIR sync writes label entries directly ([FHIRGraph](../../../iris_src/src/Graph/KG/FHIRGraph.cls#L2552-L2568)).
-
-### structure.adjacency.bulk
-- Sources: [ADR-0008, bulk loads and consequences](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L38-L39), [spec 252 FR-008](../../../specs/252-adjacency-functional-index/spec.md#L119), [engine bulk paths rebuild in finally](../../../iris_vector_graph/_engine/nodes_edges.py#L1866-L1871), [rebuild failures only warn](../../../iris_vector_graph/_engine/nodes_edges.py#L67-L79), [the bulk loader](../../../iris_vector_graph/bulk_loader.py#L1-L22), [loader rebuilds only after a full load](../../../iris_vector_graph/bulk_loader.py#L578-L603)
-- Evidence: [bulk_load_session predictions and observations](../../uplift/consolidated/iteration-35/bulk-session-PAIRS.md) (observed natively; no formal contract)
-- Expands: [adjacency index](#structure.adjacency)
-- agent
-- data-integrity, operations
-
-Rewritten after the stage-A reconstruction check (gap G7, G34 and section 3 item 16). FR-008 covers every bulk path that writes `%NOINDEX`, the bulk loader included, so the reviewer's proposal to limit it to the engine's paths was not applied. "No duplicate rows" means none within the load and none against rows already present, because a `%NOINDEX` insert also skips the unique key (ADR-0008 consequences). Observed divergence: the engine paths rebuild in a `finally`, but an index that does not come back is only logged; the bulk loader uses `%NOCHECK`, commits per batch, and rebuilds only after both its node and edge phases succeed, so a failed phase leaves committed rows unindexed until a manual rebuild.
-
-Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-009), [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
-
-### structure.adjacency.scan
-- Sources: [SqlProcs MatchEdges and MatchEdgesAllGraphs](../../../iris_src/src/Graph/KG/SqlProcs.cls#L145-L155), [EdgeScan header and scans](../../../iris_src/src/Graph/KG/EdgeScan.cls#L1-L145), [the IVG_EDGESCAN hop](../../../iris_vector_graph/cypher/translator.py#L16467-L16530), [a scan alias's property is NULL](../../../iris_vector_graph/cypher/translator.py#L22266-L22273), [ADMIN_GUIDE, global readers check SELECT](../../../docs/ADMIN_GUIDE.md#L566-L576), [ADMIN_GUIDE, IVG_EDGESCAN](../../../docs/ADMIN_GUIDE.md#L1248), [CHANGELOG, '' as every predicate (R269)](../../../CHANGELOG.md#L1499)
-- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `match_edges`, `match_all`, `theorem_empty_predicate_every_predicate`, `theorem_shard_ignored`, `theorem_graph_scoped_vs_all`, `theorem_edgescan_reads_null_property`, `graph_arg_key`, `theorem_default_graph_spellings` (iteration 56), `match_edges_sql`, `theorem_column_only_select_refused`, `theorem_table_schema_role_select_pass` (iteration 56)
-- Evidence: [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) ME1-ME5, [probe](../../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json), [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json); iteration 56: binding cases `me_spell_*` (eight spellings of the graph argument) and `priv_i56q_*` (users with recorded grants), [sql_procs results](../../Verus_verification/results/sql_procs/)
-- Expands: [adjacency index](#structure.adjacency)
-- agent
-- architecture-decision
-- design-verified
-
-Iteration 53. The rule that the `IVG_EDGESCAN` plan answers what the default plan answers comes from the docs calling it only "the plan before 4.3.0" and from CHANGELOG 4.3.0 ("every answer equal"). Premise: the adjacency index is declared, so the scan and the rows hold the same edges. Not observed: parallel edges of a multigraph through the scan.
-
-Findings: [With IVG_EDGESCAN=1 a relationship property on a hop reads null](../../Verus_verification/bugs_issues.md#bug-cyp-133)
-
-### structure.adjacency.declare
-
-- design-verified
-- Sources: [spec 252](../../../specs/252-adjacency-functional-index/spec.md), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L40-L41), [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md); [`iris_vector_graph/schema.py::GraphSchema.ensure_adjacency_index`](../../../iris_vector_graph/schema.py#L821-L898) (prerequisites `:831-860`; per index `:863-897`; backfill before the edge index `:879-884`), [`::GraphSchema.adjacency_index_kind`](../../../iris_vector_graph/schema.py#L785-L818), called last by [`::GraphSchema.ensure_indexes`](../../../iris_vector_graph/schema.py#L600-L731) (`:726`); [`iris_src/src/Graph/KG/TemporalIndex.cls`](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L235) (the backfill); unit tests [test_252_index_declaration.py](../../../tests/unit/test_252_index_declaration.py#L52-L135)
-- Playbook: [ADJ-B2.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L98), [TMP-B11.3](../../../experiment/playbook-completion/ontology/05-temporal.md#L301)
-- Verus: see [index_declaration](../../Verus_verification/models/index_declaration/NOTES.md) (`theorem_no_prereq_no_ddl`, `theorem_prereqs_declare_both`, `theorem_declared_left_alone`, `theorem_backfill_before_edge_index`; as-built; controls `skip-ekey-check`, `backfill-after-build`, `redeclare-functional`)
-- Expands: [adjacency index](#structure.adjacency)
-- agent
-- architecture-decision, operations
-
-Public cases M16 and J07. The playbook's `TMP-B11.3` sits in its temporal module, which is why the baseline found no canonical owner for the backfill order.
-
-State machines: [index declaration](../../Verus_verification/models/index_declaration/manifest.json)
-
 ### structure.degree
+
 - Sources: [CONTEXT.md, Degree (decided in the 2026-10-12 architecture review)](../../../CONTEXT.md#L103-L107), [ADR-0010](../../../docs/adr/0010-degree-is-counted-never-stored.md)
-- Children: [the degree cache](#structure.degree.cache)
+- Children: [the degree cache](../architecture/adjacency-and-derived-data.g5.md#structure.degree.cache)
 - human-verified
 - architecture-decision, data-integrity
-
-### structure.degree.cache
-
-- uncertain
-- Sources: [ADR-0012](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md), [Adj.Degree](../../../iris_src/src/Graph/KG/Adj.cls#L28-L89), [changelog 4.3.0](../../../CHANGELOG.md#L2952-L2958)
-- Expands: [degree](#structure.degree)
-- Children: [no rolled-back edges](#structure.degree.cache.uncommitted), [erase](#structure.degree.cache.erase), [warm after a rebuild](#structure.degree.cache.warm)
-- agent
-- architecture-decision
-- test-coverage
-
-Live coverage: [the generation-validated degree cache](../../../tests/e2e/test_degree_cache_live.py). ADR-0012 refines ADR-0010: the count is still never maintained incrementally, only cached. Observed: a second serving path, a whole-graph stamp, lets bulk readers use cached counts without reading generations and treat a missing entry as zero while nothing has written since a full fill.
-
-Findings: [A degree cached before a node is deleted and re-created can be served afterwards as current](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-003); [Drawing degree generations from the version token is not a repair](../../Verus_verification/design_simplification.md#simp-str-005)
-
-Open questions: [How should erase and rebuild retire a source generation?](../../Verus_verification/open_questions.md#HD-0401)
-
-### structure.degree.cache.uncommitted
-
-- design-verified
-- Sources: [ADR-0012](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L10-L27), [Adjacency.WriterLock](../../../iris_src/src/Graph/KG/Adjacency.cls#L51-L73), [changelog 4.7.0 adjacency lock](../../../CHANGELOG.md#L174-L178)
-- Playbook: [ADJ-I5.8](../../../experiment/playbook-completion/ontology/04-adjacency.md#L222), [ADJ-I5.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L223)
-- Verus: active (public M10): `G-graph_structure` (as-built) [`graph_structure.rs`](../../Verus_verification/models/graph_structure/graph_structure.rs) `theorem_as_built_cache_sound` with witnesses `witness_aba_delete_and_recreate_serves_stale_degree`, `witness_gen0_erase_alone_serves_stale_degree` and repaired `theorem_repaired_cache_sound`. Overlapping: the playbook's `proofs-pa3` `adj_l2` (reviewed design; controls `control_fc0401_write_before_gen`, `control_hd0401_erase_kills_gen`).
-- Expands: [degree cache](#structure.degree.cache)
-- agent
-- data-integrity
-
-Live coverage: [rollback race over two connections](../../../tests/e2e/test_degree_cache_live.py). The lock details answer reconstruction gap G26: the lock is per graph, held shared by writers until commit or rollback, probed exclusively without waiting by readers ([Adj.Degree](../../../iris_src/src/Graph/KG/Adj.cls#L63-L80)). Superseded in part: ADR-0012 and the degree-cache spec said a writer that cannot lock writes nothing; 4.7.0 changed that so the row and its entry are written, and caching stops for the graph instead. No ADR records the change.
-
-Findings: [ADR-0012 does not mention the lockless-writer fallback that 4.7.0 added](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-008)
-
-State machines: [graph structure](../../Verus_verification/models/graph_structure/manifest.json)
-
-### structure.degree.cache.erase
-- Sources: [degree-cache spec, erase edge case](../../../specs/248-alt-parity-os/spec.md#L76-L77), [Adjacency.RemoveSource](../../../iris_src/src/Graph/KG/Adjacency.cls#L344-L391), [Adj.Degree post-store check](../../../iris_src/src/Graph/KG/Adj.cls#L46-L49)
-- Expands: [degree cache](#structure.degree.cache)
-- agent
-- data-integrity
-- test-coverage
-
-Live coverage: [erase clears generations and cached degrees](../../../tests/e2e/test_degree_cache_live.py). The spec claims a recheck after storing closes the erase window. Observed divergence, suspected: a reader whose recount spans an erase and enough rewrites to bring the generation back to its starting value passes both checks and stores an old count ([stage-A notes, F2](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
-
-Findings: [A degree cached before a node is deleted and re-created can be served afterwards as current](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-003)
-
-### structure.degree.cache.warm
-
-- design-verified
-- Playbook: [ADJ-B5.17](../../../experiment/playbook-completion/ontology/04-adjacency.md#L235), [ADJ-B5.17.2](../../../experiment/playbook-completion/ontology/04-adjacency.md#L241), [ADJ-B5.17.4](../../../experiment/playbook-completion/ontology/04-adjacency.md#L243)
-- Verus: [warm_sources](../../Verus_verification/models/warm_sources/NOTES.md), as-built source fill/count and stamp contracts with failed-probe, token-motion and generation-motion controls. ObjectScript binding is inspected only; source enumeration completeness during concurrent changes remains an environment premise.
-- Sources: [ADR-0012 consequences](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L29-L35), [Adjacency.EndRebuild](../../../iris_src/src/Graph/KG/Adjacency.cls#L857-L869), [Adj.WarmAll](../../../iris_src/src/Graph/KG/Adj.cls#L177-L205)
-- Expands: [degree cache](#structure.degree.cache)
-- agent
-- operations
-
-Live coverage: [a rebuild leaves the cache warm](../../../tests/e2e/test_degree_cache_live.py). Observed: the rebuild advances the graph-version token right after filling the cache, which voids the whole-graph stamp it has just set; the per-node entries stay valid ([stage-A notes, S5](../../uplift/ivg-verus-initial/intent/graph-structure.md#design-simplifications-p)).
-
-Findings: [Bump the version token before ending a rebuild so the warm stamp survives it](../../Verus_verification/design_simplification.md#simp-str-003)
-
-State machines: [warm sources](../../Verus_verification/models/warm_sources/manifest.json)
-
-### structure.rebuilt
-
-- uncertain
-- Sources: [CONTEXT.md, Rebuilt store](../../../CONTEXT.md#L109-L114), [ADR-0008 decision](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L23-L26), [freshness module](../../../iris_vector_graph/freshness.py), [two-hop stamps](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L939-L992)
-- Children: [token](#structure.rebuilt.token), [stamp](#structure.rebuilt.stamp), [valid results](#structure.rebuilt.valid), [When a computation sees a write that is not yet committed and that write later rolls back, must the cached result be thrown away?](../../Verus_verification/open_questions.md#structure.rebuilt.rollback), [stale snapshot reads](#structure.rebuilt.stale_read)
-- agent
-- architecture-decision, data-integrity
-
-The interned snapshot's graph scope is stated in [graph scope](../concepts/graph-scope.g5.md#graph.unscoped_snapshot). Observed divergence: the interned snapshot decides freshness with its own stale flag and a per-process flag rather than a token stamp, and every edge write also updates it in place. The freshness module is imported nowhere.
-
-Open questions: [When a computation sees a write that is not yet committed and that write later rolls back, must the cached result be thrown away?](../../Verus_verification/open_questions.md#structure.rebuilt.rollback)
-
-### structure.rebuilt.token
-- Sources: [CONTEXT.md, Graph-Version Token](../../../CONTEXT.md#L116-L119), [token audit](../../../specs/236-arno-callout-adoption/research-token-audit.md#L15-L40), [label writes raise it](../../../iris_src/src/Graph/KG/Adjacency.cls#L767-L787), [restore raises the token](../../../iris_vector_graph/_engine/snapshot.py#L48-L58), [algorithm cache admission](../../../iris_vector_graph/algo_cache.py#L15-L17)
-- Expands: [rebuilt stores](#structure.rebuilt)
-- agent
-- data-integrity
-- test-coverage
-
-Live coverage: [every write path moves the token](../../../tests/integration/test_236_token_write_paths.py). Restated after the stage-A reconstruction check (gap G5, section 3 item 12). CONTEXT.md words it as "every write path able to change what an algorithm answers". The token audit narrows the token to every change of the adjacency index and has the cache admit only answers that depend on nothing else: PageRank, PPR, WCC and CDLP, with PageRank also keyed on the node set. The [algorithm cache](algorithms.g5.md#algorithms.cache.token) owns that admission rule. The reviewer's claim that label writes do not move the token was not applied: since the label index (4.3.0), every label row change raises it. The comment in `algo_cache.py` that no token moves for labels predates that. Observed: while a restore is running, the token can briefly hold a value read from the archive before it is raised past both. Observed divergence (review round 2, code reading only): without the declared adjacency index, a temporal write to a triple that already has an adjacency entry rewrites its stored weight without moving the token ([Adjacency.cls](../../../iris_src/src/Graph/KG/Adjacency.cls#L128-L136)); a token-validated cache could serve the old weight. The algorithm cache admits only PageRank, PPR, WCC and CDLP, which ignore weights, so it is unaffected; whether any `^ArnoKG` reader uses weights is not traced (the Arno library is not in this repository). Suspected, non-indexed installs only, not run.
-
-Findings: [Without the adjacency index, a temporal write to an existing triple changes its stored weight without moving the version token](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-016)
-
-### structure.rebuilt.stamp
-
-- design-verified
-- Sources: [CONTEXT.md, Rebuilt store](../../../CONTEXT.md#L109-L114), [spec 244 freshness](../../../specs/244-alt-freshness-module/spec.md#L70-L74); [`iris_vector_graph/freshness.py::Freshness._read_int`](../../../iris_vector_graph/freshness.py#L45-L52), [`::Freshness.token`](../../../iris_vector_graph/freshness.py#L54-L57), [`::Freshness.built_from`](../../../iris_vector_graph/freshness.py#L66-L68), [`::Freshness.is_current`](../../../iris_vector_graph/freshness.py#L70-L72), [`::Freshness.stale_stores`](../../../iris_vector_graph/freshness.py#L74-L77); [`iris_src/src/Graph/KG/TraversalKHop.cls::Fresh`](../../../iris_src/src/Graph/KG/TraversalKHop.cls#L237-L243); unit tests [test_freshness.py](../../../tests/unit/test_freshness.py)
-- Playbook: [ADJ-B7](../../../experiment/playbook-completion/ontology/04-adjacency.md#L255), [ADJ-B7.1](../../../experiment/playbook-completion/ontology/04-adjacency.md#L256)
-- Verus: see [freshness_stamp](../../Verus_verification/models/freshness_stamp/NOTES.md) (`theorem_is_current_iff_stamped_equal`, `theorem_unstamped_stale_at_zero`, `theorem_stamped_zero_current`; as-built; control `unset-stamp-reads-zero`)
-- Expands: [rebuilt stores](#structure.rebuilt)
-- agent
-- data-integrity
-- Verus (iteration 57): [adjacency_maint](../../Verus_verification/models/adjacency_maint/NOTES.md) `theorem_two_hop`, `witness_fast_overcounts`, `theorem_write_makes_stale`; findings: [bug-str-117](../../Verus_verification/bugs_issues.md#bug-str-117)
-
-Public case M09. The Python `Freshness` class has no caller inside the product package (no module imports `iris_vector_graph.freshness`); the reader that decides freshness at run time is `TraversalKHop.Fresh` for the two-hop counts. Both are bound: the Python class by an enumerated comparison against the model's twin, the ObjectScript method by inspection only.
-
-State machines: [freshness stamp](../../Verus_verification/models/freshness_stamp/manifest.json)
-
-### structure.rebuilt.valid
-- Sources: [CONTEXT.md, Graph-Version Token](../../../CONTEXT.md#L116-L119), [AlgoCache](../../../iris_src/src/Graph/KG/AlgoCache.cls#L1-L51), [the store's cache path](../../../iris_vector_graph/stores/iris_sql_store.py#L921-L987)
-- Expands: [rebuilt stores](#structure.rebuilt)
-- agent
-- data-integrity
-- test-coverage
-
-Live coverage: [every write path moves the token](../../../tests/integration/test_236_token_write_paths.py).
-
-Findings: [A cached algorithm answer computed over a write that later rolls back stays current](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-002)
-
-### structure.rebuilt.stale_read
-- Sources: [ADMIN_GUIDE, the adjacency indexes](../../../docs/ADMIN_GUIDE.md#L1032-L1062), [EnsureNKG](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L393-L425), [variable-length routing](../../../iris_vector_graph/_engine/query.py#L2454-L2457), [IndexNotSyncedError](../../../iris_vector_graph/errors.py#L78-L88)
-- Expands: [rebuilt stores](#structure.rebuilt)
-- agent
-- user-facing-behavior, data-integrity
-
-Added after the stage-A reconstruction check (gap G40). Observed divergence: the snapshot counts as stale for these readers only when an erasure marked it, or when this engine process itself made a bulk write; it does not compare a token stamp. So another process's bulk write leaves a variable-length query answering from the old snapshot until a rebuild.
-
-### structure.drift
-- Sources: [CONTEXT.md, Drift](../../../CONTEXT.md#L121-L126), [ADR-0008, existing installs](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L40-L41), [spec 252 FR-009](../../../specs/252-adjacency-functional-index/spec.md#L120-L121)
-- agent
-- data-integrity, operations
-- test-coverage
-- Verus (iteration 57): [adjacency_maint](../../Verus_verification/models/adjacency_maint/NOTES.md) `theorem_incremental_equals_rebuild`, `theorem_sync_changes_nothing`
-- Findings (iteration 57): [bug-str-115](../../Verus_verification/bugs_issues.md#bug-str-115)
-
-Live coverage: [declaring the index repairs a drifted install](../../../tests/e2e/test_252_drifted_install_e2e.py). Observed divergence, suspected: several paths can still produce drift with the index declared ([stage-A notes, F3 to F6 and F10](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
-
-### structure.rebuild
-
-- uncertain
-- Sources: [engine.sync](../../../iris_vector_graph/_engine/schema.py#L2859-L2912), [ADMIN_GUIDE, the adjacency indexes](../../../docs/ADMIN_GUIDE.md#L1032-L1062), [spec 252 FR-010](../../../specs/252-adjacency-functional-index/spec.md#L122), [BuildKG](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L30-L172)
-- Children: [What may readers see when a rebuild fails partway?](../../Verus_verification/open_questions.md#structure.rebuild.failure)
-- Evidence: [native rebuild observation: default, named-graph and temporal-marked rows kept, an entry with no row removed](../../uplift/consolidated/iteration-21/varlength-PAIRS.md); `rebuild_edge_indices` (iteration 53): [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) RB1-RB4, [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json) `rb_*`, `priv_*_rb`
-- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `rebuild`, `theorem_rebuild_answers_four_or_raises` (the SQL function only)
-- agent
-- operations
-- Verus (iteration 57): [adjacency_maint](../../Verus_verification/models/adjacency_maint/NOTES.md) `theorem_incremental_equals_rebuild`; [rebuild_reads](../../Verus_verification/models/rebuild_reads/NOTES.md) `theorem_reader_sees_seed_alone`, `theorem_visible_edges_are_rows`, `theorem_end_is_rows`, repair `theorem_swap_shows_old_or_rows`; findings: [bug-str-115](../../Verus_verification/bugs_issues.md#bug-str-115)
-
-Iteration 53: the `rebuild_edge_indices` bullets come from [Ledger.RebuildEdgeIndices](../../../iris_src/src/Graph/KG/Ledger.cls#L224-L240), ADMIN_GUIDE L577-L580 and CHANGELOG R294; a caller without `%BUILD_INDEX` got "does not have %BUILD_INDEX privileges (rebuilding the indexes of Graph_KG.nodes)".
-
-Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-009)
-
-Open questions: [What may readers see when a rebuild fails partway?](../../Verus_verification/open_questions.md#structure.rebuild.failure)
-
-### structure.verify
-- Sources: [GraphVerify header](../../../iris_src/src/Graph/KG/GraphVerify.cls#L1-L37), [verify_graph](../../../iris_vector_graph/_engine/admin.py#L850-L890), [USER_GUIDE section 4](../../../docs/USER_GUIDE.md#L444-L452)
-- agent
-- operations, data-integrity
-- test-coverage
-
-Partial live coverage: [a wrong current cache entry is flagged and a stale one ignored](../../../tests/e2e/test_degree_cache_live.py). Observed divergence: on a graph with parallel edges it compares the row count with the number of distinct triples, so it reports rows as missing, and it never checks edge counts; open task T036 of the multigraph spec names this ([stage-A notes, F7](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
-
-Findings: [verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity](../../Verus_verification/bugs_issues.md#bug-str-004)
-
-Audit reproduction: [bug-str-004](../../Verus_verification/bugs_issues.md#bug-str-004) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
-
-Audit reproduction: [F-0204](../../Verus_verification/bugs_issues.md#F-0204) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
-
-Findings: [The graph check reports a multigraph's parallel edges as missing adjacency](../../Verus_verification/bugs_issues.md#F-0204).
-
-Audit reproduction: [F-0403](../../Verus_verification/bugs_issues.md#F-0403) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
-
-Findings: [verify_graph reports drift on a graph with parallel edges whose index matches its rows](../../Verus_verification/bugs_issues.md#F-0403).

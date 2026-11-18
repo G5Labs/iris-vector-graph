@@ -11,7 +11,7 @@ Erasure removes graph content from the stores that hold it. The revision ledger 
 - **Ledger history**: the ledger's records and revision rows.
 - **Eraser**: the database-side class that performs every erase.
 
-## What an erase removes
+## Which stores does erasure clear?
 
 <a id="erasure.scope"></a>
 [I · erasure.scope]
@@ -24,12 +24,10 @@ An erase removes a graph's content from every store that holds it: its rows, its
 
 - Working assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 
-
 <a id="erasure.live-statements"></a>
 [I · erasure.live-statements]
 
 No live ledger statement may outlive its content. Erasing a graph removes all of the graph's statement entries and their lookups. Erasing nodes or relationships removes the live statements of the relationships it deletes.
-
 
 <a id="erasure.history"></a>
 [D · erasure.history]
@@ -38,7 +36,6 @@ An erase never removes ledger history: records and revision rows survive, becaus
 
 - So erasure alone is not a privacy tool. Documentation that mentions erasure and data deletion together must say so.
 - An empty graph check after an erase means nothing live is stranded. It does not mean the ledger has no record of the graph.
-
 
 <a id="erasure.kept"></a>
 [D · erasure.kept]
@@ -52,9 +49,7 @@ A graph erase keeps configuration and stores that belong to no single graph.
 - Working assumption: Keep quarantined data and explicitly report retention until an owner chooses a purge API and its unknown-graph semantics.
 - Working assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 
-
-## How an erase runs
-
+## Run an erase and interpret its result
 
 <a id="erasure.atomic"></a>
 [D · erasure.atomic]
@@ -67,12 +62,10 @@ An erase must either remove all requested content or leave it untouched. On fail
 - Working assumption: Record each transport-dependent transaction boundary; prefer an explicit consistent join-or-refuse contract before changing it.
 - Working assumption: Erasure, ledger commits and redaction share the ledger head lock. Erasure holds it through the outer transaction, and redaction checks liveness while holding it.
 
-
 <a id="erasure.atomic.routes"></a>
 [D · erasure.atomic.routes]
 
 Routed embedding tables are emptied inside the transaction and dropped after it commits, and only when the registry claims them. If a drop fails, the erase still counts as complete and leaves an empty table with its registry row. A table the registry does not name is emptied but never dropped.
-
 
 <a id="erasure.count"></a>
 [D · erasure.count]
@@ -80,7 +73,6 @@ Routed embedding tables are emptied inside the transaction and dropped after it 
 An erase returns the number of node and relationship rows it removed. Zero means that no node or relationship row matched, which is not an error. Derived stores are not counted.
 
 - Working assumption: Treat the present count as a sum of store effects rather than a count of distinct entities; any stronger public count needs a defined unit.
-
 
 <a id="erasure.entry-points"></a>
 [I · erasure.entry-points]
@@ -93,7 +85,6 @@ The Eraser has these entry points, and every erase call of the engine uses one o
 - Erase a list of node IDs in one graph, with their relationships in that graph.
 - Erase a list of relationships in one graph, leaving nodes alone.
 
-
 <a id="erasure.entry-points.single-path"></a>
 [D · erasure.entry-points.single-path]
 
@@ -101,7 +92,6 @@ Every path that deletes graph content goes through the Eraser's transaction. A p
 
 - The old graph-drop call is only a deprecated name for a graph erase.
 - The old adjacency-only delete survives only as a deprecated name for a relationship erase, and must be refused in strict mode like the other erases.
-
 
 <a id="erasure.prefix-match"></a>
 [D · erasure.prefix-match]
@@ -112,6 +102,18 @@ Erasing by prefix matches a plain, exact, case-sensitive start of the node ID, w
 - Today the prefix erase finds IDs through node rows, so content of an ID with no node row is not erased: temporal-only events and property rows.
 
 - Working assumption: Keep generic erase as literal starts-with and use the separator explicitly in the tenant recipe; changing the generic API needs compatibility authority.
+
+## Earlier links
+
+These links take you to the current sections and statements.
+
+<a id="what-an-erase-removes"></a>
+
+[Which stores does erasure clear?](#which-stores-does-erasure-clear)
+
+<a id="how-an-erase-runs"></a>
+
+[Run an erase and interpret its result](#run-an-erase-and-interpret-its-result)
 
 ## Metadata
 

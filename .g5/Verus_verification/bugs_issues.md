@@ -25,12 +25,12 @@ Observed: `LedgerApply.DeleteRelInternal` deletes the chosen row by `%ID` (`Ledg
 
 Consequence: the surviving relationships are invisible to traversal, native Cypher and degree until `sync()` or a rebuild; reachable whenever the ledger is enabled in non-strict mode on a multigraph graph (parallel edges come from Cypher `CREATE`).
 
-Repair proposal (not implemented): skip line 689 when `Adjacency.Indexed()`, and in a non-indexed multigraph call `RemoveKeyed` with the deleted row's `ekey` (proved: `theorem_repaired_delete_rel_keeps_layout`; single-edge deletes unchanged, `witness_ledger_delete_rel_single_edge_is_right`). Related decision: [q-str-004](open_questions.md#q-str-004). Governing statements: [structure.multigraph.layout](../ontology/features/graph-structure.g5.md#structure.multigraph.layout), [structure.multigraph.count](../ontology/features/graph-structure.g5.md#structure.multigraph.count).
+Repair proposal (not implemented): skip line 689 when `Adjacency.Indexed()`, and in a non-indexed multigraph call `RemoveKeyed` with the deleted row's `ekey` (proved: `theorem_repaired_delete_rel_keeps_layout`; single-edge deletes unchanged, `witness_ledger_delete_rel_single_edge_is_right`). Related decision: [q-str-004](open_questions.md#q-str-004). Governing statements: [structure.multigraph.layout](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.multigraph.layout), [structure.multigraph.count](../ontology/features/graph-structure.g5.md#structure.multigraph.count).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [structure.multigraph.layout](../ontology/features/graph-structure.g5.md#structure.multigraph.layout), [structure.multigraph.count](../ontology/features/graph-structure.g5.md#structure.multigraph.count).
+Canonical owner and evidence: [structure.multigraph.layout](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.multigraph.layout), [structure.multigraph.count](../ontology/features/graph-structure.g5.md#structure.multigraph.count).
 
 <a id="bug-tmp-001"></a>
 ### A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written
@@ -53,7 +53,7 @@ Observed: `TemporalIndex.WriteStores` writes `tout`, `tlast`, `tin` and `$Increm
 
 Consequence: a caller is told every edge was written while one has no structural edge, statistics or attributes, and no retry can complete it; windowed statistics disagree with the raw store.
 
-Repair proposal (not implemented): run the structural step before the first Set in `WriteStores`, or wrap `WriteStores` in its own `TSTART`/`TROLLBACK 1`; make the bulk fallback raise, or re-send only the edges not yet written. Open choice: [temporal.write.partial-failure](open_questions.md#temporal.write.partial-failure). Governing statements: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
+Repair proposal (not implemented): run the structural step before the first Set in `WriteStores`, or wrap `WriteStores` in its own `TSTART`/`TROLLBACK 1`; make the bulk fallback raise, or re-send only the edges not yet written. Open choice: [temporal.write.partial-failure](open_questions.md#temporal.write.partial-failure). Governing statements: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.structural](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.structural).
 
 
 Iteration 8 strengthens completed-prefix then whole-batch replay with the known F-0502 time carrier: after actual native full success followed by an injected reply error, raw0 can leave both current-time and epoch0 events while count1 is reported. retry_replay derives completed prefix state, entire fallback and final points; positive and prewrite neighbors remain. [Scope and controls](models/retry_replay/NOTES.md). Partial effects within one write, real transport faults, failing fallback items and other modes remain open; no repair or new bug count.
@@ -61,7 +61,7 @@ Iteration 8 strengthens completed-prefix then whole-batch replay with the known 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.write.partial-failure](open_questions.md#temporal.write.partial-failure), [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
+Canonical owner and evidence: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.write.partial-failure](open_questions.md#temporal.write.partial-failure), [temporal.structural](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.structural).
 
 <a id="bug-tmp-002"></a>
 ### An update at an occupied temporal coordinate counts the edge twice in the statistics
@@ -94,7 +94,7 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 Canonical owner and evidence: [temporal.write.update-statistics](open_questions.md#temporal.write.update-statistics), [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats).
 
 
-Iteration 51 (strengthened, not new): [temporal_stats](models/temporal_stats/NOTES.md) `theorem_update_counts_twice` proves for every state and occupied coordinate that an update adds one to count and event counter while the raw count stays; at the reader, insert 2 then update 9 answers whole-bucket count 2, sum 11, min 2, max 9, avg 5.5 and cut-window count 1, sum 9; deleting it leaves velocity 1 with no edge (`theorem_update_then_delete_leaves_velocity`). E2E on the continuation fixture: [probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `A3_upd_*`, [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_a_upd_*`, `agg_a_ud_*`, `vel_a_ud`; neighbor `col` (insert collision) stays 1/2.0. Owner: [temporal.stats.writers](../ontology/features/temporal.g5.md#temporal.stats.writers).
+Iteration 51 (strengthened, not new): [temporal_stats](models/temporal_stats/NOTES.md) `theorem_update_counts_twice` proves for every state and occupied coordinate that an update adds one to count and event counter while the raw count stays; at the reader, insert 2 then update 9 answers whole-bucket count 2, sum 11, min 2, max 9, avg 5.5 and cut-window count 1, sum 9; deleting it leaves velocity 1 with no edge (`theorem_update_then_delete_leaves_velocity`). E2E on the continuation fixture: [probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `A3_upd_*`, [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_a_upd_*`, `agg_a_ud_*`, `vel_a_ud`; neighbor `col` (insert collision) stays 1/2.0. Owner: [temporal.stats.writers](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.stats.writers).
 
 <a id="bug-tmp-003"></a>
 ### A rolled-back temporal write leaves its statistics counted, so a retry counts the edge twice
@@ -125,7 +125,7 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 Canonical owner and evidence: [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats), [temporal.ledger.atomic](../ontology/features/temporal.g5.md#temporal.ledger.atomic).
 
 
-Iteration 51 (strengthened, not new): the rollback undoes the min, max and sketch Sets but not the `$Increment`s, so a rolled-back first write leaves count 1 and sum 3 with no min or max: whole-bucket `min`/`max` raise `ValueError`, `get_bucket_groups` returns the row `(1, 3, null, null)`, the distinct count is 0, velocity is 1 and the latest read omits the source ([temporal_stats](models/temporal_stats/NOTES.md) `theorem_rolled_back_first_write`, `theorem_rolled_back_group_row`; control `counters-journaled`). E2E: [probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `A4_rb_*`, [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_a_rb_*`, `groups_a_rb`; neighbor `rbc` (committed) answers 1/3.0/3.0. Owner: [temporal.stats.writers](../ontology/features/temporal.g5.md#temporal.stats.writers).
+Iteration 51 (strengthened, not new): the rollback undoes the min, max and sketch Sets but not the `$Increment`s, so a rolled-back first write leaves count 1 and sum 3 with no min or max: whole-bucket `min`/`max` raise `ValueError`, `get_bucket_groups` returns the row `(1, 3, null, null)`, the distinct count is 0, velocity is 1 and the latest read omits the source ([temporal_stats](models/temporal_stats/NOTES.md) `theorem_rolled_back_first_write`, `theorem_rolled_back_group_row`; control `counters-journaled`). E2E: [probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `A4_rb_*`, [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_a_rb_*`, `groups_a_rb`; neighbor `rbc` (committed) answers 1/3.0/3.0. Owner: [temporal.stats.writers](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.stats.writers).
 
 <a id="bug-tmp-010"></a>
 ### A rolled-back temporal delete or node erase leaves the bucket's event counter decremented
@@ -182,7 +182,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [temporal.structural.adopt](../ontology/features/temporal.g5.md#temporal.structural.adopt).
+Canonical owner and evidence: [temporal.structural.adopt](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.structural.adopt).
 
 <a id="bug-001"></a>
 ### Two redactions of different targets can run at once, and each one's audit and receipt then describes the other's work
@@ -289,7 +289,7 @@ Observed: the class name is `IVGC.P<$ZCRC(shape,7)>` (`Gen.cls:69, 183`). `For` 
 
 Consequence: wrong Cypher answers for every later run of the victim shape, until a deploy or stamp change. Accidental collisions are rare (about 1.2×10⁻⁴ for 10³ distinct shapes between deploys, 1.2% for 10⁴, mostly as recompile thrash), but adversarially the attack is practical: CRC-32 is affine, four free bytes in a label or property name hit any target, the shape text can be reproduced from the open-source planner, and the attacker can run both shapes until the W-O2b ordering lands. Reads write compiled plans, so this needs only Cypher read access through a server whose IRIS login can write `^IVG.CypherCompiled`, including an `IVG_READ_ONLY` server on the default `_SYSTEM` login. `query.compiled.integrity` and `query.compiled.never-stale` hold only under P-NO-COLLISION, which nothing establishes.
 
-Repair proposal (not implemented): [simp-cyp-001](design_simplification.md#simp-cyp-001). Governing statements: [query.compiled.integrity](../ontology/features/cypher.g5.md#query.compiled.integrity), [query.compiled.never-stale](../ontology/features/cypher.g5.md#query.compiled.never-stale), [query.compiled.equal-answers](../ontology/features/cypher.g5.md#query.compiled.equal-answers).
+Repair proposal (not implemented): [simp-cyp-001](design_simplification.md#simp-cyp-001). Governing statements: [query.compiled.integrity](../ontology/architecture/query-execution.g5.md#query.compiled.integrity), [query.compiled.never-stale](../ontology/architecture/query-execution.g5.md#query.compiled.never-stale), [query.compiled.equal-answers](../ontology/architecture/query-execution.g5.md#query.compiled.equal-answers).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -1193,7 +1193,7 @@ Found by: playbook arm, F-1601 ([review record](audits/register-20261115/bugs-re
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_tx.json), cases `D_tx_rollback`, `D_fail_then_rollback`, `D_execute_write_abort`. A real neo4j-driver rollback/aborted transaction leaves writes visible on another connection; commit and empty rollback are controls. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions): an explicit transaction keeps its writes only if it commits; ROLLBACK, a failed statement, RESET or a closed connection must leave none of them, or the server must refuse BEGIN so the client knows each statement commits on its own (Bolt message specification: BEGIN/COMMIT/ROLLBACK; README: "a neo4j-driver compatible server"; the engine's own contract, USER_GUIDE: a caller's rollback removes IVG's writes). Which of the two repairs IVG adopts is the open question [access.transactions](open_questions.md#access.transactions); both make this outcome impossible.
+Expected: [access.bolt.transactions](../ontology/features/client-interfaces.g5.md#access.bolt.transactions): an explicit transaction keeps its writes only if it commits; ROLLBACK, a failed statement, RESET or a closed connection must leave none of them, or the server must refuse BEGIN so the client knows each statement commits on its own (Bolt message specification: BEGIN/COMMIT/ROLLBACK; README: "a neo4j-driver compatible server"; the engine's own contract, USER_GUIDE: a caller's rollback removes IVG's writes). Which of the two repairs IVG adopts is the open question [access.transactions](open_questions.md#access.transactions); both make this outcome impossible.
 
 Observed: `BoltSession._dispatch` answers BEGIN and COMMIT with SUCCESS and ROLLBACK with SUCCESS after clearing only the pending rows (`bolt_server.py:500-510`); `_handle_run` runs each statement through `engine.execute_cypher` on a connection with no open transaction, so each write commits when the statement finishes (`:567-622`); RESET clears pending rows only (`:662-667`).
 
@@ -1201,7 +1201,7 @@ Consequence: a Neo4j application that relies on a transaction to undo its work k
 
 Repair proposal (not implemented, checked in the model only): either hold a transaction's statements in one engine transaction on the session's connection and end it on COMMIT, ROLLBACK, RESET, failure or disconnect (control `atomic-tx`), or answer BEGIN with a FAILURE saying explicit transactions are not supported (control `begin-refused`, design `Refuse`, `theorem_refusal_matches_rule`). Preserve: auto-commit statements (`theorem_autocommit_agrees`) and committed transactions (`theorem_commit_agrees`). Writers affected: `_dispatch`, `_handle_run`, `_handle_reset`, the TCP and WebSocket run loops (connection close). Distinguishing case: the binding's `R_rollback` (count 1 today, 0 after either repair) beside `R_commit` (1 on both). The read-only gate inside a transaction and isolation from other sessions are not checked.
 
-Governing statement: [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions).
+Governing statement: [access.bolt.transactions](../ontology/features/client-interfaces.g5.md#access.bolt.transactions).
 
 <a id="bug-plt-136"></a>
 ### A Neo4j HTTP `tx/commit` request keeps the writes of its successful statements when another statement fails, and runs the statements after the failure
@@ -1216,7 +1216,7 @@ Found by: independent review 56-58 item G1 ([review](../uplift/consolidated/iter
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_tx.json), cases `H_fail_middle`, `H_fail_first`, `H_fail_last`. An HTTP batch with a failed statement commits successful writes and continues after failure; the read-only gate correctly prevents all writes. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [access.http_transactions](../ontology/concepts/access.g5.md#access.http_transactions): one `tx/commit` request is one transaction that keeps its writes only if every statement succeeds; a server that cannot do this must refuse a request it could commit only in part. Sources: the route's own name (`/db/neo4j/tx/commit`, Neo4j's HTTP route that opens and commits a transaction in one request); ADMIN_API's Neo4j HTTP routes and its read-only rule, which already treats the request as one unit ("runs none of its statements"); the same rule the product's Bolt surface owns ([access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions)), which `theorem_http_rule_is_bolt_rule` derives the batch rule from (BEGIN, the statements, COMMIT). Neo4j's HTTP API documentation is not quoted: fetching it was denied in this session, as in the review's (limitation); the rule above rests on the product's own documents and its Bolt rule. Which repair (one transaction, or refusing multi-statement requests) is the open question [access.transactions](open_questions.md#access.transactions).
+Expected: [access.http_transactions](../ontology/features/client-interfaces.g5.md#access.http_transactions): one `tx/commit` request is one transaction that keeps its writes only if every statement succeeds; a server that cannot do this must refuse a request it could commit only in part. Sources: the route's own name (`/db/neo4j/tx/commit`, Neo4j's HTTP route that opens and commits a transaction in one request); ADMIN_API's Neo4j HTTP routes and its read-only rule, which already treats the request as one unit ("runs none of its statements"); the same rule the product's Bolt surface owns ([access.bolt.transactions](../ontology/features/client-interfaces.g5.md#access.bolt.transactions)), which `theorem_http_rule_is_bolt_rule` derives the batch rule from (BEGIN, the statements, COMMIT). Neo4j's HTTP API documentation is not quoted: fetching it was denied in this session, as in the review's (limitation); the rule above rests on the product's own documents and its Bolt rule. Which repair (one transaction, or refusing multi-statement requests) is the open question [access.transactions](open_questions.md#access.transactions).
 
 Observed: `neo4j_tx_commit` (`cypher_api.py:386-404`) runs each statement through `_run_cypher` (`:239-265`, `engine.execute_cypher` on the cached engine with no caller transaction, so a write commits when the call returns), appends one error for an exception and continues with the next statement; the status is 400 when any statement failed. The read-only gate (`:379-384`, `_cypher_writes_under_read_only` `:230-236`) is the only all-or-nothing decision.
 
@@ -1224,7 +1224,7 @@ Consequence: a client that sends a multi-statement request as one unit of work a
 
 Repair proposal (not implemented, checked in the model only): run the request's statements on one engine transaction on the cached engine's connection, stop at the first failure and roll back (control `http-batch-atomic`; Neo4j also stops at the failure: `http-stop-at-failure`), or refuse a request with more than one statement that writes. Preserve: a request whose statements all succeed commits all (`theorem_http_all_succeed_agrees`), and the read-only refusal (`theorem_http_read_only_runs_none`). Writers and readers affected: `neo4j_tx_commit`, `_run_cypher` (its one retry, HD-1603, must not re-run a statement inside the transaction). Distinguishing case: the binding's `H_fail_middle` (count 2 today, 0 after the repair) beside `H_all_ok` (2 on both). `/db/{db}/query/v2` (one statement) and a statement that fails after writing part of its own effect are not checked.
 
-Governing statement: [access.http_transactions](../ontology/concepts/access.g5.md#access.http_transactions).
+Governing statement: [access.http_transactions](../ontology/features/client-interfaces.g5.md#access.http_transactions).
 
 <a id="bug-plt-115"></a>
 ### The status report never counts vectors in routed tables, so a namespace whose vectors are all routed reads "absent" and not ready for vector search
@@ -1239,7 +1239,7 @@ Found by: iteration 52 W58 frozen predictions R7 and R8 ([pairs](../uplift/conso
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s9_routed_vectors:status`. Routed vectors search successfully but status reports zero/absent/not-ready; legacy-table vectors are counted. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: Spec 230 FR-006 and the `_embedding_row_count` docstring: "Counting one table name reported zero for an install whose vectors are all routed — a number an operator reads as 'the embeddings are gone' while a search over the same rows answers fine." The owner [install.status](../ontology/concepts/install.g5.md#install.status) says the totals count each registered table of that kind.
+Expected: Spec 230 FR-006 and the `_embedding_row_count` docstring: "Counting one table name reported zero for an install whose vectors are all routed — a number an operator reads as 'the embeddings are gone' while a search over the same rows answers fine." The owner [install.status](../ontology/operations/status-and-repair.g5.md#install.status) says the totals count each registered table of that kind.
 
 Doc conflict (review round 2 item m3): ADMIN_GUIDE's field table (`docs/ADMIN_GUIDE.md:940`) says `ready_for_vector_search` means "the default embedding table holds vectors", which reads as the legacy table only and so would describe today's answer. It was written before routing; spec 230 FR-006 and the code's own docstring are later and say the total counts every table of the kind, so this entry keeps FR-006 as Expected and the owner records the conflict. The same table (`:942`) says `adjacency.kg_edge_count` "equals the edges in `rdf_edges`"; the code caps it (`KGEdgeCount` stops at 10000 and sets `kg_edge_count_capped`), which the model takes as a premise (below the cap).
 
@@ -1257,7 +1257,7 @@ Repair proposal (not implemented): compare case-insensitively (`is_route(name.lo
 - a row with no kind read as a node route;
 - a lost table reported, with the other counts kept.
 
-Writers and readers: `store_embeddings` and `embed_nodes` (registry rows), then `_embedding_tables` → `_embedding_row_count` and `_hnsw_built` → `status()`, `report()`, `/server` and `/metrics`. Distinguishing case: routed vectors only → `node_embeddings` 1 and ready. Control `registry-keeps-case` checks the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness).
+Writers and readers: `store_embeddings` and `embed_nodes` (registry rows), then `_embedding_tables` → `_embedding_row_count` and `_hnsw_built` → `status()`, `report()`, `/server` and `/metrics`. Distinguishing case: routed vectors only → `node_embeddings` 1 and ready. Control `registry-keeps-case` checks the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.readiness](../ontology/operations/status-and-repair.g5.md#install.status.readiness).
 
 <a id="bug-plt-116"></a>
 ### verify_sync reports drift forever once two graphs hold the same edge; heal=True reports it healed and the next check reports drift again
@@ -1289,7 +1289,7 @@ Repair proposal (not implemented): compare `^NKG`'s count with `SELECT COUNT(DIS
 - the pending-sync flag;
 - `indeterminate` on a failed read.
 
-Writers and readers: `create_edge`, the bulk paths, `sync()`, `BuildNKG`, `Adjacency.Put`, then `verify_sync` and `SyncReport.__bool__`. Distinguishing case: a shared triple after `sync()` → in sync. Controls `verify-counts-distinct-rows` and `heal-rereads` check the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.verify_sync](../ontology/concepts/install.g5.md#install.status.verify_sync).
+Writers and readers: `create_edge`, the bulk paths, `sync()`, `BuildNKG`, `Adjacency.Put`, then `verify_sync` and `SyncReport.__bool__`. Distinguishing case: a shared triple after `sync()` → in sync. Controls `verify-counts-distinct-rows` and `heal-rereads` check the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.verify_sync](../ontology/operations/status-and-repair.g5.md#install.status.verify_sync).
 
 Continuation iteration 57 (strengthened): the shared-triple mechanism is modeled in [adjacency_maint](models/adjacency_maint/NOTES.md) `theorem_nkg_held_elsewhere`: `Adjacency.Remove` keeps the merged `^NKG` edge while another graph holds the triple and removes it otherwise ([binding](results/adjacency_maint/20261117T075252Z-binding/receipt.json) `nkg_n1n2_after_ga` true, `nkg_xa_after` false).
 
@@ -1306,13 +1306,13 @@ Found by: independent review round 2 (session `d548b72a`, item M2), source readi
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s19_i53_bnative:status`, `s19_i53_bnative:readers`. A real restricted monitoring role gets unknown counts in text but zero counts and false readiness in API readers; privileged reads see the data. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: ADMIN_GUIDE (`docs/ADMIN_GUIDE.md:950-958`, 4.6.0 R050): where a probe failed the report must say "unknown" instead of a value; before 4.6.0 "it printed `0 nodes` and `in sync` there", which R050 calls the defect. ADMIN_API says `/server` is "part of `engine.status()`" and `/metrics` is "from `engine.status()`"; the owner [install.status](../ontology/concepts/install.g5.md#install.status) says failed counts must not read as invented zeros. A readiness flag "should say whether the operation it names would answer" ([install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness)).
+Expected: ADMIN_GUIDE (`docs/ADMIN_GUIDE.md:950-958`, 4.6.0 R050): where a probe failed the report must say "unknown" instead of a value; before 4.6.0 "it printed `0 nodes` and `in sync` there", which R050 calls the defect. ADMIN_API says `/server` is "part of `engine.status()`" and `/metrics` is "from `engine.status()`"; the owner [install.status](../ontology/operations/status-and-repair.g5.md#install.status) says failed counts must not read as invented zeros. A readiness flag "should say whether the operation it names would answer" ([install.status.readiness](../ontology/operations/status-and-repair.g5.md#install.status.readiness)).
 
 Observed: `_count` answers 0 after a failed SELECT and names a part only for the nodes and edges counts (`_engine/admin.py:449-457`); the labels, props and edge-vector counts name none (472-476). `/server` (`cypher_api.py:498-524`) copies the counts and `errors` but not `unknown`; `/metrics` (527-554) prints the counts as gauge numbers with neither. The readiness properties (`status.py:192-214`) compare the counts with 0.
 
 Consequence: a Prometheus alert or dashboard reading `ivg_nodes_total 0` sees an emptied graph when only the scraper's role lost a privilege, the pre-4.6.0 misreport R050 removed from the text report. An operator script that gates on `ready_for_bfs` or `ready_for_edge_search` refuses work the namespace can do. A narrow monitoring role is the normal way to give a dashboard read access.
 
-Repair proposal (not implemented): carry `unknown` into `/server`; in `/metrics` leave out a gauge whose part is unknown (or add an `ivg_status_unknown{part=…}` gauge); name a part for a failed labels, props or edge-vector count; make a readiness flag unknown (None) when its count is unknown. Preserve: completed counts and the errors list; the text report's behavior. Writers and readers: `_status_probes` → `EngineStatus` → `report()`, readiness properties, `/server`, `/metrics`, `ivg status`. Distinguishing case: the native-only user above. Controls `metrics-marks-unknown` and `readiness-unknown-not-false` check the direction in the model only. Governing statements: [install.status.readers](../ontology/concepts/install.g5.md#install.status.readers), [install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness).
+Repair proposal (not implemented): carry `unknown` into `/server`; in `/metrics` leave out a gauge whose part is unknown (or add an `ivg_status_unknown{part=…}` gauge); name a part for a failed labels, props or edge-vector count; make a readiness flag unknown (None) when its count is unknown. Preserve: completed counts and the errors list; the text report's behavior. Writers and readers: `_status_probes` → `EngineStatus` → `report()`, readiness properties, `/server`, `/metrics`, `ivg status`. Distinguishing case: the native-only user above. Controls `metrics-marks-unknown` and `readiness-unknown-not-false` check the direction in the model only. Governing statements: [install.status.readers](../ontology/operations/status-and-repair.g5.md#install.status.readers), [install.status.readiness](../ontology/operations/status-and-repair.g5.md#install.status.readiness).
 
 <a id="bug-tmp-103"></a>
 ### A distinct-target count answers at least 11 for any window that holds a target, so one target reads as 11
@@ -1398,12 +1398,12 @@ Observed: `GraphVerify` computes `missing = rows − matched distinct triples` (
 
 Consequence: an operator sees false drift on every multigraph and may rebuild for nothing, while real multiplicity loss (for example [bug-str-001](#bug-str-001)) goes unreported.
 
-Repair proposal (not implemented): compare each triple's row count with its leaf, children and `#` count. Governing statement: [structure.verify](../ontology/features/graph-structure.g5.md#structure.verify).
+Repair proposal (not implemented): compare each triple's row count with its leaf, children and `#` count. Governing statement: [structure.verify](../ontology/operations/status-and-repair.g5.md#structure.verify).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [structure.verify](../ontology/features/graph-structure.g5.md#structure.verify).
+Canonical owner and evidence: [structure.verify](../ontology/operations/status-and-repair.g5.md#structure.verify).
 
 <a id="bug-tmp-009"></a>
 ### A temporal aggregate read of min, max or avg over an empty window raises ValueError, although the method promises 0.0
@@ -1488,14 +1488,14 @@ Observed: the generic merge guard is `WHERE NOT EXISTS (… WHERE {cols[0]} = ?)
 
 Consequence: saving two edges in G, erasing G and merge-restoring gives one edge, and the report says two were restored.
 
-Repair proposal (not implemented): dedupe on each table's key columns, and count only rows actually inserted. Governing statement: [install.snapshot](../ontology/concepts/install.g5.md#install.snapshot).
+Repair proposal (not implemented): dedupe on each table's key columns, and count only rows actually inserted. Governing statement: [install.snapshot](../ontology/operations/snapshots-and-bulk-load.g5.md#install.snapshot).
 
 Iteration 5: the first-column guard root is also F-1802, whose earlier live evidence is retained. A new native shared-ID/other-graph parent witness loses graph A's parent, so its routed vector fails FK and the final reader is empty; the original complete-archive prediction and DISAGREES receipt are preserved. The Verus restore_parent/load/read chain derives this consequence. This strengthens the inherited root, not a new discovery or a repair.
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [install.snapshot](../ontology/concepts/install.g5.md#install.snapshot), [install.snapshot.routes](../ontology/concepts/install.g5.md#install.snapshot.routes).
+Canonical owner and evidence: [install.snapshot](../ontology/operations/snapshots-and-bulk-load.g5.md#install.snapshot), [install.snapshot.routes](../ontology/operations/snapshots-and-bulk-load.g5.md#install.snapshot.routes).
 
 Fresh audit qualification: two archived parents in the same graph reproduce the first-column merge skip on this schema. The initial one-parent-per-graph/shared-ID attempt succeeded and is preserved as a refuted subcase; it does not refute all merge-loss cases.
 
@@ -1525,7 +1525,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [structure.verify](../ontology/features/graph-structure.g5.md#structure.verify).
+Canonical owner and evidence: [structure.verify](../ontology/operations/status-and-repair.g5.md#structure.verify).
 
 <a id="F-0208"></a>
 ### An engine keeps a graph's mode forever, so another engine's change is not seen
@@ -1582,7 +1582,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [structure.verify](../ontology/features/graph-structure.g5.md#structure.verify).
+Canonical owner and evidence: [structure.verify](../ontology/operations/status-and-repair.g5.md#structure.verify).
 
 <a id="F-0502"></a>
 ### A temporal write with no time lands at epoch 0, not at the current time
@@ -1640,7 +1640,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [search.scope.indexes.ivf](../ontology/features/search.g5.md#search.scope.indexes.ivf).
+Canonical owner and evidence: [search.scope.indexes.ivf](../ontology/operations/search-indexes.g5.md#search.scope.indexes.ivf).
 
 <a id="F-0610"></a>
 ### The SQL kg_KNN_VEC answers no rows, without error, for a graph whose vectors are under a declared model
@@ -1784,7 +1784,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [algorithms.cache.token](../ontology/features/algorithms.g5.md#algorithms.cache.token).
+Canonical owner and evidence: [algorithms.cache.token](../ontology/architecture/algorithm-execution.g5.md#algorithms.cache.token).
 
 <a id="F-1802"></a>
 ### A merge restore guards plain tables on their first column only, and counts skipped rows as restored
@@ -1814,7 +1814,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [install.snapshot.routes](../ontology/concepts/install.g5.md#install.snapshot.routes).
+Canonical owner and evidence: [install.snapshot.routes](../ontology/operations/snapshots-and-bulk-load.g5.md#install.snapshot.routes).
 
 Fresh audit qualification: the 41-case panel exercises the two-parents-in-one-graph skip and preserves an existing live graph. The historical routed-vector parent case is not rerun under an asserted identical physical column order.
 
@@ -2092,7 +2092,7 @@ Observed: `enqueue_for_embedding` checks every request against `kg_NodeEmbedding
 
 Consequence: a model B vector can land in model A's table (read back as A's and compared with A's queries), and valid named-graph requests are refused.
 
-Repair proposal (not implemented): resolve default-graph entries through the registry like named ones (or refuse them unless the entry's model owns `kg_NodeEmbeddings`), and check the target route at enqueue. Governing statements: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue), [search.embedding.check_on_write](../ontology/features/search.g5.md#search.embedding.check_on_write).
+Repair proposal (not implemented): resolve default-graph entries through the registry like named ones (or refuse them unless the entry's model owns `kg_NodeEmbeddings`), and check the target route at enqueue. Governing statements: [search.embedding.queue](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.queue), [search.embedding.check_on_write](../ontology/features/search.g5.md#search.embedding.check_on_write).
 
 Evidence added (iteration 36, ordinary queue workflow W42; this entry's identity question was not probed): on a fresh 4.7.0 install the IRIS worker's write of any default-graph entry is refused (`graph_id` binds as NULL; [bug-srch-104](#bug-srch-104)), so this entry's IRIS-worker consequence cannot store a vector there today; it would return with that repair. An enqueue naming a model for the default graph was accepted against an undeclared `kg_NodeEmbeddings` ([observation](../uplift/consolidated/iteration-36/embed-queue-observed-20261117T001118Z.json), Q4). Decision and severity unchanged.
 
@@ -2148,7 +2148,7 @@ Observed: `api/routers/cypher.py:130-166` and GraphQL `executeCypher` (`api/gql/
 
 Consequence: unrecorded structural writes under strict mode; Cypher `DELETE`, pinned `SET` and all-graphs writes in a multi-graph namespace cannot execute correctly on these routes.
 
-Repair proposal (not implemented): route both through `engine.execute_cypher(read_only=…)`, keeping the hop cap and error redaction. Related: [query.routes](open_questions.md#query.routes). Governing statements: [access.ledger_strict.bypasses](../ontology/concepts/access.g5.md#access.ledger_strict.bypasses), [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces).
+Repair proposal (not implemented): route both through `engine.execute_cypher(read_only=…)`, keeping the hop cap and error redaction. Related: [query.routes](open_questions.md#query.routes). Governing statements: [access.ledger_strict.bypasses](../ontology/concepts/access.g5.md#access.ledger_strict.bypasses), [access.surfaces](../ontology/features/client-interfaces.g5.md#access.surfaces).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -2200,7 +2200,7 @@ Observed: `graph_scoped_embeddings.py:287-288` and `temporal_structural_rows.py:
 
 Consequence: where the other schema's tables exist (spec 262 FR-009's explicit two-schema case), `backfill_structural_rows` would write that schema's `rdf_edges` and the namespace's shared `^KG`, and the 4.0.0 embeddings and `^KG` steps, which address the default schema (`upgrade.py:145-152`), can rebuild the shared `^KG` from the other schema's rows.
 
-Repair proposal (not implemented): waive only when no record exists, or build the migration engine on the recorded schema. Related question: [q-plt-011](open_questions.md#q-plt-011). Governing statements: [install.migration.schema](../ontology/concepts/install.g5.md#install.migration.schema), [install.schema.refusal](../ontology/concepts/install.g5.md#install.schema.refusal).
+Repair proposal (not implemented): waive only when no record exists, or build the migration engine on the recorded schema. Related question: [q-plt-011](open_questions.md#q-plt-011). Governing statements: [install.migration.schema](../ontology/operations/setup-and-upgrade.g5.md#install.migration.schema), [install.schema.refusal](../ontology/operations/setup-and-upgrade.g5.md#install.schema.refusal).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -2228,7 +2228,7 @@ Observed: `.env.sample:30` sets `IRIS_USER=_SYSTEM`, while `cypher_api._make_eng
 
 Consequence: an operator who follows the sample and changes `IRIS_USER` to a restricted login still runs the server as `_SYSTEM`, a `%All` superuser, with no warning.
 
-Repair proposal (not implemented): read one documented name (accept both with a warning), and fix the sample. Governing statements: [access.defaults](../ontology/concepts/access.g5.md#access.defaults), [access.iris_boundary](../ontology/concepts/access.g5.md#access.iris_boundary).
+Repair proposal (not implemented): read one documented name (accept both with a warning), and fix the sample. Governing statements: [access.defaults](../ontology/operations/setup-and-upgrade.g5.md#access.defaults), [access.iris_boundary](../ontology/concepts/access.g5.md#access.iris_boundary).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -2256,7 +2256,7 @@ Observed: `Neighbours` keeps the edges a match has used as a comma string of `$Z
 
 Consequence: `MATCH (a:P)-[:K]->(b)-[:K]->(c) RETURN count(*)` over two edges whose tuples collide answers 0 in mode `off` and 1 in `sync` and SQL; node IDs are free text, so collisions can be constructed.
 
-Repair proposal (not implemented): key used edges by the full `$ListBuild`, or hold them in a local array subscripted by the tuple. Governing statement: [query.native.equal-answers](../ontology/features/cypher.g5.md#query.native.equal-answers).
+Repair proposal (not implemented): key used edges by the full `$ListBuild`, or hold them in a local array subscripted by the tuple. Governing statement: [query.native.equal-answers](../ontology/architecture/query-execution.g5.md#query.native.equal-answers).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -2284,7 +2284,7 @@ Observed: `verify(adopt=True)` checks the marker once, reads the divergence with
 
 Consequence: tenant IDs re-enter the history after a redaction reported complete; a re-run of the redaction removes them, but nothing tells the operator to re-run.
 
-Repair proposal (not implemented): commit the adoption with the head it read (`expected_head`) so a moved head refuses it, or refuse adoption of records that match a completed redaction's target. Governing statements: [ledger.verify](../ontology/features/ledger.g5.md#ledger.verify), [redaction.purpose](../ontology/features/redaction.g5.md#redaction.purpose).
+Repair proposal (not implemented): commit the adoption with the head it read (`expected_head`) so a moved head refuses it, or refuse adoption of records that match a completed redaction's target. Governing statements: [ledger.verify](../ontology/operations/ledger.g5.md#ledger.verify), [redaction.purpose](../ontology/features/redaction.g5.md#redaction.purpose).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -3060,7 +3060,7 @@ Iteration 3 scope reconciliation: algorithms.cache.pagerank separates COUNT:MAX 
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
-Audit: Actual public engine and ObjectScript Owner list 10000 of 10002 ordinary nodes with score sum below one; a one-node public caller passes. No Arno reader is available, so cross-route equivalence remains untested. Canonical owners: [algorithms.op.pagerank](../ontology/features/algorithms.g5.md#algorithms.op.pagerank), [algorithms.cache.pagerank](../ontology/features/algorithms.g5.md#algorithms.cache.pagerank).
+Audit: Actual public engine and ObjectScript Owner list 10000 of 10002 ordinary nodes with score sum below one; a one-node public caller passes. No Arno reader is available, so cross-route equivalence remains untested. Canonical owners: [algorithms.op.pagerank](../ontology/features/algorithms.g5.md#algorithms.op.pagerank), [algorithms.cache.pagerank](../ontology/architecture/algorithm-execution.g5.md#algorithms.cache.pagerank).
 
 <a id="bug-cyp-102"></a>
 ### A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names
@@ -3117,7 +3117,7 @@ Found by: the sort-key binding, where `Graph.KG.Cypher.SortKey.Key("")` over the
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-18/empty-string-order-observed-20261116T170714Z.json)). An anchor with six targets whose `p` is `""`, `"b"`, `2`, missing, `"a"` and `1`; `MATCH (x {id: <anchor>})-[:R]->(b) RETURN b.p ORDER BY b.p` returns `'', 'a', 'b', 1, 2, null` on the SQL path and `'a', 'b', 1, 2, '', null` on the native executor, which `execute_cypher` used. `DESC` differs the same way. Passing neighbor: without the empty string, both paths agree on the same values (the W19 node and relationship sorts).
 
-Expected: [query.native.equal-answers](../ontology/features/cypher.g5.md#query.native.equal-answers) requires the native answer to equal the SQL path's, in the same order where the query orders completely; these values are distinct. The as-built sort is [query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting).
+Expected: [query.native.equal-answers](../ontology/architecture/query-execution.g5.md#query.native.equal-answers) requires the native answer to equal the SQL path's, in the same order where the query orders completely; these values are distinct. The as-built sort is [query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting).
 
 Cause: the SQL path binds the stored empty string to `CY_SORT_KEY` as `$Char(0)`, which `Key` ranks as a string; the native executor's `Exec.SortKey` passes it as ObjectScript `""`, which `Key` treats as null.
 
@@ -3159,7 +3159,7 @@ Found by: A-platform F-B5 (sub-reader b), source reading; confirmed in the retes
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-25/bulk-loader-observed-20261116T212413Z.json), case B1; [binding](results/bulk_load/20261116T213301Z-binding/receipt.json), 24 interrupted histories). `BulkLoader.load_nodes` of two new nodes with a label and a property, interrupted at the label insert (injected: the first `rdf_labels` `executemany` raises, the state a lost connection leaves after phase 1 commits per batch), raises `BulkLoadError`. The same call again returns `{"nodes": 0, "labels": 0, "props": 0}`, and `get_node` then shows both nodes with no labels and no properties; `MATCH (n:L)` finds neither, also after `rebuild_all_indices`. Passing neighbor (B2): when the first call completes, the same call again also returns zeros and both nodes keep their labels and properties.
 
-Expected: "re-loading the same data has to stay idempotent" (`bulk_loader.py:93-95`); the owner [install.bulk_load.loader](../ontology/concepts/install.g5.md#install.bulk_load.loader) promises that a completed load reads back as its input.
+Expected: "re-loading the same data has to stay idempotent" (`bulk_loader.py:93-95`); the owner [install.bulk_load.loader](../ontology/operations/snapshots-and-bulk-load.g5.md#install.bulk_load.loader) promises that a completed load reads back as its input.
 
 Cause: the skip scan selects input ids that already have a node row (`_known_nodes_sql`), and phases 2 and 3 write labels and properties only for the ids that scan did not see (`nodes_to_process = new_nodes`, `bulk_loader.py:314`). Phase 1 has already committed.
 
@@ -3180,7 +3180,7 @@ Found by: review round 3 R3-reader M6 (code reading); observed at the readers in
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-25/bulk-loader-observed-20261116T212413Z.json); [binding](results/bulk_load/20261116T213301Z-binding/receipt.json)). `load_nodes` and `load_edges` with their default `use_noindex=True` return counts of 2 nodes, 2 labels, 4 properties and 1 edge; then `get_node` returns `None`, `MATCH (a {id: …})-[r]->(b)` returns no row and `MATCH (n:L) RETURN count(n)` returns 0. Passing neighbors: the same load with `use_noindex=False` reads back at once (A2); after `rebuild_all_indices()` the default load reads back (A3), and so does the earlier unrebuilt load (A1 re-read); `load_networkx`, which rebuilds, reads back (A7).
 
-Expected: spec 252 FR-008: "Bulk paths that write `%NOINDEX` MUST dedupe and MUST end in `%BuildIndices` before returning, success or failure"; ADR-0008: "No `%NOINDEX` writer returns before its `%BuildIndices`." The owner [structure.adjacency.bulk](../ontology/features/graph-structure.g5.md#structure.adjacency.bulk) applies FR-008 to the bulk loader.
+Expected: spec 252 FR-008: "Bulk paths that write `%NOINDEX` MUST dedupe and MUST end in `%BuildIndices` before returning, success or failure"; ADR-0008: "No `%NOINDEX` writer returns before its `%BuildIndices`." The owner [structure.adjacency.bulk](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.adjacency.bulk) applies FR-008 to the bulk loader.
 
 Observed: `BulkLoader.load_nodes` and `load_edges` write with `%NOINDEX %NOCHECK` by default and leave the rebuild to the caller; `load_edges`' docstring says to call `rebuild_all_indices()`, `load_nodes`' does not. Only `load_networkx` rebuilds before returning.
 
@@ -3222,7 +3222,7 @@ Found by: A-platform F-B6 (sub-reader b), source reading; confirmed in the retes
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin, in a new namespace `W37` set up by `initialize_schema()` with `schema_prefix="Kg2"` ([observation](../uplift/consolidated/iteration-31/schema-observed-20261116T221059Z.json); [binding](results/bulk_load/20261116T221240Z-binding/receipt.json)). `BulkLoader(conn).load_nodes(...)` fails with "Table 'GRAPH_KG.NODES' not found" and writes nothing. With `schema="Kg2"` an indexed load is readable at once, but a default unindexed load followed by `rebuild_all_indices()` answers `false` for all four `Graph.KG.*` classes and the node stays unreadable through the Kg2 engine's `get_node`. Passing neighbor: the same unindexed load and rebuild in `USER` (`Graph_KG`) answers `true` four times and reads back.
 
-Expected: [install.bulk_load.loader](../ontology/concepts/install.g5.md#install.bulk_load.loader): "It writes and rebuilds in the namespace's recorded IVG Schema, like every other IVG writer"; ADR-0016.
+Expected: [install.bulk_load.loader](../ontology/operations/snapshots-and-bulk-load.g5.md#install.bulk_load.loader): "It writes and rebuilds in the namespace's recorded IVG Schema, like every other IVG writer"; ADR-0016.
 
 Cause: `BulkLoader` defaults to `schema="Graph_KG"` and `rebuild_all_indices` names the `Graph.KG.*` classes whatever schema it was given (`bulk_loader.py:41, 56-60, 495`).
 
@@ -3243,7 +3243,7 @@ Found by: source reading after the W38 predictions were frozen (`_run_cypher` ke
 
 Reproduced by: **E2E reproduced** in-process (FastAPI `TestClient`, no listener) against the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-32/http-observed-20261116T221726Z.json); [binding](results/http_rows/20261116T221848Z-binding/receipt.json)). `UNWIND range(1, 1200) AS i RETURN i`: `execute_cypher` returns 1,200 rows; `POST /db/neo4j/tx/commit` returns 1,000 rows in `results[0].data` with no error, and `POST /db/neo4j/query/v2` returns 1,000 in `data.values`, neither with any sign of the cut. Passing neighbors: 999 and 1,000 rows come back whole; `/api/cypher` documents its `limitRows` (default 1000) and honours `limitRows: 2000` (1,200 rows). Every value and type otherwise agreed across the engine and the three routes (H1-H4, H6).
 
-Expected: [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces): each server call should do what the engine method it stands for does; Neo4j's transaction and query APIs return the whole answer (paging is the client's choice), and nothing in IVG's docs mentions a cap on those routes.
+Expected: [access.surfaces](../ontology/features/client-interfaces.g5.md#access.surfaces): each server call should do what the engine method it stands for does; Neo4j's transaction and query APIs return the whole answer (paging is the client's choice), and nothing in IVG's docs mentions a cap on those routes.
 
 Cause: `neo4j_tx_commit` and `neo4j_query_v2` call `_run_cypher(statement, parameters)` with its default `limit=1000` (`cypher_api.py:239-265, 379-460`); only `/api/cypher` exposes the limit and returns `rowCount`, which counts the rows kept.
 
@@ -3266,13 +3266,13 @@ Found by: the owner's recorded divergence for `ProcessBatch` (source reading at 
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, through `start_background_embedding` (the Task Manager task) and through `ProcessBatch` directly ([observation 1](../uplift/consolidated/iteration-36/embed-queue-observed-20261117T001118Z.json), [observation 2](../uplift/consolidated/iteration-36/embed-queue-observed2-20261117T001204Z.json), [binding](results/embed_queue/20261117T001547Z-binding/receipt.json) cases I2-I4, I6, I7). The provider is a fixture-only `%Embedding.Interface` class. When it fails (`SQLCODE -400`) or answers nothing, or the entry names no known config (`-280`), the entry becomes `DONE` with no error, no result and no vector, and leaves the pending count. Passing neighbors: in a named graph a provider answer is stored and the entry is `DONE` (I5); the Python worker turns the same failures into `ERROR` with the reason (P2, P4).
 
-Expected: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue): "An entry whose text cannot be embedded, or whose vector cannot be stored, is marked as an error with the reason, never as done." The class's own comment (`EmbedQueue.cls:321`) says a failed write "is the entry's error, not DONE".
+Expected: [search.embedding.queue](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.queue): "An entry whose text cannot be embedded, or whose vector cannot be stored, is marked as an error with the reason, never as done." The class's own comment (`EmbedQueue.cls:321`) says a failed write "is the entry's error, not DONE".
 
 Observed: `ProcessBatch` writes `DONE` after the `Try` whenever `%Execute` reports an `SQLCODE` other than 0 or returns an empty value (`EmbedQueue.cls:308-327`); dynamic SQL reports the provider's failure through `SQLCODE` rather than throwing, so the `Catch` never sees it.
 
 Consequence: a provider outage or a misnamed config turns queued work into finished work with nothing stored and no reason; the task stops because nothing is pending, and only a search for unembedded nodes shows the loss. Medium: silent loss of requested work; the data that exists is not changed.
 
-Repair proposal (not implemented; checked in Verus only): mark the entry `ERROR` with the `SQLCODE` message when the statement fails or answers nothing. `embed_queue.rs::theorem_reviewed_iris_meets_rule` shows the repaired worker meets the owner's rule on every modeled entry (with bug-srch-104's repair); behavior to keep: named-graph success, the refusals before the provider call. Governing statement: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue).
+Repair proposal (not implemented; checked in Verus only): mark the entry `ERROR` with the `SQLCODE` message when the statement fails or answers nothing. `embed_queue.rs::theorem_reviewed_iris_meets_rule` shows the repaired worker meets the owner's rule on every modeled entry (with bug-srch-104's repair); behavior to keep: named-graph success, the refusals before the provider call. Governing statement: [search.embedding.queue](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.queue).
 
 <a id="bug-srch-104"></a>
 ### The IRIS queue worker cannot store a default-graph vector
@@ -3287,13 +3287,13 @@ Found by: the frozen W42 prediction Q3 for the IRIS worker missed ([predictions]
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, through `start_background_embedding` and through `ProcessBatch` ([observation 1](../uplift/consolidated/iteration-36/embed-queue-observed-20261117T001118Z.json), [observation 2](../uplift/consolidated/iteration-36/embed-queue-observed2-20261117T001204Z.json), [binding](results/embed_queue/20261117T001547Z-binding/receipt.json) case I1). A default-graph node queued with a config whose provider answers a 768-wide vector ends `ERROR` with "-108 'graph_id' in table 'Graph_KG.kg_NodeEmbeddings' is a required field", and `get_embedding` finds nothing. Passing neighbors: the same provider and width in a named graph is stored (I5); the Python worker stores the default-graph vector (P1).
 
-Expected: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue) and the API reference ("Run an IRIS task that works the embedding queue now") promise that queued work is done; the default graph is a graph like any other ([graph scope](../ontology/concepts/graph-scope.g5.md)).
+Expected: [search.embedding.queue](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.queue) and the API reference ("Run an IRIS task that works the embedding queue now") promise that queued work is done; the default graph is a graph like any other ([graph scope](../ontology/concepts/graph-scope.g5.md)).
 
 Observed: `enqueue_for_embedding` sends the default graph as `""` (`constants.DEFAULT_GRAPH`), and `ProcessBatch` binds that `""` as the `graph_id` of its INSERT (`EmbedQueue.cls:316-320`). An empty ObjectScript host variable binds as SQL NULL, which the class itself works around in `NodeInGraph` (`COALESCE`, lines 201-206) but not here.
 
 Consequence: on a fresh 4.7.0 install the IRIS worker stores no default-graph vector at all; with bug-srch-103 the only default-graph entries it marks `DONE` are those that got no vector. It also means the IRIS-worker half of [bug-srch-006](#bug-srch-006) (a default-graph entry written to `kg_NodeEmbeddings` whatever its model) cannot store anything on such an install; on an install whose `graph_id` accepts NULL it is unexamined. The product's queue tests run without a provider and check only refusals (`tests/integration/test_embed_queue_process.py:1-5`). Medium: the IRIS worker fails all default-graph work, visibly.
 
-Repair proposal (not implemented; checked in Verus only): bind the default graph as the SQL empty string, which is what the Python store writes (observed: `graph_id` length 0, not NULL; the column is NOT NULL). Same receipt as bug-srch-103. Governing statement: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue).
+Repair proposal (not implemented; checked in Verus only): bind the default graph as the SQL empty string, which is what the Python store writes (observed: `graph_id` length 0, not NULL; the column is NOT NULL). Same receipt as bug-srch-103. Governing statement: [search.embedding.queue](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.queue).
 
 <a id="bug-str-105"></a>
 ### retract_inference deletes an edge the user created after the same triple was inferred
@@ -3314,7 +3314,7 @@ Observed: `create_edge` skips a triple that already has a row (multigraph off) a
 
 Consequence: two histories with the same edges before retract end differently, and a fact the user stated is silently removed. Medium: loss of user data on an ordinary sequence (materialize, add facts, retract to re-run).
 
-Repair proposal (not implemented; checked in Verus only): have `create_edge` clear the inferred marker on an existing inferred row (control `create-marks-asserted` is the repaired rule), or refuse with a message. Governing statement: [install.inference](../ontology/concepts/install.g5.md#install.inference).
+Repair proposal (not implemented; checked in Verus only): have `create_edge` clear the inferred marker on an existing inferred row (control `create-marks-asserted` is the repaired rule), or refuse with a message. Governing statement: [install.inference](../ontology/features/data-interchange.g5.md#install.inference).
 
 <a id="bug-str-107"></a>
 ### SHACL validation treats one node ID in two graphs as one node, so an invalid node passes
@@ -3335,7 +3335,7 @@ Observed: the data graph mints a node's IRI from its ID alone (`_rdf_utils._mint
 
 Consequence: data written to a named graph that breaks a shape is accepted when another graph has a valid node with the same ID; the reverse case reports a violation against the wrong graph's node. Medium: a wrong validation answer, silently.
 
-Repair proposal (not implemented): validate each graph's context on its own (or mint graph-qualified IRIs for validation), and name the graph in each violation. Governing statements: [install.shacl](../ontology/concepts/install.g5.md#install.shacl), [graph scope](../ontology/concepts/graph-scope.g5.md).
+Repair proposal (not implemented): validate each graph's context on its own (or mint graph-qualified IRIs for validation), and name the graph in each violation. Governing statements: [install.shacl](../ontology/features/data-interchange.g5.md#install.shacl), [graph scope](../ontology/concepts/graph-scope.g5.md).
 
 <a id="bug-str-109"></a>
 ### import_rdf drops a literal's datatype, so an imported xsd:integer reads back as text and matches no number
@@ -3354,7 +3354,7 @@ Expected: SEMANTIC_LAYER.md: "a literal becomes a property of the subject"; the 
 
 Consequence: numeric filters, sorting and comparisons over imported data silently miss or misorder rows. Medium: wrong query answers, no error.
 
-Repair proposal (not implemented): store numeric and boolean literals in the typed form the API's writers use. Governing statement: [install.import.rdf](../ontology/concepts/install.g5.md#install.import.rdf).
+Repair proposal (not implemented): store numeric and boolean literals in the typed form the API's writers use. Governing statement: [install.import.rdf](../ontology/features/data-interchange.g5.md#install.import.rdf).
 
 <a id="bug-str-110"></a>
 ### Re-importing RDF never updates a property: a changed literal keeps the old value and is only logged
@@ -3375,7 +3375,7 @@ Observed: each property is a plain `INSERT` into `rdf_props`; the primary key `(
 
 Consequence: refreshing a graph from an updated RDF file leaves stale values while the call succeeds; the answer's counts differ between edges and properties. Medium: silent stale data.
 
-Repair proposal (not implemented): upsert properties (or report the rows not written in the answer). Governing statement: [install.import.rdf](../ontology/concepts/install.g5.md#install.import.rdf).
+Repair proposal (not implemented): upsert properties (or report the rows not written in the answer). Governing statement: [install.import.rdf](../ontology/features/data-interchange.g5.md#install.import.rdf).
 
 <a id="bug-str-111"></a>
 ### import_rdf(infer=True) on N-Quads or TriG infers in the graph argument, not in the graphs the quads were written to
@@ -3390,11 +3390,11 @@ Found by: source reading after the W47 freeze (R10, not frozen) ([predictions](.
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-41/rdfimport-observed-20261117T005436Z.json) R1_R2_R10; [binding](results/rdf_import/20261117T005643Z-binding/receipt.json) `inferred_rows_in_context_graph`). An N-Quads file with `A subClassOf B` and `i type A`, all in context `urn:ivg:graph:trials…`, imported with `infer=True` and no `graph`, writes no inferred edge in `trials…`, and answers `"inferred": 7`: seven edges materialized in the default graph from data the file did not contain.
 
-Expected: the docstring: "`infer` ... runs `materialize_inference`" after an import whose "quad's own graph name wins"; [install.inference](../ontology/concepts/install.g5.md#install.inference) scopes inference to one graph.
+Expected: the docstring: "`infer` ... runs `materialize_inference`" after an import whose "quad's own graph name wins"; [install.inference](../ontology/features/data-interchange.g5.md#install.inference) scopes inference to one graph.
 
 Consequence: the imported graph gets no inference, another graph gets derived edges the caller did not ask for, and the answer's count describes the other graph. Medium.
 
-Repair proposal (not implemented): run inference on each graph the import wrote to. Governing statement: [install.import.rdf](../ontology/concepts/install.g5.md#install.import.rdf).
+Repair proposal (not implemented): run inference on each graph the import wrote to. Governing statement: [install.import.rdf](../ontology/features/data-interchange.g5.md#install.import.rdf).
 
 <a id="bug-plt-110"></a>
 ### prov_as_dict and prov_export_from_cypher fail for every edge once the default graph's temporal history is large
@@ -3415,7 +3415,7 @@ Observed: both read `QueryWindow` over all time with one Native API call and fil
 
 Consequence: on any namespace with a real temporal history these two PROV calls are unusable, whatever edge or nodes are asked for. Medium: a feature fails outright (visibly), with no window argument to work around it.
 
-Repair proposal (not implemented): look the edge up by its own source, predicate and timestamp (or read the window in chunks). Governing statement: [install.export.prov](../ontology/concepts/install.g5.md#install.export.prov).
+Repair proposal (not implemented): look the edge up by its own source, predicate and timestamp (or read the window in chunks). Governing statement: [install.export.prov](../ontology/features/data-interchange.g5.md#install.export.prov).
 
 <a id="bug-plt-111"></a>
 ### export_rdf_from_cypher writes an empty file and reports 0 triples when its query fails
@@ -3434,7 +3434,7 @@ Expected: the user guide: "Check `result.error` (or pass `raise_on_error=True`) 
 
 Consequence: a failed export is indistinguishable from a query that matched nothing; downstream tools load an empty file. Medium: silent wrong result.
 
-Repair proposal (not implemented): raise when the query's result carries an error (or run it with `raise_on_error=True`). Governing statement: [install.export.rdf.cypher](../ontology/concepts/install.g5.md#install.export.rdf.cypher).
+Repair proposal (not implemented): raise when the query's result carries an error (or run it with `raise_on_error=True`). Governing statement: [install.export.rdf.cypher](../ontology/features/data-interchange.g5.md#install.export.rdf.cypher).
 
 <a id="bug-srch-107"></a>
 ### Re-inserting a node into an IVF index keeps its old vector when the new one lands in another cell, and counts it twice
@@ -3449,7 +3449,7 @@ Found by: the frozen W52 prediction V4 missed ([predictions](../uplift/consolida
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-46/ivf-observed-20261117T011444Z.json) V4; [second observation](../uplift/consolidated/iteration-46/ivf-observed2-20261117T011512Z.json); [binding](results/ivf_entries/20261117T011629Z-binding/receipt.json)). `ivf_insert(name, "x", v1)` then `ivf_insert(name, "x", v2)` with `v2` nearest another centroid leaves both entries: a search with `v1` still returns `x` first, and after one `ivf_delete(name, "x")` (answering True) `x` is still returned. In the same cell the second insert replaces the vector but `ivf_info.indexed` rises by 2. Iteration 50 ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m8): the cross-cell case needs no change of vector. Under metric "cosine" or "dot", re-inserting a node with the vector the build stored can choose another cell, because the build clusters by Euclidean k-means and `Insert` picks the cell with the largest dot product ([binding](results/ivf_entries/20261117T032444Z-binding/receipt.json) `cell_cosine`, `cell_dot`: built in cell 0, inserted in cell 1, now in both, `indexed` + 1; neighbor `cell_l2` keeps cell 0). [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cosine_reinsert_changes_cell`, neighbor `theorem_l2_insert_matches_build`, control `insert-by-distance`.
 
-Expected: the API reference: `ivf_insert` "add[s] one vector ... in the cell of its nearest centroid"; `ivf_delete` "remove[s] node_id's vector ... Returns True if it was there"; `ivf_info.indexed` is the index's size. [search.scope.indexes.upkeep](../ontology/features/search.g5.md#search.scope.indexes.upkeep): the caller keeps the index in step through these calls.
+Expected: the API reference: `ivf_insert` "add[s] one vector ... in the cell of its nearest centroid"; `ivf_delete` "remove[s] node_id's vector ... Returns True if it was there"; `ivf_info.indexed` is the index's size. [search.scope.indexes.upkeep](../ontology/architecture/search-storage-and-indexes.g5.md#search.scope.indexes.upkeep): the caller keeps the index in step through these calls.
 
 Observed: `IVFIndex.Insert` writes `^IVF(name,"list",cell,node)` without clearing the node's entry in other cells and always adds one to `indexed`; `Delete` removes the first cell's entry and stops (`IVFIndex.cls:180-230`).
 
@@ -3497,7 +3497,7 @@ Observed: `ivf_build` records the index's graph only in the building engine's `_
 
 Consequence: Replacing the engine instance can silently change fusion results over the same data when stored vectors are not unit length. Medium: the replay establishes engine-instance dependence within one process. A separate restart or cross-process test was not run in this audit.
 
-Repair proposal (not implemented): record an IVF index's graph with the index (as BM25 does) and choose the leg by that, and repair bug-srch-109; preserve the BM25 leg's choice and the hnsw leg's graph scope. Governing statement: [search.fusion.leg_index](../ontology/features/search.g5.md#search.fusion.leg_index).
+Repair proposal (not implemented): record an IVF index's graph with the index (as BM25 does) and choose the leg by that, and repair bug-srch-109; preserve the BM25 leg's choice and the hnsw leg's graph scope. Governing statement: [search.fusion.leg_index](../ontology/architecture/search-storage-and-indexes.g5.md#search.fusion.leg_index).
 
 <a id="bug-plt-114"></a>
 ### kg_SUBGRAPH misses edges among the outermost nodes and lists an edge to a node it left out when capped
@@ -3787,7 +3787,7 @@ Found by: iteration 54 W59 follow-up (the native executor's answer beside the SQ
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `136_sql`. The public SQL engine returns one group and the public native-enabled engine returns two for the same two stored values. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [query.native.equal-answers](../ontology/features/cypher.g5.md#query.native.equal-answers): the native executor gives the SQL path's answer. The native grouping is the one that follows openCypher here (1 and 1.0 aside; see the [open question](open_questions.md#query.aggregation.keys.numbers)).
+Expected: [query.native.equal-answers](../ontology/architecture/query-execution.g5.md#query.native.equal-answers): the native executor gives the SQL path's answer. The native grouping is the one that follows openCypher here (1 and 1.0 aside; see the [open question](open_questions.md#query.aggregation.keys.numbers)).
 
 Observed: `Graph.KG.Cypher.Exec.GroupOf` finds a group by the keys' `$List` from `KeyValues` ("a number stays a number"; `Exec.cls:1349-1380`, 1742), while the SQL path groups by text ([bug-cyp-135](#bug-cyp-135)). The shadow-mode TCK runs could not see it: their data are Cypher literals of one kind per key.
 
@@ -3917,7 +3917,7 @@ Found by: source reading after the W60 freeze ([predictions](../uplift/consolida
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `D3_wire_s201`, `D3_wire_lst`. The real Bolt driver receives shortened strings/converted lists as node properties; a 200-character string survives intact. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Node carries its stored properties (Bolt structure semantics); USER_GUIDE: a list comes back as the list "through `execute_cypher`, REST and Bolt alike".
+Expected: [access.bolt.graph_values](../ontology/features/client-interfaces.g5.md#access.bolt.graph_values): a Node carries its stored properties (Bolt structure semantics); USER_GUIDE: a list comes back as the list "through `execute_cypher`, REST and Bolt alike".
 
 Observed: `BoltSession._parse_props_field` cuts any value whose `str()` is longer than 200 characters to `str(val)[:200] + "..."` (`bolt_server.py:887-898`); `_recompose_graph_row` builds every whole node from it (`:745-756`).
 
@@ -3925,7 +3925,7 @@ Consequence: a driver application (or a tool such as LangChain or Neo4j Browser)
 
 Repair proposal (not implemented; checked in the model only): send the parsed value whole. Preserve the decoding of booleans and JSON values. Distinguishing case: a 201-character string and a 100-element list in `RETURN n`.
 
-Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values).
+Governing statement: [access.bolt.graph_values](../ontology/features/client-interfaces.g5.md#access.bolt.graph_values).
 
 <a id="bug-plt-122"></a>
 ### Bolt identifies a node by 31 bits of Python's string hash, so two nodes can reach the driver as one, with the second node's properties in both rows
@@ -3940,7 +3940,7 @@ Found by: source reading after the W60 freeze (post-read T3, [predictions](../up
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `D1_wire_collision`. Two real node IDs with a found 31-bit hash collision arrive as the same driver node with the second value in both rows; distinct hashes keep both. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): each node in a result has its own identity (Bolt: a Node's id and element_id identify it within a transaction).
+Expected: [access.bolt.graph_values](../ontology/features/client-interfaces.g5.md#access.bolt.graph_values): each node in a result has its own identity (Bolt: a Node's id and element_id identify it within a transaction).
 
 Observed: `_node_int_id` is `hash(node_id) & 0x7FFFFFFF` (`bolt_server.py:351-352`); Python salts string hashes per process, and the driver keeps one Node object per id within a result (observed, neo4j 6.4.1).
 
@@ -3948,7 +3948,7 @@ Consequence: with n nodes in one answer the chance of a merge is about n²/2³²
 
 Repair proposal (not implemented; checked in the model only): derive the id from a unique key (and send the node id as `element_id` on Bolt 5). Preserve one id per node within a result. Distinguishing case: the colliding pair above.
 
-Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values).
+Governing statement: [access.bolt.graph_values](../ontology/features/client-interfaces.g5.md#access.bolt.graph_values).
 
 <a id="bug-plt-123"></a>
 ### Bolt reports a relationship's start and end from the order of the columns around it, not from the stored direction
@@ -3963,7 +3963,7 @@ Found by: source reading after the W60 freeze (post-read T2, [predictions](../up
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `D2_wire_bra`, `D2_wire_rev`. Reordering RETURN columns reverses the driver's relationship endpoints relative to storage; source-first columns work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Relationship carries its own start and end node (Bolt structure semantics; openCypher `startNode(r)`).
+Expected: [access.bolt.graph_values](../ontology/features/client-interfaces.g5.md#access.bolt.graph_values): a Relationship carries its own start and end node (Bolt structure semantics; openCypher `startNode(r)`).
 
 Observed: `_recompose_graph_row` takes `prev_node_id` (the node triplet before the column) as start and the triplet after it as end, else 0 (`bolt_server.py:787-799`); the engine's relationship value `{"type", "props"}` has no endpoints.
 
@@ -3971,7 +3971,7 @@ Consequence: a driver application that walks relationships by `start_node`/`end_
 
 Repair proposal (not implemented; checked in the model only): carry the stored source and target with the relationship value. Distinguishing case: `RETURN b, r, a` against `RETURN a, r, b`.
 
-Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values).
+Governing statement: [access.bolt.graph_values](../ontology/features/client-interfaces.g5.md#access.bolt.graph_values).
 
 <a id="bug-cyp-144"></a>
 ### A slice of a list parameter by parameters answers the empty list with IRIS driver 5.4.1 (and fails with 5.3.2)
@@ -4051,13 +4051,13 @@ Found by: install.schema.name metadata ("suspected divergence: the deploy rewrit
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `B:x_lower_setup`, `D:lower16_setup`, `D:after_lower`. Case-only schema spelling recompiles wrong-case classes and bypasses empty-column width refusal; the original spelling refuses. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: names that differ only in letter case are the same schema ([install.schema.name](../ontology/concepts/install.g5.md#install.schema.name)), so setup behaves as with the recorded spelling: an empty column at another width is refused without `rewidth=True` (4.7.0, [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width)), the registry width follows the column, and an unchanged class set is not recompiled.
+Expected: names that differ only in letter case are the same schema ([install.schema.name](../ontology/operations/setup-and-upgrade.g5.md#install.schema.name)), so setup behaves as with the recorded spelling: an empty column at another width is refused without `rewidth=True` (4.7.0, [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width)), the registry width follows the column, and an unchanged class set is not recompiled.
 
 Consequence: a deployment whose configuration spells the schema in another case (`IVG_SCHEMA_PREFIX=rag` for a namespace set up as `RAG`) silently re-declares empty vector columns at its own width, the 4.7.0 hazard the refusal exists for, and leaves registry and column disagreeing, so writes to those tables are refused at either width. Every setup from it also reports three failed classes and recompiles everything. Medium: no stored vector is lost (IRIS refuses the populated ALTER), but the documented refusal is bypassed and the namespace ends inconsistent.
 
 Repair proposal (not implemented, not checked): canonicalize the engine's schema to the recorded spelling once the record is read (`same_schema` already accepts it), before any catalog lookup, rewrite or DDL; or read the declared width case-insensitively. Behavior to preserve: case-insensitive acceptance. Distinguishing case: binding `D:lower16_setup` must then raise as `D:upper16_setup` does. Writers/readers affected: `_record_and_initialize`, `_vector_column_action`, `reconcile_recorded_dimensions`, `deploy_packaged_classes`, `RoutineRecord`.
 
-Governing statements: [install.schema.name](../ontology/concepts/install.g5.md#install.schema.name), [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width).
+Governing statements: [install.schema.name](../ontology/operations/setup-and-upgrade.g5.md#install.schema.name), [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width).
 
 <a id="bug-str-115"></a>
 ### While sync() rebuilds the adjacency index, traversal reads in other sessions see it purged: khop answers the seed alone, a path length answers no path, and BFS answers with blank types
@@ -4072,13 +4072,13 @@ Found by: accident, then on purpose: the builder's re-run of the `traversal_stra
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/rebuild_reads.json), cases `during_sync`, `seed_alone_reads`. During six real sync calls, concurrent readers observed the seed alone 7,182 times; 40 quiet reads saw the complete graph. No pause or provider injection forced the race. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [structure.rebuild](../ontology/features/graph-structure.g5.md#structure.rebuild) "running it again is safe", and with a declared index "the adjacency never needs it"; [structure.drift](../ontology/features/graph-structure.g5.md#structure.drift); [algorithms.op.khop](../ontology/features/algorithms.g5.md#algorithms.op.khop) "A walk that fails raises an error rather than answer empty". BuildKG's own comment: "destroyed adjacency looks to every reader like a graph with no edges". The live `^NKG` rewrite is held to "no reader sees an empty or invented ^NKG during the rebuild" (`tests/e2e/test_nkg_live_rewrite_e2e.py`).
+Expected: [structure.rebuild](../ontology/operations/status-and-repair.g5.md#structure.rebuild) "running it again is safe", and with a declared index "the adjacency never needs it"; [structure.drift](../ontology/operations/status-and-repair.g5.md#structure.drift); [algorithms.op.khop](../ontology/features/algorithms.g5.md#algorithms.op.khop) "A walk that fails raises an error rather than answer empty". BuildKG's own comment: "destroyed adjacency looks to every reader like a graph with no edges". The live `^NKG` rewrite is held to "no reader sees an empty or invented ^NKG during the rebuild" (`tests/e2e/test_nkg_live_rewrite_e2e.py`).
 
 Observed: `TraversalBuild.BuildKG` (lines 30-140) takes the writers' lock `^IVG.AdjW` shared (`Adjacency.BeginRebuild`, 814-822), which readers never take, and with a declared index runs `rdfedges.%BuildIndices($lb("idxedgesadj"), 1, …)` after its transaction: the purge empties `^KG("out"/"in")` and the callbacks refill it row by row (up to 8 jobs). `BFSFast` and `TraversalPaths.ShortestLength` read `^KG` directly.
 
 Consequence: a silent wrong answer, not an error, for every adjacency reader in every other session for the length of a rebuild (about three seconds per `sync()` on this small fixture; proportional to the edge count): k-hop, BFS types, unweighted path lengths, and by the same mechanism degree, PPR and the native Cypher reads over `^KG` (not exercised). `sync()` is the documented step after bulk loads and erasures, and it rebuilds a declared index that needs no rebuild. Medium: silent and reachable in ordinary operation, but transient and repaired when the rebuild ends.
 
-Repair proposal (not implemented): with a declared index skip the edge-index rebuild in `sync()` (structure.rebuild already says it is not needed), or build into a shadow tree and swap once, as `RewriteNKG` does for `^NKG`. Preserve: the end state equals the rows (`theorem_end_is_rows`, `adjacency_maint::theorem_incremental_equals_rebuild`). Distinguishing case: no seed-alone read during `sync()` (control `rebuild-swaps`; proved for the repair: `theorem_swap_shows_old_or_rows`). Governing statement: [structure.rebuild](../ontology/features/graph-structure.g5.md#structure.rebuild).
+Repair proposal (not implemented): with a declared index skip the edge-index rebuild in `sync()` (structure.rebuild already says it is not needed), or build into a shadow tree and swap once, as `RewriteNKG` does for `^NKG`. Preserve: the end state equals the rows (`theorem_end_is_rows`, `adjacency_maint::theorem_incremental_equals_rebuild`). Distinguishing case: no seed-alone read during `sync()` (control `rebuild-swaps`; proved for the repair: `theorem_swap_shows_old_or_rows`). Governing statement: [structure.rebuild](../ontology/operations/status-and-repair.g5.md#structure.rebuild).
 
 Iteration 59 (review 56-58 evidence): the native Cypher reader is now exercised and departs too, and the writers' side is the passing neighbor. The reviewer's race probe ([copy](../uplift/consolidated/iteration-59/review-repairs/race_repro.py), fresh prefix `i59r_`) reproduced it afresh ([observation](../uplift/consolidated/iteration-59/review-repairs/race-observed-090546.json)): of 6,238 reads during three `sync()` calls, 462 answered `MATCH (s)-[*1..2]->(b) RETURN count(DISTINCT b)` = 0 on a `native_cypher=True` engine together with k-hop = the seed alone and path length −1 (4 more mixed reads departed), where every quiet read answers 3; all 40 `create_edge` calls made during `sync()` were still in `^KG("out")` and answered by k-hop afterwards. So the race loses reads, not writes. Found by: independent review 56-58 (its own probe `race-084644`: 467 of 6,413); reproduced by: this run.
 
@@ -4118,7 +4118,7 @@ Repair proposal (not implemented): document fast as an upper bound while current
 `two_hop_after_sync` [3, 1] becomes [1, 1] (or the doc names 3). Governing statement: structure.rebuilt (two-hop
 statistics are a rebuilt store); docs/API_REFERENCE.md §khop2_count_fast.
 
-Affected owner: [structure.rebuilt.stamp](../ontology/features/graph-structure.g5.md#structure.rebuilt.stamp) (the reader rule holds; the value it gates departs), algorithms.op.khop.
+Affected owner: [structure.rebuilt.stamp](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.rebuilt.stamp) (the reader rule holds; the value it gates departs), algorithms.op.khop.
 
 <a id="bug-cyp-155"></a>
 ### A WITH column of coalesce() answers a stored number as its text: WITH coalesce(n.v, n.s) AS x RETURN x gives '3' for 3 and '2.5' for 2.5
@@ -4175,13 +4175,13 @@ Found by: iteration 56 frozen pair F1 (missed: neither the placement nor a named
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `Q:place_ok`, `Q:total_conserved`. A valid quarantine placement fails Cursor closed through DB-API and leaves the row quarantined. An explicitly repaired cursor-materialization control succeeds; it is not shipped behavior. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [search.quarantine.placement](../ontology/features/search.g5.md#search.quarantine.placement) and ADMIN_GUIDE §9: an operator places each quarantined vector, naming its graph; placement succeeds when the route and node fit, and refuses naming the reason otherwise.
+Expected: [search.quarantine.placement](../ontology/architecture/search-storage-and-indexes.g5.md#search.quarantine.placement) and ADMIN_GUIDE §9: an operator places each quarantined vector, naming its graph; placement succeeds when the route and node fit, and refuses naming the reason otherwise.
 
 Consequence: the only documented way out of quarantine does not work over the DB-API driver (the ordinary client connection), so vectors the 4.0.0 migration quarantined stay unsearchable; the error names a communication failure rather than a reason. Medium: an operator recovery path is unusable; no data is lost (the row stays). Embedded Python (irispython inside IRIS) was not tried; the unit tests use a mocked cursor.
 
 Repair proposal (not implemented; checked only as a harness substitution, `QR:*`): materialize the row before closing the cursor (`values = None if row is None else tuple(row)`), as `get_embedding_identity` does. Behavior to preserve: refusal order and the insert-then-delete transaction.
 
-Governing statement: [search.quarantine.placement](../ontology/features/search.g5.md#search.quarantine.placement).
+Governing statement: [search.quarantine.placement](../ontology/architecture/search-storage-and-indexes.g5.md#search.quarantine.placement).
 
 <a id="bug-led-013"></a>
 ### A relationship whose qualifier `temporal` is the text "true" never verifies equal, and every adopting verify records it again
@@ -4202,7 +4202,7 @@ Observed: `read_canonical` skips a row only when `parsed.get("temporal") is True
 
 Consequence: an operator never sees `equal` on a ledger that holds such a relationship, so real unrecorded writes are hidden in a permanent false divergence, and each adopting verify or re-enable grows the history by one spurious adoption revision. Reachable through the public `Changeset` with an ordinary qualifier name; limited to a qualifier named exactly `temporal` whose value is "true" or `True` (the name is neither reserved nor documented as reserved). An administrator can clear it only by changing or removing that qualifier. Medium: visible misbehaviour of the ledger's integrity check, repairable by an administrator, no graph content lost.
 
-Repair proposal (not implemented): drop replay statements by the marker only for records written by a genesis before 4.6.0 (the case the rule was written for), or reserve the qualifier name `temporal` in the builder and the server; preserve the JSON-true exclusion of temporal writes' plain rows. Distinguishing case: the `temporal="true"` commit above must verify equal and the JSON-true direct temporal write must stay out of both sides. Related shared root (unreserved marker name), different trigger and reader: [F-C0351](audits/register-20261115/bugs-review.md#F-C0351), [F-C0450](audits/register-20261115/bugs-review.md#F-C0450). Governing statements: [ledger.verify](../ontology/features/ledger.g5.md#ledger.verify), [ledger.verify.scope](../ontology/features/ledger.g5.md#ledger.verify.scope).
+Repair proposal (not implemented): drop replay statements by the marker only for records written by a genesis before 4.6.0 (the case the rule was written for), or reserve the qualifier name `temporal` in the builder and the server; preserve the JSON-true exclusion of temporal writes' plain rows. Distinguishing case: the `temporal="true"` commit above must verify equal and the JSON-true direct temporal write must stay out of both sides. Related shared root (unreserved marker name), different trigger and reader: [F-C0351](audits/register-20261115/bugs-review.md#F-C0351), [F-C0450](audits/register-20261115/bugs-review.md#F-C0450). Governing statements: [ledger.verify](../ontology/operations/ledger.g5.md#ledger.verify), [ledger.verify.scope](../ontology/operations/ledger.g5.md#ledger.verify.scope).
 
 <a id="bug-led-017"></a>
 ### While a caller's transaction holds the ledger's counter row but not its head, every other connection's valid commit fails as LedgerInconsistencyError
@@ -4231,7 +4231,7 @@ Observed: `WriteRevision` saves the counter row and returns `Err("inconsistent",
 
 Consequence: while one caller keeps such a transaction open, every other writer's ledger commit in the namespace fails after a 10-second wait, with an error class that tells operators the ledger is internally inconsistent and that a caller cannot tell apart from a lost transport answer ([bug-led-015](#bug-led-015) shares the class). Nothing is written and nothing is counted, so no content is wrong; a retry after the caller's transaction ends succeeds. The triggers are ordinary: a read-only `verify()` or a refused direct write inside an application transaction that has written anything, on the documented engine construction. The window lasts as long as the application keeps its transaction open. Medium: visible misbehaviour that blocks all other writers for that window under a misleading class; it ends when the transaction ends and loses no data. Not observed: an engine from `from_connect`, whose guard and verify use a connection of their own (source-derived: the save then commits at once, as S4 shows for the same save outside a transaction); `disable()` and `set_strict()` inside a caller's transaction, which also save the row on the same process (source only).
 
-Repair proposal (not implemented): keep counter and verify bookkeeping out of the caller's transaction, for example `$Increment` on a global outside the row, or a save on a separate process. Do not make a commit's outcome depend on the counter save: count after the commit, and do not fail the commit when the count fails. Preserve: the caller's rollback still takes back the caller's own written revision. Distinguishing case: S1 and S3 above must let B commit at once. Sibling of [bug-led-014](#bug-led-014) (same counter-row lock, which there loses counts). Governing statements: [ledger.commit.caller-transaction](../ontology/features/ledger.g5.md#ledger.commit.caller-transaction), [ledger.observability](../ontology/features/ledger.g5.md#ledger.observability).
+Repair proposal (not implemented): keep counter and verify bookkeeping out of the caller's transaction, for example `$Increment` on a global outside the row, or a save on a separate process. Do not make a commit's outcome depend on the counter save: count after the commit, and do not fail the commit when the count fails. Preserve: the caller's rollback still takes back the caller's own written revision. Distinguishing case: S1 and S3 above must let B commit at once. Sibling of [bug-led-014](#bug-led-014) (same counter-row lock, which there loses counts). Governing statements: [ledger.commit.caller-transaction](../ontology/features/ledger.g5.md#ledger.commit.caller-transaction), [ledger.observability](../ontology/operations/ledger.g5.md#ledger.observability).
 
 <a id="bug-plt-124"></a>
 ### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors
@@ -4246,13 +4246,13 @@ Found by: frozen W60 prediction ER2 (the failure held; its code was not predicte
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `C_iris_sql`, `C_driver_param`. The real Bolt listener calls provider/parameter failures SyntaxError; genuine parse errors and the read-only gate show the neighboring classifications. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [access.bolt.errors](../ontology/concepts/access.g5.md#access.bolt.errors): Neo4j status codes classify a failure by cause (a database failure is a DatabaseError or TransientError; a missing parameter is ParameterMissing).
+Expected: [access.bolt.errors](../ontology/features/client-interfaces.g5.md#access.bolt.errors): Neo4j status codes classify a failure by cause (a database failure is a DatabaseError or TransientError; a missing parameter is ParameterMissing).
 
 Observed: `_handle_run` sends `Neo.ClientError.Statement.SyntaxError` for every exception, including `result.error` re-raised (`bolt_server.py:612-618`).
 
 Consequence: a driver's managed transaction never retries a transient database error, and a client cannot tell a bad query from a failed database. Low.
 
-Governing statement: [access.bolt.errors](../ontology/concepts/access.g5.md#access.bolt.errors).
+Governing statement: [access.bolt.errors](../ontology/features/client-interfaces.g5.md#access.bolt.errors).
 
 <a id="bug-plt-125"></a>
 ### An integer result past 64 bits ends the Bolt session instead of failing the query, and the engine answers it
@@ -4267,13 +4267,13 @@ Found by: post-read T5 ([predictions](../uplift/consolidated/iteration-55/pipeli
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `B_wire_overflow`. An oversized integer accepted by the engine breaks the Bolt connection instead of producing FAILURE; int64 maximum arrives. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: openCypher: integer arithmetic overflows with an error; [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results): a failed RUN or PULL is a FAILURE.
+Expected: openCypher: integer arithmetic overflows with an error; [access.bolt.results](../ontology/features/client-interfaces.g5.md#access.bolt.results): a failed RUN or PULL is a FAILURE.
 
 Observed: `PackStream._pack_int` falls through to `struct.pack('>q')`, which raises for a value outside int64 (`bolt_server.py:95-105`); `_handle_pull` sends records outside RUN's try (`:640-650`).
 
 Consequence: the client loses its connection and any open transaction; `execute_cypher` returns an approximate number. Low.
 
-Governing statement: [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results).
+Governing statement: [access.bolt.results](../ontology/features/client-interfaces.g5.md#access.bolt.results).
 
 <a id="bug-plt-126"></a>
 ### The Neo4j HTTP transaction route answers a whole node as three text columns, not a node
@@ -4288,13 +4288,13 @@ Found by: frozen W60 prediction RT8 (TX) missed ([predictions](../uplift/consoli
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `126_bad`. The real HTTP transaction route returns one node as three text columns; properties(n) returns a property map with node metadata. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: the Neo4j HTTP API answers a node as its property map with node `meta`; [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces) (each call does what the engine method does) does not settle which shape a Neo4j route owes.
+Expected: the Neo4j HTTP API answers a node as its property map with node `meta`; [access.surfaces](../ontology/features/client-interfaces.g5.md#access.surfaces) (each call does what the engine method does) does not settle which shape a Neo4j route owes.
 
 Observed: the route returns the engine's columns unchanged; only Bolt recomposes node triplets.
 
 Consequence: a Neo4j HTTP client gets three columns per node and must parse JSON text. Low.
 
-Governing statement: [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces).
+Governing statement: [access.surfaces](../ontology/features/client-interfaces.g5.md#access.surfaces).
 
 Audit qualification: Neo4j HTTP compatibility discrepancy; the narrower current access.surfaces ontology does not itself settle node response shape.
 
@@ -4475,7 +4475,7 @@ Consequence: one setup call with an explicit name abandons the existing tables' 
 
 Repair proposal (not implemented, not checked): refuse an explicit name when IVG's tables are in exactly one other schema (as FR-009), or amend FR-009 and the owner to the guide's reading; a decision either way.
 
-Governing statement: [install.schema.existing](../ontology/concepts/install.g5.md#install.schema.existing).
+Governing statement: [install.schema.existing](../ontology/operations/setup-and-upgrade.g5.md#install.schema.existing).
 
 Audit qualification: Runtime reproduced; source documents conflict. Retained as a Low contract/documentation discrepancy, not an owner-approved product-policy decision.
 
@@ -4492,13 +4492,13 @@ Found by: iteration 56 frozen pair A5 (missed: the owner predicts a refusal); `c
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `A:norecord_marker_call`. An unrecorded namespace with SQL markers admits an engine; removing markers causes the expected refusal. Documentation and ontology disagree on the conjunction. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: [install.schema.not_ready](../ontology/concepts/install.g5.md#install.schema.not_ready): an engine on a namespace with no schema record, or without the current release's SQL objects, raises one error on first access. ADMIN_GUIDE describes the as-built rule ("no record and lacks 4.6.0's SQL objects").
+Expected: [install.schema.not_ready](../ontology/operations/setup-and-upgrade.g5.md#install.schema.not_ready): an engine on a namespace with no schema record, or without the current release's SQL objects, raises one error on first access. ADMIN_GUIDE describes the as-built rule ("no record and lacks 4.6.0's SQL objects").
 
 Consequence: an engine runs on a namespace whose last setup stopped after its DDL (grants, Arno revocation, ledger history and the record not yet done), or whose objects were partly dropped; failures surface later as SQL errors (KNOWN_ISSUES: edge writes fail where `Graph.KG.EdgeScan` is missing). Low: documented, and the next setup repairs it.
 
 Repair proposal (not implemented, not checked): refuse with no record regardless of the marker (the control `unrecorded-marker-refused`), keeping setup, status and legacy removal exempt; optionally probe the marker when a record exists. Distinguishing case: `A:norecord_marker_call` must then raise "setup has not finished here".
 
-Governing statements: [install.schema.not_ready](../ontology/concepts/install.g5.md#install.schema.not_ready), [install.setup.resume](../ontology/concepts/install.g5.md#install.setup.resume).
+Governing statements: [install.schema.not_ready](../ontology/operations/setup-and-upgrade.g5.md#install.schema.not_ready), [install.setup.resume](../ontology/operations/setup-and-upgrade.g5.md#install.setup.resume).
 
 Audit qualification: Runtime reproduced; source documents conflict. Retained as a Low contract/documentation discrepancy, not an owner-approved product-policy decision.
 
@@ -4536,13 +4536,13 @@ Found by: iteration 53 Part B, frozen prediction ME4 (partial: the edges held, t
 
 Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/sql_procs.json), cases `hop_default_1`, `hop_named_1`. The EDGESCAN route loses relationship properties that the normal route reads. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
-Expected: `IVG_EDGESCAN` chooses a plan, "the plan before 4.3.0" (ADMIN_GUIDE:1248, API_REFERENCE:3215), and CHANGELOG 4.3.0 reports both plans' answers equal; a plan choice must not change what a query answers ([structure.adjacency.scan](../ontology/features/graph-structure.g5.md#structure.adjacency.scan)).
+Expected: `IVG_EDGESCAN` chooses a plan, "the plan before 4.3.0" (ADMIN_GUIDE:1248, API_REFERENCE:3215), and CHANGELOG 4.3.0 reports both plans' answers equal; a plan choice must not change what a query answers ([structure.adjacency.scan](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.adjacency.scan)).
 
 Observed: the hop joins a `JSON_TABLE` over `MatchEdgesAllGraphs` (or `MatchEdges` for `USE GRAPH ''`) whose columns are `s, p, o_id, w, graph_id`, and `_expr_propref_edge_alias` (`translator.py:22266-22273`) returns the literal `NULL` for every property of such an alias, although the scan carries the weight as `w`.
 
 Consequence: with the variable set, any query reading `r.weight` or another relationship property after such a hop, or filtering on one in `WHERE`, answers null or drops rows. The variable is opt-in and off by default.
 
-Repair proposal (not implemented): read `r.weight` from the scan's `w` and fall back to the rows plan for any other relationship property (as already done for inline relationship properties). Preserve: the scan's targets and graphs. Distinguishing case: the hop above reads 1.0, 2.0, 1.0, 10.0 under both settings (control `scan-exposes-weight` checks the model's direction only). Governing statement: [structure.adjacency.scan](../ontology/features/graph-structure.g5.md#structure.adjacency.scan).
+Repair proposal (not implemented): read `r.weight` from the scan's `w` and fall back to the rows plan for any other relationship property (as already done for inline relationship properties). Preserve: the scan's targets and graphs. Distinguishing case: the hop above reads 1.0, 2.0, 1.0, 10.0 under both settings (control `scan-exposes-weight` checks the model's direction only). Governing statement: [structure.adjacency.scan](../ontology/architecture/adjacency-and-derived-data.g5.md#structure.adjacency.scan).
 
 <a id="bug-tmp-107"></a>
 ### backfill_temporal_rows answers the temporal triples it walked, not the rows it wrote, and setup reports that as edges given rows
@@ -4563,7 +4563,7 @@ Observed: `BackfillStructuralRows` returns `BackfillWalk(...).asserted`, which i
 
 Consequence: an operator upgrading a namespace where most temporal edges already have rows (written with `graph=` before the index, or by an earlier backfill) is told that many edges were given rows; a re-run never reports 0. No row is written wrongly.
 
-Repair proposal (not implemented): count only the triples whose edge `INSERT` wrote a row (`%ROWCOUNT`), or rename the field to the triples checked. Preserve: idempotence, the skip of temporal-only predicates, the bounded memory. Distinguishing case: the second run above answers 0 (control `count-written-rows`). Governing statement: [temporal.structural.upgrade](../ontology/features/temporal.g5.md#temporal.structural.upgrade).
+Repair proposal (not implemented): count only the triples whose edge `INSERT` wrote a row (`%ROWCOUNT`), or rename the field to the triples checked. Preserve: idempotence, the skip of temporal-only predicates, the bounded memory. Distinguishing case: the second run above answers 0 (control `count-written-rows`). Governing statement: [temporal.structural.upgrade](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.structural.upgrade).
 
 <a id="bug-str-112"></a>
 ### DijkstraPath with two empty endpoints answers a zero-length path through the NUL character
@@ -4806,7 +4806,7 @@ Observed:
 
 Consequence: a report of what is built that is wrong in the common flow (set up first, load afterwards), plus a slower path for personalized PageRank in every new process until setup is re-run. Low: the answers observed were the same, and the documented re-run of setup after an upgrade clears it.
 
-Repair proposal (not implemented): have `sync()` record both markers, or derive `kg_built`/`nkg_built` from `KGEdgeCount`/`NKGPopulated` as `status()` does. Preserve: detection once per engine, and refusal (`ClassesUnreadable`) when the classes cannot be read. Writers and readers: `bootstrap_kg_global`, `sync()`, `_detect_capabilities`, `kg_PERSONALIZED_PAGERANK`. Distinguishing case: empty setup, load, sync → a fresh engine reads both True. Control `sync-sets-markers` checks the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.capabilities](../ontology/concepts/install.g5.md#install.status.capabilities).
+Repair proposal (not implemented): have `sync()` record both markers, or derive `kg_built`/`nkg_built` from `KGEdgeCount`/`NKGPopulated` as `status()` does. Preserve: detection once per engine, and refusal (`ClassesUnreadable`) when the classes cannot be read. Writers and readers: `bootstrap_kg_global`, `sync()`, `_detect_capabilities`, `kg_PERSONALIZED_PAGERANK`. Distinguishing case: empty setup, load, sync → a fresh engine reads both True. Control `sync-sets-markers` checks the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.capabilities](../ontology/operations/status-and-repair.g5.md#install.status.capabilities).
 
 <a id="bug-plt-118"></a>
 ### The schema diagram draws a relationship whose end has no label as starting or ending at the first label
@@ -4827,7 +4827,7 @@ Observed: `start_label_id = 0` and `end_label_id = 0` are kept when the sampled 
 
 Consequence: Neo4j Browser-style schema views (`/schema` consumers, `db.schema.visualization`) show a relationship attached to an unrelated label. Low: documented in the docstring, and the diagram is sampled anyway.
 
-Repair proposal (not implemented): number labels from 1, or give an unlabeled end its own placeholder node. Preserve: one node per label and one relationship per predicate. Control `viz-none-distinct` checks the direction in the model only. Governing statement: [install.status.diagram](../ontology/concepts/install.g5.md#install.status.diagram).
+Repair proposal (not implemented): number labels from 1, or give an unlabeled end its own placeholder node. Preserve: one node per label and one relationship per predicate. Control `viz-none-distinct` checks the direction in the model only. Governing statement: [install.status.diagram](../ontology/operations/status-and-repair.g5.md#install.status.diagram).
 
 <a id="bug-plt-120"></a>
 ### The ledger line shows "0 commits · 0 rejections" when the ledger counters cannot be read, and reports no error
@@ -4848,7 +4848,7 @@ Observed: `GraphLedger.stats()` catches any exception from the `ledger_stats` SE
 
 Consequence: an operator auditing the ledger reads no rejections where there were some, from a role that may not read the counters. Low: it needs a role split at one table, the head sequence still shows, and the ledger's own history is unaffected.
 
-Repair proposal (not implemented): let `stats()` raise (or return a flag) when the read fails, so `_ledger_status` reports it and names `ledger`. Preserve: `stats()` on a never-enabled ledger; the Prometheus ledger hook. Control `ledger-read-reported` checks the direction in the model only. Governing statement: [install.status.ledger](../ontology/concepts/install.g5.md#install.status.ledger).
+Repair proposal (not implemented): let `stats()` raise (or return a flag) when the read fails, so `_ledger_status` reports it and names `ledger`. Preserve: `stats()` on a never-enabled ledger; the Prometheus ledger hook. Control `ledger-read-reported` checks the direction in the model only. Governing statement: [install.status.ledger](../ontology/operations/status-and-repair.g5.md#install.status.ledger).
 
 <a id="bug-cyp-115"></a>
 ### A map value read by a key answers numbers and booleans as text
@@ -5173,12 +5173,12 @@ Consequence: `[]` cached for a seed that did not exist yet is served after `crea
 
 Same creation trigger/effect as the retained playbook record F-1004, which carries an inherited live observation and refutes its node-deletion premise. This is one creation defect, not two discoveries. The new global PageRank contract does not cover PPR.
 
-Repair proposal (not implemented): key PPR on the node-set token as PageRank is. Governing statements: [algorithms.cache.token](../ontology/features/algorithms.g5.md#algorithms.cache.token), [algorithms.cache](../ontology/features/algorithms.g5.md#algorithms.cache).
+Repair proposal (not implemented): key PPR on the node-set token as PageRank is. Governing statements: [algorithms.cache.token](../ontology/architecture/algorithm-execution.g5.md#algorithms.cache.token), [algorithms.cache](../ontology/architecture/algorithm-execution.g5.md#algorithms.cache).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [algorithms.cache](../ontology/features/algorithms.g5.md#algorithms.cache), [algorithms.cache.token](../ontology/features/algorithms.g5.md#algorithms.cache.token).
+Canonical owner and evidence: [algorithms.cache](../ontology/architecture/algorithm-execution.g5.md#algorithms.cache), [algorithms.cache.token](../ontology/architecture/algorithm-execution.g5.md#algorithms.cache.token).
 
 <a id="bug-adp-001"></a>
 ### A batch fallback in the embedded cursor reruns the rows that already ran
@@ -5203,12 +5203,12 @@ Observed: the first pass runs rows in order; an unsupported-path error at row k 
 
 Consequence: an INSERT batch can write rows twice or fail on a key it wrote itself; an UPDATE batch reapplies changes.
 
-Repair proposal (not implemented): resume the fallback at the row that failed (the model's `fallback_start(failed_at)`), or run the whole batch through one path chosen at prepare time. Governing statement: [adapters.embedded.no_data](../ontology/concepts/adapters.g5.md#adapters.embedded.no_data).
+Repair proposal (not implemented): resume the fallback at the row that failed (the model's `fallback_start(failed_at)`), or run the whole batch through one path chosen at prepare time. Governing statement: [adapters.embedded.no_data](../ontology/architecture/adapters.g5.md#adapters.embedded.no_data).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). IRIS must raise the unsupported-path error after a successful batch prefix; scripted iris.sql does not establish this native trigger
 
-Canonical owner and evidence: [adapters.embedded.no_data](../ontology/concepts/adapters.g5.md#adapters.embedded.no_data).
+Canonical owner and evidence: [adapters.embedded.no_data](../ontology/architecture/adapters.g5.md#adapters.embedded.no_data).
 
 <a id="bug-str-101"></a>
 ### Flat node property aliases lose one stored value when id and p_id coexist
@@ -5466,7 +5466,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [install.snapshot.temporal](../ontology/concepts/install.g5.md#install.snapshot.temporal).
+Canonical owner and evidence: [install.snapshot.temporal](../ontology/operations/snapshots-and-bulk-load.g5.md#install.snapshot.temporal).
 
 <a id="F-C0841"></a>
 ### Cypher range() with a step of 0 known only at run time answers [] instead of raising NumberOutOfRange
@@ -5552,7 +5552,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [algorithms.op.wcc](../ontology/features/algorithms.g5.md#algorithms.op.wcc), [algorithms.routing.fallback](../ontology/features/algorithms.g5.md#algorithms.routing.fallback).
+Canonical owner and evidence: [algorithms.op.wcc](../ontology/features/algorithms.g5.md#algorithms.op.wcc), [algorithms.routing.fallback](../ontology/architecture/algorithm-execution.g5.md#algorithms.routing.fallback).
 
 Fresh audit qualification: public SQL GraphStore execute_wcc returns an error for the accepted node ID components. The public engine kg_WCC succeeds by falling back to the Owner. The fresh regression does not claim that the engine WCC call fails.
 
@@ -5571,7 +5571,7 @@ Reproduced by: **partial reproduced** — [executable component cases](audits/re
 
 Historical reproduction record: None natively; `bolt-session-probe.py` executes the real ordinary handshake, WebSocket session run/receive/dispatch, RUN/PULL and record encoder using local async transport objects and a one-row engine adapter, with zero socket connections. Listener and real driver reachability are not claimed.
 
-Expected: [access.bolt.framing](../ontology/concepts/access.g5.md#access.bolt.framing), from the product's Bolt4.4 compatibility commitment and the [primary chunking specification](https://neo4j.com/docs/bolt/current/bolt/message/): a message may be split into arbitrary positive chunks through 65,535 bytes, without changing subsequent messages.
+Expected: [access.bolt.framing](../ontology/features/client-interfaces.g5.md#access.bolt.framing), from the product's Bolt4.4 compatibility commitment and the [primary chunking specification](https://neo4j.com/docs/bolt/current/bolt/message/): a message may be split into arbitrary positive chunks through 65,535 bytes, without changing subsequent messages.
 
 Observed: the stateless decoder accepts the valid fragmented HELLO, then `_recv_message` advances the raw buffer by the length of a default-chunk re-encoding. This omits extra received chunk headers and leaves old bytes. With later RUN/PULL delivered separately, the retained HELLO trace executes RETURN1 once but never emits a record, remains STREAMING, and fails to consume PULL/GOODBYE before the local transport is exhausted. The earlier small RESET witness instead returns empty before the later RUN. These are distinct concrete consequences of the same wrong offset; it does not always suppress RUN. Canonical default framing succeeds. Coalescing the whole exchange also succeeds because all complete bodies enter the queue before the wrong cut, but leaves residue; this passing neighbor is retained. The initial harness incorrectly expected coalesced failure and is preserved under `bolt-attempts/overbroad-packet-oracle.*` as a withdrawn expectation.
 
@@ -5582,7 +5582,7 @@ Repair proposal (not implemented): retain actual consumed-byte offsets from the 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). actual WebSocket listener/socket and real database query provider; local transport and one-row engine adapter are substituted
 
-Canonical owner and evidence: [access.bolt.framing](../ontology/concepts/access.g5.md#access.bolt.framing).
+Canonical owner and evidence: [access.bolt.framing](../ontology/features/client-interfaces.g5.md#access.bolt.framing).
 
 <a id="bug-plt-102"></a>
 ### WebSocket Bolt closes an ordinary session when it receives a valid keep-alive chunk
@@ -5599,7 +5599,7 @@ Reproduced by: **partial reproduced** — [executable component cases](audits/re
 
 Historical reproduction record: None natively; actual session/codec methods run through local transport objects, with no listener, actual socket, authentication scenario or database provider. Scalar query output is a declared one-row adapter premise.
 
-Expected: [access.bolt.framing](../ontology/concepts/access.g5.md#access.bolt.framing). The [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/) introduces empty NOOP chunks in4.1 with both clients and servers supporting them;4.3 permits them in all connection states. The actual trace negotiates the product's supported4.4.
+Expected: [access.bolt.framing](../ontology/features/client-interfaces.g5.md#access.bolt.framing). The [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/) introduces empty NOOP chunks in4.1 with both clients and servers supporting them;4.3 permits them in all connection states. The actual trace negotiates the product's supported4.4.
 
 Observed: a canonical HELLO then empty chunk followed by ordinary RUN/PULL closes before the query, because `_recv_message` returns b'' and the WebSocket run loop treats every false value as connection end. Both separate and coalesced transport frames fail. The same actual TCP session run/receive using StreamReader and a local writer continues and emits the expected scalar record; no TCP socket was opened.
 
@@ -5717,7 +5717,7 @@ Observed: `executeCypher` is a Query field (`api/gql/schema.py:98-165`), and the
 
 Consequence: with no key configured, a cross-site GET from a browser can run a `CREATE` against a reachable server.
 
-Repair proposal (not implemented): make `executeCypher` a mutation, or disable queries via GET. Governing statement: [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces).
+Repair proposal (not implemented): make `executeCypher` a mutation, or disable queries via GET. Governing statement: [access.surfaces](../ontology/features/client-interfaces.g5.md#access.surfaces).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -5829,7 +5829,7 @@ Observed: the check is made once per run (`Exec.cls:158`); a run whose `Props.Be
 
 Consequence: the newer run's next walk reads old global names; only in-flight runs are affected and the entry heals on the next check.
 
-Repair proposal (not implemented): [simp-cyp-001](design_simplification.md#simp-cyp-001). Governing statement: [query.compiled.never-stale](../ontology/features/cypher.g5.md#query.compiled.never-stale).
+Repair proposal (not implemented): [simp-cyp-001](design_simplification.md#simp-cyp-001). Governing statement: [query.compiled.never-stale](../ontology/architecture/query-execution.g5.md#query.compiled.never-stale).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -5857,7 +5857,7 @@ Observed: `Gen.For` lines 102-103 return the entry's class if its status is ok, 
 
 Consequence: an entry planted in the window after a sync build points the run at another shape's class.
 
-Repair proposal (not implemented): apply line 73's checks at line 103. Governing statement: [query.compiled.integrity](../ontology/features/cypher.g5.md#query.compiled.integrity).
+Repair proposal (not implemented): apply line 73's checks at line 103. Governing statement: [query.compiled.integrity](../ontology/architecture/query-execution.g5.md#query.compiled.integrity).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -5885,7 +5885,7 @@ Observed: `enable()` runs `verify(adopt=True)` (`client.py:288-296`), which answ
 
 Consequence: the ledger is enabled with unrecorded writes; a later verify diverges with no hint that the adoption was skipped.
 
-Repair proposal (not implemented): refuse `enable` while a redaction is unfinished, or report the skipped adoption. Related question: [q-led-003](open_questions.md#q-led-003). Governing statement: [ledger.lifecycle](../ontology/features/ledger.g5.md#ledger.lifecycle).
+Repair proposal (not implemented): refuse `enable` while a redaction is unfinished, or report the skipped adoption. Related question: [q-led-003](open_questions.md#q-led-003). Governing statement: [ledger.lifecycle](../ontology/operations/ledger.g5.md#ledger.lifecycle).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -6424,7 +6424,7 @@ Found by: source-first contrast across the three edge readers, with predictions 
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([observations](../uplift/consolidated/iteration-15/temporal-marker-observed-20261116T161532Z.json); [160-world binding panel](results/temporal_marker/20261116T164055Z-binding/receipt.json)). One default-graph triple `(a, KNOWS, b)` written by `create_edge_temporal(weight=1.5)` stores `{"temporal":true,"weight":1.5}`. Cypher `MATCH (a)-[r:KNOWS]->(b) RETURN properties(r), r.temporal` returns `{temporal: True, weight: 1.5}` and `True`. `export_rdf` writes the triple plus a reification envelope and qualifiers `temporal` (boolean true) and `weight`; the report is 11 triples / 4 nodes / 4 edges. Passing neighbors: the same triple from `create_edge` returns `{}` and reports 5 / 2 / 1; after adoption by `create_edge` or `bulk_create_edges` every reader matches the unmarked edge. `export_graph_ndjson` writes no line for the marked edge, as documented.
 
-Expected: [temporal.structural.mark](../ontology/features/temporal.g5.md#temporal.structural.mark) says the mark lets counts, exports and cleanup tell an implied edge from an explicit one. ADR-0009 makes the triple visible to Cypher `MATCH` and to exports, and spec 252 planned the mark as a separate "temporal-origin column" (implemented as a qualifier, task T033). No source says the mark itself is relationship data. The intended reader representation is the child question [temporal.structural.mark.visibility](open_questions.md#temporal.structural.mark.visibility).
+Expected: [temporal.structural.mark](../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.structural.mark) says the mark lets counts, exports and cleanup tell an implied edge from an explicit one. ADR-0009 makes the triple visible to Cypher `MATCH` and to exports, and spec 252 planned the mark as a separate "temporal-origin column" (implemented as a qualifier, task T033). No source says the mark itself is relationship data. The intended reader representation is the child question [temporal.structural.mark.visibility](open_questions.md#temporal.structural.mark.visibility).
 
 Cause: `AssertTemporalRow` stores the mark inside `qualifiers`. Cypher's relationship map is `CY_RETYPE_MAP(qualifiers)` with no key filter (translator `_edge_props_sql`), and RDF export's qualifier loop hides only `inferred`. The NDJSON exporter instead drops marked rows with `TEMPORAL_MARKED_ROW`.
 
@@ -6607,7 +6607,7 @@ Expected: the API reference: "Derive RDFS (`rules="owl"`: also OWL) entailments 
 
 Consequence: a reader of the reference expects a superproperty query or a superclass of a domain to find these nodes, and it does not. Low: missing derived rows; asserted data unchanged.
 
-Repair proposal (not implemented): either derive to a fixpoint with rdfs7 and lift derived types, or state the rule list in the reference. Governing statement: [install.inference](../ontology/concepts/install.g5.md#install.inference).
+Repair proposal (not implemented): either derive to a fixpoint with rdfs7 and lift derived types, or state the rule list in the reference. Governing statement: [install.inference](../ontology/features/data-interchange.g5.md#install.inference).
 
 <a id="bug-str-108"></a>
 ### Validating only new node IDs, as the semantic-layer guide suggests, refuses valid data whose shape checks an edge's target
@@ -6626,7 +6626,7 @@ Expected: SEMANTIC_LAYER.md's ingestion pattern validates `node_ids=new_ids` and
 
 Consequence: an ingestion step built as the guide shows refuses valid data for any shape that looks at a neighbor. Low: a false refusal, visible.
 
-Repair proposal (not implemented): load the listed nodes' edge targets' type triples too, or document the limitation beside the pattern. Governing statement: [install.shacl](../ontology/concepts/install.g5.md#install.shacl).
+Repair proposal (not implemented): load the listed nodes' edge targets' type triples too, or document the limitation beside the pattern. Governing statement: [install.shacl](../ontology/features/data-interchange.g5.md#install.shacl).
 
 <a id="bug-cyp-108"></a>
 ### map_sql_relationship reads target_fk on the target table, while its documentation puts the key on the source table
@@ -6706,7 +6706,7 @@ Observed: `_glob_to_sql_like` escapes `_` and `%` with a backslash, and the clau
 
 Consequence: nodes the caller meant to exclude are embedded, costing model time and storing vectors nobody asked for. Low.
 
-Repair proposal (not implemented): add `ESCAPE '\'` to the clause. Governing statement: [search.embedding.bulk](../ontology/features/search.g5.md#search.embedding.bulk).
+Repair proposal (not implemented): add `ESCAPE '\'` to the clause. Governing statement: [search.embedding.bulk](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.bulk).
 
 <a id="bug-srch-106"></a>
 ### embed_nodes in a named graph selects a node by a label that only its twin in another graph has
@@ -6727,7 +6727,7 @@ Observed: the label condition is `node_id IN (SELECT s FROM rdf_labels WHERE lab
 
 Consequence: vectors for nodes outside the requested label in that graph. Low: extra vectors; no other data changes.
 
-Repair proposal (not implemented): scope the label subquery to the graph. Governing statement: [search.embedding.bulk](../ontology/features/search.g5.md#search.embedding.bulk).
+Repair proposal (not implemented): scope the label subquery to the graph. Governing statement: [search.embedding.bulk](../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.bulk).
 
 <a id="bug-plt-109"></a>
 ### The semantic-layer guide says an over-large PROV window exports an empty file; the export raises instead
@@ -6746,7 +6746,7 @@ Expected: SEMANTIC_LAYER.md: "A window larger than that string can hold is logge
 
 Consequence: a caller following the guide does not expect the exception. Low: the behavior is safer than documented; the documents are wrong.
 
-Repair proposal (not implemented): correct the guide and docstring, or read the window in chunks. Governing statement: [install.export.prov](../ontology/concepts/install.g5.md#install.export.prov).
+Repair proposal (not implemented): correct the guide and docstring, or read the window in chunks. Governing statement: [install.export.prov](../ontology/features/data-interchange.g5.md#install.export.prov).
 
 <a id="bug-plt-112"></a>
 ### export_rdf_from_cypher drops a row whose value is 0, false or empty unless the columns are named s, p and o
@@ -6765,7 +6765,7 @@ Expected: SEMANTIC_LAYER.md: "Return three columns named `s`, `p` and `o` (or an
 
 Consequence: renaming columns silently changes which rows are exported. Low.
 
-Repair proposal (not implemented): test positional values against null, as the named path does. Governing statement: [install.export.rdf.cypher](../ontology/concepts/install.g5.md#install.export.rdf.cypher).
+Repair proposal (not implemented): test positional values against null, as the named path does. Governing statement: [install.export.rdf.cypher](../ontology/features/data-interchange.g5.md#install.export.rdf.cypher).
 
 <a id="bug-srch-108"></a>
 ### ivf_search answers a query of another width with scores instead of refusing it
@@ -6866,7 +6866,7 @@ Observed: `GraphLedger.commit` calls `changeset.validate()` before `_commit`, wh
 
 Consequence: an exporter that counts hook events undercounts failed calls, and its outcome list never shows client-side refusals. Low (documentation drift; no data is wrong).
 
-Repair proposal (not implemented): emit an `empty` / `failed_op` event before raising in `commit`, or narrow the document to "every commit that reaches the server". Governing statement: [ledger.observability](../ontology/features/ledger.g5.md#ledger.observability).
+Repair proposal (not implemented): emit an `empty` / `failed_op` event before raising in `commit`, or narrow the document to "every commit that reaches the server". Governing statement: [ledger.observability](../ontology/operations/ledger.g5.md#ledger.observability).
 
 <a id="bug-doc-014"></a>
 ### The ledger API contract still lists the pre-4.7.0 transaction errors and omits the history filters and wire fields the product uses
@@ -6908,7 +6908,7 @@ Observed: `tests/e2e/test_460_r281_ledger_post_commit_graph_e2e.py:52` and `test
 
 Consequence: running these files disables the ledger on the shared scratch namespace (later commits there are refused with `LedgerDisabledError` until someone re-enables it, which records an adoption). Test-suite defect only. Low.
 
-Repair proposal (not implemented): read `meta()["state"] == "enabled"`. Governing statement: [ledger.lifecycle](../ontology/features/ledger.g5.md#ledger.lifecycle).
+Repair proposal (not implemented): read `meta()["state"] == "enabled"`. Governing statement: [ledger.lifecycle](../ontology/operations/ledger.g5.md#ledger.lifecycle).
 
 <a id="bug-led-014"></a>
 ### A commit refused while another caller's transaction holds the ledger head is not counted, and other counter changes made meanwhile are lost
@@ -6929,7 +6929,7 @@ Observed: `Ledger.Commit` calls `LedgerStats.Bump` after its own level (`Ledger.
 
 Consequence: dashboards undercount lock contention exactly when a long caller transaction causes it, strict-mode refusal counts made in that window are lost, a caller's own refusals inside its transaction are never counted, and the refused caller waits 10 s longer than documented. No graph or ledger content is wrong. Reachable whenever callers commit inside their own transactions (4.7.0 behaviour) while other connections write. Low: observability drift and a longer wait.
 
-Repair proposal (not implemented): bump rejection counters outside the caller's transaction scope (for example a process-private increment flushed by a separate job, or `$Increment` on a global instead of an object save), and make `Bump` report a failed save. Preserve the caller-transaction rollback of the caller's own counts. Governing statements: [ledger.observability](../ontology/features/ledger.g5.md#ledger.observability), [ledger.commit.caller-transaction](../ontology/features/ledger.g5.md#ledger.commit.caller-transaction), [ledger.commit.serial](../ontology/features/ledger.g5.md#ledger.commit.serial).
+Repair proposal (not implemented): bump rejection counters outside the caller's transaction scope (for example a process-private increment flushed by a separate job, or `$Increment` on a global instead of an object save), and make `Bump` report a failed save. Preserve the caller-transaction rollback of the caller's own counts. Governing statements: [ledger.observability](../ontology/operations/ledger.g5.md#ledger.observability), [ledger.commit.caller-transaction](../ontology/features/ledger.g5.md#ledger.commit.caller-transaction), [ledger.commit.serial](../ontology/features/ledger.g5.md#ledger.commit.serial).
 
 <a id="bug-led-015"></a>
 ### A revision field longer than its column is refused as LedgerInconsistencyError after the changeset was applied, and is not counted
@@ -6950,7 +6950,7 @@ Observed: `WriteRevision` returns `Err("inconsistent", "revision row save failed
 
 Consequence: a caller cannot tell an input it can fix from a ledger fault or a lost transport answer, may retry a request that can never succeed, and operators see no counter for it. Nothing is written, so no data is wrong. Reachable through the public `Changeset` fields. Low: misleading error class and missing count.
 
-Repair proposal (not implemented): check the field lengths in `Changeset.validate` (or before `ApplyAll` on the server) and refuse with a `ChangesetOperationError`-style input error and its own counter; keep `LedgerInconsistencyError` for genuine inconsistency. Governing statements: [ledger.commit.size](../ontology/features/ledger.g5.md#ledger.commit.size), [ledger.observability](../ontology/features/ledger.g5.md#ledger.observability).
+Repair proposal (not implemented): check the field lengths in `Changeset.validate` (or before `ApplyAll` on the server) and refuse with a `ChangesetOperationError`-style input error and its own counter; keep `LedgerInconsistencyError` for genuine inconsistency. Governing statements: [ledger.commit.size](../ontology/features/ledger.g5.md#ledger.commit.size), [ledger.observability](../ontology/operations/ledger.g5.md#ledger.observability).
 
 <a id="bug-led-016"></a>
 ### The ledger's NodeNotFoundError is not the package-root NodeNotFoundError the API reference documents, and its message names create_relationship for node operations
@@ -6986,7 +6986,7 @@ Reproduced by: **outside active reproduction scope** — defensive source and ex
 
 Found by: `witness_unreadable_record_skips_the_check` (W-S4) in [platform.rs](models/platform/platform.rs) ([prove receipt](results/platform/20261114T002651Z-prove/receipt.json)); A-platform F-S8.
 
-The first-access check logs and skips when the record cannot be read (`engine.py:1862-1866`; `schema_name.py:270-283`), so a pooled or proxied DB-API connection gets no check. This is documented (ADMIN_GUIDE:515-518): an accepted design gap, recorded so the premise P-NATIVE-READABLE is visible. Governing statement: [install.schema.refusal](../ontology/concepts/install.g5.md#install.schema.refusal).
+The first-access check logs and skips when the record cannot be read (`engine.py:1862-1866`; `schema_name.py:270-283`), so a pooled or proxied DB-API connection gets no check. This is documented (ADMIN_GUIDE:515-518): an accepted design gap, recorded so the premise P-NATIVE-READABLE is visible. Governing statement: [install.schema.refusal](../ontology/operations/setup-and-upgrade.g5.md#install.schema.refusal).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -7138,7 +7138,7 @@ These anchors preserve older links. The corresponding claims and review disposit
 
 <span id="F-1602"></span> [F-1602: review record](audits/register-20261115/bugs-review.md#F-1602)
 
-Iteration 55 (W60): F-1602's lost suffix reproduced with a real client: the neo4j Python driver 6.4.1 with `fetch_size=2` over `UNWIND [1,2,3,4,5] AS i RETURN i` receives 2 records and no error, and 5 with `fetch_size=-1`; a raw `PULL {n: 2}` gets two records and a SUCCESS without `has_more` ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `BP5_*`). The owner [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results) states the intended behavior.
+Iteration 55 (W60): F-1602's lost suffix reproduced with a real client: the neo4j Python driver 6.4.1 with `fetch_size=2` over `UNWIND [1,2,3,4,5] AS i RETURN i` receives 2 records and no error, and 5 with `fetch_size=-1`; a raw `PULL {n: 2}` gets two records and a SUCCESS without `has_more` ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `BP5_*`). The owner [access.bolt.results](../ontology/features/client-interfaces.g5.md#access.bolt.results) states the intended behavior.
 
 <span id="F-1607"></span> [F-1607: review record](audits/register-20261115/bugs-review.md#F-1607)
 
