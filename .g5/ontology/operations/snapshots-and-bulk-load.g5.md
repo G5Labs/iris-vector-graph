@@ -160,7 +160,6 @@ Findings: [A restore swallows a global line that fails to import](../../Verus_ve
 
 ### install.snapshot.routes
 
-- design-verified
 - Sources: [`iris_vector_graph/_engine/snapshot.py::routed_export_plan`](../../../iris_vector_graph/_engine/snapshot.py#L299-L344); [`iris_vector_graph/_engine/snapshot.py::SnapshotMixin.restore_snapshot`](../../../iris_vector_graph/_engine/snapshot.py#L1077-L1611) (routed tables at the archived width `:1372-1500`; node and routed vectors matched on graph and node `:1341-1350`, `:1473-1480`); live tests [test_snapshot_routed_embeddings.py](../../../tests/integration/test_snapshot_routed_embeddings.py#L152-L200), unit [test_snapshot_inventory.py](../../../tests/unit/test_snapshot_inventory.py)
 - Playbook: [SNP-B1.7](../../../experiment/playbook-completion/ontology/18-snapshot.md#L51), [SNP-B2.11](../../../experiment/playbook-completion/ontology/18-snapshot.md#L84), [SNP-B4.5](../../../experiment/playbook-completion/ontology/18-snapshot.md#L119)
 - Formal contract: [routed snapshot stages and reader](../../Verus_verification/models/snapshot_routes/snapshot_routes.rs). It covers decoded node routes, declaration/registry/row stages and literal width admission; full archive loops, temporal globals and arbitrary provider failure outcomes remain open. The imported reviewed `snap_l2` is retained as partial historical evidence.
@@ -181,7 +180,6 @@ State machines: [snapshot routes](../../Verus_verification/models/snapshot_route
 
 ### install.snapshot.temporal
 
-- design-verified
 - Sources: [`iris_vector_graph/_engine/snapshot.py::snapshot_globals`](../../../iris_vector_graph/_engine/snapshot.py#L387-L408), [`::kg_export_subscripts`](../../../iris_vector_graph/_engine/snapshot.py#L425-L437), `STORE_PLAN` temporal entries [`snapshot.py`](../../../iris_vector_graph/_engine/snapshot.py#L136-L144); live tests [`test_the_restored_temporal_edge_answers_a_window_query`](../../../tests/integration/test_snapshot_inventory.py#L116-L130), unit `tests/unit/test_snapshot_inventory.py::test_the_globals_export_is_derived_from_the_plan`
 - Playbook: [SNP-I1.1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L40), [SNP-B1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L42), [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201)
 - Formal contract: [temporal restore, scalar types and window projection](../../Verus_verification/models/temporal_restore/temporal_restore.rs). Critical source keys are derived from the finite source map under the Native API enumeration contract; full page-sequence/global-loop composition and general codecs remain open. The unchanged paging family is an explicitly stamped dependency, not new proof credit.
@@ -202,7 +200,6 @@ State machines: [temporal restore](../../Verus_verification/models/temporal_rest
 - Expands: [Snapshots](#install.snapshot)
 - agent
 - operations
-- design-verified
 - Formal: [`theorem_snapshot_info_matches_restore`](../../Verus_verification/models/operator_reports/operator_reports.rs)
 
 Observed (iteration 52): `version` "1.1", `metadata.ivg_version` "4.7.0", and `KeyError` for a ZIP without `metadata.json`.

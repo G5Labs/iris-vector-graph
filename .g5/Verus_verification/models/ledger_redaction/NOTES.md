@@ -31,3 +31,7 @@ Serialised redactions (except in W1); the head lock is exclusive and held to tra
 ## Not modelled
 
 `FinalInLock`'s `DropStatements` and its audit-without-marker branch; per-call statement knowledge; uncommitted state (bug-002 is native only); post-commit properties (bug-led-009, q-010); receipt fields; readers (`redaction.batches.readers`).
+
+## Latest receipts (checked in iteration 64)
+
+The latest prove receipt, as `tools/census.py` resolves it, is [20261116T160746Z-prove](../../results/ledger_redaction/20261116T160746Z-prove/receipt.json) (41 verified, as the 20261114T044401Z receipt named above); the latest receipt for each of the 16 named controls is the newest `results/ledger_redaction/*-control-<name>`.

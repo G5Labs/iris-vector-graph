@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 39 (continuation). Predictions frozen from SEMANTIC_LAYER.md and the API
 reference: [shacl-PAIRS.md](../../../uplift/consolidated/iteration-39/shacl-PAIRS.md). Owner (new):
-[install.shacl](../../../ontology/concepts/install.g5.md#install.shacl); governing rule:
+[install.shacl](../../../ontology/features/data-interchange.g5.md#install.shacl); governing rule:
 [graph scope](../../../ontology/concepts/graph-scope.g5.md).
 
 ## What the model decides

@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 29 (retest). Predictions frozen before observation in
 [inventory-PAIRS.md](../../../uplift/consolidated/iteration-29/inventory-PAIRS.md). Owner (new):
-[search.routes.inventory](../../../ontology/features/search.g5.md#search.routes.inventory).
+[search.routes.inventory](../../../ontology/operations/search-indexes.g5.md#search.routes.inventory).
 
 ## What the model decides
 

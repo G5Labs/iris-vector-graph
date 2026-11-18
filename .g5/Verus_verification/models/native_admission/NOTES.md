@@ -114,3 +114,11 @@ Runtime sample for equal-answers#o01/#o02 (admitted reads, native engine with ro
 a property read, a LIMIT without ORDER BY and an ORDER BY with ties agreed in columns, values and Python types;
 ORDER BY over `''` differed in order (bug-cyp-104); grouping `1`/`'1'`/`2`/`'2'` differed (bug-cyp-136). This is an
 observation on five shapes, not a formal claim.
+
+## Receipts kept as history (documented in iteration 64)
+
+[`20261118T015505Z-control-read-step-keeps-write`](../../results/native_admission/20261118T015505Z-control-read-step-keeps-write/receipt.json)
+(EXPECTED_FAIL in `theorem_read_step_of_write_runs_natively`) ran against an intermediate iteration-62 revision of
+this model. That theorem and the control are not in the current `native_admission.rs` or `model.json`, so the receipt's
+recorded inputs no longer match and nothing cites it (the census and `check_evidence` read only declared controls). It
+is kept as evidence of that revision, not counted as a current control.

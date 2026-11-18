@@ -1,6 +1,6 @@
 # index_declaration — notes
 
-Consolidated uplift, 2026-11-14. Product baseline `3eaa79cf`. Root [index_declaration.rs](index_declaration.rs); controls in [model.json](model.json); binding [binding.py](binding.py). Public cases M16 and J07. Owner block: [structure.adjacency.declare](../../../ontology/features/graph-structure.g5.md#structure.adjacency.declare).
+Consolidated uplift, 2026-11-14. Product baseline `3eaa79cf`. Root [index_declaration.rs](index_declaration.rs); controls in [model.json](model.json); binding [binding.py](binding.py). Public cases M16 and J07. Owner block: [structure.adjacency.declare](../../../ontology/architecture/adjacency-and-derived-data.g5.md#structure.adjacency.declare).
 
 `GraphSchema.ensure_adjacency_index` is modeled as a function `plan` from catalog state (callback classes compiled, the schema's procedure class compiled, `rdf_edges.ekey` present, `graph_id` on both tables, each index functional, plain or absent) to an ordered list of actions (skip, drop a plain index, temporal backfill, create).
 
@@ -34,4 +34,4 @@ Binding: 216 catalog states (callbacks 0/1/2 x procedures x ekey x graph columns
 
 ## Limits
 
-The DDL's effect inside IRIS (that `CREATE INDEX ... AS Graph.KG.AdjIndex` builds `^KG` from every row) is the [structure.adjacency.declared](../../../ontology/features/graph-structure.g5.md#structure.adjacency.declared) rule, not modeled here. Concurrent setups are not modeled. Trust inventory: none; bundled `vstd` only.
+The DDL's effect inside IRIS (that `CREATE INDEX ... AS Graph.KG.AdjIndex` builds `^KG` from every row) is the [structure.adjacency.declared](../../../ontology/architecture/adjacency-and-derived-data.g5.md#structure.adjacency.declared) rule, not modeled here. Concurrent setups are not modeled. Trust inventory: none; bundled `vstd` only.

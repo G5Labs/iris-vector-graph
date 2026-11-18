@@ -143,3 +143,7 @@ transcription covers the branches the probes reach, not every AST kind the funct
 `GROUP BY` and `COUNT(DISTINCT)` on the stored text (observed), `CY_TYPED`'s marks (observed through the reader),
 Python's half-to-even `round()` (language), IRIS `UNION` duplicate removal by raw value (observed). All observed on
 IRIS 2026.1 with intersystems-irispython 5.3.2 only; the TCK's driver 5.4.x was not available.
+
+## Latest receipts (checked in iteration 64)
+
+The latest receipt of each kind, as `tools/census.py` resolves it: prove [20261117T072020Z-prove](../../results/cypher_clauses/20261117T072020Z-prove/receipt.json), binding [20261117T065639Z-binding](../../results/cypher_clauses/20261117T065639Z-binding/receipt.json), and the latest receipt for each of the 28 named controls in [results/cypher_clauses/](../../results/cypher_clauses/). A receipt this file calls "final" or "latest" above is the one current when that paragraph was written; later reruns supersede it.

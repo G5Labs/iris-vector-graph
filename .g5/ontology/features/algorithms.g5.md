@@ -323,7 +323,6 @@ Findings: [Global PageRank output cap](../../Verus_verification/bugs_issues.md#F
 
 ### algorithms.op.ppr
 
-- design-verified
 
 - uncertain
 - Sources: [API_REFERENCE kg_PERSONALIZED_PAGERANK, ppr](../../../docs/API_REFERENCE.md); [USER_GUIDE PageRank](../../../docs/USER_GUIDE.md); [CHANGELOG v4.6.0 (R270)](../../../CHANGELOG.md)
@@ -342,7 +341,6 @@ State machines: [ppr walk](../../Verus_verification/models/ppr_walk/manifest.jso
 
 ### algorithms.op.ppr.completion
 
-- design-verified
 - Sources: [PPR definition/return contract](../../../iris_vector_graph/_engine/algorithms.py#L216-L278), [native producer limit](../../../iris_src/src/Graph/KG/PageRank.cls#L33-L72), [caller cap and graph arguments](../../../iris_vector_graph/_engine/algorithms.py#L303-L317), [every-node reader](../../../iris_vector_graph/_engine/algorithms.py#L392-L421), [store native default limit](../../../iris_vector_graph/stores/iris_sql_store.py#L2280-L2314), [four native cases](../../uplift/consolidated/iteration-10/root-ppr-cap-native.json), [independent review](../../uplift/consolidated/iteration-10/root-ppr-review-cap.md)
 - Verus: [ppr_walk.rs](../../Verus_verification/models/ppr_walk/ppr_walk.rs), `theorem_producer_limit_is_derived`, `theorem_positive_input_cap_gap`, `theorem_public_default_cap_gap_from_raw_seeds`; [limits and receipts](../../Verus_verification/models/ppr_walk/NOTES.md). Any distinct raw list of more than1000 isolated valid seeds produces positive one-step scores, the actual default producer1000 and a missing ID which the larger final reader emits as0. A normalized score map, assumed cap or supplied missing-membership flag does not decide that chain. Native1002 corroboration and actual Python provider-dispatch cases remain finite evidence, not a general float/cache/runtime proof.
 - Expands: [PPR](#algorithms.op.ppr)
@@ -373,7 +371,6 @@ State machines: [communities](../../Verus_verification/models/communities/manife
 
 ### algorithms.op.cdlp
 
-- design-verified
 
 - Sources: [COMMUNITIES.md: Label propagation](../../../docs/COMMUNITIES.md); [API_REFERENCE kg_CDLP](../../../docs/API_REFERENCE.md)
 - Verus: [communities](../../Verus_verification/models/communities/NOTES.md) derives raw coordinate frequencies, self-loop exclusion, greatest-vote/least-label decisions, old-map synchrony, finite budget and arbitrary-round two-node parity. It does not promise convergence or resolve physical keyed-edge vote policy; repeated physical keys collapse in the source coordinate projection. Typed integer and shared admitted ordering/provider conditions remain explicit.
@@ -548,7 +545,6 @@ Assumption review evidence: Changed from decisions.md: **yes**. Status moves fro
 
 ### algorithms.op.paths.weighted
 
-- design-verified
 
 - uncertain
 - Sources: [`iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L256-L346) (cost order and settling `:293-342`; weight of zero or less is one `:329-331`; hop bound `:265`, `:312`; no path `"{}"` `:344-345`), [`::DijkstraCost`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L378-L448), [`::CheckDirection`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L350-L355), [`::CheckWeightProp`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L359-L365); [`iris_vector_graph/engine.py::IRISGraphEngine._proc_ivg_shortestpath_weighted`](../../../iris_vector_graph/engine.py#L1201-L1313) (one search per graph `:1275-1282`); tests [test_weighted_shortest_path.py](../../../tests/unit/test_weighted_shortest_path.py) (they drive a live engine)

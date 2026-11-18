@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 32 (retest). Predictions frozen before observation in
 [http-PAIRS.md](../../../uplift/consolidated/iteration-32/http-PAIRS.md). Owner:
-[access.surfaces](../../../ontology/concepts/access.g5.md#access.surfaces). Finding: bug-plt-108.
+[access.surfaces](../../../ontology/features/client-interfaces.g5.md#access.surfaces). Finding: bug-plt-108.
 
 ## What the model decides
 

@@ -497,7 +497,6 @@ Open questions: [Should the redaction receipt name IVG's own snapshot archives a
 
 ### redaction.batches
 
-- design-verified
 
 - uncertain
 - Sources: [spec 256 Decision 3](../../../specs/256-ledger-tenant-redaction/spec.md#L156), [ADR-0013 Batches](../../../docs/adr/0013-redaction-removes-content-from-history.md#L18), [LedgerRedact.cls Batch and Final](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L271-L442), [spec 256 SC-003](../../../specs/256-ledger-tenant-redaction/spec.md#L146-L147)
@@ -556,7 +555,6 @@ Findings: [Two redactions of different targets can run at once, and each one's a
 
 ### redaction.batches.resume
 
-- design-verified
 
 - Sources: [ADR-0013 Batches](../../../docs/adr/0013-redaction-removes-content-from-history.md#L18), [spec 256 acceptance 3 and FR-006](../../../specs/256-ledger-tenant-redaction/spec.md#L59-L125), [LedgerRedact.cls Redact](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L182-L239)
 - Expands: [Batches](#redaction.batches)

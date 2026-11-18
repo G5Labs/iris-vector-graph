@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 22 (cloud continuation). Predictions frozen before native observation in
 [bm25-PAIRS.md](../../../uplift/consolidated/iteration-22/bm25-PAIRS.md). Owner:
-[search.bm25.counts](../../../ontology/features/search.g5.md#search.bm25.counts).
+[search.bm25.counts](../../../ontology/architecture/search-storage-and-indexes.g5.md#search.bm25.counts).
 
 ## What the model decides
 

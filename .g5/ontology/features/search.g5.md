@@ -399,7 +399,6 @@ Open questions: [May an undeclared writer add vectors to the default graph's tab
 
 ### search.embedding.width
 
-- design-verified
 - Sources: query width before search: [`iris_vector_graph/_engine/vector.py::_assert_query_width`](../../../iris_vector_graph/_engine/vector.py#L455-L502), called first in [`::kg_KNN_VEC`](../../../iris_vector_graph/_engine/vector.py#L504-L545) (route lookup `:536-538`, check `:542`, first statement `:557`), unit tests [test_227_query_width.py](../../../tests/unit/test_227_query_width.py#L100-L132), live `tests/e2e/test_460_r223_vector_width_e2e.py`; [ADR-0005 consequences](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L62-L73), [reconcile_recorded_dimensions](../../../iris_vector_graph/_engine/schema.py#L1688-L1710), [reused-route width check](../../../iris_vector_graph/_engine/embeddings.py#L589-L641), [USER_GUIDE on setup and width](../../../docs/USER_GUIDE.md#L897-L910), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), query width: [ADR-0005](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L7-L48), [query width check](../../../iris_vector_graph/_engine/vector.py#L455-L502), [test_to_vector_width_regression_e2e.py](../../../tests/integration/test_to_vector_width_regression_e2e.py)
 - Playbook: [VEC-X5.5](../../../experiment/playbook-completion/ontology/06-vectors.md#L184)
 - Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `width_check`, `theorem_direct_guard_no_score` and `theorem_whole_raw_row_four_query_three_no_scoring` derive route-before-width-before-score from raw rows, query characters and catalog cells for the three node KNN entry points. Nested JSON/strings/non-numeric elements are counted by the modeled outer-array lexer; syntax does not establish vector-element validity. JSON/library correspondence is finite observation, catalog output is a heuristic rather than physical-width truth, and numeric kernels/raw identifier carriers remain providers. Existing G search and P route kernels remain substantive typed routing hits; this does not establish every vector/edge/store/protocol surface.
@@ -428,7 +427,6 @@ Findings: [The embedding queue checks identity against the wrong table, and its 
 
 ### search.embedding.other_model
 
-- design-verified
 - Sources: [CHANGELOG v4.0.0](../../../CHANGELOG.md#L4046-L4060), [routed tables](../../../CHANGELOG.md#L4161-L4183), [USER_GUIDE "Several models"](../../../docs/USER_GUIDE.md#L946-L960), [setup claim](../../../iris_vector_graph/_engine/schema.py#L1485-L1513), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py)
 - Playbook: [VEC-B1.8](../../../experiment/playbook-completion/ontology/06-vectors.md#L86)
 - Verus: active (public M13): `G-search` (as-built) [`search.rs`](../../Verus_verification/models/search/search.rs) `theorem_store_routes_and_refuses`, `theorem_identity_check_ignores_ledger`, witness `witness_identity_fail_open`. Overlapping: the playbook's `vec_route_batch` explorer (checks width, not a distinct model identity together with another graph's write).
@@ -457,7 +455,6 @@ Findings: [Claiming the default embedding table for a model that already has a d
 
 ### search.routes.no_fallback
 
-- design-verified
 - Sources: [_route_for_read](../../../iris_vector_graph/_engine/embeddings.py#L652-L679), [_is_default_pair](../../../iris_vector_graph/_engine/embeddings.py#L743-L753), [unrouted pair test](../../../tests/e2e/test_227_two_models.py#L204-L215); [`iris_vector_graph/_engine/vector.py::kg_KNN_VEC`](../../../iris_vector_graph/_engine/vector.py#L535-L538), [`iris_vector_graph/_engine/embeddings.py::get_embedding`](../../../iris_vector_graph/_engine/embeddings.py#L1694-L1745); unit tests [`test_an_unrouted_pair_still_reads_empty_rather_than_raising`](../../../tests/unit/test_227_query_width.py#L122-L132), [test_227_routed_reads.py](../../../tests/unit/test_227_routed_reads.py#L149-L183)
 - Playbook: [VEC-B4](../../../experiment/playbook-completion/ontology/06-vectors.md#L168)
 - Verus: `search` (as-built) [`search.rs`](../../Verus_verification/models/search/search.rs) `read_route` / `read_table` (route absence answers nothing; controls in its [model.json](../../Verus_verification/models/search/model.json))
@@ -473,7 +470,6 @@ Findings: [`/vectorSearch` and `/hybridSearch` refuse a query of another width f
 
 ### search.knn
 
-- design-verified
 - Sources: [kg_KNN_VEC](../../../iris_vector_graph/_engine/vector.py#L504-L619), [_attempt_route_index](../../../iris_vector_graph/_engine/schema.py#L911-L933), [CHANGELOG v4.0.0 routed tables and HNSW](../../../CHANGELOG.md#L4161-L4183), [each graph's search test](../../../tests/e2e/test_227_two_models.py#L187-L203)
 - Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `theorem_primary_generic_failure_really_calls_optimized`, `theorem_optimized_double_failure_really_calls_client`, typed score readers and raw CSV shape/effect relations cover the primary/optimized/client node-search chain. The source model retains both the seed-identity-loss counterexample and the unknown-width mixed-error empty answer. SQL/NumPy numeric replies are provider inputs, with finite actual readers and predicates executed in735 binding comparisons; no cosine/ANN/numerical or native-body theorem follows. Nonstring/raw numeric carriers, connection/cursor allocation and exact exception text remain qualified.
 - Note: added for gap G18 of the [reconstruction check](../../uplift/ivg-verus-initial/reconstruction-check.md#1b-gaps-a-builder-would-hit). The order of equal scores is not specified, and recall of the approximate index is recorded per route only when measured.
@@ -497,7 +493,6 @@ State machines: [vector admission](../../Verus_verification/models/vector_admiss
 
 ### search.knn.threshold
 
-- design-verified
 
 - Sources: [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L333-L416), [vector_search](../../../iris_vector_graph/_engine/vector.py#L1169-L1288), [threshold tests](../../../tests/unit/test_vector_score_threshold.py), [live tests, inspected only](../../../tests/integration/test_vector_score_threshold_live.py)
 - Verus: [vector_threshold](../../Verus_verification/models/vector_threshold/NOTES.md), as-built scaled-integer threshold `build`, `admits`, `search`. Valid finite numeric conversion, cosine scores, ranked SQL provider and dialect preparation are premises; SQLite comparison is adapted-provider evidence, not IRIS execution.
@@ -509,7 +504,6 @@ State machines: [vector threshold](../../Verus_verification/models/vector_thresh
 
 ### search.scope
 
-- design-verified
 - Sources: [CHANGELOG v4.0.0 keyword graph](../../../CHANGELOG.md#L4184-L4198), [graph ID not an authorisation boundary](../../../CHANGELOG.md#L4366-L4370), [graph_scope_predicate](../../../iris_vector_graph/routing.py#L81-L100), [kg_KNN_VEC](../../../iris_vector_graph/_engine/vector.py#L504-L619), [test_230_scope_isolation.py](../../../tests/e2e/test_230_scope_isolation.py), SQL procedures: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L702-L714), [generated kg_KNN_VEC](../../../iris_vector_graph/schema.py#L2440-L2483), [test_460_r265_vector_procedures_route_e2e.py](../../../tests/e2e/test_460_r265_vector_procedures_route_e2e.py)
 - Verus (node KNN slice): [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `theorem_all_search_phases_keep_original_scope` keeps original registry, normalized graph/model and TTL across every phase, with node kind fixed. Raw row filters and actual SQLite table/graph/label predicates corroborate that selected slice; fusion, other index dispatch, GraphQL and native SQL procedure scope are not transferred from it.
 - Children: [Indexes](#search.scope.indexes)
@@ -611,7 +605,6 @@ Open questions: [Is spec 044's kg_TXT-to-BM25 fallback still wanted?](../../Veru
 - Evidence: [native scores equal the formula within 1e-6 across build and incremental writes](../../uplift/consolidated/iteration-22/bm25-PAIRS.md); [iteration 53 predictions and probe](../../uplift/consolidated/iteration-53/bm25-percentile-PAIRS.md)
 - agent
 - user-facing-behavior
-- design-verified
 - Formal: [`theorem_stopword_query_empty`, `theorem_repeat_adds_twice`, `theorem_unknown_term_adds_nothing`, `theorem_shorter_document_scores_higher`, `theorem_tf_raises_and_saturates`, `theorem_idf_arg_positive_and_decreasing`, `theorem_worked_example`, `theorem_ties_by_id`, `theorem_ties_in_subscript_order`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
 
 The model computes the length factor exactly as a rational for k1 1.5 and b 0.75, and represents IDF by its argument; `ln` is a named premise (P-LN), so scores are checked against the formula natively (relative tolerance 1e-12, [binding](../../Verus_verification/models/bm25_scoring/BINDINGS.md)) and their ordering properties formally. Tokenizing with the IRIS analyzer is a provider; the stopword filter is modeled.
@@ -627,7 +620,6 @@ State machines: [BM25 scoring](../../Verus_verification/models/bm25_scoring/mani
 - Expands: [BM25 index](#search.bm25)
 - agent
 - user-facing-behavior, operations
-- design-verified
 - Formal: [`theorem_cutoff_skips_common_term`, `theorem_fallback_keeps_lowest_df`, `theorem_fallback_ignores_unknown_terms`, `theorem_cutoff_off_scores_known`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
 
 Findings: [In which order must the common-term cutoff list the terms it skipped?](../../Verus_verification/open_questions.md#q-srch-005)
@@ -668,7 +660,6 @@ Findings: [Under USE GRAPH, fusion reads a BM25 index built for another graph as
 
 ### search.fusion.failed_leg
 
-- design-verified
 - Sources: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L172-L181), [text leg re-raise rationale](../../../iris_vector_graph/fusion.py#L154-L170)
 - Expands: [Fusion](#search.fusion)
 - Verus: [fusion_ranking](../../Verus_verification/models/fusion_ranking/NOTES.md) as-built `theorem_vector_failure_dropped_text_failure_raises`, `theorem_empty_success_is_a_retained_leg`, `theorem_graph_failure_dropped`; provider outcomes are external inputs, and catch/mode admission is derived. This models the Python wrapper's departure, not compliance with the intended failure rule.

@@ -84,7 +84,6 @@ Verify compares the structural graph only.
 
 ### ledger.lifecycle
 
-- design-verified
 
 - uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [Ledger.cls Enable/Disable](../../../iris_src/src/Graph/KG/Ledger.cls#L250-L358), [client.py enable](../../../iris_vector_graph/ledger/client.py#L281-L303)
@@ -109,7 +108,6 @@ Assumption review evidence: Changed from decisions.md: **no** (strengthened). Th
 
 ### ledger.lifecycle.genesis
 
-- design-verified
 
 - uncertain
 - Sources: [LedgerGenesis.cls](../../../iris_src/src/Graph/KG/LedgerGenesis.cls), [CHANGELOG 4.6.0 ledger fixes](../../../CHANGELOG.md#L2210-L2227), [CHANGELOG 4.4.0](../../../CHANGELOG.md#L2767-L2769)

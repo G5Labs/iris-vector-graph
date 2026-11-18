@@ -4,6 +4,7 @@
     python3 .g5/Verus_verification/tools/census.py            # validate, print the census, write census/summary.md
     python3 .g5/Verus_verification/tools/census.py --init     # add missing blocks as not-started (never edits graded rows)
     python3 .g5/Verus_verification/tools/census.py --dir D    # same checks on a working copy of the three TSVs in D
+    python3 .g5/Verus_verification/tools/census.py --no-lint  # skip the strict-grade lint (output as before iteration 64)
 
 Run from the repository root. Standard library only; deterministic (no clock, no randomness). Exit 0 when every
 check passes, 1 otherwise. It never prints a whole-foundation percentage while any block is not-started or partial.
@@ -18,7 +19,7 @@ Failures: a block missing from (or unknown to) blocks.tsv; a page or kind that n
 a not-started block; a count in blocks.tsv that disagrees with obligations.tsv; a bad enum value; a model locator whose
 file or named item does not resolve; a cited receipt that does not exist, is not the latest of its kind for its model
 and label, carries the wrong verdict or whose recorded inputs changed; a parent entailment naming an unknown obligation;
-a restatement whose owner does not resolve.
+a restatement whose owner does not resolve; and (unless --no-lint) the strict-grade lint, see lint().
 """
 import csv
 import glob
@@ -217,6 +218,162 @@ def split_list(s):
     return [x.strip() for x in s.split(";") if x.strip() and x.strip().lower() not in ("none", "-")]
 
 
+# ---- strict-grade lint (added iteration 64; skipped with --no-lint) ----
+GAP_TAGS = ("outside-statement:", "owner-contradicted:")
+GAP_SEP = " || "
+REQ_MARK = "requires-reviewed:"
+NEXT_ITEM = re.compile(r'[ \t]*(?:#\[|(?:pub(?:\([^)]*\))?\s+)?(?:broadcast\s+)?(?:open\s+|closed\s+|uninterp\s+)?'
+                       r'(?:spec\s+|proof\s+|exec\s+)?(?:fn|struct|enum|type|const|impl|trait|mod|use|group)\b)')
+PROOF_HDR = re.compile(r'(?m)^([ \t]*)(?:pub(?:\([^)]*\))?\s+)?(?:broadcast\s+)?proof\s+fn\s+([A-Za-z_][A-Za-z0-9_]*)')
+_proof_cache = {}
+
+
+def _strip_comments(src):
+    """Blank out // and /* */ comments (newlines kept), leaving string literals ("...", r"...", r#"..."#) intact."""
+    out, i, n = [], 0, len(src)
+    while i < n:
+        c = src[i]
+        if c == "/" and src.startswith("//", i):
+            j = src.find("\n", i)
+            j = n if j < 0 else j
+            out.append(" " * (j - i))
+            i = j
+        elif c == "/" and src.startswith("/*", i):
+            j = src.find("*/", i + 2)
+            j = n if j < 0 else j + 2
+            out.append(re.sub(r"[^\n]", " ", src[i:j]))
+            i = j
+        elif c == "r" and re.match(r'r#*"', src[i:i + 8]) and (i == 0 or not (src[i - 1].isalnum() or src[i - 1] == "_")):
+            hashes = re.match(r'r(#*)"', src[i:i + 8]).group(1)
+            end = src.find('"' + hashes, i + 2 + len(hashes))
+            j = n if end < 0 else end + 1 + len(hashes)
+            out.append(src[i:j])
+            i = j
+        elif c == '"':
+            j = i + 1
+            while j < n and src[j] != '"':
+                j += 2 if src[j] == "\\" else 1
+            out.append(src[i:j + 1])
+            i = j + 1
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out)
+
+
+def proof_fns(path):
+    """{name: {'requires': text or '', 'nparams': int, ...}} for every `proof fn` in a Rust file (comments stripped).
+    The header runs from the parameter list to the body: the last brace group at bracket depth 0 before the next item
+    (a line starting with an attribute or an fn/struct/enum/... declaration) or the end of the enclosing block, so
+    one-line styles and `match x { ... }` inside a requires clause are handled."""
+    if path in _proof_cache:
+        return _proof_cache[path]
+    out = {}
+    try:
+        src = _strip_comments(open(path, encoding="utf-8").read())
+    except OSError:
+        _proof_cache[path] = out
+        return out
+    for m in PROOF_HDR.finditer(src):
+        indent, name = len(m.group(1).expandtabs()), m.group(2)
+        i = m.end()
+        # parameter list (skip generics)
+        while i < len(src) and src[i] != "(":
+            i += 1
+        depth, j = 0, i
+        while j < len(src):
+            if src[j] == "(":
+                depth += 1
+            elif src[j] == ")":
+                depth -= 1
+                if depth == 0:
+                    break
+            j += 1
+        params = src[i + 1:j].strip()
+        nparams = 0 if not params else len([p for p in re.split(r',(?![^<(\[]*[>)\]])', params) if p.strip()])
+        # The body is the last brace group at bracket depth 0 before the next item (or the enclosing block's end);
+        # every earlier depth-0 brace group (`match x { ... }`, block expressions) belongs to the header.
+        k, depth, body_at, grp = j + 1, 0, None, None
+        while k < len(src):
+            ch = src[k]
+            if depth == 0 and (k == 0 or src[k - 1] == "\n") and k > j + 1 and NEXT_ITEM.match(src, k):
+                break
+            if ch in "([{":
+                if depth == 0 and ch == "{":
+                    grp = k
+                depth += 1
+            elif ch in ")]}":
+                depth -= 1
+                if depth < 0:
+                    break
+                if depth == 0 and ch == "}":
+                    body_at = grp
+            k += 1
+        hdr = src[j + 1:body_at] if body_at is not None else src[j + 1:k]
+        req = ""
+        rm = re.search(r'\brequires\b(.*?)(?:\bensures\b|\bdecreases\b|$)', hdr, flags=re.S)
+        if rm:
+            req = " ".join(rm.group(1).split()).rstrip(",")
+        out[name] = {"requires": req, "nparams": nparams, "params": params, "header": " ".join(hdr.split())}
+    _proof_cache[path] = out
+    return out
+
+
+def cited_proofs(r):
+    """[(locator, info)] for each model locator naming a `proof fn` in a Rust file."""
+    res = []
+    for loc in split_list(r["model_locators"]):
+        path, _, item = loc.partition("::")
+        path, item = path.strip(), item.strip()
+        if path.endswith(".rs") and item and os.path.exists(path):
+            info = proof_fns(path).get(item)
+            if info is not None:
+                res.append((loc, info, item))
+    return res
+
+
+def is_point_check(item, info):
+    return item.startswith("witness") or info["nparams"] == 0
+
+
+def lint(orows):
+    """Strict-grade lint. Returns problem strings (prefixed LINT-n). Deterministic string checks only.
+    LINT-1  grade full with a non-empty gap ('none', '-', 'n/a' count as empty), unless every ' || '-separated gap segment begins with
+            'outside-statement:' (names something the statement does not require) or 'owner-contradicted:' (the
+            governing text is contradicted by source; not a modelling gap).
+    LINT-2a check_scope full while a cited proof fn has a `requires` clause and `premises` carries no
+            'requires-reviewed:' note saying why each conjunct is a condition the statement itself states.
+    LINT-2b check_scope full while every cited proof fn is a single witness/point check (name witness*, or no
+            parameters): record narrowed.
+    LINT-3  grade full with no model locator naming a `proof fn` (theorem, lemma or witness); a spec fn, definition,
+            NOTES or model.json entry alone cannot carry full.
+    """
+    probs = []
+    for r in orows:
+        oid = r["id"]
+        gap = r["gap"].strip()
+        if gap.lower() in ("none", "-", "n/a"):
+            gap = ""
+        proofs = cited_proofs(r)
+        if r["grade"] == "full" and gap:
+            segs = [s.strip() for s in gap.split(GAP_SEP)]
+            if not all(s.startswith(GAP_TAGS) for s in segs):
+                probs.append(f"LINT-1 {oid}: full with an untagged gap: {gap[:90]!r}")
+        if r["check_scope"] == "full":
+            req = [it for _, info, it in proofs if info["requires"]]
+            if req and REQ_MARK not in r["premises"]:
+                probs.append(f"LINT-2a {oid}: check_scope full but cited proof(s) {', '.join(req[:3])} have requires "
+                             f"and premises has no '{REQ_MARK}' note")
+            if proofs and all(is_point_check(it, info) for _, info, it in proofs):
+                probs.append(f"LINT-2b {oid}: check_scope full on point check(s) only: "
+                             f"{', '.join(it for _, _, it in proofs[:3])}")
+            if not proofs and r["design_check"] in ("proved", "refuted"):
+                probs.append(f"LINT-2b {oid}: check_scope full with no cited proof fn")
+        if r["grade"] == "full" and not proofs:
+            probs.append(f"LINT-3 {oid}: full but no model locator names a proof fn")
+    return probs
+
+
 def pct(a, b):
     return "N/A" if b == 0 else f"{100.0 * a / b:.1f}%"
 
@@ -224,6 +381,7 @@ def pct(a, b):
 def main(argv):
     global CEN
     init = "--init" in argv
+    nolint = "--no-lint" in argv
     if "--dir" in argv:  # validate a working copy elsewhere (same rules, summary written there)
         CEN = argv[argv.index("--dir") + 1]
     blocks = parse_ontology()
@@ -323,6 +481,8 @@ def main(argv):
         for ref in re.findall(r"[A-Za-z0-9_.\-]+#o\d{2,}", r["parent_entailment"]):
             if ref not in oids:
                 problems.append(f"{r['id']}: parent entailment names unknown obligation {ref}")
+    lint_probs = [] if nolint else lint(orows)
+    problems += lint_probs
     ecount = {}
     eids = set()
     for r in erows:
@@ -468,6 +628,11 @@ def main(argv):
     else:
         P("PASS: every block is in blocks.tsv; no graded block is STALE; every model locator and cited receipt "
           "resolves and is the latest fresh receipt of its kind; counts agree.")
+    if not nolint:  # added iteration 64; --no-lint reproduces the earlier output byte for byte
+        P("")
+        P(f"Strict-grade lint (LINT-1 untagged gap on a full row; LINT-2a/2b check_scope full over a requires clause "
+          f"not reviewed or over point checks only; LINT-3 full without a cited proof fn): "
+          f"{'PASS' if not lint_probs else str(len(lint_probs)) + ' problem(s), listed above'}.")
     if notes:
         P("")
         for n in sorted(notes):

@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 45 (continuation). Predictions frozen from SEMANTIC_LAYER.md:
 [cyphexport-PAIRS.md](../../../uplift/consolidated/iteration-45/cyphexport-PAIRS.md). Owner (new):
-[install.export.rdf.cypher](../../../ontology/concepts/install.g5.md#install.export.rdf.cypher).
+[install.export.rdf.cypher](../../../ontology/features/data-interchange.g5.md#install.export.rdf.cypher).
 
 ## What the model decides
 

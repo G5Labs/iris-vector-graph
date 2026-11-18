@@ -1,6 +1,6 @@
 # rebuild_reads — traversal readers during `sync()` (iteration 57, builder)
 
-Product `3eaa79cf`. Owners: [structure.rebuild](../../../ontology/features/graph-structure.g5.md#structure.rebuild),
+Product `3eaa79cf`. Owners: [structure.rebuild](../../../ontology/operations/status-and-repair.g5.md#structure.rebuild),
 [algorithms.op.khop](../../../ontology/features/algorithms.g5.md#algorithms.op.khop),
 [algorithms.op.paths](../../../ontology/features/algorithms.g5.md#algorithms.op.paths). Finding:
 [bug-str-115](../../bugs_issues.md#bug-str-115).

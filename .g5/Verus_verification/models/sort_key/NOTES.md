@@ -38,3 +38,7 @@ confirmed it at the public reader. No executable product body is verified.
 Iteration 20 extended the imported `typed_equality` by one theorem, so this crate grew from 50 to 51 with no change
 here; the evidence gate marked the old receipts stale, the proof and all five controls were re-run, and the
 intermediate receipt with the old expected count (UNEXPECTED 51 != 50) is kept. Iteration 23 grew the import again (51 → 52); proof, controls and binding were re-run.
+
+## Latest receipts (checked in iteration 64)
+
+The latest receipt of each kind, as `tools/census.py` resolves it: prove [20261116T173218Z-prove](../../results/sort_key/20261116T173218Z-prove/receipt.json), binding [20261116T173229Z-binding](../../results/sort_key/20261116T173229Z-binding/receipt.json), and the latest receipt for each of the 5 named controls in [results/sort_key/](../../results/sort_key/). A receipt this file calls "final" or "latest" above is the one current when that paragraph was written; later reruns supersede it.

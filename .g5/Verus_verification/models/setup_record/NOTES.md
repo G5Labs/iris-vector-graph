@@ -3,7 +3,7 @@
 Product `3eaa79cf`, unchanged. Iteration 19 (cloud continuation): the different underserved workflow tested before any
 convergence claim. Predictions frozen before native observation in
 [setup-lifecycle-PAIRS.md](../../../uplift/consolidated/iteration-19/setup-lifecycle-PAIRS.md). Owners:
-[install.setup](../../../ontology/concepts/install.g5.md#install.setup), `.dry_run`, `.resume`.
+[install.setup](../../../ontology/operations/setup-and-upgrade.g5.md#install.setup), `.dry_run`, `.resume`.
 
 ## What the model decides
 

@@ -127,7 +127,6 @@ Findings: [delete_reification deletes the reifier's rows in every graph](../../V
 
 ### graph.default
 
-- design-verified
 
 - uncertain
 - Sources: [CONTEXT.md, Graph](../../../CONTEXT.md#L27-L31), [USER_GUIDE section 4](../../../docs/USER_GUIDE.md#L386-L388), [USER_GUIDE on deletes and graph=](../../../docs/USER_GUIDE.md#L431-L465), [the omitted-graph marker](../../../iris_vector_graph/_engine/nodes_edges.py#L82-L83), [holders of an ID](../../../iris_vector_graph/_engine/nodes_edges.py#L2134-L2153), [delete_node scopes](../../../iris_vector_graph/_engine/nodes_edges.py#L2202-L2268), [delete_edge all_graphs](../../../iris_vector_graph/_engine/nodes_edges.py#L1390-L1422), [delete_reification](../../../iris_vector_graph/_engine/schema.py#L3361-L3392)
@@ -169,7 +168,6 @@ ADR-0001 calls the layout a storage contract that only a new major version may c
 
 ### graph.key.two_forms
 
-- design-verified
 
 - Sources: [ADR-0003](../../../docs/adr/0003-two-graph-key-derivations.md), [GraphKey.ForIndex / ForLedger / ForName](../../../iris_src/src/Graph/KG/GraphKey.cls#L50-L77), [delete_edge on the two SQL spellings](../../../iris_vector_graph/_engine/nodes_edges.py#L1424-L1433), [restore translates NULL](../../../iris_vector_graph/_engine/snapshot.py#L1249-L1255)
 - Expands: [graph keys](#graph.key)

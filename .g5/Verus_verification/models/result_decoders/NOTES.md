@@ -4,8 +4,8 @@ Product `3eaa79cf`, unchanged. Iteration 58 (W62). Predictions frozen before the
 [w62-PAIRS.md](../../../uplift/consolidated/iteration-58/w62-PAIRS.md) (commit `2429a0a3`), rows D1-D9. Owners:
 [query.values](../../../ontology/features/cypher.g5.md#query.values),
 [query.optional](../../../ontology/features/cypher.g5.md#query.optional),
-[query.shadow](../../../ontology/features/cypher.g5.md#query.shadow),
-[access.bolt.graph_values](../../../ontology/concepts/access.g5.md#access.bolt.graph_values).
+[query.shadow](../../../ontology/architecture/query-execution.g5.md#query.shadow),
+[access.bolt.graph_values](../../../ontology/features/client-interfaces.g5.md#access.bolt.graph_values).
 An as-built Verus transcription with native agreement; **not** executable-body verification. Bundled vstd only; no
 `assume`, `admit` or `external_body`. Outcomes: [OBSERVED.md](../../../uplift/consolidated/iteration-58/decoders/OBSERVED.md).
 
@@ -68,3 +68,7 @@ node, at execute_cypher, Bolt, `/api/cypher`, tx/commit, under IRIS drivers 5.3.
 with an independent Python port of this file. Receipt `results/result_decoders/20261117T082201Z-binding`: AGREES 480/480;
 each of the 17 port mutations (one per control) changes at least one prediction away from the observation; a tampered
 observation (`5.3.2_PY_WithCoalesce_int` set to the int 3) is detected.
+
+## Latest receipts (checked in iteration 64)
+
+The latest receipt of each kind, as `tools/census.py` resolves it: prove [20261117T082943Z-prove](../../results/result_decoders/20261117T082943Z-prove/receipt.json), binding [20261117T083143Z-binding](../../results/result_decoders/20261117T083143Z-binding/receipt.json), and the latest receipt for each of the 17 named controls in [results/result_decoders/](../../results/result_decoders/). A receipt this file calls "final" or "latest" above is the one current when that paragraph was written; later reruns supersede it.

@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 43 (continuation). Predictions frozen from the API reference and guides:
 [embed-nodes-PAIRS.md](../../../uplift/consolidated/iteration-43/embed-nodes-PAIRS.md). Owner (new):
-[search.embedding.bulk](../../../ontology/features/search.g5.md#search.embedding.bulk).
+[search.embedding.bulk](../../../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.bulk).
 
 ## What the model decides
 

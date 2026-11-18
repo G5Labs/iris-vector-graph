@@ -1,0 +1,35 @@
+id	item	evidence
+query.graph-scope.names#o01	1	no graph-name validation in cypher/parser.py:174-192, translator.py or _engine/query.py (bug-cyp-006)
+query.graph-scope.names#o02	1	no graph-name validation in cypher/parser.py:174-192, translator.py or _engine/query.py (bug-cyp-006)
+query.browser-metadata#o02	2	_engine/query.py:1830-1858 matches the metadata words anywhere in the text (bug-cyp-003)
+search.erasure.indexes#o03	3	Eraser.cls::EraseAll (~705-815) kills none of ^BM25Idx, ^IVF, ^PLAID, ^VecIdx
+search.bm25.cutoff#o04	4	bullet 3 says sorted order, the block's working assumption says token order; BM25Index.cls SearchCore sorts ($Order, ~286-291)
+search.routes.create_on_write#o02	5	_engine/schema.py:884-933 commits table, index and registry row separately (bug-srch-015)
+search.embedding.queue#o01	6	embeddings.py:1838-1842 always checks the default legacy table (bug-srch-006)
+search.bm25.query_time_idf#o02	7	the block's own metadata: schema-1 indexes still score with the stored IDF
+algorithms.owner#o01	8	_engine/algorithms.py:658-678: random_walk returns [] without Arno
+algorithms.op.walks#o07	8	_engine/algorithms.py:658-678: random_walk returns [] without Arno
+algorithms.op#o06	9	child algorithms.op.paths answers no path and execute_bfs treats unknown text as both (bug-str-114); TraversalPaths.cls:121 walks every non-'both' text outbound for ShortestLength
+algorithms.op#o08	10	_validate.py:249 caps sampleSize at 1,000,000
+algorithms.graph_scope#o02	11	NKGAccel.cls:213-223 says only 'Call the engine's method', not the Python method's name
+algorithms.op.leiden#o03	12	the block's own metadata: the ObjectScript Louvain fallback ignores random_seed
+fhir.interpretation#o07	13	only fhir_concept_ppr skips them (fhir_graph.py:409); personalized_pagerank defaults exclude_predicates=None (algorithms.py:227, :434)
+fhir.graph.lifecycle#o01	14	the lead says registration builds the graph; a first Register does not rebuild (FHIRGraph.cls:262-272)
+structure.node#o02	15	nodes_edges.py:1097-1104 returns False (no raise) for 'unique', '-119' or 'validation failed'
+install.bulk_load.rebuild#o02	16	BulkLoader.load_networkx raises RuntimeError instead (bulk_loader.py:586-598)
+install.snapshot.derived#o02	17	the token moves only inside `if global_files:` (snapshot.py:1555-1585); an SQL-only archive does not move it
+structure.reification#o03	18	the guard and join match s = reifier_id with no graph (_engine/schema.py:3318-3324, 3340-3345): cross-graph leak
+structure.reification#o06	18	the join matches s = reifier_id with no graph (_engine/schema.py:3340-3345): another graph's reifier is returned
+erasure.entry-points.single-path#o01	19	delete_edge runs its own DELETE FROM rdf_edges (nodes_edges.py:1426-1440)
+structure.adjacency.bulk#o05	20	operator_reports DISAGREE binding 20261117T042222Z: each row is interned via Adjacency.RowPut inside the transaction
+structure.multigraph.layout#o06	21	the block's own metadata: no retry; the second writer gets a uniqueness error
+structure.degree.cache.uncommitted#o04	22	RemoveGraph (erase_graph) also clears AdjNoLock (Adjacency.cls:440), not only the next rebuild
+temporal.owner#o01	23	the block's own metadata names other readers/writers (window reader, snapshot restore)
+structure.adjacency.one_writer#o01	23	the block's own metadata names another writer (snapshot restore)
+structure.rebuilt#o01	24	^NKG uses its own flags, not a token; freshness.py has no caller in the product
+temporal.purge#o05	25	TemporalIndex.cls::PurgeBefore (816-860) removes bucket statistics only inside its raw-timestamp loop
+install.setup#o02	26	the block's own metadata: objects created before the failing statement stay
+install.legacy#o04	27	the removed flag is not per-object truthful (bug-plt-014)
+install.schema#o01	28	BulkLoader ignores the schema (bug-plt-012)
+install.schema.classes_follow#o01	28	deploy rewrites class sources with the engine's spelling, not the recorded schema (bug-plt-015)
+ledger.strict#o05	29	the bullet's list omits load_obo, which is refused only through load_networkx's guard (snapshot.py:1724)

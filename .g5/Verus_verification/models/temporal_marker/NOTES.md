@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 15 of the consolidated uplift (cloud continuation). Predictions were frozen
 before any native observation in [temporal-marker-PAIRS.md](../../../uplift/consolidated/iteration-15/temporal-marker-PAIRS.md),
-with the exposure noted there. Owners: [temporal.structural.mark](../../../ontology/features/temporal.g5.md#temporal.structural.mark)
+with the exposure noted there. Owners: [temporal.structural.mark](../../../ontology/architecture/adjacency-and-derived-data.g5.md#temporal.structural.mark)
 and its new reader statement and question; the export owners in `install.g5.md` keep their own rules.
 
 ## What the model decides

@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 44 (continuation). Predictions frozen from SEMANTIC_LAYER.md:
 [prov-PAIRS.md](../../../uplift/consolidated/iteration-44/prov-PAIRS.md). Owner (new):
-[install.export.prov](../../../ontology/concepts/install.g5.md#install.export.prov).
+[install.export.prov](../../../ontology/features/data-interchange.g5.md#install.export.prov).
 
 ## What the model decides
 

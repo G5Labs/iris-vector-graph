@@ -588,7 +588,6 @@ As-built agreement with openCypher, observed natively. From iteration 57 the bre
 
 ### query.aql
 
-- design-verified
 
 - Sources: [numeric lexer](../../../iris_vector_graph/cypher/aql/lexer.py#L164-L174), [depth parser](../../../iris_vector_graph/cypher/aql/parser.py#L89-L105), [null translator](../../../iris_vector_graph/cypher/aql/translator.py#L97-L110), [hop writer](../../../iris_vector_graph/cypher/aql/translator.py#L159-L180), [execute_aql](../../../iris_vector_graph/_engine/query.py#L1730-L1745)
 - Verus: [aql_frontend](../../Verus_verification/models/aql_frontend/NOTES.md), as-built `lex`, `depth`, `hops`, `resolve`; raw suffix/typed token/AST/predicate projection. Actual output text and public adapter observed with a recorded Cypher consumer; query execution remains unproved.
@@ -660,7 +659,7 @@ Findings: [USE GRAPH accepts graph names the graph keys refuse](../../Verus_veri
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
-- Children: [atomic](#query.writes.atomic), [adjacency](#query.writes.adjacency), [ledger](#query.writes.ledger), [subquery](#query.writes.subquery), [create existing](#query.writes.create-existing), [computed values](#query.writes.computed_values), [retype](#query.writes.retype), [delete](#query.writes.delete), [Should a Cypher `DELETE` clean up everything the engine's own [node delete](graph-structure.g5.md#structure.node.delete) and edge delete clean up?](../../Verus_verification/open_questions.md#query.writes.delete-scope).
+- Children: [atomic](#query.writes.atomic), [adjacency](#query.writes.adjacency), [ledger](#query.writes.ledger), [subquery](#query.writes.subquery), [create existing](#query.writes.create-existing), [computed values](#query.writes.computed_values), [retype](#query.writes.retype), [delete](#query.writes.delete), [Should a Cypher `DELETE` clean up everything the engine's own node delete and edge delete clean up?](../../Verus_verification/open_questions.md#query.writes.delete-scope).
 
 Sources: [CHANGELOG 4.6.0, every statement uses the rows its MATCH bound](../../../CHANGELOG.md#L1742-L1744), [spec 229](../../../specs/229-tck-write-verification/spec.md), [`_write_ids`, `_capture_key`](../../../iris_vector_graph/cypher/translator.py#L13093-L13164), [`execute_transaction`](../../../iris_vector_graph/stores/iris_sql_store.py#L1580-L1818). Live: the TCK's write scenarios with side-effect counting, and `test_460_all_graphs_writes_e2e.py`.
 
@@ -788,7 +787,6 @@ Open questions: [Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather t
 
 ### query.system-procedures
 
-- design-verified
 
 - uncertain
 - agent
@@ -804,7 +802,6 @@ State machines: [procedure results](../../Verus_verification/models/procedure_re
 
 ### query.system-procedures.results
 
-- design-verified
 - agent
 - user-facing-behavior
 - Expands: [System procedures](#query.system-procedures).
@@ -816,7 +813,6 @@ State machines: [procedure results](../../Verus_verification/models/procedure_re
 
 ### query.aggregation
 
-- design-verified
 - Children: [keys](#query.aggregation.keys), [arithmetic](#query.aggregation.arithmetic)
 - Sources: [USER_GUIDE, grouped reporting](../../../docs/USER_GUIDE.md#L165); [typed property sums and WITH](../../../tests/unit/test_sum_column_typing.py); [known-list typed collection](../../../tests/unit/test_460_r308_collect_typed.py); [empty result columns](../../../tests/unit/test_empty_result_columns.py); [aggregate order and page scope](../../../tests/unit/test_order_limit_aggregate_scope.py); [count DISTINCT with LIMIT](../../../tests/e2e/test_470_issue13_count_distinct_limit_e2e.py)
 - Verus: [aggregate_results.rs](../../Verus_verification/models/aggregate_results/aggregate_results.rs) `theorem_raw_group_SUM_reaches_typed_scalar_reader`, `theorem_key_enumeration_complete_unique`, `theorem_full_output_before_page` and `theorem_reader_projection_keeps_exact_public_cells`; [scope](../../Verus_verification/models/aggregate_results/NOTES.md). Narrowed (iterations 54 and 56, [model NOTES](../../Verus_verification/models/aggregate_results/NOTES.md#narrowed-scope-iterations-54-and-56)): `theorem_key_enumeration_complete_unique` takes key equality as a premise that IRIS meets only for keys of one kind ([keys](#query.aggregation.keys)); `theorem_numeric_distinct_normalizes_int_and_whole_double` is conditional on the open question [query.aggregation.keys.numbers](../../Verus_verification/open_questions.md#query.aggregation.keys.numbers) and is not a guarantee under the provisional working assumption. Raw rows and a RETURN AST fragment derive groups, folds, result kind and full output before paging; exact integer/half-unit arithmetic, SQL equality/aggregate operations, JSON spelling/parsing, raw-name generation and collation remain stated provider frames. Native Group/GroupOf/EmitGroups have inspected typed count transcriptions only, under their nonnull/pW1/equality/order premises; the SQL native panels do not execute those bodies. OPTIONAL synthetic fallback remains observed and partial under bug-agg-001.
@@ -887,7 +883,7 @@ Iteration 56 (review 53-55 F2): the reviewer found that `length(p)` of an unboun
 
 Findings: [A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94](../../Verus_verification/bugs_issues.md#bug-cyp-142); [A comparison on an earlier variable's property inside an OPTIONAL MATCH WHERE drops the rows of nodes that lack the property](../../Verus_verification/bugs_issues.md#bug-cyp-143); [length(p) of a path an OPTIONAL MATCH did not bind answers the pattern's length instead of null](../../Verus_verification/bugs_issues.md#bug-cyp-146) The inherited exceptions stay with their owners: [a leading grouped OPTIONAL MATCH's sum](../../Verus_verification/bugs_issues.md#bug-agg-001) and the two refused variable-length shapes ([conformance](#query.conformance)).
 
-Iteration 58 (W62 C1, C3, D2): C1 and C3 held; D2 partial. Evidence: [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md); Verus [clause_combos](../../Verus_verification/models/clause_combos/NOTES.md) `theorem_null_row_count_zero`-family and `theorem_negation_polarity`, `theorem_new_alias_only_keeps_row`, `theorem_leading_grouped_sum_is_null`; [result_decoders](../../Verus_verification/models/result_decoders/NOTES.md) `theorem_null_row_every_decoder`, `theorem_optional_node_labels`. Findings: [An OPTIONAL MATCH node with no match answers labels '[]' and properties '[]'](../../Verus_verification/bugs_issues.md#bug-plt-135).
+Iteration 58 (W62 C1, C3, D2): C1 and C3 held; D2 partial. Evidence: [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md); Verus [clause_combos](../../Verus_verification/models/clause_combos/NOTES.md) `theorem_null_row_counts` and `theorem_negation_polarity`, `theorem_new_alias_only_keeps_row`, `theorem_leading_grouped_sum_is_null`; [result_decoders](../../Verus_verification/models/result_decoders/NOTES.md) `theorem_null_row_every_decoder`, `theorem_optional_node_labels`. Findings: [An OPTIONAL MATCH node with no match answers labels '[]' and properties '[]'](../../Verus_verification/bugs_issues.md#bug-plt-135).
 
 ### query.with
 
@@ -896,7 +892,7 @@ Iteration 58 (W62 C1, C3, D2): C1 and C3 held; D2 partial. Evidence: [W62 predic
 - agent
 - user-facing-behavior
 
-Recovered in iteration 59 (review 56-58 m4): the `WITH *` findings had been placed in [conformance](#query.conformance), which lists documented TCK deviations; `WITH *` is not one. No Verus claim: bug-cyp-150, -151 and -157 are probe-only; iteration 58 C5 (a MATCH-anchored import with its null-row aggregates) is modeled in [clause_combos](../../Verus_verification/models/clause_combos/NOTES.md).
+Recovered in iteration 59 (review 56-58 m4): the `WITH *` findings had been placed in [conformance](#query.conformance), which lists documented TCK deviations; `WITH *` is not one. No Verus claim: bug-cyp-150, -151 and -157 are probe-only; iteration 58 C5 (a MATCH-anchored import with its null-row aggregates) is listed as observed only, not modeled, in [clause_combos](../../Verus_verification/models/clause_combos/NOTES.md) (corrected in iteration 64).
 
 Iteration 58 (W62 C5 held, C8 missed): [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md). Findings: [WITH * drops a relationship variable](../../Verus_verification/bugs_issues.md#bug-cyp-150); [WITH *, items does not parse](../../Verus_verification/bugs_issues.md#bug-cyp-151); [A CALL { } subquery importing an UNWIND variable fails](../../Verus_verification/bugs_issues.md#bug-cyp-157) (iteration 59, review 56-58 G2).
 
@@ -915,7 +911,6 @@ Iteration 58 (W62 D9, held; observed only): variable-length reads with `LIMIT`, 
 
 ### query.parameters
 
-- design-verified
 - uncertain
 - Sources: openCypher parameters; [README conformance (drivers 5.4.0, 5.4.1)](../../../README.md), [`docs/dev/TCK.md`](../../../docs/dev/TCK.md), [`docs/dev/driver-drift.md` item 6](../../../docs/dev/driver-drift.md), [`uv.lock` (intersystems-irispython 5.3.2)](../../../uv.lock); [`_expr_slice`](../../../iris_vector_graph/cypher/translator.py#L23778-L23789)
 - Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `binds_json_table_marker` (provider premise P-DRV-JT), `theorem_unwind_param_depends_on_driver`, `params_order`, `slice_answer`, `theorem_param_slice_answers_empty` (controls `driver-532-binds`, `slice-markers-in-order`); [scope](../../Verus_verification/models/bolt_answers/NOTES.md)
@@ -981,7 +976,6 @@ Iteration 59 (review 56-58 m4): the `WITH *` findings (bug-cyp-150, -151) moved 
 
 ### query.values
 
-- design-verified
 - Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
 - Children: [relationship property text](#query.values.relationship_text), [conditions](#query.values.conditions), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering), [sorting](#query.values.sorting), [nulls](#query.values.nulls), [string predicates](#query.values.string_predicates), [IN lists](#query.values.in_lists)
 - Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md), as-built numeric writer, D/N tag selection, S escape and numeric/text read distinctions. The scalar node-property projection reaches the final result in `theorem_sql_scalar_read_reaches_result`; JSON/J tags, N fractional/exponent parsing, nonfinite values, mixed expressions and the remaining SQL finishing pipeline are open modeling gaps. Numeric spelling/parse identity in `CY_TYPED` is an inspected provider premise, not a proved IRIS function.
@@ -1004,7 +998,6 @@ Mechanism (moved from the governing text in iteration 59, review 56-58 m2): `CY_
 
 ### query.values.equality
 
-- design-verified
 - Sources: [boolean spellings](../../../iris_vector_graph/prop_values.py#L87-L88), [`_stored_bool_in`, `_stored_bool_comparison`](../../../iris_vector_graph/cypher/translator.py#L17851-L17870), [`_stored_number_test`, `_number_texts`, `_node_number_eq_sql`, `_number_eq_sql`](../../../iris_vector_graph/cypher/translator.py#L16231-L16310); [known issue: a boolean in an equality also matches a stored '1' or 'True'](../../../docs/KNOWN_ISSUES.md#L597-L612); [4.1.0 changelog: boolean equality still matches legacy rows](../../../CHANGELOG.md#L3862-L3865)
 - Verus: [typed_equality.rs](../../Verus_verification/models/typed_equality/typed_equality.rs) `theorem_node_true_exact`, `theorem_node_where_return_disagree`, `theorem_node_bool_not_integer`, `theorem_node_integer_needs_stored_number`, `theorem_node_bool_agrees_outside_legacy`, `theorem_rel_bool_equals_integer`, `theorem_rel_integer_equals_true`, `theorem_rel_twin_spelling_equals_integer` and `theorem_string_integer_kind_asymmetry`; [scope](../../Verus_verification/models/typed_equality/NOTES.md)
 - Evidence: [predictions and native observations](../../uplift/consolidated/iteration-16/typed-equality-PAIRS.md)
@@ -1012,7 +1005,7 @@ Mechanism (moved from the governing text in iteration 59, review 56-58 m2): `CY_
 - agent
 - user-facing-behavior, data-integrity
 
-As-built SQL-path behavior on IRIS 2026.1 for values written by `create_node` and `create_edge`. The native executor declines every non-string equality value ([`native_plan._value`](../../../iris_vector_graph/cypher/native_plan.py#L62-L74); [observation](../../uplift/consolidated/iteration-17/native-equality-PAIRS.md)), so these rules hold on both paths. Parameters, `IN` lists, `MERGE` patterns and Cypher-written values were not checked.
+As-built SQL-path behavior on IRIS 2026.1 for values written by `create_node` and `create_edge`. The native executor declines every non-string equality value ([`native_plan._value`](../../../iris_vector_graph/cypher/native_plan.py#L62-L74); [observation](../../uplift/consolidated/iteration-17/native-equality-PAIRS.md)), so these rules hold on both paths. Parameters, `IN` lists, `MERGE` patterns and Cypher-written values were not checked in that iteration; the findings and the bolt_answers note below have since covered `IN` lists (bug-cyp-106) and parameters (bug-cyp-145) (noted in iteration 64).
 
 Findings: [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105); [IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships](../../Verus_verification/bugs_issues.md#bug-cyp-106); [A simple CASE over a property or a row value takes a WHEN of another type when the text matches](../../Verus_verification/bugs_issues.md#bug-cyp-127)
 
@@ -1024,7 +1017,6 @@ Findings: [A string literal or string parameter equals a stored node number that
 
 ### query.values.ordering
 
-- design-verified
 - Sources: [`_translate_boolean_expression` ordering branch and `_as_number`](../../../iris_vector_graph/cypher/translator.py#L19003-L19040), [`_stored_number_value`](../../../iris_vector_graph/cypher/translator.py#L16244-L16249), [property-to-property orderability (R308)](../../../iris_vector_graph/cypher/translator.py#L18932-L18952), [boolean orderability (R307)](../../../iris_vector_graph/cypher/translator.py#L18973-L18980)
 - Verus: [typed_equality.rs](../../Verus_verification/models/typed_equality/typed_equality.rs) `theorem_node_text_never_orders`, `theorem_node_integer_orders_by_value`, `theorem_rel_text_orders_as_cast` and `theorem_rel_bool_orders_as_number`; [scope](../../Verus_verification/models/typed_equality/NOTES.md)
 - Evidence: [predictions and native observations](../../uplift/consolidated/iteration-17/ordering-PAIRS.md)
@@ -1040,7 +1032,6 @@ State machines: [typed equality](../../Verus_verification/models/typed_equality/
 
 ### query.values.sorting
 
-- design-verified
 - Sources: [`Graph.KG.Cypher.SortKey.Key`](../../../iris_src/src/Graph/KG/Cypher/SortKey.cls#L8-L153), [native `Exec.SortKey`](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L967-L973), [translator `_sort_key`](../../../iris_vector_graph/cypher/translator.py#L7762-L7770); [known issue: a property cannot tell a number from a string that spells it](../../../docs/KNOWN_ISSUES.md#L183-L200)
 - Verus: [sort_key.rs](../../Verus_verification/models/sort_key/sort_key.rs) `theorem_rank_order`, `theorem_untyped_numeric_text_sorts_as_number`, `theorem_word_sorts_as_string`, `theorem_empty_string_sorts_as_string`, `theorem_null_sorts_last`, `theorem_node_where_and_order_by_disagree` and `theorem_executors_disagree_on_empty_string`; [scope](../../Verus_verification/models/sort_key/NOTES.md)
 - Evidence: [predictions and native observations](../../uplift/consolidated/iteration-18/order-by-PAIRS.md)
@@ -1068,7 +1059,6 @@ As-built agreement with openCypher, observed natively on the SQL path for litera
 
 ### query.values.string_predicates
 
-- design-verified
 - Sources: [`_boolean_expr_comparison_ops`](../../../iris_vector_graph/cypher/translator.py#L17757-L17794)
 - Verus: [typed_equality.rs](../../Verus_verification/models/typed_equality/typed_equality.rs) `theorem_node_number_matches_string_prefix`; [scope](../../Verus_verification/models/typed_equality/NOTES.md)
 - Evidence: [predictions and native observations](../../uplift/consolidated/iteration-20/null-semantics-PAIRS.md)
@@ -1082,7 +1072,6 @@ State machines: [typed equality](../../Verus_verification/models/typed_equality/
 
 ### query.values.in_lists
 
-- design-verified
 - Sources: [`_boolean_expr_in`](../../../iris_vector_graph/cypher/translator.py#L18274-L18330); [known issue: a property cannot tell a number from a string that spells it](../../../docs/KNOWN_ISSUES.md#L183-L200) (names `=`, inline maps and `WITH` columns, not `IN`)
 - Verus: [typed_equality.rs](../../Verus_verification/models/typed_equality/typed_equality.rs) `theorem_node_in_disagrees_with_equality`; [scope](../../Verus_verification/models/typed_equality/NOTES.md)
 - Evidence: [predictions and native observations](../../uplift/consolidated/iteration-23/remaining-operators-PAIRS.md)
@@ -1096,7 +1085,6 @@ State machines: [typed equality](../../Verus_verification/models/typed_equality/
 
 ### query.values.relationship_text
 
-- design-verified
 - Sources: [`iris_vector_graph/prop_values.py::parse_rel_prop_text`](../../../iris_vector_graph/prop_values.py#L141-L168), [`::parse_prop_text`](../../../iris_vector_graph/prop_values.py#L129-L138), [`::decode_json_list_map`](../../../iris_vector_graph/prop_values.py#L234-L248), the two patterns [`_CANONICAL_INT_RE`, `_CANONICAL_FLOAT_RE`](../../../iris_vector_graph/prop_values.py#L90-L91); [`iris_vector_graph/_engine/query.py::_decode_rel_prop_text_columns`](../../../iris_vector_graph/_engine/query.py#L1200-L1216) (arity guard `:1207`); [`iris_vector_graph/cypher/translator.py::_rel_prop_text_columns`](../../../iris_vector_graph/cypher/translator.py#L7517-L7556); unit tests [test_relationship_property_typing.py](../../../tests/unit/test_relationship_property_typing.py)
 - Playbook: no statement for this decoder in either arm; neighbor [CYP-B17.1](../../../experiment/playbook-completion/ontology/08-cypher-sql.md#L307) (finding F-0811: no 64-bit cap on this path)
 - Verus: see [rel_prop_text](../../Verus_verification/models/rel_prop_text/NOTES.md) (`theorem_decode_classes`, `theorem_noncanonical_stays_text`; reviewed design over ASCII text; control `leading-zero-canonical`). The as-built divergence is recorded as a finding and is observed at unit level on the real function.
@@ -1192,7 +1180,6 @@ Findings: [Cypher range() with a step of 0 known only at run time answers [] ins
 - Expands: [Built-in functions](#query.functions)
 - agent
 - user-facing-behavior
-- design-verified
 
 Frozen predictions L9 and L10 held (nearest rank 20, interpolation 25.0, quartiles 10, 30 and 17.5, empty null, nulls left out, NumberOutOfRange for 1.5 and -1). Iteration 56 (review 53-55 minors) registered the result type ([bug-cyp-147](../../Verus_verification/bugs_issues.md#bug-cyp-147)) and the p argument's kinds ([bug-cyp-148](../../Verus_verification/bugs_issues.md#bug-cyp-148)); whether a null p should fail or answer null is not stated by openCypher, and both readings reject today's answers. openCypher says only "nearest". Iteration 53 corrected the iteration-47 reading that "the rounding follows Neo4j": the quartiles and the median give the same answer under rounding down and under nearest rank, but p 0.6 and 0.9 do not ([bug-cyp-134](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
 

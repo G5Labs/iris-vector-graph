@@ -93,3 +93,7 @@ mutations, 4/4 tamper cases detected, driver 5.3.2). Earlier receipts in the sam
 `20261117T0813*` runs are model versions before the polarity premise (binding `20261117T081543Z` DISAGREES on
 `C_not_or_with_earlier`, which led to it); `20261117T08174*`..`082151Z` are the same theorems before the header-comment fix and the two controls
 `collect-null-over-no-value` and `condition-in-where` (with the `Dropped` outcome) were added.
+
+## Latest receipts (checked in iteration 64)
+
+The latest receipt of each kind, as `tools/census.py` resolves it: prove [20261117T082830Z-prove](../../results/clause_combos/20261117T082830Z-prove/receipt.json), binding [20261117T083139Z-binding](../../results/clause_combos/20261117T083139Z-binding/receipt.json), and the latest receipt for each of the 17 named controls in [results/clause_combos/](../../results/clause_combos/). A receipt this file calls "final" or "latest" above is the one current when that paragraph was written; later reruns supersede it.

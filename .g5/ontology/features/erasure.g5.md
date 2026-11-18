@@ -246,7 +246,6 @@ Findings: [bulk_delete_adjacency deletes relationships under strict mode without
 
 ### erasure.prefix-match
 
-- design-verified
 
 - Sources: [Eraser.cls EraseNodes](../../../iris_src/src/Graph/KG/Eraser.cls#L307-L350), [LedgerRedact.cls MatchString](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L45-L53), [nodes_edges.py delete_nodes_by_prefix](../../../iris_vector_graph/_engine/nodes_edges.py#L1529-L1560), [reconstruction check G14](../../uplift/ivg-verus-initial/reconstruction-check.md#L407)
 - agent

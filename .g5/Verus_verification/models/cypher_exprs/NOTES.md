@@ -135,3 +135,7 @@ null-guard marker order).
 Binding: **AGREES 236 cases**, all 23 mutations and the tamper check detected
 ([receipt](../../results/cypher_exprs/20261117T044717Z-binding/receipt.json)). The model file is unchanged; prove and controls were
 re-run on it for currency.
+
+## Latest receipts (checked in iteration 64)
+
+The latest receipt of each kind, as `tools/census.py` resolves it: prove [20261117T044807Z-prove](../../results/cypher_exprs/20261117T044807Z-prove/receipt.json), binding [20261117T044717Z-binding](../../results/cypher_exprs/20261117T044717Z-binding/receipt.json), and the latest receipt for each of the 22 named controls in [results/cypher_exprs/](../../results/cypher_exprs/). A receipt this file calls "final" or "latest" above is the one current when that paragraph was written; later reruns supersede it.

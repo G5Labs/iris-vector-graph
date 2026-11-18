@@ -63,3 +63,7 @@ and default reads) and `mark_never` (detected by the GZ read). Whether an end is
 was a port bug (a `None` from `marks_stale` for the GA read), fixed by returning a boolean; its observations were the
 same. Controls: 16, all EXPECTED_FAIL. B1: `OtherEdgeKeys` is relabelled `cites` (its answer is the model input
 `others`).
+
+## Latest receipts (checked in iteration 64)
+
+The latest receipt of each kind, as `tools/census.py` resolves it: prove [20261118T013554Z-prove](../../results/adjacency_maint/20261118T013554Z-prove/receipt.json), binding [20261117T090257Z-binding](../../results/adjacency_maint/20261117T090257Z-binding/receipt.json), and the latest receipt for each of the 16 named controls in [results/adjacency_maint/](../../results/adjacency_maint/). A receipt this file calls "final" or "latest" above is the one current when that paragraph was written; later reruns supersede it.

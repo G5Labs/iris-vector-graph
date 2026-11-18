@@ -2,17 +2,17 @@
 
 Product `3eaa79cf`, unchanged. Iteration 56, Part B. Predictions frozen before the deciding source was read:
 [install-PAIRS.md](../../../uplift/consolidated/iteration-56/install-PAIRS.md) (commit `4f1c5d25`). Owners:
-[install.schema.name](../../../ontology/concepts/install.g5.md#install.schema.name),
-[install.schema.refusal](../../../ontology/concepts/install.g5.md#install.schema.refusal),
-[install.schema.not_ready](../../../ontology/concepts/install.g5.md#install.schema.not_ready),
-[install.schema.existing](../../../ontology/concepts/install.g5.md#install.schema.existing),
-[install.setup.dry_run](../../../ontology/concepts/install.g5.md#install.setup.dry_run),
-[install.setup.resume](../../../ontology/concepts/install.g5.md#install.setup.resume),
-[install.deploy](../../../ontology/concepts/install.g5.md#install.deploy),
+[install.schema.name](../../../ontology/operations/setup-and-upgrade.g5.md#install.schema.name),
+[install.schema.refusal](../../../ontology/operations/setup-and-upgrade.g5.md#install.schema.refusal),
+[install.schema.not_ready](../../../ontology/operations/setup-and-upgrade.g5.md#install.schema.not_ready),
+[install.schema.existing](../../../ontology/operations/setup-and-upgrade.g5.md#install.schema.existing),
+[install.setup.dry_run](../../../ontology/operations/setup-and-upgrade.g5.md#install.setup.dry_run),
+[install.setup.resume](../../../ontology/operations/setup-and-upgrade.g5.md#install.setup.resume),
+[install.deploy](../../../ontology/operations/setup-and-upgrade.g5.md#install.deploy),
 [search.embedding.width](../../../ontology/features/search.g5.md#search.embedding.width),
-[search.embedding.claim](../../../ontology/features/search.g5.md#search.embedding.claim),
+[search.embedding.claim](../../../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.claim),
 [search.embedding.check_on_write](../../../ontology/features/search.g5.md#search.embedding.check_on_write),
-[search.quarantine.placement](../../../ontology/features/search.g5.md#search.quarantine.placement).
+[search.quarantine.placement](../../../ontology/architecture/search-storage-and-indexes.g5.md#search.quarantine.placement).
 An as-built Verus transcription with native agreement; **not** executable-body verification. Bundled vstd only; no
 `assume`, `admit` or `external_body`. 32 verified; 20 controls, each EXPECTED_FAIL in its named theorems.
 

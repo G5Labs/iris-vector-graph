@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 25 (retest from `cloud-iris-retest-start-20261116`). Predictions frozen before
 native observation in [bulk-loader-PAIRS.md](../../../uplift/consolidated/iteration-25/bulk-loader-PAIRS.md). Owner:
-[install.bulk_load.loader](../../../ontology/concepts/install.g5.md#install.bulk_load.loader).
+[install.bulk_load.loader](../../../ontology/operations/snapshots-and-bulk-load.g5.md#install.bulk_load.loader).
 
 ## What the model decides
 

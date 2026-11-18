@@ -132,7 +132,6 @@ Findings: [The MCP evidence search binds its natural-language input as a node ID
 
 ### access.bolt
 
-- design-verified
 
 - uncertain
 - Sources: [Bolt protocol commitment](../../../iris_vector_graph/bolt_server.py#L1-L8), [ADMIN_API](../../../docs/ADMIN_API.md); [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/)
@@ -152,7 +151,6 @@ Assumption review evidence: Changed from decisions.md: **no**. Same direction as
 
 ### access.bolt.framing
 
-- design-verified
 - Sources: [primary message specification: Chunking and versions4.1/4.3](https://neo4j.com/docs/bolt/current/bolt/message/), [`BoltSession.run/_recv_message`](../../../iris_vector_graph/bolt_server.py#L396-L459), [`TcpBoltSession.run/_recv_message`](../../../iris_vector_graph/bolt_server.py#L936-L987)
 - Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `lemma_scan_encoded_prefix`, `theorem_small_chunk_reencoding_leaves_terminator`, `theorem_small_chunk_empty_closes_before_queued_run`, `theorem_coalesced_small_chunks_still_deliver_queued_run`, `theorem_noop_closes_wire_without_engine`; [fragment](../../Verus_verification/models/bolt_stream/NOTES.md). Raw scanner and actual re-encoding cut/queue are derived, with separate and coalesced passing/failing neighbors; transport scheduling and generic handshake/authentication remain outside the contract.
 - Expands: [Bolt stream](#access.bolt)
@@ -171,7 +169,6 @@ State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manife
 
 ### access.bolt.results
 
-- design-verified
 - Sources: [primary message specification: PULL](https://neo4j.com/docs/bolt/current/bolt/message/), [`_handle_run/_handle_pull/_handle_reset` and dispatch](../../../iris_vector_graph/bolt_server.py#L500-L669)
 - Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `theorem_raw_wire_run_then_pull_final_records`, `theorem_partial_pull_drops_suffix_and_reports_no_more`, `theorem_raw_error_string_decides_failure`, `theorem_commit_preserves_but_rollback_discards` (pending rows only, not writes), `theorem_reset_allows_next_result`; [scope](../../Verus_verification/models/bolt_stream/NOTES.md). Admitted scalar/list/map cells and fixed canonical request fragments, not general PackStream/graph objects or SQL/provider execution.
 - Expands: [Bolt stream](#access.bolt)
@@ -188,7 +185,6 @@ State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manife
 
 ### access.bolt.transactions
 
-- design-verified
 - uncertain
 - Sources: [BEGIN/COMMIT/ROLLBACK dispatch](../../../iris_vector_graph/bolt_server.py#L500-L510), [`_handle_run`](../../../iris_vector_graph/bolt_server.py#L567-L622), [`_handle_reset`](../../../iris_vector_graph/bolt_server.py#L662-L667); [primary Bolt message specification: BEGIN, COMMIT, ROLLBACK, RESET](https://neo4j.com/docs/bolt/current/bolt/message/); [USER_GUIDE: a caller's rollback removes IVG's writes (engine)](../../../docs/USER_GUIDE.md); [README: a neo4j-driver compatible server](../../../README.md)
 - Verus: [bolt_tx.rs](../../Verus_verification/models/bolt_tx/bolt_tx.rs) `step`, the rule `neo`, general `theorem_rollback_keeps_writes`, `theorem_rollback_departs_iff_writes`, `theorem_failed_tx_keeps_earlier_writes`, `theorem_reset_or_close_keeps_writes`, neighbors `theorem_commit_agrees`, `theorem_autocommit_agrees`, the checked alternative `theorem_refusal_matches_rule` (controls `atomic-tx`, `begin-refused`, `rollback-answers-failure`, `run-not-committed`, `failed-run-writes`, `failure-not-sticky`, `rule-rollback-keeps`); [scope](../../Verus_verification/models/bolt_tx/NOTES.md)
@@ -209,7 +205,6 @@ State machines: [bolt transactions](../../Verus_verification/models/bolt_tx/mani
 
 ### access.http_transactions
 
-- design-verified
 - uncertain
 - Sources: [`neo4j_tx_commit`](../../../iris_vector_graph/cypher_api.py#L379-L404), [`_run_cypher`](../../../iris_vector_graph/cypher_api.py#L239-L265), [`_cypher_writes_under_read_only`](../../../iris_vector_graph/cypher_api.py#L230-L236); [ADMIN_API: Neo4j HTTP routes and read-only mode](../../../docs/ADMIN_API.md); [README: Neo4j-compatible surfaces](../../../README.md)
 - Verus: [bolt_tx.rs](../../Verus_verification/models/bolt_tx/bolt_tx.rs) HTTP section: the rule derived from Bolt's `theorem_http_rule_is_bolt_rule`, `theorem_http_batch_keeps_writes_around_failure`, `theorem_http_batch_departs_iff`, neighbors `theorem_http_all_succeed_agrees`, `theorem_http_read_only_runs_none`, witness `theorem_http_witness_failing_middle` (controls `http-batch-atomic`, `http-stop-at-failure`, `http-failure-writes`, `http-status-ok-on-error`, `http-read-only-runs-reads`, `read-only-first-only`, `rule-http-keeps-earlier`); [scope](../../Verus_verification/models/bolt_tx/NOTES.md)
@@ -228,7 +223,6 @@ State machines: [bolt transactions](../../Verus_verification/models/bolt_tx/mani
 
 ### access.bolt.versions
 
-- design-verified
 - Sources: [`negotiate_version`](../../../iris_vector_graph/bolt_server.py#L331-L347), [`_handle_hello`/`_handle_logon`](../../../iris_vector_graph/bolt_server.py#L547-L565), [ADMIN_API Authentication](../../../docs/ADMIN_API.md); [Bolt handshake specification](https://neo4j.com/docs/bolt/current/bolt/handshake/)
 - Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `negotiate`, general `theorem_answer_is_zero_or_supported`, `theorem_v5_rule`, `theorem_probe_offers` (controls `range-unchecked`, `no-bolt5`); [scope](../../Verus_verification/models/bolt_answers/NOTES.md)
 - Evidence: [W60 predictions BP1, BP2 and results](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)
@@ -242,7 +236,6 @@ State machines: [bolt answers](../../Verus_verification/models/bolt_answers/mani
 
 ### access.bolt.errors
 
-- design-verified
 - Sources: [`_handle_run`](../../../iris_vector_graph/bolt_server.py#L567-L622), [`_refuse_unauthorized`/`_authenticate`](../../../iris_vector_graph/bolt_server.py#L523-L545), [`PackStream._pack_int`](../../../iris_vector_graph/bolt_server.py#L95-L105); [Neo4j status codes](https://neo4j.com/docs/status-codes/current/); [ADMIN_API read-only mode](../../../docs/ADMIN_API.md)
 - Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `bolt_code`, `theorem_runtime_failure_reported_as_syntax`, `theorem_gate_codes_follow_rule`, `pull_value`, `theorem_overflow_breaks_connection`, `theorem_int64_values_arrive` (controls `code-by-cause`, `gates-folded`, `nofit-is-failure`)
 - Evidence: [W60 predictions ER1, ER2, BP4, T5 and results](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)
@@ -258,7 +251,6 @@ State machines: [bolt answers](../../Verus_verification/models/bolt_answers/mani
 
 ### access.bolt.graph_values
 
-- design-verified
 - Sources: [`_node_int_id`, `pack_node`](../../../iris_vector_graph/bolt_server.py#L351-L362), [`_recompose_graph_row`, `_pack_rel_from_value`, `_parse_props_field`](../../../iris_vector_graph/bolt_server.py#L713-L905), [`PackStream`](../../../iris_vector_graph/bolt_server.py#L67-L150); [USER_GUIDE: lists, maps and paths through execute_cypher, REST and Bolt](../../../docs/USER_GUIDE.md); [PackStream specification](https://neo4j.com/docs/bolt/current/packstream/)
 - Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `int_marker`, `theorem_marker_is_smallest`; `bolt_id`, `client_view2`, `theorem_hash_collision_loses_first_node`, `theorem_distinct_ids_keep_both`; `reported`, `theorem_endpoints_follow_columns`, `theorem_one_hop_right_iff_source_first`, `theorem_rel_alone_or_last`; `bolt_node_prop`, `theorem_long_property_truncated`, `theorem_short_property_kept`
 - Evidence: [W60 predictions RT1-RT11, BP6-BP8, T1-T3 and results](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)

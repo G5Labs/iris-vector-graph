@@ -1,6 +1,6 @@
 # freshness_stamp — notes
 
-Consolidated uplift, 2026-11-14. Product baseline `3eaa79cf`. Root [freshness_stamp.rs](freshness_stamp.rs); controls in [model.json](model.json); binding [binding.py](binding.py). Public case M09. Owner block: [structure.rebuilt.stamp](../../../ontology/features/graph-structure.g5.md#structure.rebuilt.stamp).
+Consolidated uplift, 2026-11-14. Product baseline `3eaa79cf`. Root [freshness_stamp.rs](freshness_stamp.rs); controls in [model.json](model.json); binding [binding.py](binding.py). Public case M09. Owner block: [structure.rebuilt.stamp](../../../ontology/architecture/adjacency-and-derived-data.g5.md#structure.rebuilt.stamp).
 
 ## Obligations and theorems (all Proved, as-built transcription)
 
@@ -31,5 +31,5 @@ Binding: the pin's real `Freshness` over a dict host with IRIS `$Data` semantics
 ## Premises, trust and limits
 
 - Stamps and tokens are canonical integers or unset or empty (the writers store `$Increment` results and `tVersion`). A non-canonical text such as `"007"` would split the two readers (Python `int()` reads 7; ObjectScript text equality does not); no writer produces one. Not modeled.
-- The Python `Freshness` class has no caller inside `iris_vector_graph` at the pin (no module imports it); the run-time decision for the two-hop counts is `TraversalKHop.Fresh`. Other rebuilt stores (the interned snapshot, the algorithm cache) decide freshness by other means ([structure.rebuilt](../../../ontology/features/graph-structure.g5.md#structure.rebuilt)); this model says nothing about them.
+- The Python `Freshness` class has no caller inside `iris_vector_graph` at the pin (no module imports it); the run-time decision for the two-hop counts is `TraversalKHop.Fresh`. Other rebuilt stores (the interned snapshot, the algorithm cache) decide freshness by other means ([structure.rebuilt](../../../ontology/architecture/adjacency-and-derived-data.g5.md#structure.rebuilt)); this model says nothing about them.
 - Trust inventory: none; bundled `vstd` only.

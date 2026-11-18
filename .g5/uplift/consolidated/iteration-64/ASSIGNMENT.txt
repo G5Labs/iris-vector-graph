@@ -1,0 +1,31 @@
+Assignment iteration-64 (builder): census integrity — strict regrade of every `full` grade, missed models behind `absent`, and evidence-side housekeeping
+
+Run identity
+- Repository: $G5_RUN_STATE/iris-vector-graph, branch consolidated_uplift, start at HEAD after iteration 63's integration. Product pin 3eaa79cf; never edit product files. Do not reword governing ontology text in this batch (metadata tags and links are in scope, see 4).
+- Harness (frozen): $G5_HARNESS — guidance/uplift-scoring.md "Census of ontology obligations" (Full requires the formal rule to distinguish the required cases through the stated observation), guidance/uplift-review.md "Coverage through child blocks", guidance/Verus/verification.md "Interpret a result", guidance/ontology-format.md (metadata tags).
+- Census: .g5/Verus_verification/census/ (README), tools/census.py; iteration-63 handoff .g5/uplift/consolidated/iteration-63/HANDOFF.md §2, §6, §7 (spot-check: 13 of 25 sampled tranche-2 full grades held; patterns: full grades resting on a model definition, a proxy observation or one of several entry points; check_scope full on narrowed proofs or single-point witnesses; absent searches that missed behaviour modelled under another block; statements drifting from the block text). review-sample.tsv and review-spotcheck.md hold the sample.
+- Scratch: $G5_RUN_STATE/scratch/iteration-64/. Verus runs allowed only to confirm a receipt or run a declared control; no model edits; no IRIS runtime needed.
+
+Goal
+Make the census grades trustworthy enough to publish a whole-foundation figure. Today: 2097 obligations, full 966 / partial 403 / absent 728 (46.1% recorded; spot-check estimate ~30%).
+
+1. Strict rule, made mechanical. Add to tools/census.py (backwards compatible, documented in README) a lint that FAILs when:
+   - grade is full and the `gap` column is non-empty, unless the gap text begins with `outside-statement:` and names something the obligation's own statement does not require;
+   - check_scope is `full` while the cited theorem has a `requires` that narrows the statement's domain, or the design receipt is a single witness/point check (the regrader records `narrowed` instead);
+   - grade is full and no model locator names a proof fn/theorem/witness/lemma (a spec fn or definition alone cannot carry full).
+   Keep the lint deterministic and cheap (string checks on locators and columns, plus parsing `proof fn` names in the cited .rs files).
+2. Regrade every full row (966), both tranches, against this checklist; record a reason for every change:
+   a. The cited property is a proof (theorem/lemma/witness) whose conclusion speaks to this obligation, not a definition, a label or an AGREES count.
+   b. Its cases cover every condition, entry point and outcome the statement names (one entry point of several → partial).
+   c. Its observation is the stated reader or a documented composition to it (a proxy such as a row count standing for a reader → partial).
+   d. Decisive inputs are derived inside the model, not supplied as parameters (decision as input → partial).
+   e. Premises/requires do not narrow the statement beyond its declared scope (otherwise check_scope narrowed; if the narrowing removes a required case → partial).
+   f. The statement still matches the block's current text (fix drift: restore dropped refuting cases, remove imported product detail).
+   g. For a refuted obligation: the witness reaches the stated observation and the trace is permitted by the model's actual inputs; otherwise partial.
+   Use forks if you wish, but give each the same checklist, and have a fresh, non-fork reviewer re-grade a deterministic stratified sample (at least 40 rows: full-after-regrade from both tranches, rows you downgraded, and rows you left full that had a non-empty gap) without your conclusions; apply its accepted corrections and report agreement.
+3. Absent rows (728): for each, search models by behaviour (not only block id): models/*/{*.rs,NOTES.md,manifest.json,model.json}, coverage.md, crosswalk/decision-links.tsv, the playbook-proofs crates. Upgrade to partial/full only under the same checklist; list each upgrade with its locator.
+4. Evidence-side housekeeping from iteration-63 §6.2-§6.4 (not owner wording): correct or mark stale coverage.md rows; stale "latest receipt" names in NOTES; old-location owner links in NOTES; add install_lifecycle/manifest.json (ontology_ids) if that is the convention; reconcile `design-verified` (or other verification) tags in block metadata that overstate what the census now shows, per ontology-format.md tag rules; fix the two crosswalk rows citing a theorem that does not decide the claim; the two stale/undeclared receipts (declare or document, do not delete evidence); query.optional metadata citing a non-existent theorem; query.native.sql-first#x02 reason; erasure.kept#o03/#o05 alignment with fhir.erase#o01; erasure.atomic#o01 citing temporal witness_rolled_back_delete_undercounts / temporal_rollback_counters R6 where applicable. The 35 owner statements of §6.1 are NOT reworded here; instead tag each affected obligation's `gap` with `owner-contradicted: <evidence>` so the next area batches can repair the owners.
+5. Report: census output before/after (whole foundation and per page), counts of full→partial, full→absent, partial/absent upgrades, check_scope full→narrowed, statements fixed; the reviewer sample's agreement; the lint's results. Explain any remaining uncertainty and the honest whole-foundation figure with its lower/upper bound.
+
+Handoff: .g5/uplift/consolidated/iteration-64/HANDOFF.md (copy this assignment as ASSIGNMENT.txt), with a replayable regrade ledger (one row per changed obligation: id, old grade/check/scope, new, reason) committed beside it; gates at the end (census incl. the lint, check_evidence, check_consolidated with G5_GUIDE=$G5_HARNESS/guidance, check_ontology, check_findings). Commits end with "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>".
+Stop and return if $G5_RUN_STATE/STOP exists.

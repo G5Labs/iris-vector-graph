@@ -252,7 +252,6 @@ Sources: [spec 253 US4 and FR-007](../../../specs/253-native-cypher-executor/spe
 
 ### query.native.route
 
-- design-verified
 
 - uncertain
 - Playbook: [NAT-T7](../../../experiment/playbook-completion/ontology/09-native-executor.md)
@@ -309,7 +308,6 @@ Iteration 58 (W62 D8, observed only): the same native-accepted reads answered id
 
 ### query.compiled.modes
 
-- design-verified
 - Verus: see [compiled fallback](#query.compiled.fallback): `proofs-d1d` `planc_l2` (reviewed design) is active for job-mode answers during a build (public J08); `G-platform` (as-built) overlaps for stamps.
 - agent
 - operations
@@ -344,7 +342,6 @@ Wording corrected in iteration 62 (the iteration-61 report, confirmed): "Nothing
 
 ### query.compiled.fallback
 
-- design-verified
 
 - uncertain
 - Playbook: [NAT-B5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L172), [NAT-T5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L173)

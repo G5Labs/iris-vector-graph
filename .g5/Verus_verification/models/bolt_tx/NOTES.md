@@ -2,9 +2,9 @@
 
 Product `3eaa79cf`, unchanged. Iteration 56, repair of independent review 53-55 item F1 (inherited F-1601, now
 [bug-plt-127](../../bugs_issues.md#bug-plt-127)). Owner:
-[access.bolt.transactions](../../../ontology/concepts/access.g5.md#access.bolt.transactions) (new), with the
-consistency edits in [access.bolt](../../../ontology/concepts/access.g5.md#access.bolt) and
-[access.bolt.results](../../../ontology/concepts/access.g5.md#access.bolt.results). Open question:
+[access.bolt.transactions](../../../ontology/features/client-interfaces.g5.md#access.bolt.transactions) (new), with the
+consistency edits in [access.bolt](../../../ontology/features/client-interfaces.g5.md#access.bolt) and
+[access.bolt.results](../../../ontology/features/client-interfaces.g5.md#access.bolt.results). Open question:
 [access.transactions](../../open_questions.md#access.transactions) (real transactions or a refused BEGIN). An
 as-built Verus transcription with native agreement; **not** executable-body verification. Bundled vstd only; no
 `assume`, `admit` or `external_body`.
@@ -100,7 +100,7 @@ the engine's documented contract, USER_GUIDE "Transactions").
 
 ## HTTP `/db/neo4j/tx/commit` batch (iteration 59, independent review 56-58 item G1)
 
-Owner: [access.http_transactions](../../../ontology/concepts/access.g5.md#access.http_transactions) (new); finding
+Owner: [access.http_transactions](../../../ontology/features/client-interfaces.g5.md#access.http_transactions) (new); finding
 [bug-plt-136](../../bugs_issues.md#bug-plt-136) (Medium); open question [access.transactions](../../open_questions.md#access.transactions)
 (working assumption revised, review m1). No frozen prediction: a review repair; the reviewer's probe had observed the
 outcome before the source was read. 35 verified (20 + 15: 9 proofs, 6 recursive-spec termination checks).

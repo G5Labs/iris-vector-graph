@@ -192,7 +192,6 @@ Live coverage: `tests/e2e/test_235_lazy_fhir_tables_e2e.py`. Spec 235's status l
 
 ### fhir.graph.lifecycle
 
-- design-verified
 - Formal: [task ownership and lifecycle projection](../../Verus_verification/models/fhir_tasks/fhir_tasks.rs), [source roles and provider limits](../../Verus_verification/models/fhir_tasks/NOTES.md).
 
 - Sources: [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [_engine/fhir_graph.py](../../../iris_vector_graph/_engine/fhir_graph.py); [ADMIN_GUIDE (restored task IDs)](../../../docs/ADMIN_GUIDE.md)

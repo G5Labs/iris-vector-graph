@@ -1,6 +1,6 @@
 # embedded_no_data — notes
 
-Consolidated uplift, 2026-11-14. Product baseline `3eaa79cf`. Root [embedded_no_data.rs](embedded_no_data.rs); controls in [model.json](model.json); binding [binding.py](binding.py). Public case M17. Owner blocks: [adapters.embedded](../../../ontology/concepts/adapters.g5.md#adapters.embedded), [adapters.embedded.no_data](../../../ontology/concepts/adapters.g5.md#adapters.embedded.no_data). Neither prior arm modeled the embedded cursor.
+Consolidated uplift, 2026-11-14. Product baseline `3eaa79cf`. Root [embedded_no_data.rs](embedded_no_data.rs); controls in [model.json](model.json); binding [binding.py](binding.py). Public case M17. Owner blocks: [adapters.embedded](../../../ontology/architecture/adapters.g5.md#adapters.embedded), [adapters.embedded.no_data](../../../ontology/architecture/adapters.g5.md#adapters.embedded.no_data). Neither prior arm modeled the embedded cursor.
 
 ## Obligations and theorems (Proved, as-built transcription)
 

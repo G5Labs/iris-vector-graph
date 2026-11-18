@@ -1,0 +1,151 @@
+{
+  "title": "install lifecycle",
+  "question": "schema-name validation and resolution, first-access refusal, setup record (new/existing/inferred/explicit/refused), class deploy marker, embedding widths, identity claim and quarantine placement; as-built transcription with native agreement",
+  "ontology_ids": [
+    "install.deploy",
+    "install.schema.existing",
+    "install.schema.name",
+    "install.schema.not_ready",
+    "install.schema.refusal",
+    "install.setup.dry_run",
+    "install.setup.resume",
+    "search.embedding.check_on_write",
+    "search.embedding.claim",
+    "search.embedding.width",
+    "search.quarantine.placement"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 32}"
+    },
+    {
+      "label": "code-package-unchecked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_name_rules_refuse_before_default\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "env-over-arg",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_arg_wins\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-mismatch-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_record_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unrecorded-marker-refused",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unrecorded_with_marker_admitted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "traces-before-legacy",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unrecorded_reason_order\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "dry-run-records",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_dry_run_and_refusals_keep_record\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "explicit-refused",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_schema_needs_a_name\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "clash-unchecked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_clash_refused_before_anything\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "skip-on-marker-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_skip_iff_same_fingerprint_and_all_compiled\", \"theorem_missing_class_redeploys\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failed-deploy-keeps-marker",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_deploy_retried\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "populated-altered",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_populated_never_rewidened\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rewidth-not-required",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_other_width_needs_rewidth\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "adopt-overwrites",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_adopt_never_overwrites\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "width-only-with-models",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_width_enforced_whatever_the_model\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "claim-known-model",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_claim_only_unknown\", \"theorem_same_model_kept\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "place-skips-node-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_placed_only_when_every_check_passes\", \"theorem_refused_row_stays\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "placement-creates-route",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_placement_conserves_and_never_creates_route\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-before-insert",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_placement_conserves_and_never_creates_route\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "row-read-materialized",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unreadable_row_never_placed\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unknown-width-counted",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unknown_width_altered_unasked\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

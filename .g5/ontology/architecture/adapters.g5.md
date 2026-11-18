@@ -31,7 +31,6 @@ A no-row statement is an empty result with row count 0, not an error. Every othe
 
 ### adapters.embedded
 
-- design-verified
 - Sources: [USER_GUIDE, embedded use](../../../docs/USER_GUIDE.md#L62-L66); [`iris_vector_graph/embedded.py::EmbeddedCursor.execute`](../../../iris_vector_graph/embedded.py#L312-L385) (transaction words `:314-321`; written-in choice `:328-336`; three paths `:337-359`), [`::_exec_inline`](../../../iris_vector_graph/embedded.py#L265-L277), [`::_is_ddtab_error`](../../../iris_vector_graph/embedded.py#L209-L211), [`::_sql_statement_execute`](../../../iris_vector_graph/embedded.py#L214-L224), [`::MAX_BOUND_PARAMS`](../../../iris_vector_graph/embedded.py#L188-L190); unit tests [test_embedded_no_data_and_native.py](../../../tests/unit/test_embedded_no_data_and_native.py)
 - Playbook: the operations module's embedded-connection statements under [OPS-B4.6](../../../experiment/playbook-completion/ontology/17-operations.md#L196) (see [the statement crosswalk](../../Verus_verification/crosswalk/statements.tsv))
 - Verus: see [embedded_no_data](../../Verus_verification/models/embedded_no_data/NOTES.md) for the result rule; the path choice itself is not modeled.
@@ -45,7 +44,6 @@ State machines: [embedded no data](../../Verus_verification/models/embedded_no_d
 
 ### adapters.embedded.no_data
 
-- design-verified
 - Sources: [`iris_vector_graph/embedded.py::_is_no_data`](../../../iris_vector_graph/embedded.py#L193-L196), [`::_no_data_ok`](../../../iris_vector_graph/embedded.py#L199-L206), [`::_exec_inline`](../../../iris_vector_graph/embedded.py#L265-L277), [`::EmbeddedCursor.execute`](../../../iris_vector_graph/embedded.py#L312-L385) (fold `:360-366`; row count `:373`), [`::EmbeddedCursor.executemany`](../../../iris_vector_graph/embedded.py#L387-L413); unit tests [`test_a_statement_that_matches_no_row_is_an_empty_result`, `every_other_error`](../../../tests/unit/test_embedded_no_data_and_native.py)
 - Playbook: [OPS-T4.6.5](../../../experiment/playbook-completion/ontology/17-operations.md#L202), [OPS-B4.6.90](../../../experiment/playbook-completion/ontology/17-operations.md#L208)
 - Verus: see [embedded_no_data](../../Verus_verification/models/embedded_no_data/NOTES.md) (`theorem_no_data_is_empty`, `theorem_other_error_raises`, `theorem_success_rowcount_unknown`, `theorem_batch_counts_rows`; as-built; controls `fold-every-error`, `ignore-cause`, `inline-none-not-folded`)

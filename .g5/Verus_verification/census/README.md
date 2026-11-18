@@ -9,9 +9,10 @@ iteration 61 ([handoff](../../uplift/consolidated/iteration-61/HANDOFF.md)).
 python3 .g5/Verus_verification/tools/census.py            # from the repository root: validate, print, write summary.md
 python3 .g5/Verus_verification/tools/census.py --init     # add new blocks as not-started; refresh not-started hashes
 python3 .g5/Verus_verification/tools/census.py --dir D    # same checks on a working copy of the three TSVs in D
+python3 .g5/Verus_verification/tools/census.py --no-lint  # every check except the strict-grade lint (pre-iteration-64 output)
 ```
 
-Exit 0 means every check passed. [summary.md](summary.md) is written by the same run; regenerating gives identical bytes.
+Exit 0 means every check passed, including the strict-grade lint below. [summary.md](summary.md) is written by the same run; regenerating gives identical bytes.
 
 ## Files
 
@@ -81,3 +82,22 @@ iteration 63) it prints "enumeration complete" and one **Whole foundation** line
 counts, lower and upper bound, obligations proved over their full stated scope, proved/bounded/refuted/unchecked and
 the number of N/A blocks. This addition does not change any rule, column or check, and the output for an incomplete
 census is byte-identical to before.
+
+## Strict-grade lint (iteration 64)
+
+Added in [iteration 64](../../uplift/consolidated/iteration-64/HANDOFF.md) to make rule 2 mechanical. It runs by default
+and fails the census; `--no-lint` skips it and reproduces the earlier output byte for byte. It is deterministic string
+checking of the obligation columns plus a parse of the `proof fn` declarations in the cited `.rs` files (comments
+stripped, string literals kept; a proof's header runs from its parameter list to its body, the last brace group at
+bracket depth 0 before the next item).
+
+| check | fails when |
+|---|---|
+| LINT-1 | `grade` is full and `gap` is non-empty (`none`, `-`, `n/a` count as empty), unless every ` \|\| `-separated segment begins with `outside-statement:` (it names something the obligation's own statement does not require) or `owner-contradicted:` (the governing text is contradicted by source or by its own metadata; the evidence follows) |
+| LINT-2a | `check_scope` is full while a cited proof fn has a `requires` clause and `premises` carries no `requires-reviewed:` note explaining why every conjunct is a condition the statement itself states (or a well-formedness fact every product input satisfies); a narrowing conjunct means `narrowed` instead |
+| LINT-2b | `check_scope` is full while every cited proof fn is a point check (name `witness*`, or no parameters), or no proof fn is cited for a proved/refuted check: record `narrowed` |
+| LINT-3 | `grade` is full and no model locator names a `proof fn` (theorem, lemma or witness); a spec fn, definition, NOTES or model.json entry alone cannot carry full |
+
+The lint cannot judge whether an `outside-statement:` or `requires-reviewed:` note is true; the regrade checklist in the
+iteration-64 handoff and its independent review sample do. Gap segments tagged `owner-contradicted:` record the
+iteration-63 §6.1 owner contradictions for the area batches that repair the owners; they do not change a grade.

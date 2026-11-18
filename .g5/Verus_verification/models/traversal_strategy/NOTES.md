@@ -6,7 +6,7 @@ Product `3eaa79cf`, unchanged. Iteration 57, worker W1. Predictions frozen befor
 Owners: [algorithms.op.khop](../../../ontology/features/algorithms.g5.md#algorithms.op.khop),
 [algorithms.op.paths](../../../ontology/features/algorithms.g5.md#algorithms.op.paths),
 [query.paths.varlength](../../../ontology/features/cypher.g5.md#query.paths.varlength),
-[structure.adjacency](../../../ontology/features/graph-structure.g5.md#structure.adjacency),
+[structure.adjacency](../../../ontology/architecture/adjacency-and-derived-data.g5.md#structure.adjacency),
 [search.knn](../../../ontology/features/search.g5.md#search.knn).
 
 ## State and derivation

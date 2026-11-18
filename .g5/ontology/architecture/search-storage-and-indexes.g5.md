@@ -222,7 +222,6 @@ Findings: [embed_nodes ignores an exclude_pattern with an underscore](../../Veru
 
 ### search.routes.cache
 
-- design-verified
 
 - Sources: [cache key and clock](../../../iris_vector_graph/_engine/embeddings.py#L307-L344), [invalidation](../../../iris_vector_graph/_engine/embeddings.py#L346-L375), [raw registry reader](../../../iris_vector_graph/_engine/embeddings.py#L377-L468), [source survey](../../uplift/consolidated/iteration-10/next-vector-survey-report.md), [actual native miss then another-engine creation](../../uplift/consolidated/iteration-11/root-vector-native.json)
 - Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `key`, `cached`, `evict`, `resolve`, `invalidate` and `theorem_all_search_phases_keep_original_scope` derive cache key isolation, separate store/lookup timestamps, strict expiry, no negative insertion and read counts. V2 fixes registry/graph/model/node-kind/TTL from the original stable engine request across fallbacks; only provider replies and clock samples vary. Integer clock ticks preserve comparisons; arbitrary native float-clock refinement, concurrent DDL/writer correctness and universal invalidation are unproved. TTL0 bypasses lookup without clearing old entries.
@@ -296,14 +295,12 @@ Findings: [bug-srch-116](../../Verus_verification/bugs_issues.md#bug-srch-116)
 - Note: supersedes spec 044 FR-008's allowance for stale IDF. A schema-1 index still scores with the IDF stored at write time until it is upgraded.
 - agent
 - architecture-decision
-- design-verified
 - Formal: [`theorem_schema2_reads_current_stats`, `theorem_schema1_reads_stored`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
 
 Iteration 53: an incremental insert and delete answered the same scores as a fresh build over the same documents (binding cases `inc_*` beside `fresh:*`).
 
 ### search.bm25.counts
 
-- design-verified
 - Sources: [spec 044 FR-016 and FR-018](../../../specs/044-bm25-index/spec.md#L162-L164), [Insert and RemoveDoc](../../../iris_src/src/Graph/KG/BM25Index.cls#L412-L493), [df test](../../../tests/integration/test_044_bm25_incremental.py#L157-L203)
 - Expands: [BM25 index](../features/search.g5.md#search.bm25)
 - Verus: [bm25_counts.rs](../../Verus_verification/models/bm25_counts/bm25_counts.rs) `theorem_insert_consistent`, `theorem_remove_consistent`, `theorem_empty_replacement_removes`, `theorem_absent_delete_is_noop` and `theorem_replace_keeps_n`; [scope](../../Verus_verification/models/bm25_counts/NOTES.md). Sequential writes only; the concurrent build below is outside the model.
@@ -351,7 +348,6 @@ Open questions: [Must a BM25 Build (and Drop) exclude writers and be all-or-noth
 
 ### search.fusion.python
 
-- design-verified
 
 - uncertain
 - Sources: [`RRFFusion.fuse_results`](../../../iris_vector_graph/fusion.py#L27-L64), [`HybridSearchFusion.multi_modal_search`](../../../iris_vector_graph/fusion.py#L113-L253), [migration guide](../../../docs/migration/v4.0.0.md#L427-L435)

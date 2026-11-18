@@ -389,7 +389,6 @@ The clarification is a recorded human answer; FR-020a names the baseline code st
 
 ### install.setup
 
-- design-verified
 
 - uncertain
 - Sources: [ADMIN_GUIDE: Running setup again](../../../docs/ADMIN_GUIDE.md); [_engine/schema.py initialize_schema](../../../iris_vector_graph/_engine/schema.py); [Spec 262 Edge Cases (Privileges)](../../../specs/262-ivg-owned-sql-schema/spec.md); [CHANGELOG v4.7.0](../../../CHANGELOG.md)
@@ -406,7 +405,6 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 
 ### install.setup.dry_run
 
-- design-verified
 
 - Sources: [Spec 262 FR-013, Edge Cases (Read-only and dry runs)](../../../specs/262-ivg-owned-sql-schema/spec.md)
 - Tests (live): whole-namespace before/after snapshots in `tests/e2e/test_262_record.py` and `tests/e2e/test_262_upgrade_451.py`
@@ -420,7 +418,6 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 
 ### install.setup.resume
 
-- design-verified
 
 - Sources: [Spec 262 Edge Cases (An interrupted upgrade)](../../../specs/262-ivg-owned-sql-schema/spec.md); [KNOWN_ISSUES: After an interrupted setup](../../../docs/KNOWN_ISSUES.md)
 - Tests (live): `tests/e2e/test_262_upgrade_451.py::test_an_interrupted_upgrade_resumes_to_the_same_end` covers only an interruption after the functions exist and before the record is written

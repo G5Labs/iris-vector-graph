@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 38 (continuation). Predictions frozen from the API reference and guides before
 the source was read: [inference-PAIRS.md](../../../uplift/consolidated/iteration-38/inference-PAIRS.md). Owner (new):
-[install.inference](../../../ontology/concepts/install.g5.md#install.inference).
+[install.inference](../../../ontology/features/data-interchange.g5.md#install.inference).
 
 ## What the model decides
 

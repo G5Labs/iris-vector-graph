@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 36 (continuation). Predictions frozen from the owner block and the API
 reference before the source was read: [embed-queue-PAIRS.md](../../../uplift/consolidated/iteration-36/embed-queue-PAIRS.md).
-Owner: [search.embedding.queue](../../../ontology/features/search.g5.md#search.embedding.queue).
+Owner: [search.embedding.queue](../../../ontology/architecture/search-storage-and-indexes.g5.md#search.embedding.queue).
 
 ## What the model decides
 

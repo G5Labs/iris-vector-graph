@@ -328,7 +328,6 @@ Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leav
 - Expands: [adjacency index](#structure.adjacency)
 - agent
 - architecture-decision
-- design-verified
 
 Iteration 53. The rule that the `IVG_EDGESCAN` plan answers what the default plan answers comes from the docs calling it only "the plan before 4.3.0" and from CHANGELOG 4.3.0 ("every answer equal"). Premise: the adjacency index is declared, so the scan and the rows hold the same edges. Not observed: parallel edges of a multigraph through the scan.
 
@@ -336,7 +335,6 @@ Findings: [With IVG_EDGESCAN=1 a relationship property on a hop reads null](../.
 
 ### structure.adjacency.declare
 
-- design-verified
 - Sources: [spec 252](../../../specs/252-adjacency-functional-index/spec.md), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L40-L41), [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md); [`iris_vector_graph/schema.py::GraphSchema.ensure_adjacency_index`](../../../iris_vector_graph/schema.py#L821-L898) (prerequisites `:831-860`; per index `:863-897`; backfill before the edge index `:879-884`), [`::GraphSchema.adjacency_index_kind`](../../../iris_vector_graph/schema.py#L785-L818), called last by [`::GraphSchema.ensure_indexes`](../../../iris_vector_graph/schema.py#L600-L731) (`:726`); [`iris_src/src/Graph/KG/TemporalIndex.cls`](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L235) (the backfill); unit tests [test_252_index_declaration.py](../../../tests/unit/test_252_index_declaration.py#L52-L135)
 - Playbook: [ADJ-B2.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L98), [TMP-B11.3](../../../experiment/playbook-completion/ontology/05-temporal.md#L301)
 - Verus: see [index_declaration](../../Verus_verification/models/index_declaration/NOTES.md) (`theorem_no_prereq_no_ddl`, `theorem_prereqs_declare_both`, `theorem_declared_left_alone`, `theorem_backfill_before_edge_index`; as-built; controls `skip-ekey-check`, `backfill-after-build`, `redeclare-functional`)
@@ -366,7 +364,6 @@ Open questions: [How should erase and rebuild retire a source generation?](../..
 
 ### structure.degree.cache.uncommitted
 
-- design-verified
 - Sources: [ADR-0012](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L10-L27), [Adjacency.WriterLock](../../../iris_src/src/Graph/KG/Adjacency.cls#L51-L73), [changelog 4.7.0 adjacency lock](../../../CHANGELOG.md#L174-L178)
 - Playbook: [ADJ-I5.8](../../../experiment/playbook-completion/ontology/04-adjacency.md#L222), [ADJ-I5.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L223)
 - Verus: active (public M10): `G-graph_structure` (as-built) [`graph_structure.rs`](../../Verus_verification/models/graph_structure/graph_structure.rs) `theorem_as_built_cache_sound` with witnesses `witness_aba_delete_and_recreate_serves_stale_degree`, `witness_gen0_erase_alone_serves_stale_degree` and repaired `theorem_repaired_cache_sound`. Overlapping: the playbook's `proofs-pa3` `adj_l2` (reviewed design; controls `control_fc0401_write_before_gen`, `control_hd0401_erase_kills_gen`).
@@ -394,7 +391,6 @@ Findings: [A degree cached before a node is deleted and re-created can be served
 
 ### structure.degree.cache.warm
 
-- design-verified
 - Playbook: [ADJ-B5.17](../../../experiment/playbook-completion/ontology/04-adjacency.md#L235), [ADJ-B5.17.2](../../../experiment/playbook-completion/ontology/04-adjacency.md#L241), [ADJ-B5.17.4](../../../experiment/playbook-completion/ontology/04-adjacency.md#L243)
 - Verus: [warm_sources](../../Verus_verification/models/warm_sources/NOTES.md), as-built source fill/count and stamp contracts with failed-probe, token-motion and generation-motion controls. ObjectScript binding is inspected only; source enumeration completeness during concurrent changes remains an environment premise.
 - Sources: [ADR-0012 consequences](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L29-L35), [Adjacency.EndRebuild](../../../iris_src/src/Graph/KG/Adjacency.cls#L857-L869), [Adj.WarmAll](../../../iris_src/src/Graph/KG/Adj.cls#L177-L205)
@@ -434,7 +430,6 @@ Findings: [Without the adjacency index, a temporal write to an existing triple c
 
 ### structure.rebuilt.stamp
 
-- design-verified
 - Sources: [CONTEXT.md, Rebuilt store](../../../CONTEXT.md#L109-L114), [spec 244 freshness](../../../specs/244-alt-freshness-module/spec.md#L70-L74); [`iris_vector_graph/freshness.py::Freshness._read_int`](../../../iris_vector_graph/freshness.py#L45-L52), [`::Freshness.token`](../../../iris_vector_graph/freshness.py#L54-L57), [`::Freshness.built_from`](../../../iris_vector_graph/freshness.py#L66-L68), [`::Freshness.is_current`](../../../iris_vector_graph/freshness.py#L70-L72), [`::Freshness.stale_stores`](../../../iris_vector_graph/freshness.py#L74-L77); [`iris_src/src/Graph/KG/TraversalKHop.cls::Fresh`](../../../iris_src/src/Graph/KG/TraversalKHop.cls#L237-L243); unit tests [test_freshness.py](../../../tests/unit/test_freshness.py)
 - Playbook: [ADJ-B7](../../../experiment/playbook-completion/ontology/04-adjacency.md#L255), [ADJ-B7.1](../../../experiment/playbook-completion/ontology/04-adjacency.md#L256)
 - Verus: see [freshness_stamp](../../Verus_verification/models/freshness_stamp/NOTES.md) (`theorem_is_current_iff_stamped_equal`, `theorem_unstamped_stale_at_zero`, `theorem_stamped_zero_current`; as-built; control `unset-stamp-reads-zero`)
@@ -485,7 +480,6 @@ Findings: [Temporal documentation contradicts the code in several places](../../
 - agent
 - data-integrity
 - uncertain
-- design-verified
 - Formal: [`theorem_update_counts_twice`, `theorem_collision_changes_nothing`, `theorem_update_whole_vs_cut`, `theorem_rolled_back_first_write`, `theorem_rolled_back_group_row`, `theorem_committed_first_write`, `theorem_delete_rebuilds_from_survivors`, `theorem_update_then_delete_leaves_velocity`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 - Open question: [temporal.write.update-statistics](../../Verus_verification/open_questions.md#temporal.write.update-statistics)
 
@@ -528,7 +522,6 @@ Open questions: [Should readers show the temporal mark as part of the edge's dat
 
 ### temporal.structural.mark.readers
 
-- design-verified
 - Sources: [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L575-L618), [export_graph_ndjson](../../../iris_vector_graph/_engine/snapshot.py#L1857-L1908), [RDF qualifier loop](../../../iris_vector_graph/_engine/_rdf_utils.py#L264-L284), [Cypher relationship map](../../../iris_vector_graph/cypher/translator.py#L23187-L23191), [create_edge adoption](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1304), [bulk adoption](../../../iris_vector_graph/_engine/nodes_edges.py#L1990-L2001), [changelog: a temporal edge is visible structurally](../../../CHANGELOG.md#L3042-L3047)
 - Expands: [the mark](#temporal.structural.mark)
 - Verus: [temporal_marker.rs](../../Verus_verification/models/temporal_marker/temporal_marker.rs) `theorem_marker_decodes`, `theorem_temporal_never_rewrites_a_row`, `theorem_explicit_adopts_marked_with_own`, `theorem_bulk_adopts_marked_to_null`, `theorem_ndjson_omits_marked_includes_adopted`, `theorem_cypher_reports_marker_key`, `theorem_rdf_marked_row_is_reified` and `theorem_rdf_report_counts`; [scope](../../Verus_verification/models/temporal_marker/NOTES.md)
@@ -544,7 +537,6 @@ State machines: [temporal marker](../../Verus_verification/models/temporal_marke
 
 ### temporal.structural.adopt
 
-- design-verified
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [spec 254 sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L80), [create_edge adopt](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1300), [ledger adopt](../../../iris_src/src/Graph/KG/LedgerApply.cls#L465-L475); live tests: [purge path matrix](../../../tests/e2e/test_254_purge_e2e.py), [ledger adopt](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
 - Expands: [Implied structural edge](#temporal.structural)
 - Formal contract: [Python marker and adoption cases](../../Verus_verification/models/edge_acceptance/edge_acceptance.rs)

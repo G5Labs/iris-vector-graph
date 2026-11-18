@@ -2,7 +2,7 @@
 
 Product `3eaa79cf`, unchanged. Iteration 41 (continuation). Predictions frozen from SEMANTIC_LAYER.md and the API
 reference: [rdfimport-PAIRS.md](../../../uplift/consolidated/iteration-41/rdfimport-PAIRS.md). Owner (new):
-[install.import.rdf](../../../ontology/concepts/install.g5.md#install.import.rdf).
+[install.import.rdf](../../../ontology/features/data-interchange.g5.md#install.import.rdf).
 
 ## What the model decides
 

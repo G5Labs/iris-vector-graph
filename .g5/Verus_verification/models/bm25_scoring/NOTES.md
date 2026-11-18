@@ -3,7 +3,7 @@
 Product `3eaa79cf`, unchanged. Predictions frozen before the deciding source was read:
 [bm25-percentile-PAIRS.md](../../../uplift/consolidated/iteration-53/bm25-percentile-PAIRS.md) (commit `5f4d435f`).
 Owners: [search.bm25.scoring](../../../ontology/features/search.g5.md#search.bm25.scoring),
-[search.bm25.query_time_idf](../../../ontology/features/search.g5.md#search.bm25.query_time_idf),
+[search.bm25.query_time_idf](../../../ontology/architecture/search-storage-and-indexes.g5.md#search.bm25.query_time_idf),
 [search.bm25.cutoff](../../../ontology/features/search.g5.md#search.bm25.cutoff). Counts under incremental writes stay
 with [bm25_counts](../bm25_counts/NOTES.md), whose df/N invariant this model relies on (premise P-COUNTS, proved there).
 

@@ -3,9 +3,9 @@
 Product `3eaa79cf`, unchanged. Iteration 55 (W60). Predictions frozen before the deciding source was read:
 [pipeline-PAIRS.md](../../../uplift/consolidated/iteration-55/pipeline-PAIRS.md) (commit `ec9a8ac5`); post-read rows
 T1-T7 were written before their probe ran (`6abf7508`). Owners:
-[access.bolt.versions](../../../ontology/concepts/access.g5.md#access.bolt.versions),
-[access.bolt.errors](../../../ontology/concepts/access.g5.md#access.bolt.errors),
-[access.bolt.graph_values](../../../ontology/concepts/access.g5.md#access.bolt.graph_values),
+[access.bolt.versions](../../../ontology/features/client-interfaces.g5.md#access.bolt.versions),
+[access.bolt.errors](../../../ontology/features/client-interfaces.g5.md#access.bolt.errors),
+[access.bolt.graph_values](../../../ontology/features/client-interfaces.g5.md#access.bolt.graph_values),
 [query.parameters](../../../ontology/features/cypher.g5.md#query.parameters),
 [query.values.equality](../../../ontology/features/cypher.g5.md#query.values.equality).
 An as-built Verus transcription with native agreement; **not** executable-body verification. Bundled vstd only; no

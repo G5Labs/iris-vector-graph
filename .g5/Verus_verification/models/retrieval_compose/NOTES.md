@@ -4,7 +4,7 @@ Product `3eaa79cf`, unchanged. Iteration 49 (continuation). Predictions frozen f
 the admin guide and the owners before the deciding source was read:
 [retrieval-PAIRS.md](../../../uplift/consolidated/iteration-49/retrieval-PAIRS.md). Owners:
 [search.fusion.surfaces](../../../ontology/features/search.g5.md#search.fusion.surfaces),
-[.leg_index](../../../ontology/features/search.g5.md#search.fusion.leg_index),
+[.leg_index](../../../ontology/architecture/search-storage-and-indexes.g5.md#search.fusion.leg_index),
 [.vector_graph](../../../ontology/features/search.g5.md#search.fusion.vector_graph),
 [.rest](../../../ontology/features/search.g5.md#search.fusion.rest),
 [.multi_vector](../../../ontology/features/search.g5.md#search.fusion.multi_vector),

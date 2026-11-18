@@ -3,9 +3,9 @@
 Product pin `3eaa79cf`. Root [operator_reports.rs](operator_reports.rs), controls in [model.json](model.json), native
 binding [binding.py](binding.py). Frozen predictions: [reports-PAIRS.md](../../../uplift/consolidated/iteration-52/reports-PAIRS.md)
 (committed before the deciding source was read). Raw probe: [reports_probe.py](../../../uplift/consolidated/iteration-52/reports_probe.py)
-in namespace `I52`. Owners: [install.status](../../../ontology/concepts/install.g5.md#install.status) and its children
+in namespace `I52`. Owners: [install.status](../../../ontology/operations/status-and-repair.g5.md#install.status) and its children
 `.readiness`, `.sync`, `.verify_sync`, `.capabilities`, `.readers`, `.ledger` (iteration 53), `.diagram`, and
-[install.snapshot.info](../../../ontology/concepts/install.g5.md#install.snapshot.info).
+[install.snapshot.info](../../../ontology/operations/snapshots-and-bulk-load.g5.md#install.snapshot.info).
 
 ## Results (final candidate, iteration 53)
 

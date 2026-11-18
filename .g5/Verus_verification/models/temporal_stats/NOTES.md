@@ -125,3 +125,7 @@ fixture). Controls: `empty-key-refused` (the repair, the owner's rule) and `empt
 removed). Binding cases `ek_*` (11): quiet cut window 0 / 0.0 (empty source, empty predicate, both), min raises the
 store's `ValueError`; a met timestamp and a whole bucket (with or without data) raise `<SUBSCRIPT>`
 (`GetAggregate+13` on tagg, `+32` on tout, error text kept in the receipt's `ek_errors`); the given-key neighbors 1 and 0.
+
+## Latest receipts (checked in iteration 64)
+
+The latest receipt of each kind, as `tools/census.py` resolves it: prove [20261117T072022Z-prove](../../results/temporal_stats/20261117T072022Z-prove/receipt.json), binding [20261117T065845Z-binding](../../results/temporal_stats/20261117T065845Z-binding/receipt.json), and the latest receipt for each of the 20 named controls in [results/temporal_stats/](../../results/temporal_stats/). A receipt this file calls "final" or "latest" above is the one current when that paragraph was written; later reruns supersede it.
