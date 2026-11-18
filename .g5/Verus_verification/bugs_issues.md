@@ -4763,6 +4763,75 @@ Repair proposal (not implemented): sort UNWIND values through the same kind-firs
 
 Governing statement: [query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting).
 
+<a id="bug-cyp-159"></a>
+### IVG_NATIVE_CYPHER=0 does not turn off an engine built with native_cypher=True
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-18 (iteration 62)
+
+Description: The process-wide switch is only a default. An engine whose caller passes `native_cypher=True` keeps answering supported reads natively under `IVG_NATIVE_CYPHER=0`, where the owner says that variable turns the native executor off for every engine in the process.
+
+Found by: iteration 62, prediction PA2 frozen before the source read ([predictions](../uplift/consolidated/iteration-62/PREDICTIONS-builder.md)); [native_admission](models/native_admission/NOTES.md) `theorem_explicit_true_beats_env_zero`, control `env-wins`.
+
+Reproduced by: **E2E reproduced** on the run-own IRIS 2026.1 fixture `ivg-cov-20261118-a-iris` with the unchanged pin, namespace I62B ([binding receipt](results/native_admission/20261118T020559Z-binding/receipt.json), cases `switch_argTrue_env0` (native) beside `switch_argNone_env0` (SQL) and `switch_argNone_envunset` (native)).
+
+Expected: [query.native](../ontology/architecture/query-execution.g5.md#query.native): "every engine in a process with `IVG_NATIVE_CYPHER=0`".
+
+Observed: `IRISGraphEngine.__init__` reads the variable only when the argument is None (`engine.py:303-306`); the engine comment and the `execute_cypher` docstring describe the same as-built rule. No product caller passes `native_cypher=True`, so a library user's own engine is the reachable case.
+
+Consequence: an operator who sets `IVG_NATIVE_CYPHER=0` to keep a process on the SQL path (for example while investigating a native difference) still gets native answers from such an engine; Low because the answers are meant to be equal and the caller asked for native explicitly.
+
+Repair proposal (not implemented): either narrow the owner to "every engine that does not pass `native_cypher`", or let `IVG_NATIVE_CYPHER=0` win. Distinguishing case: `switch_argTrue_env0`.
+
+Governing statement: [query.native](../ontology/architecture/query-execution.g5.md#query.native).
+
+<a id="bug-cyp-160"></a>
+### A chained query's read statements are answered natively one by one
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-18 (iteration 62)
+
+Description: The planner declines a query with chained statements, but `execute_cypher` never sends it whole: it runs each statement on its own, with its chain emptied, and a supported read statement then runs natively, also when it follows a write statement inside the write's transaction.
+
+Found by: iteration 62 exploratory probe after the source read; [native_admission](models/native_admission/NOTES.md) `theorem_chained_part_runs_natively`, `theorem_read_part_of_chained_write_runs_natively`, control `chained-part-keeps-chain`.
+
+Reproduced by: **E2E reproduced** on the run-own fixture, namespace I62B ([binding receipt](results/native_admission/20261118T020559Z-binding/receipt.json), cases `chained_parts` (two native runs for a two-statement read) and `chained_write_then_read` (the write statement on SQL, the read statement native, reading the row the uncommitted SET changed)).
+
+Expected: [query.native.reads-only](../ontology/architecture/query-execution.g5.md#query.native.reads-only): "a query with ... chained statements takes the SQL path".
+
+Observed: `plan_query` declines `subsequent_queries` (`native_plan.py:52`), but `execute_cypher` copies each part and empties its chain before `_execute_parsed` (`query.py:1904-1920`). No write runs natively (`theorem_no_write_runs_natively`).
+
+Consequence: a statement the owner places on the SQL path is answered by the native executor; with a write before it, it reads that write's uncommitted rows, which the owner otherwise allows only for "a read step inside a write". Low: the answers are meant to be equal, and no write reaches the native executor.
+
+Repair proposal (not implemented): narrow the owner to "the planner declines the chained query as a whole; each statement is then admitted on its own", or keep every part of a chained query on SQL. Distinguishing case: `chained_parts`.
+
+Governing statement: [query.native.reads-only](../ontology/architecture/query-execution.g5.md#query.native.reads-only).
+
+<a id="bug-cyp-161"></a>
+### Shadow mode's mismatch names the native plan, not the query, and a SQL failure is named without the query or reported as an ordinary error
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-18 (iteration 62)
+
+Description: The owner promises a shadow error naming the query, its parameters and the first differing row. As built the message carries the native plan's repr instead of the Cypher text; a column or LIMIT row-count difference names no row; a SQL error result where native answered names only the SQL error; and a SQL failure raised as a plain `RuntimeError` reaches the caller as an ordinary error result, not as a shadow error.
+
+Found by: iteration 62 exploratory probe after the source read; [native_admission](models/native_admission/NOTES.md) `theorem_shadow_difference_raises`, `theorem_shadow_sql_failure`, `theorem_limit_count_names_no_row`, control `names-query`.
+
+Reproduced by: **E2E reproduced** for the message content on the run-own fixture, namespace I62B ([binding receipt](results/native_admission/20261118T020559Z-binding/receipt.json), cases `shadow_order_empty_string` and `shadow_group_mixed_types`: `names_plan` true, `names_cypher` false, `names_params` true; `priv_rev_running_engine_shadow_scan`: "the SQL path failed where native answered" with neither query nor parameters). The plain-`RuntimeError` branch is modeled only (no live SQL `RuntimeError` behind an admitted plan was constructed).
+
+Expected: [query.shadow](../ontology/architecture/query-execution.g5.md#query.shadow).
+
+Observed: `_shadow_compare` passes `str(getattr(parsed, "source_text", "") or plan)` (`query.py:2240`) and `CypherQuery` has no `source_text` (only `ReturnItem` does, `ast.py:282`); the SQL-error branch raises `NativeMismatch(f"the SQL path failed where native answered: {sql.error}")` (2230-2231); `compare` fails a column or count difference without a row (`native_shadow.py:43-47`); `execute_cypher` turns a plain `RuntimeError` into `IVGResult.error` (1931-1940).
+
+Consequence: the person reading a shadow failure must map a plan dict back to a query; a SQL failure under shadow may pass unnoticed as an ordinary failed read. Low: no wrong answer is returned.
+
+Repair proposal (not implemented): keep the Cypher text on the parsed query (or pass it to `_shadow_compare`) and name query and parameters in the SQL-failure message. Distinguishing case: `shadow_order_empty_string`.
+
+Governing statement: [query.shadow](../ontology/architecture/query-execution.g5.md#query.shadow).
+
 <a id="bug-plt-135"></a>
 ### An OPTIONAL MATCH node with no match answers labels '[]' and properties '[]' at execute_cypher, /api/cypher and tx/commit
 

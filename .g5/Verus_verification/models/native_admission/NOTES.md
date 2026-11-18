@@ -38,7 +38,7 @@ inputs themselves.
 As built:
 - **Switches.** `theorem_switch_resolution`; `theorem_per_engine_switch` (one engine with `native_cypher=False` answers
   on SQL while another answers natively); `theorem_explicit_true_beats_env_zero`: `IVG_NATIVE_CYPHER=0` does **not**
-  reach an engine built with `native_cypher=True` (refutes query.native#o03's "every engine"; bug-cyp-160).
+  reach an engine built with `native_cypher=True` (refutes query.native#o03's "every engine"; bug-cyp-159).
 - **Gates.** `theorem_admitted_only_through_every_gate` (a native answer implies the plan, every gate, no mapped label,
   the translation check and a successful run); `theorem_closed_gate_answers_sql`; `theorem_bulk_session_keeps_sql`;
   `theorem_mapped_label_keeps_sql`; `theorem_version_gate` (cached, remembered until setup, setup asks again);
@@ -50,14 +50,14 @@ As built:
 - **Reads only.** `theorem_no_write_is_planned`, `theorem_no_write_runs_natively` (a write clause anywhere: top level, a
   chained part, a UNION branch, a `CALL { }` body); `theorem_call_union_chained_skip_declined`;
   `theorem_chained_part_runs_natively` (the chained parent is declined, its supported parts are admitted one by one:
-  refutes reads-only#o04 at `execute_cypher`; bug-cyp-161); `theorem_write_read_steps` (the per-row MERGE prefix and
+  refutes reads-only#o04 at `execute_cypher`; bug-cyp-160); `theorem_write_read_steps` (the per-row MERGE prefix and
   count_create's count are declined by the width check); `theorem_read_part_of_chained_write_runs_natively` (a read
   statement chained after a write is admitted inside the write's transaction).
 - **Fallback.** `theorem_native_failure_answered_by_sql`; `theorem_one_warning_per_reason`;
   `theorem_reason_is_type_and_160_chars`; `theorem_warned_set_is_per_engine`.
 - **Shadow.** `theorem_shadow_switches`; `theorem_shadow_bypasses_route` (route#o03); `theorem_shadow_returns_only_compared`
   (an answer returned in shadow mode passed `compare`); `theorem_shadow_difference_raises` (never returned; the message
-  names the plan, not the Cypher text: bug-cyp-162); `theorem_shadow_sql_failure` (a SQL error result raises naming only
+  names the plan, not the Cypher text: bug-cyp-161); `theorem_shadow_sql_failure` (a SQL error result raises naming only
   the SQL error; a SQL `RuntimeError` reaches the caller as an error result, not raised; a typed SQL error is raised);
   `theorem_shadow_native_failure_uncompared` (q-cyp-002's working assumption).
 - **Comparator.** `theorem_ordered_pass_iff_equal` (all sizes); `theorem_type_is_part_of_the_value` (`1`, `'1'`, `1.0`,

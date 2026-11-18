@@ -134,7 +134,7 @@ A compiled plan runs only for the shape it was written for, and only while the e
 <a id="query.compiled.deploy-discards"></a>
 [D · query.compiled.deploy-discards]
 
-A deploy that installs IVG's classes deletes every compiled plan and its record, and so does an explicit drop of all compiled plans. Nothing else removes them, so a namespace gains one class per distinct shape until the next deploy.
+A deploy that installs IVG's classes deletes every compiled plan and its record, and so does an explicit drop of all compiled plans. Otherwise a class is removed only when a build of its shape fails to compile, and the shape's record stays with the error; so a namespace gains at most one class per distinct shape until the next deploy.
 
 <a id="query.compiled.fallback"></a>
 [I · query.compiled.fallback]
@@ -165,11 +165,15 @@ Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no
 ### query.native
 
 - uncertain
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) (as built, iteration 62) `theorem_switch_resolution`, `theorem_per_engine_switch`; `theorem_explicit_true_beats_env_zero`: `IVG_NATIVE_CYPHER=0` does not reach an engine built with `native_cypher=True`.
 - agent
 - architecture-decision, operations
 - Children: [gates](#query.native.gates), [privileges](#query.native.privileges), [Should a bulk load by another process close the native query path while indexes lag the rows?](../../Verus_verification/open_questions.md#q-cyp-003), [reads only](#query.native.reads-only), [equal answers](#query.native.equal-answers), [SQL first](#query.native.sql-first), [fallback](#query.native.fallback), [route](#query.native.route).
 
 Sources: [spec 253 decisions and FR-005, FR-010](../../../specs/253-native-cypher-executor/spec.md#L14-L18), [engine options](../../../iris_vector_graph/engine.py#L290-L317). The default was to flip only after a shadow run matched the SQL path on the full TCK and the 40 SNB queries; [TCK.md](../../../docs/dev/TCK.md#L215-L232) records the shadow run.
+
+
+Findings: [IVG_NATIVE_CYPHER=0 does not turn off an engine built with native_cypher=True](../../Verus_verification/bugs_issues.md#bug-cyp-159)
 
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
 
@@ -177,16 +181,18 @@ Open questions: [Should a bulk load by another process close the native query pa
 
 ### query.native.gates
 
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) (as built, iteration 62) [`gate`](../../Verus_verification/models/native_admission/native_admission.rs) with its per-engine caches, `theorem_admitted_only_through_every_gate`, `theorem_closed_gate_answers_sql`, `theorem_bulk_session_keeps_sql`, `theorem_mapped_label_keeps_sql`, `theorem_version_gate`, `theorem_missing_class_gate`, `theorem_transient_probe_not_remembered`; the index gate reads only `idx_edges_adj` (F-0906 in `proofs-d1d`).
 - agent
 - operations, data-integrity
 - test-coverage
 - Expands: [Native executor](#query.native).
 
-Sources: [spec 253 FR-003, FR-005, FR-011, FR-014](../../../specs/253-native-cypher-executor/spec.md#L98-L140), [`native_gate`](../../../iris_vector_graph/cypher/native_plan.py#L524-L536), [plan version check](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L13-L41), [mapped labels decline](../../../iris_vector_graph/_engine/query.py#L2162-L2184). Live: [`test_253_executor_version_e2e.py`](../../../tests/e2e/test_253_executor_version_e2e.py); the other gates are covered by mocked unit tests ([`test_253_native_gates.py`](../../../tests/unit/test_253_native_gates.py)). The engine caches the index, privilege and version answers until setup runs again.
+Sources: [spec 253 FR-003, FR-005, FR-011, FR-014](../../../specs/253-native-cypher-executor/spec.md#L98-L140), [`native_gate`](../../../iris_vector_graph/cypher/native_plan.py#L524-L536), [plan version check](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L13-L41), [mapped labels decline](../../../iris_vector_graph/_engine/query.py#L2162-L2184). Live: [`test_253_executor_version_e2e.py`](../../../tests/e2e/test_253_executor_version_e2e.py); the other gates are covered by mocked unit tests ([`test_253_native_gates.py`](../../../tests/unit/test_253_native_gates.py)). The engine caches the index, privilege and version answers per engine; setup (`initialize_schema`) resets the index and version answers but never the privilege answer, and a version probe that fails for another reason than a missing method or class is not remembered (corrected in iteration 62 from "until setup runs again": `_native_privileges_cached` is never reset, `engine.py:318`, `schema.py:2649-2650`; [native_admission](../../Verus_verification/models/native_admission/NOTES.md) `theorem_revoke_does_not_reach_running_engine`).
 
 ### query.native.privileges
 
 - uncertain
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) (as built, iteration 62) `theorem_missing_select_keeps_sql`, `theorem_revoke_does_not_reach_running_engine` (the per-engine answer survives setup), `theorem_revoke_reaches_sql_anchor_only` (a REVOKE fails a running engine's property-lookup read, which falls back to SQL, and leaves its label scans native).
 - agent
 - security
 - Expands: [Native executor](#query.native).
@@ -199,16 +205,21 @@ Open questions: [Should a running engine notice a revoked table right or a dropp
 
 ### query.native.reads-only
 
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) (as built, iteration 62) `theorem_no_write_runs_natively`, `theorem_call_union_chained_skip_declined`, `theorem_chained_part_runs_natively`, `theorem_write_read_steps` (the per-row MERGE prefix and the count step are declined by the translation-width check), `theorem_read_part_of_chained_write_runs_natively`.
 - agent
 - data-integrity, architecture-decision
 - Expands: [Native executor](#query.native).
 
 Sources: [spec 253 decisions and FR-001, edge cases](../../../specs/253-native-cypher-executor/spec.md#L83-L99), [`plan_query`](../../../iris_vector_graph/cypher/native_plan.py#L50-L87), [`_try_native` declines a transactional translation](../../../iris_vector_graph/_engine/query.py#L2118-L2160). Three independent checks keep writes off the native path; the planner unit test lists the declined write clauses.
 
+
+Findings: [A chained query's read statements are answered natively one by one](../../Verus_verification/bugs_issues.md#bug-cyp-160)
+
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
 
 ### query.native.equal-answers
 
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) (as built, iteration 62) the comparator only: `theorem_ordered_pass_iff_equal`, `theorem_type_is_part_of_the_value`, `theorem_limit_other_rows_pass`, `theorem_limit_outside_row_raises`, `theorem_limit_count_names_no_row`, `theorem_partial_order_compared_in_order` (an ORDER BY with ties is compared in order, so the LIMIT rule applies only without ORDER BY: F-0907). Native = SQL answers is not proved; the binding records a runtime sample.
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
@@ -232,6 +243,7 @@ Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no
 
 ### query.native.fallback
 
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) (as built, iteration 62) `theorem_native_failure_answered_by_sql`, `theorem_one_warning_per_reason`, `theorem_reason_is_type_and_160_chars` (a reason is the exception type and the first 160 message characters), `theorem_warned_set_is_per_engine`.
 - agent
 - user-facing-behavior, operations
 - Expands: [Native executor](#query.native).
@@ -245,6 +257,7 @@ Sources: [spec 253 US4 and FR-007](../../../specs/253-native-cypher-executor/spe
 - uncertain
 - Playbook: [NAT-T7](../../../experiment/playbook-completion/ontology/09-native-executor.md)
 - Verus: [route_recheck](../../Verus_verification/models/route_recheck/NOTES.md), as-built held-call recheck/reset and permanent SQL-failure rules; trial medians, drift selection and SQL/native answer equality remain unmodeled.
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) `theorem_shadow_bypasses_route` (shadow mode neither consults nor records the route; iteration 62).
 - agent
 - architecture-decision
 - Expands: [Native executor](#query.native).
@@ -258,6 +271,7 @@ State machines: [route recheck](../../Verus_verification/models/route_recheck/ma
 ### query.shadow
 
 - uncertain
+- Verus: [native_admission](../../Verus_verification/models/native_admission/NOTES.md) (as built, iteration 62) `theorem_shadow_switches`, `theorem_shadow_returns_only_compared`, `theorem_shadow_difference_raises` (names the plan and parameters, not the Cypher text), `theorem_shadow_sql_failure`, `theorem_shadow_native_failure_uncompared`.
 - agent
 - data-integrity, operations
 - test-coverage
@@ -268,6 +282,9 @@ Sources: [CONTEXT.md, Shadow mode](../../../CONTEXT.md#L234-L236), [spec 253 FR-
 Open questions: [Should shadow mode fail when the native path raises an error?](../../Verus_verification/open_questions.md#HD-0902), [In shadow mode, should a native failure be raised instead of answered by SQL?](../../Verus_verification/open_questions.md#q-cyp-002)
 
 Iteration 58 (W62 D8, held within a narrower scope; observed only): with `IVG_CYPHER_SHADOW=1`, two native-accepted reads answered the same rows and types at `execute_cypher` and through Bolt under both IRIS drivers, with one comparison and no mismatch; their `ORDER BY` forms are not native-planned ([W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md)).
+
+Findings: [Shadow mode's mismatch names the native plan, not the query, and a SQL failure is named without the query or reported as an ordinary error](../../Verus_verification/bugs_issues.md#bug-cyp-161)
+
 
 ### query.compiled
 
@@ -321,6 +338,9 @@ Findings: [A caller with Cypher read access can forge a CRC-32 collision so that
 - Expands: [Compiled plans](#query.compiled).
 
 Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-at-run-time.md#L22-L23), [CONTEXT.md, Compiled plan](../../../CONTEXT.md#L243-L246), [setup calls `DropAll` when it deployed](../../../iris_vector_graph/schema.py#L2935-L2941), [`Gen.DropAll`](../../../iris_src/src/Graph/KG/Cypher/Gen.cls#L224-L230). Live: the `DropAll` test in `test_257_compiled_plans_e2e.py`; the deploy's call is checked by a mocked unit test ([`test_257_deploy_drops_compiled_plans.py`](../../../tests/unit/test_257_deploy_drops_compiled_plans.py)). The developer `compile` scripts do not drop plans and rely on [never stale](#query.compiled.never-stale).
+
+Wording corrected in iteration 62 (the iteration-61 report, confirmed): "Nothing else removes them" was wrong. `Gen.Build` deletes the class it failed to compile (`Gen.cls:214`), which for a rebuild of a stale shape is the earlier compiled class; live in I62C a compiled `IVGC.P865046810` was gone after a rebuild failed through the `breaktest` hook, its `^IVG.CypherCompiled` entry kept the compile error and the read was answered by the interpreter ([observation](../../uplift/consolidated/iteration-62/probes/deploy_discards-observed-20261118T0206Z.json)).
+
 
 ### query.compiled.fallback
 
