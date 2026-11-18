@@ -431,10 +431,15 @@ Links are relative to `.g5/Verus_verification/`. The model is `models/platform/p
   - The native executor and shadow mode ([query.native](../ontology/architecture/query-execution.g5.md#query.native) and its
     children `.equal-answers`, `.route`, `.gates`, `.fallback`, `.sql-first`, `.reads-only`, `.privileges`,
     `.index-current`; [query.shadow](../ontology/architecture/query-execution.g5.md#query.shadow),
-    [query.shadow.native-failure](open_questions.md#q-cyp-002)): **Observed
-    (upstream); not modelled** — `test_253_all_graphs_read_e2e` 8, `test_253_executor_version_e2e` 4,
-    `test_253_family_b_e2e` 43 and `test_257_compiled_plans_e2e` 151 passed. That the native executor and the SQL
-    path give equal answers for every shape is not established formally (review round 3 R3-5).
+    [query.shadow.native-failure](open_questions.md#q-cyp-002)): **modelled as built since iteration 62** in
+    [native_admission](models/native_admission/NOTES.md) (switches, planner declines, every gate and its per-engine
+    cache, executor failures and the once-per-reason warning, the shadow comparator and its raise, through
+    `execute_cypher`; 54 proved, 23 controls; binding AGREES on 50 live cases in I62B/I62C). Grades per obligation are
+    in the [census](census/obligations.tsv); refutations bug-cyp-159, -160, -161 and F-0907 (comparator).
+    Upstream: `test_253_all_graphs_read_e2e` 8, `test_253_executor_version_e2e` 4, `test_253_family_b_e2e` 43 and
+    `test_257_compiled_plans_e2e` 151 passed. That the native executor and the SQL path give equal answers for every
+    shape is still not established formally (review round 3 R3-5): the model proves only that a native answer returned
+    in shadow mode passed the comparison.
 - **Capabilities with no owning ontology block before round 3** (review round 3 R3-reader M23): imports and exports
   (`load_networkx`, `import_graph_ndjson`, `import_rdf`, `load_obo`, `export_graph_ndjson`, `export_rdf`,
   `prov_export`), inference (`materialize_inference`, `retract_inference`) and the read API outside Cypher

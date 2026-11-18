@@ -789,3 +789,33 @@ observation is the binding's `5.3.2_PY_WithCoalesce_int` (`'3'`) beside `5.3.2_P
 lookup: `query.aggregation.keys` → `clause_combos.rs::theorem_group_iff_bound_text` → `translate_return_clause` (GROUP
 BY the plain `sql`) and `_unwind_bool_flag`; control `group-by-kind-column`; observation `B_int_true_groups` (one group)
 beside `B_int_true_distinct_rows` (two rows).
+
+Iteration 62 (native Cypher admission, fallback and shadow; [handoff](../uplift/consolidated/iteration-62/HANDOFF.md)), on
+the run's own fixture `ivg-cov-20261118-a-iris` (127.0.0.1:36481; run dir
+`$HOME/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a`, runtime and `run_binding.py` there). The binding drops
+and re-creates namespaces `I62B` and `I62C` from %SYS (docker exec on that container only), creates users `i62_*` with
+roles `i62r_*` and deletes them after, recompiles or deletes `Graph.KG.Cypher.Exec` in `I62C` only, and sets
+`IVG_NATIVE_CYPHER` / `IVG_CYPHER_SHADOW` in its own process. From the repository root:
+
+```sh
+export RUN_DIR=$HOME/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a
+export PYTHONDONTWRITEBYTECODE=1 G5_GUIDE=$G5_HARNESS/guidance
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/native_admission       # PASS 54
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/native_admission    # 23 EXPECTED_FAIL
+CONTROL=anchor-ignores-privileges python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/native_admission
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD IVG_PIN_DIR=$PWD $RUN_DIR/venv/bin/python -B $RUN_DIR/run_binding.py \
+  $OLDPWD/.g5/Verus_verification/models/native_admission/binding.py)                                 # AGREES 50 live + 16 + 2116
+python3 .g5/Verus_verification/tools/census.py                                                       # PASS
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after62                     # 798/4130
+```
+
+Worked lookup (iteration 62): `query.native.privileges` → `native_admission.rs::theorem_revoke_reaches_sql_anchor_only`
+→ the rows for `iris_src/src/Graph/KG/Cypher/Exec.cls::Anchors` (848-904, producer: a property lookup reads
+`Graph_KG.rdf_props` through `%SQL.Statement`, which checks SELECT) and `iris_vector_graph/engine.py::IRISGraphEngine._native_privileges`
+(559-586, decision: the per-engine SELECT probe, never reset) in `crosswalk/decision-links.tsv`; in reverse, those keys
+in the recount's `bindings.json` list the claims. The distinguishing control is `anchor-ignores-privileges`; the product
+observation is the binding's `priv_rev_running_engine_props_anchor` (an error result after one fallback warning) beside
+`priv_rev_running_engine_label_scan` (answered natively after the same REVOKE). Second lookup: `query.shadow` →
+`theorem_shadow_difference_raises` → `_engine/query.py::QueryMixin._shadow_compare` (2226-2249) and
+`cypher/native_shadow.py::_fail`; control `names-query`; observation `shadow_order_empty_string` (`names_plan` true,
+`names_cypher` false).
