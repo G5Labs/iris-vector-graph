@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_mapped_label_keeps_sql"
+    ],
+    "find": "if g.is_some() || names_mapped(q, w) ||",
+    "name": "mapped-label-ignored",
+    "replace": "if g.is_some() ||",
+    "why": "_names_mapped_label is not consulted"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_mapped_label_keeps_sql"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "f8fd9b5e5fa664ecc8b0370e4810a55dacd02164159d63a23df19524e8c07ee9",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "9d013898f9f0f4bc431c3f567e95fe863ca262b2c132e9fa8e64e6447262a407"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/mapped-label-ignored/20261118T015446Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_mapped_label_keeps_sql": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T015446Z-control-mapped-label-ignored-theorem_mapped_label_keeps_sql.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T015446Z-control-mapped-label-ignored.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T015448Z-control-mapped-label-ignored/logs/20261118T015446Z-control-mapped-label-ignored-theorem_mapped_label_keeps_sql.log": "88f3147890cbc566b4e56abe2bda40ea0e85bd34479d51f2c5cb9b6dd39e9ade",
+    ".g5/Verus_verification/results/native_admission/20261118T015448Z-control-mapped-label-ignored/logs/20261118T015446Z-control-mapped-label-ignored.log": "b9245d26267b423378411cdd739e17e6afd01fb68a85afc4d50a7570bb24576e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

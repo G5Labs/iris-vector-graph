@@ -1,0 +1,30 @@
+verification results:: 44 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/mapped-label-ignored/20261118T015446Z/models/native_admission/native_admission.rs:308:61
+    |
+306 | pub proof fn theorem_admitted_only_through_every_gate(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+307 |     requires native_path(exec_parsed(e, w, q).0),
+308 |     ensures plan(q).is_some(), e.native_cypher, !e.in_bulk, !names_mapped(q, w), !q.transactional, q.width_ok,
+    |                                                             ^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/mapped-label-ignored/20261118T015446Z/models/native_admission/native_admission.rs:322:13
+    |
+319 | pub proof fn theorem_closed_gate_answers_sql(e: Engine, w: World, q: Query)
+    | --------------------------------------------------------------------------- at the end of the function body
+...
+322 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/mapped-label-ignored/20261118T015446Z/models/native_admission/native_admission.rs:331:13
+    |
+329 | pub proof fn theorem_mapped_label_keeps_sql(e: Engine, w: World, q: Query, l: nat)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+330 |     requires q.labels.contains(l), w.mapped.contains(l), !shadow_on(e.shadow_attr, w.env_shadow_one), !e.route_sql.contains(q.shape),
+331 |     ensures exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,66 @@
+verification results:: 44 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T015425Z/models/native_admission/native_admission.rs:477:13
+    |
+477 |     ensures forall|j: int| i <= j < s.len() && j < n.len() ==> s[j] == n[j],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+480 |     if i < s.len() && i < n.len() { lemma_first_diff_none(s, n, i + 1); }
+    |     --------------------------------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T015425Z/models/native_admission/native_admission.rs:498:1
+    |
+498 | pub proof fn theorem_type_is_part_of_the_value(c: Seq<nat>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T015425Z/models/native_admission/native_admission.rs:499:13
+    |
+499 |     ensures compare(c, seq![seq![Val::Int(1)]], c, seq![seq![Val::Str(1)]], true, false, None) is Fail,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+507 |     assert(i1 != seq![Val::Bool(true)]) by { assert(i1[0] != seq![Val::Bool(true)][0]); }
+    |     ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T015425Z/models/native_admission/native_admission.rs:500:9
+    |
+500 |         compare(c, seq![seq![Val::Int(1)]], c, seq![seq![Val::Float(1)]], true, false, None) is Fail,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+507 |     assert(i1 != seq![Val::Bool(true)]) by { assert(i1[0] != seq![Val::Bool(true)][0]); }
+    |     ------ at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T015425Z/models/native_admission/native_admission.rs:573:1
+    |
+573 | pub proof fn theorem_partial_order_compared_in_order(c: Seq<nat>, a: Row, b: Row, lim: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T015425Z/models/native_admission/native_admission.rs:575:13
+    |
+575 |       ensures ({ let q = Query { order_by: true, complete_order: false, limit: lim, ..plain_read(0) };
+    |  _____________^
+576 | |         plan(q).unwrap().ordered
+577 | |         && compare(c, seq![a, b], c, seq![b, a], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) is Fail
+578 | |         && owner_equal(q.complete_order, false, seq![a, b], seq![a, b], seq![b, a]) }),
+    | |______________________________________________________________________________________^ failed this postcondition
+...
+593 |       assert forall|r: Row| #[trigger] cnt(bb, r) <= cnt(ab, r) by {}
+    |       ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-without-type/20261118T015425Z/models/native_admission/native_admission.rs:579:9
+    |
+579 | /         ({ let q = Query { order_by: true, complete_order: false, limit: true, ..plain_read(0) };
+580 | |         compare(c, seq![a], c, seq![b], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) is Fail
+581 | |         && owner_equal(false, true, seq![a], seq![a, b], seq![b]) }),
+    | |____________________________________________________________________^ failed this postcondition
+...
+593 |       assert forall|r: Row| #[trigger] cnt(bb, r) <= cnt(ab, r) by {}
+    |       ------ at the end of the function body
+
+error: aborting due to 5 previous errors
+

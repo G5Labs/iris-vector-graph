@@ -1,0 +1,29 @@
+verification results:: 44 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T015415Z/models/native_admission/native_admission.rs:374:13
+    |
+372 | pub proof fn theorem_no_write_is_planned(q: Query)
+    | -------------------------------------------------- at the end of the function body
+373 |     requires wf(q), writes(q),
+374 |     ensures plan(q).is_none(),
+    |             ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T015415Z/models/native_admission/native_admission.rs:381:12
+    |
+381 |     assert(try_native(e, w, q).0.is_none());
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T015415Z/models/native_admission/native_admission.rs:401:13
+    |
+399 |   pub proof fn theorem_read_step_of_write_runs_natively(w: World, shape: nat)
+    |   --------------------------------------------------------------------------- at the end of the function body
+400 |       requires open_world(w), !w.env_shadow_one,
+401 |       ensures ({ let whole = Query { mutation: true, ..plain_read(shape) };
+    |  _____________^
+402 | |                plan(whole).is_none() && native_path(exec_parsed(new_engine(None, EnvNative::Unset, false), w, read_step(whole)).0) }),
+    | |_____________________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+
