@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-drops-order/20261118T052053Z/models/native_admission/native_admission.rs:842:13
+    |
+840 | pub proof fn theorem_blind_spot_is_partial_aggregate_order(q: Query)
+    | -------------------------------------------------------------------- at the end of the function body
+841 |     requires plan(q).is_some(),
+842 |     ensures (plan(q).unwrap().ordered != q.order_by) == (q.aggregate && q.order_by && !q.order_covers_keys),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

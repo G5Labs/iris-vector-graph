@@ -1,0 +1,280 @@
+id	grade	flags	statement
+adapters.embedded#o05	partial	S1:semicolon-clauses	When IRIS refuses the prepared path as unsupported, the cursor tries the written-in path, then %SQL.Statement; any other error raises at once.
+adapters.embedded.no_data#o05	full	S1:semicolon-clauses	After a successful statement the row count is -1 (not known), never the number changed; only a no-row statement reports 0.
+query.paths#o01	partial	S1:semicolon-clauses	Every Cypher query has a SQL-path answer; a query the native executor does not support (or declines) is answered by the SQL path exactly as with the native executor off
+query.paths#o02	absent	S1:semicolon-clauses	Python builds the native plan and IRIS runs it; the native executor never parses Cypher text
+access.iris_boundary#o02	full	S1:semicolon-clauses,C1:cases>=3-separated	The privilege holds iff %All is among the caller's roles, or the login or any of its roles holds it on the table or its whole schema; a column-only privilege does not count
+access.api_key.every_route#o03	partial	S1:semicolon-clauses	Public routes are matched on the exact path; a longer or different path needs the key
+access.ledger_strict#o01	full	S1:semicolon-clauses	A server route is governed by strict mode only when it calls a guarded engine method; a route that runs its own SQL is not refused
+access.ledger_strict.engine_cache#o01	full	S1:semicolon-clauses	Strict mode applies to an engine whenever the ledger is strict, however old the engine; an engine that first checked before the ledger classes existed is not left unguarded
+graph.membership#o02	partial	S1:semicolon-clauses	The same node ID in two graphs is two distinct nodes; labels, properties and edges of one never count for, merge into or are changed through the other.
+graph.membership#o03	absent	S1:semicolon-clauses	An edge's two endpoints are nodes of the edge's own graph; no writer can create an edge whose endpoint exists only in another graph.
+graph.default#o02	absent	S1:semicolon-clauses,C1:cases>=3-separated	delete_node / bulk_delete_nodes with graph omitted (not None) delete each ID from the one graph that holds it, a holder being a graph with a node row or an edge row naming the ID; with None they delete from the default graph.
+graph.key.two_forms#o01	full	S1:semicolon-clauses	Native index key: the default graph is the number 0; a named graph is its (NUL-stripped) name; no named graph's key equals 0.
+graph.key.two_forms#o02	full	S1:semicolon-clauses	Ledger key: the default graph is $Char(1); a named graph is its name; no named graph's key equals $Char(1).
+graph.key.derive#o03	absent	S1:semicolon-clauses	No code converts one store's key into another store's key (or back to a name and on); each store's key comes from the name.
+graph.key.derive#o04	full	S1:semicolon-clauses	A key of one store used on the other matches only the same named graph or nothing; the default graph's key in one store matches no key of the other, so a misused default key reads nothing and its writes are invisible to readers.
+graph.key.owner#o01	absent	S1:semicolon-clauses	GraphKey is the only code that derives a graph key or SQL spelling; no other module computes one inline.
+graph.no_fallthrough#o01	partial	S1:semicolon-clauses	A lookup with a key or graph name that has no content answers empty; it never falls back to the default graph or every graph.
+graph.unscoped_snapshot#o02	absent	S1:semicolon-clauses	Once any named graph holds an edge, every snapshot reader refuses or switches to the default graph's scoped index; none answers over all graphs merged.
+graph.all_graphs_write#o04	absent	S1:semicolon-clauses	MERGE without USE GRAPH matches and creates only in the default graph; ON MATCH changes only the default graph's node.
+access.bolt.framing#o03	partial	S1:semicolon-clauses	Complete bodies are dispatched in the order received; a queued body is handled before the next transport read
+access.bolt.versions#o03	full	S1:semicolon-clauses	A 5.x proposal with a range is met at its highest minor up to 5.4 (5.8 range 4 gives 5.4; 5.8 alone or 5.6-5.8 refused)
+access.bolt.errors#o01	partial	S1:semicolon-clauses	A failed RUN answers FAILURE with a status code and the failure text; RESET then a new RUN succeeds
+ledger.revision#o01	partial	S1:semicolon-clauses	Every revision (genesis, changeset, adoption, redaction audit) gets seq = previous head + 1; no gap, including after a caller's rollback
+ledger.changeset#o03	absent	S1:semicolon-clauses	A relationship reference must give exactly one of statement ID, (source, predicate, target, graph) tuple, or earlier-create reference; both or neither is refused at the builder
+ledger.commit#o03	absent	S1:semicolon-clauses	With auto-stubs, each stub op precedes its relationship and shifts positions; the returned reference names the shifted position
+ledger.commit#o14	full	S1:semicolon-clauses,C1:cases>=3-separated	Ops apply in order; two writes of one property record (absent->1) and (1->2) and the property shows the last value
+ledger.commit#o16	partial	S1:semicolon-clauses	The first failing op stops the commit; no revision, record or content change of the changeset remains
+ledger.commit.size#o02	full	S1:semicolon-clauses	More ops than max_ops refuses ChangesetTooLargeError carrying the limit; exactly max_ops commits
+ledger.commit.size#o07	full	S1:semicolon-clauses,S4:several-entry-points	A text field over its column limit (message/source 4,000; actor/correlation/key 256; actor type 32) is refused as LedgerInconsistencyError after apply: nothing kept, nothing counted, hook sees inconsistent
+ledger.commit.caller-transaction#o06	partial	S1:semicolon-clauses	A written, replayed or counted-refusal commit inside a caller's transaction holds the counter row to transaction end; meanwhile another connection's refused commit is not counted and a strict-mode count made elsewhere is lost
+ledger.commit.caller-transaction#o07	absent	S1:semicolon-clauses	With the counter row held, the competing lock-timeout refusal arrives after about 40 s (30 s head wait + 10 s row wait); with only the head held, after 30 s
+ledger.commit.caller-transaction#o08	full	S1:semicolon-clauses,S3:contrast-clause	An uncounted nested refusal (e.g. inconsistent) holds the head but not the counter row; the competing lock-timeout is counted and the count survives the caller's rollback
+ledger.commit.caller-transaction#o09	partial	S1:semicolon-clauses	After the caller's own nested commit times out, it holds the counter row without the head; another connection's valid commit then fails LedgerInconsistencyError after ~10 s, writing nothing, until the caller's transaction ends
+ledger.commit.post-commit#o06	absent	S1:semicolon-clauses	A replayed (keyed retry) commit must not re-apply its post-commit properties; as built the pin re-applies them (F-1101)
+ledger.idempotency#o05	partial	S1:semicolon-clauses	Two concurrent commits with the same key and fingerprint produce one revision; the other replays
+ledger.node-scope#o02	full	S1:semicolon-clauses	Node records carry no graph; relationship records carry the relationship's graph
+ledger.immutability#o02	partial	S1:semicolon-clauses	Every record keeps its ordinal position; no writer reorders or removes record slots (redaction tombstones in place)
+ledger.readers#o02	partial	S1:semicolon-clauses	An object source is stored as compact sorted-key JSON and the source filter matches that exact text; a plain-text source is silently dropped
+ledger.readers#o03	full	S3:contrast-clause,S5:enumeration>=3	get_revision, diff, reconstruct and export refuse RedactionInProgressError while a redaction is unfinished, before looking up the ID
+ledger.readers.history#o04	full	S1:semicolon-clauses	A full page returns its last seq as the cursor (also when final); a short or empty page returns none
+ledger.readers.history#o06	full	S1:semicolon-clauses	None omits a filter; '' is a supplied filter
+ledger.readers.history#o09	full	S1:semicolon-clauses	limit 0 returns empty; negative limit is refused by IRIS
+ledger.readers.history#o11	partial	S1:semicolon-clauses	Every acquired cursor is closed exactly once; a failed open closes none
+ledger.readers.diff#o08	full	S1:semicolon-clauses	Required: change-then-delete-then-recreate in range keeps the range-start value; as built the snapshot holds the value at deletion and the range prior is lost (bug-led-101)
+redaction.purpose#o02	full	S1:semicolon-clauses	A record that does not belong to the target (including another tenant's record in the same revision) stays byte-identical; only the target's records change.
+redaction.purpose#o05	partial	S1:semicolon-clauses,S3:contrast-clause	Current behaviour: while strict mode stays on, a target whose graph still has node rows cannot be erased through the engine and its redaction is refused (target_live); the erase-then-redact sequence needs strict mode off.
+redaction.target#o01	partial	S1:semicolon-clauses	A record outside the target graph never belongs to the target; with no prefix every record of the target graph belongs; with a prefix only records whose IDs begin with the match string do.
+redaction.target.nodes#o03	partial	S1:semicolon-clauses	A relationship delete or detach delete inside a tenant's revision writes delete records for the relationship's reifier nodes with the reifier's own ID and the default graph; unless the reifier ID begins with the tenant's prefix, neither the tenant's graph target nor its prefix target tombstones them.
+redaction.target.relationships#o01	partial	S1:semicolon-clauses	With a prefix, a create/delete relationship (or temporal-edge) record of the target graph belongs to the target iff its source or target ID begins with the match string; an unparsable tuple is unknown.
+redaction.target.relationships#o02	partial	S1:semicolon-clauses,S3:contrast-clause	A qualifier record belongs to the target when its statement's relationship does (known from this run's redacting set or the statement endpoints); otherwise it is unknown and left in clear.
+redaction.tenant#o01	partial	S1:semicolon-clauses	For a tenant with its own graph, the graph target plus the tenant prefix in the default graph together tombstone all of the tenant's records; either target alone leaves records in clear (node records, or the graph's relationship records).
+redaction.call#o05	partial	S1:semicolon-clauses	Two calls are the same redaction (resume rather than refusal) exactly when graph and match string are equal; acme and acme| are one target.
+redaction.after-erasure.default-graph#o02	full	S1:semicolon-clauses,S3:contrast-clause	For the whole default graph (no prefix) a node row live in any graph must refuse the redaction; as built only default-graph rows are counted, so named-graph node records are tombstoned while the node is live.
+redaction.idempotency#o03	full	S1:semicolon-clauses	A later commit with a redacted key is refused (IdempotencyRedactedError) before the head check and before apply; nothing is written.
+redaction.batches.competing#o01	full	S1:semicolon-clauses,S3:contrast-clause	A redaction of a different target is refused with nothing changed while another is unfinished; as built two runs started before either tombstones both run.
+ledger.lifecycle#o03	full	S1:semicolon-clauses,S4:several-entry-points	First enable fixes max_ops and recon_bound and sets strict; set_strict switches strict later
+ledger.lifecycle#o08	partial	S1:semicolon-clauses	Before the first enable: commit, redact, head, verify, set_strict refuse LedgerNotEnabledError; history is empty
+ledger.lifecycle#o09	partial	S1:semicolon-clauses	Disabling mid-redaction keeps the marker; the next batch refuses LedgerDisabledError; after enable the same redaction resumes
+ledger.lifecycle#o12	full	S1:semicolon-clauses,S3:contrast-clause	Re-enable takes strict from the call (default off); set_strict while disabled is reset
+ledger.observability#o01	partial	S1:semicolon-clauses	Each server-reached commit emits exactly one event per registered hook; client-side refusals emit none
+ledger.verify#o04	partial	S1:semicolon-clauses	A tables-only entity is reported with its attributes; a history-only entity is one deletion entry whose adoption also removes its attributes
+ledger.verify#o05	partial	S1:semicolon-clauses	A label or non-reserved property row makes a node exist in the tables view; an orphan property (e.g. post-commit) is reported as an unrecorded node with that property
+ledger.verify.scope#o05	full	S1:semicolon-clauses	Tables drop rows with temporal JSON true; replay drops statements with temporal text 'true'
+ledger.verify.scope#o07	full	S1:semicolon-clauses	Intended: tables and replay leave out the same relationships; a caller-given temporal 'true' is an ordinary qualifier
+structure.adjacency#o04	partial	S1:semicolon-clauses	The BFS walk, its SQL fallback, the ends-only walk and the shortest-path routines each answer from one graph's entries; edges in another graph change no answer
+structure.adjacency.undeclared#o03	partial	S3:contrast-clause,S5:enumeration>=3,C1:cases>=3-separated	Without the declared index, Cypher writes, store_edge and the store's write_edges change rows but not the adjacency index, which stays stale until a rebuild
+structure.adjacency.one_writer#o01	absent	S1:semicolon-clauses	Every change to ^KG out-edge and in-edge entries is made by the one adjacency module (Graph.KG.Adjacency); no other component writes them
+structure.adjacency.bulk#o02	absent	S5:enumeration>=3,C1:cases>=3-separated	bulk_create_nodes and bulk_create_edges, having dropped the indexes for a large batch, rebuild them before returning, on success and on failure
+structure.adjacency.bulk#o06	partial	S3:contrast-clause,S4:several-entry-points,C1:cases>=3-separated	After an in-transaction bulk_load_session the loading engine reports pending_sync True until sync(), even after the caller rolls back, while another engine or process reports False
+structure.adjacency.scan#o05	full	S1:semicolon-clauses,S5:enumeration>=3	For MatchEdges a graph argument of '', NULL, 0, '0' or none selects the default graph alone, and no value selects every graph; SQL '' arrives as character 0 and is read as empty
+structure.adjacency.scan#o09	full	S1:semicolon-clauses,C1:cases>=3-separated	With IVG_EDGESCAN=1 a hop from a node named by id with no USE GRAPH or USE GRAPH '' is answered through the scan; a named graph or the flag unset uses the edge rows
+structure.adjacency.declare#o01	full	S1:semicolon-clauses,S3:contrast-clause,S5:enumeration>=3	No adjacency index is declared (no DDL, drop or backfill) while the callback classes or the schema's procedure class are not compiled, the edge key column is missing, or either table lacks the graph column; setup skips with a reason and a later setup declares them
+structure.degree.cache.uncommitted#o03	partial	S3:contrast-clause,C1:cases>=3-separated	A reader stores its count only when its no-wait exclusive probe of the graph's writer lock succeeded and the node's generation did not move while it counted
+structure.degree.cache.warm#o03	partial	S1:semicolon-clauses	WarmAll fills the all-predicate entry and each predicate entry of each source and returns the number of sources filled, not entries; target-only nodes are not sources
+structure.degree.cache.warm#o06	full	S1:semicolon-clauses,S3:contrast-clause	WarmAll sets the whole-graph stamp only when every visited source filled and the token stayed equal; otherwise it removes the stamp and readers use per-source checks
+structure.rebuilt.stamp#o07	full	S3:contrast-clause,S5:enumeration>=3,C1:cases>=3-separated	Today khop2_count_fast with a type answers, while the two-hop statistics are current, the sum of the middle nodes' out-degrees (counting a start reached back and a target once per middle node), and after any write the walked count
+temporal.owner#o01	absent	S1:semicolon-clauses	Only the time-index component reads or writes the temporal stores; every other component goes through its operations
+temporal.stats.writers#o04	partial	S5:enumeration>=3,C1:cases>=3-separated	A delete recomputes the bucket's count, sum, extremes and sketch from the surviving edges and lowers the event counter by one, removing it at zero
+temporal.stats.writers#o05	full	S3:contrast-clause,S5:enumeration>=3	A write rolled back by its caller leaves its count, sum and event counter, while its edge, extremes and sketch are undone
+temporal.structural#o01	full	S5:enumeration>=3,C1:cases>=3-separated	While a triple of a structural predicate has any timestamp in a graph, that graph has its structural edge (row), so SQL, Cypher MATCH, edge counts and traversal see it
+temporal.structural.ledger#o04	full	S2:refusal+native	Under ledger strict mode a direct temporal write is not refused
+algorithms.routing#o01	absent	S1:semicolon-clauses	A Native Reader is used only for PageRank, PPR, WCC, CDLP or subgraph; any other algorithm is answered by its Owner
+algorithms.routing#o02	absent	S1:semicolon-clauses	A Native Reader is used only when the proof record lists the algorithm; an unlisted algorithm is answered by its Owner
+algorithms.routing#o03	absent	S1:semicolon-clauses	A Native Reader is used only when the loaded library's Reader Revision for it is at or above the proof record's minimum; below it or unreported, the Owner answers
+algorithms.routing#o04	absent	S1:semicolon-clauses	A Native Reader is used only for a default-graph call; a named-graph call is answered by its Owner
+algorithms.routing#o05	absent	S1:semicolon-clauses	A Native Reader is used only in namespace USER; in any other namespace the Owner answers (the library would read USER's graph)
+algorithms.routing#o07	absent	S1:semicolon-clauses	Routing that depends on availability reads engine.capabilities/status() or falls back explicitly; it never reads the store's static capabilities() catalogue as availability
+algorithms.cache#o03	full	S1:semicolon-clauses,S3:contrast-clause	A cached answer is served only while its graph's content is unchanged; no stale answer is ever returned
+algorithms.cache.token#o01	full	S1:semicolon-clauses	Only answers that depend on the adjacency index alone are cached; an answer that also depends on node rows or properties is either completed fresh on each call or not cached
+algorithms.cache.token#o02	full	S1:semicolon-clauses	WCC and CDLP cache labels for adjacency nodes only; every public call reads the current edgeless nodes and adds each missing one with its own label, even on a hit
+algorithms.cache.pagerank#o01	full	S1:semicolon-clauses	Global PageRank's cache key holds the node table's row count and largest row ID, damping and iteration count; any difference misses
+algorithms.cache.pagerank#o05	full	S1:semicolon-clauses,S3:contrast-clause	An unreadable node token makes PageRank read the edgeless list before lookup and key on it; a failed token is not treated as a known empty node set, while an empty table reads 0:0
+algorithms.cache.pagerank#o06	full	S1:semicolon-clauses	PageRank's adapter removes self-loop-only nodes from the edgeless list; a remaining true isolate forces the Owner, a self-loop-only list does not
+search.embedding.registry#o04	partial	S1:semicolon-clauses	The registry keeps one current identity per (table, graph); a forced re-claim replaces it and no earlier identity is retained
+search.embedding.claim#o05	partial	S1:semicolon-clauses	store_embedding naming a model never changes a recorded identity; it writes to (or creates) that model's own route
+search.routes.create_on_write#o03	absent	S1:semicolon-clauses	Two concurrent first writers create one route; both use the recorded width
+search.routes.orphan#o03	absent	S1:semicolon-clauses,S3:contrast-clause	Re-creating an orphaned route reuses the table only when its column width equals the requested width; otherwise refused
+search.quarantine#o08	absent	S1:semicolon-clauses	Unplaceable documents and edge vectors go to their own quarantine tables; no API places them
+search.quarantine.placement#o02	full	S1:semicolon-clauses,S3:contrast-clause	Placement succeeds only when the route exists with equal width and dtype and the node is in the graph; otherwise refused and the row stays
+search.bm25.write_lock#o05	full	S1:semicolon-clauses	A failed index write rolls back only its own level; the caller's earlier writes in its open transaction survive
+search.fusion.leg_index#o02	full	S1:semicolon-clauses	IVF scope is known only to the building engine object; a fresh engine or IRISGraphOperators reads HNSW instead, so answers differ
+algorithms.graph_scope#o02	absent	S1:semicolon-clauses,S3:contrast-clause,S4:several-entry-points	The ^NKG-reading procedures (Cypher CALL ivg.betweenness/closeness/eigenvector/leiden/triangleCount/scc/kcore and the SQL kg_* functions) raise, naming the Python method to use, exactly when a graph other than the default holds an edge; otherwise they answer.
+algorithms.op#o01	partial	S1:semicolon-clauses	Every algorithm answer has a row for every node of the graph read, including nodes with no edge; only betweenness (score>0 nodes) and walks/subgraphs (what they reach) are exempt.
+algorithms.op#o11	partial	S1:semicolon-clauses	A whole-number string ('2') or float (2.0) option value is taken as that integer; a non-whole value is refused.
+algorithms.op.pagerank#o02	absent	S1:semicolon-clauses	Global PageRank reads the default graph only; named-graph nodes and edges do not enter it.
+algorithms.op.pagerank#o04	absent	S1:semicolon-clauses,S3:contrast-clause	Defaults damping 0.85 and 20 iterations; the Owner runs exactly the iteration count, while the Arno reader may stop earlier once converged.
+algorithms.op.ppr#o05	full	S1:semicolon-clauses,C1:cases>=3-separated	Seeds are deduplicated; a seed that is not a node of the graph contributes nothing; unreached nodes are listed at 0.0.
+algorithms.op.cdlp#o01	full	S1:semicolon-clauses,C1:cases>=3-separated	CDLP starts with own IDs; each round every node simultaneously takes the most frequent neighbor label (either direction, self-loops not voting), ties to the least label.
+algorithms.op.subgraph#o03	absent	S1:semicolon-clauses	Nodes carry properties and labels by default; vectors only when requested.
+algorithms.op.betweenness#o06	absent	S1:semicolon-clauses	out/in score the directed graph, both the undirected graph; max_hops=k counts only pairs within k hops.
+algorithms.op.leiden#o02	absent	S1:semicolon-clauses	gamma 1.0 optimizes modularity; other gamma values use CPM.
+algorithms.op.leiden#o04	absent	S1:semicolon-clauses	Rows are {id, community, size} with community 0 the largest; top_k cuts rows, possibly through a community.
+algorithms.op.khop#o03	partial	S1:semicolon-clauses	A seed with no out-edge answers itself only; a seed that is no node answers nothing.
+algorithms.op.khop#o05	full	S1:semicolon-clauses	khop walks the default graph only; named graphs' edges never change its answer.
+algorithms.op.walks#o05	full	S1:semicolon-clauses	A graph walk whose answer exceeds one IRIS string raises; a khop read of the same size answers.
+algorithms.op.neighbors#o06	partial	S1:semicolon-clauses,C1:cases>=3-separated	An edge is kept only when its confidence qualifier is at least the threshold; an edge without it is dropped.
+algorithms.op.paths#o02	partial	S1:semicolon-clauses	Equal endpoints answer length 0; an empty endpoint answers no path.
+algorithms.op.paths.weighted#o02	full	S1:semicolon-clauses	Edge cost is its stored weight; zero, negative or missing weight costs 1.
+algorithms.op.paths.weighted#o06	absent	S1:semicolon-clauses,S2:refusal+native	The public procedure refuses a negative hop limit; the native search treats one as unbounded.
+algorithms.op.paths.weighted#o08	partial	S1:semicolon-clauses,S2:refusal+native	The public procedure refuses an empty/missing endpoint; the native search answers no path for one.
+query.paths.varlength#o01	absent	S1:semicolon-clauses,S5:enumeration>=3	A Cypher variable-length pattern returns one row per path (openCypher multiplicity) on the native and SQL paths: over a->x->b, a->y->b, a->b, *1..2 gives b three times and x, y once; *2..2 gives b twice; *0..1 includes a
+query.paths.varlength#o03	partial	S1:semicolon-clauses	execute_bfs lists each node other than the start exactly once, at its least depth, ordered by (depth, id); a cap k keeps the first k rows of that order (0 = all)
+query.paths.varlength#o07	partial	S1:semicolon-clauses	When Arno is not chosen the ObjectScript walk answers; the SQL walk answers only when the ObjectScript walk raises or walks no edge
+query.paths.varlength#o08	partial	S1:semicolon-clauses,C1:cases>=3-separated	The ends-only walk (VarLength.Ends) never uses a relationship twice in one path, so a cycle can make the start an end; an undirected walk does not come back over the edge it arrived by
+query.writes.atomic#o04	partial	S1:semicolon-clauses	A failed Cypher write inside a caller transaction takes back only its own changes; the caller's earlier work stays pending
+query.writes.subquery#o01	absent	S1:semicolon-clauses	A write clause inside a CALL { } body is either carried out or the whole query is refused with nothing written; it is never skipped silently
+query.writes.retype#o03	partial	S1:semicolon-clauses,C1:cases>=3-separated	The engine decides once (cached) whether Prop_Set exists, from the dictionary; an unreadable dictionary is taken as deployed, so where the function is missing the write fails instead of keeping the old type
+query.writes.delete#o05	partial	S1:semicolon-clauses	DELETE r removes only that relationship; its endpoint nodes remain
+query.read-only#o04	absent	S1:semicolon-clauses	Under read_only=True a write in any statement of a ;-separated text refuses the whole text before its first statement runs
+query.system-procedures#o04	absent	S1:semicolon-clauses	A gds.* call accepts after YIELD only a WHERE and a RETURN of yielded names; other clauses are refused
+query.system-procedures.results#o02	partial	S1:semicolon-clauses	Only a condition evaluating to true keeps a row; a comparison with null drops it
+query.system-procedures.results#o04	full	S1:semicolon-clauses	As built, a bare YIELD label AS l keeps result column 'label'; with RETURN l the column is 'l'
+query.system-procedures.results#o07	partial	S1:semicolon-clauses	Unsupported WHERE expressions and missing parameters raise only when the producer has rows; an empty producer returns no rows without error
+query.aggregation#o01	full	S1:semicolon-clauses	Each aggregate is computed from exactly the rows reaching its stage, partitioned by the grouping keys; every row contributes to its own group's accumulator only
+query.aggregation#o08	full	S1:semicolon-clauses	SUM over typed numbers is an integer iff every contributor is an integer; one float contributor makes it a float even when the total is whole
+query.aggregation#o11	partial	S1:semicolon-clauses	collect() keeps each element's type; a nested list or map is collected as a list/map, distinct from a string spelling it
+query.aggregation.keys#o03	partial	S1:semicolon-clauses	SQL path: grouping keys, count(DISTINCT) and WITH DISTINCT merge a stored number with its spelling (key reads as one of them); RETURN DISTINCT and collect(DISTINCT) keep them apart
+query.aggregation.keys#o07	partial	S1:semicolon-clauses,S3:contrast-clause,C1:cases>=3-separated	SQL path: stored 1 and 1.0 are one value for grouping and count(DISTINCT) but two for RETURN DISTINCT; over a held list RETURN DISTINCT and UNION make them one row
+query.aggregation.keys#o08	full	S1:semicolon-clauses,S3:contrast-clause,S5:enumeration>=3	Over a held list, grouping and count(DISTINCT) merge 1 with true, 0 with false and a list with the string spelling its JSON, while RETURN DISTINCT keeps them apart; 'true' and true stay two groups
+query.optional#o02	full	S1:semicolon-clauses	A WHERE inside OPTIONAL MATCH removes only matches; the incoming row is never dropped and the query does not fail
+query.optional#o11	full	S1:semicolon-clauses	A leading grouped OPTIONAL MATCH with no match answers sum null; its other aggregates follow the rule
+query.optional#o13	full	S1:semicolon-clauses	The -94 refusal follows negation-normal form: NOT(OR with earlier) runs; NOT(arith over earlier) and NOT(AND with earlier) are refused
+query.optional#o14	partial	S1:semicolon-clauses,C1:cases>=3-separated	A property of an unbound node is null at the four readers and both drivers, also through WITH; collect() of the unbound node is []
+query.optional#o15	partial	S1:semicolon-clauses,S4:several-entry-points	An unbound node answers b_id null, b_labels and b_props '[]' at execute_cypher, /api/cypher and tx/commit; Bolt answers null
+query.with#o08	absent	S1:semicolon-clauses	As built, CALL { } importing an UNWIND variable, or a node into a body without MATCH, fails; importing a node into a body that matches from it works
+query.paging#o02	absent	S1:semicolon-clauses	DISTINCT over nodes compares identity; over a property compares values
+query.paging#o08	partial	S1:semicolon-clauses	As built, a numeric string, a boolean and a whole float parameter are used as counts; a non-numeric string raises ValueError; null is reported as not provided
+query.parameters#o01	partial	S5:enumeration>=3,C1:cases>=3-separated	Wherever a literal is allowed, a parameter of the same value and type gives the same answer, at execute_cypher, Bolt and HTTP
+query.parameters#o06	partial	S1:semicolon-clauses	Driver 5.3.2: UNWIND $list, $l[$i] and $l[$s..$e] fail; 5.4.1 runs them; WITH $list AS l works under both
+query.union#o01	partial	S1:semicolon-clauses	UNION answers the branches' rows without duplicates; UNION ALL keeps duplicates
+query.union#o09	absent	S1:semicolon-clauses	As built, a relationship in a UNION ALL branch answers its JSON text; alone it answers a map
+query.union#o10	absent	S1:semicolon-clauses	As built, a literal list in a UNION branch answers JSON text; alone it answers a list
+query.values#o11	partial	S1:semicolon-clauses	WITH coalesce(...) AS x RETURN x answers a stored number or boolean as text under both drivers; RETURN coalesce(...) is typed
+query.values.equality#o05	partial	S1:semicolon-clauses,S3:contrast-clause	A relationship whole float 1.0 equals 1 but not true; a node double 1.0 equals both
+query.values.equality#o06	full	S1:semicolon-clauses	A string literal or parameter spelling a node's stored number equals it; an integer literal or parameter matches only the number
+query.values.ordering#o01	full	S1:semicolon-clauses	A node property orders against a number only when stored as a number; text and booleans drop the row
+query.values.sorting#o06	absent	S1:semicolon-clauses	Over a held list RETURN ... ORDER BY sorts booleans among numbers; after WITH it follows the key
+query.values.nulls#o01	absent	S1:semicolon-clauses	A missing node property is null in WHERE: =, <>, IN and NOT of each drop the row; IS NULL keeps it
+query.values.string_predicates#o01	partial	S1:semicolon-clauses,S3:contrast-clause,C1:cases>=3-separated	String predicates test a node number through its canonical text (12 STARTS WITH '1'; 0.95 as '.95') while RETURN reads a number
+query.values.in_lists#o01	partial	S1:semicolon-clauses	Node IN compares text: '1' IN [1] (though = is false), 1 IN ['1']; '01' and '1.0' match neither
+query.values.relationship_text#o02	partial	S1:semicolon-clauses	Non-canonical numeric spellings stay text; True is text; 1 and 0 are integers, not booleans
+query.values.conditions#o05	partial	S1:semicolon-clauses	As built, a bare run-time boolean as a condition fails the query; b = true and NOT b work
+query.values.conditions#o06	full	S1:semicolon-clauses,C1:cases>=3-separated	As built, a simple CASE with a property/run-time test takes a WHEN of another kind with matching text; literal tests and same-kind WHENs follow the rule
+query.functions.percentile#o07	full	S1:semicolon-clauses	As built percentileDisc takes index floor((n - 1) p): p 0.6 gives 20 and 0.9 gives 30 over 10..40; p 0.95 over 1..10 gives 9
+query.functions.strings#o15	absent	S1:semicolon-clauses	As built trim() in a result or SET removes spaces only (tabs and line breaks kept; rtrim keeps a line break)
+query.functions.coalesce#o04	partial	S1:semicolon-clauses,S3:contrast-clause	As built otherwise a number or boolean answers as text (UNWIND [7] AS x RETURN coalesce(x, 1) gives '7'; coalesce(null, 1) gives '1')
+install.import#o01	absent	S1:semicolon-clauses	load_networkx writes one item at a time; on failure the items already written remain
+install.import#o03	absent	S1:semicolon-clauses	import_rdf commits per batch; a failure keeps earlier batches
+install.import.ndjson#o01	partial	S1:semicolon-clauses	Blank lines are ignored; malformed/non-object JSON, unknown kinds and nodes without IDs are logged and counted skipped, and later lines are still processed
+install.import.ndjson#o03	partial	S1:semicolon-clauses	A writer exception stops the import with no counts; earlier writes remain (no caller transaction)
+install.import.ndjson#o04	full	S1:semicolon-clauses	Record kind: explicit kind wins over type; type node|rel used when kind is absent
+install.export.rdf.content#o02	partial	S1:semicolon-clauses	A non-null property becomes a literal triple; NULL emits nothing
+install.export.rdf.content#o07	partial	S3:contrast-clause,S4:several-entry-points	Property keys pass through only for http/https/urn, otherwise urn:ivg:prop/<key>
+install.export.rdf.content#o13	full	S1:semicolon-clauses	Two unqualified parallel rows give one triple; two qualified rows keep separate blank envelopes
+fhir.graph#o01	absent	S1:semicolon-clauses	A registered repository is projected into its own named graph fhir:<namespace>:<package>, never the default graph; a FHIR graph call without a graph id refuses
+fhir.graph#o02	partial	S1:semicolon-clauses	The graph holds exactly one node per live resource, keyed by its FHIR key and labelled with its resource type; deleted resources have no node
+fhir.graph#o04	absent	S1:semicolon-clauses	Codes and most properties are not copied into the graph; readers read them live from the repository
+fhir.graph.lifecycle#o01	absent	S1:semicolon-clauses	Registering a repository names its graph deterministically (fhir:<namespace>:<package>); registering again updates the same graph's settings
+fhir.graph.lifecycle#o02	full	S3:contrast-clause,C1:cases>=3-separated	Scheduling creates a Task Manager task when the graph has none and otherwise updates its own task, so a graph has one sync task
+fhir.graph.lifecycle#o03	partial	S5:enumeration>=3,C1:cases>=3-separated	Status reports the graph's node, reference-edge and compartment-edge counts, pending changes past the watermarks, last sync and rebuild, last error and task id
+fhir.graph.lifecycle.tasks#o02	full	S1:semicolon-clauses,S3:contrast-clause	An existing object is reused only when its class is Graph.KG.FHIRGraphSyncTask, its namespace is current and its Settings' GraphId is this graph; otherwise it is foreign
+fhir.graph.lifecycle.tasks#o08	full	S1:semicolon-clauses,C1:cases>=3-separated	The public interval must be an integer of at least 60 or None (retain the registered interval); explicit 0, 59 or a non-integer refuses with nothing changed
+fhir.graph.lifecycle.tasks#o11	full	S1:semicolon-clauses,S3:contrast-clause,C1:cases>=3-separated	Task save/delete happens before the registry update; a failed save/delete stops before SQL, while a failed later SQL update keeps the saved or deleted task with the old registry
+fhir.graph.lifecycle.tasks#o15	full	S1:semicolon-clauses	A task run whose sync answers ok or busy succeeds; an error reply, a thrown SyncOnce or an unparsable reply fails
+fhir.sync#o01	partial	S1:semicolon-clauses,C1:cases>=3-separated	A sync applies exactly the repository changes past each of the two watermarks (new resources; later versions and deletes), in batches of keys
+fhir.event#o04	absent	S1:semicolon-clauses,C1:cases>=3-separated	An event's optional graph field writes the node and edge into that named graph; without it they go to the default graph; an invalid name refuses
+structure.write#o02	full	S1:semicolon-clauses	Inside a caller's open transaction an engine write is nested in it; the caller's commit keeps it and the caller's rollback removes it, however the caller opened the transaction.
+structure.write#o03	full	S1:semicolon-clauses	A failed engine write inside a caller transaction takes back only its own level; the caller's earlier work stays pending.
+structure.write#o04	full	S1:semicolon-clauses,S4:several-entry-points	purge_before and set_temporal_structural run on the engine's own Native API connection when the engine knows its credentials (from_connect) and are durable whatever the caller does; on the caller's connection they follow the caller.
+structure.node.bulk#o03	full	S1:semicolon-clauses	A node's own graph key overrides the call's graph keyword; an explicit None graph is the default graph; an absent key uses the keyword.
+structure.node.bulk#o05	full	S1:semicolon-clauses	Before inserting parents, properties of incoming IDs that have no node row in that graph (orphans) are removed; offered values replace them.
+structure.node.bulk#o08	full	S1:semicolon-clauses	None-valued properties are not written; id defaults to the node ID when absent; an explicit None id writes no id.
+structure.node.delete#o01	full	S1:semicolon-clauses	delete_node removes the node, its labels and properties and every edge incident to it in its graph; other nodes stay.
+structure.node.delete.bulk#o03	full	S1:semicolon-clauses	deleted counts nodes removed by successful calls; failed counts every requested ID of a raising call, existing or not.
+structure.node.delete.bulk#o05	full	S1:semicolon-clauses	A node delete can finish before its reifier cleanup raises; the batch then counts as failed (false result) although the nodes are gone.
+structure.node.read#o03	full	S1:semicolon-clauses	A bare node is returned; an absent ID with no child rows is omitted and get_node returns None.
+structure.node.read#o04	full	S1:semicolon-clauses	Stored properties id and labels are returned as p_id and p_labels; the structural id and labels fields are kept.
+structure.node.read#o07	absent	S1:semicolon-clauses	A failed database read raises; no empty node is fabricated.
+structure.node.read.properties#o01	absent	S1:semicolon-clauses	get_nodes_by_property and get_node_ids_by_property match val against the stored text: '7' finds number 7 and string '7'; 'true' finds a stored true.
+structure.node.read.properties#o05	partial	S3:contrast-clause,S4:several-entry-points	As built, get_property_values/get_property_pairs return a stored boolean true as the string 'true' while get_node returns True.
+structure.edge.weight.set#o01	full	S1:semicolon-clauses	set_edge_weight updates the default graph's edge; the same triple in another graph keeps its weight.
+structure.reification#o01	absent	S1:semicolon-clauses	A reifier is linked to exactly one edge row; a second link of the same reifier is refused.
+structure.multigraph#o02	partial	S1:semicolon-clauses	In a multigraph, CREATE of an existing triple adds another edge with its own key; each stays distinct in rows and adjacency.
+structure.multigraph#o03	absent	S1:semicolon-clauses	As built, create_edge/store_edge in a multigraph do not add a parallel edge (they guard on ekey 0); only Cypher CREATE does.
+structure.multigraph.count#o06	partial	S1:semicolon-clauses	Two equal parallel edges are two Cypher relationships; DISTINCT folds them to one.
+structure.multigraph.count#o07	full	S1:semicolon-clauses	Cypher DELETE r of one of two parallel edges leaves a bare leaf with the survivor's weight; reach stays and degree goes 2 -> 1.
+structure.degree#o01	partial	S1:semicolon-clauses	A degree answer equals the count of the node's adjacency entries at the time asked; no maintained counter answers it.
+search.embedding#o01	partial	S1:semicolon-clauses,C1:cases>=3-separated	As built, an undeclared (no model key) default-graph writer whose width and element type match is admitted into kg_NodeEmbeddings even when that table records a declared model; separate-route enforcement is not current behaviour
+search.embedding.model_key#o01	absent	S1:semicolon-clauses,S5:enumeration>=3,C1:cases>=3-separated	Two model keys match iff they are equal after trimming, lowercasing and collapsing runs of whitespace; no other rewriting (punctuation, hyphens, aliases) is applied
+search.embedding.width#o01	partial	S1:semicolon-clauses	The registry's recorded width for a table follows the vector column's declared width (reconcile copies it); the registry never overrides a declared column width
+search.embedding.width#o03	full	S1:semicolon-clauses	Setup changes an empty column's declared width only when rewidth=True; without it the empty column at another width is refused
+search.embedding.width#o08	partial	S1:semicolon-clauses	A query vector of another width than the route/column is never padded or truncated; it raises an error and no scores are returned
+search.embedding.width#o09	partial	S5:enumeration>=3,C1:cases>=3-separated	The width refusal is raised before any search statement runs, names the query width and the stored width, and compares against the route's recorded width or, when none, the column's declared width
+search.embedding.width#o10	partial	S1:semicolon-clauses,S5:enumeration>=3,C1:cases>=3-separated	No width check is made for a seed node ID, for a route and column with no declared width, or for an unparseable literal; IRIS then decides and an IRIS refusal is raised, never turned into an empty answer
+search.embedding.other_model#o01	partial	S1:semicolon-clauses	A write naming a model key lands in that (graph, model)'s own route, and every reader of that pair reads it there; two declared models never share one table
+search.routes.no_fallback#o01	partial	S1:semicolon-clauses,C1:cases>=3-separated	A vector read for a (graph, model) with no route answers nothing, never another graph's, model's or table's vectors; the default pair (default graph, no model) reads the original tables
+search.routes.no_fallback#o02	full	S1:semicolon-clauses	Searching an unrouted pair answers empty even with a wrong-width query; it is never a width error
+search.knn#o04	absent	S1:semicolon-clauses	Every route gets an HNSW index attempt; if refused, the route is still searched by full scan
+search.knn.threshold#o04	partial	S1:semicolon-clauses	The threshold is a WHERE predicate on the cosine expression with a second query-vector bind; the graph predicate is conjoined; ORDER BY follows
+search.scope#o01	partial	S1:semicolon-clauses	Each vector read and write is scoped to exactly one graph; an omitted graph means the default graph
+search.scope#o02	partial	S1:semicolon-clauses	The same node ID in two graphs holds two independent vectors; writing one leaves the other unchanged
+search.scope.indexes#o01	partial	S1:semicolon-clauses	A BM25 build indexes the nodes of exactly one graph; no graph named means the default graph
+search.vecindex#o02	partial	S1:semicolon-clauses	Cosine: score = cosine, distance = 1 - score; dot: score = dot product (largest first), distance = its negative; l2, l1, chebyshev: score = distance
+search.vecindex#o11	full	S1:semicolon-clauses	vec_drop removes all vectors; a later search returns nothing
+search.ivf#o02	partial	S1:semicolon-clauses	After a build, ivf_insert/ivf_delete change one node's entries; a rebuild replaces the index with the route's current vectors
+search.ivf#o03	absent	S1:semicolon-clauses	Searching for an absent node or an unbuilt index answers no hit and no error; inserting into a missing index is refused
+search.bm25#o08	absent	S1:semicolon-clauses	Plain text search (kg_TXT) never falls back to a BM25 index; BM25 is used only when selected explicitly
+search.bm25.scoring#o04	partial	S1:semicolon-clauses	Scores are compared at 12 decimals; ties are ordered by IRIS subscript collation of IDs (canonical numbers first by value, then by character codes); the first k are answered
+search.bm25.cutoff#o01	full	S1:semicolon-clauses,C1:cases>=3-separated	With f > 0 (schema 2), known query terms with df/N > f are skipped; with no fraction nothing is skipped
+search.fusion.failed_leg#o03	full	S1:semicolon-clauses	As built, a failed vector or graph leg is logged and dropped; it is absent from search_modes and the ranking can be incomplete
+search.fusion.surfaces#o06	partial	S1:semicolon-clauses	Engine kg_RRF_FUSE requires c; IRISGraphOperators and kg_RERANK default c to 60; kg_RERANK searches each leg 2 x top_n deep
+search.fusion.vector_graph#o02	partial	S1:semicolon-clauses,C1:cases>=3-separated	Expansion follows only edges with confidence >= 1000 x min_confidence; an edge without confidence is not followed
+search.fusion.vector_graph#o06	partial	S1:semicolon-clauses	A wrong-width query raises; a graph without vectors answers nothing
+search.fusion.rest#o02	partial	S1:semicolon-clauses	As built, the REST bodies check width before route lookup; an unrouted named graph expects 768 and refuses another width
+search.fusion.rest#o03	absent	S1:semicolon-clauses	A failed REST read raises with its SQL code; a missing privilege names the table
+search.fusion.multi_vector#o01	partial	S1:semicolon-clauses,S4:several-entry-points	multi_vector_search fetches 2 x top_k rows per source and fuses by sum of weight/(rrf_k + rank); any other fusion value ranks by raw score ignoring weights
+search.fusion.multi_vector#o02	full	S1:semicolon-clauses	A failing source is logged and skipped; the answer can come from fewer sources; all failing answers nothing
+temporal.edge#o05	partial	S1:semicolon-clauses	The unit is set by the entry point (engine: seconds; TemporalIndexMS: milliseconds) and a bucket is five minutes in either unit.
+temporal.edge.clock#o01	full	S1:semicolon-clauses,S5:enumeration>=3	The stored coordinate is derived from the raw caller timestamp, its normalization and the selected writer (single, Counts, prewrite fallback) and the per-item clock; equal resolved times give equal coordinates and different zero-time clock readings give different coordinates.
+temporal.edge.clock#o09	full	S1:semicolon-clauses	A numeric ts=0 short alias defers to a supplied long timestamp alias; text ts='0' keeps zero.
+temporal.write#o01	full	S1:semicolon-clauses	A direct write defaults to insert mode; an insert at occupied coordinates keeps the existing edge and reports a collision.
+temporal.write.retry#o04	full	S1:semicolon-clauses	A positive explicit timestamp replayed after a completed write collides at its coordinate; the fallback reports one accepted call, inserts nothing and reports no collision.
+temporal.stats.after-purge#o04	partial	S1:semicolon-clauses	A bucket-range purge returns the number of buckets in range that held statistics; a reversed range removes nothing and returns 0.
+temporal.stats.window#o07	full	S3:contrast-clause,S5:enumeration>=3	Today the Python reader raises ValueError for min, max, average and unknown metrics on an empty answer, while count answers 0.
+temporal.stats.window#o13	partial	S3:contrast-clause,S5:enumeration>=3	A millisecond-class edge is counted by seconds whole-bucket counts, groups, velocity and distinct estimates but not by target reads, edge-by-edge reads or cut windows.
+temporal.optout.toggle#o03	absent	S1:semicolon-clauses	A registration change never blocks writers; a write in flight during registration may add a marked edge, which a later drop removes.
+temporal.window#o07	partial	S1:semicolon-clauses	A source list returns the union of its sources' events, each once; an empty list returns nothing.
+temporal.window.sources#o01	full	S1:semicolon-clauses	An omitted source filter reads every source; an explicit empty list reads none.
+temporal.window.sources#o03	partial	S1:semicolon-clauses	The server reads every source only with no source, list or prefix; a list of nothing or only empty strings reads nothing.
+temporal.window.paging#o01	partial	S1:semicolon-clauses	Each page is read live from the resume point of the previous page; the server keeps only that resume point between pages.
+temporal.window.paging#o03	full	S1:semicolon-clauses	Only a page marked done ends the read; an empty page not marked done makes the reader ask for the next page.
+temporal.window.paging.release#o04	full	S1:semicolon-clauses	Closing mid-read sends one close; a second close or a close after the end sends nothing; a closed reader yields nothing more.
+temporal.window.paging.release#o05	full	S1:semicolon-clauses	A failed page raises after exactly one close; a failed open raises with nothing open.
+temporal.labelset#o04	absent	S1:semicolon-clauses	Resolving a known hash returns its canonical text; an unknown hash returns ''.
+temporal.purge.bare-nodes#o04	absent	S1:semicolon-clauses	Python purges retire bare nodes by default; ObjectScript purges only when asked.
+search.routes.inventory#o04	full	S1:semicolon-clauses	A no-route row names no table, counts 0 and shows no index; a routed graph has no such row
+access.webapp#o01	absent	S1:semicolon-clauses	Graph.KG.Service answers no request until an operator runs CreateWebApp; setup does not create the web application
+access.webapp#o04	absent	S1:semicolon-clauses	The web-app role holds only read on the databases its routes read and EXECUTE on the routines its search routes call; it cannot write
+install.schema.existing#o03	partial	S1:semicolon-clauses	Unrecorded, tables in one other schema, no name given: refused naming that schema; nothing recorded
+install.schema.existing#o05	partial	S1:semicolon-clauses	Unrecorded, tables in several schemas, no name: refused, listing each schema with row counts; nothing recorded
+install.upgrade#o05	partial	S1:semicolon-clauses	Upgrade discards compiled Cypher plans built against the old names; none is reused
+install.snapshot#o04	absent	S1:semicolon-clauses	The current exporter's archive is consistent only when writers are quiet (an operator premise); a consistent snapshot under concurrent writers needs a verified snapshot or epoch protocol.
+install.snapshot.scope#o01	partial	S1:semicolon-clauses	save_snapshot archives every graph of the namespace; no call archives one graph.
+install.snapshot.scope#o04	absent	S1:semicolon-clauses	Configuration tables (FHIR registrations, SQL table mappings) match on primary key: replace writes the archive's row; merge keeps the live row.
+install.snapshot.scope#o06	partial	S1:semicolon-clauses	An archive with another layout is refused before erase; an unstamped archive is accepted.
+install.snapshot.routes#o03	partial	S1:semicolon-clauses	Routes are exported from registry rows; a row with a non-routed table name or no positive width is skipped with a warning.
+install.snapshot.routes#o08	full	S1:semicolon-clauses	An existing routed table keeps its width; an incompatible empty one refuses incoming vectors, reported as failed rows.
+install.snapshot.routes#o11	full	S1:semicolon-clauses	A route with invalid width can stay registered with no table; its reader raises rather than answering empty.
+install.snapshot.info#o03	absent	S1:semicolon-clauses	snapshot_info version is the archive format '1.1'; the writing release is metadata.ivg_version.
+install.bulk_load.loader#o03	partial	S1:semicolon-clauses	Rows already stored are skipped; repeating a completed load changes nothing.
+install.bulk_load.rebuild#o02	absent	S1:semicolon-clauses	An index a bulk load dropped and could not rebuild is named in a warning; reads needing it still answer by scanning.
+install.bulk_load.rebuild#o03	full	S1:semicolon-clauses	As built, rows from BulkLoader.load_nodes are invisible to index reads until the caller rebuilds; after the rebuild they read back.
+access.health#o04	full	S1:semicolon-clauses	The Cypher HTTP server's /health runs a node-count query instead of the schema-record check; a folded or raised failure answers unhealthy
+install.status.sync#o02	full	S1:semicolon-clauses	The sync state does not report whether the integer copy is built; adjacency.nkg_populated does
+install.status.sync#o03	partial	S1:semicolon-clauses	A bulk_load_session in the caller's transaction sets the engine's flag, which survives the caller's commit or rollback until that engine runs sync(); another engine or process reports False
+install.status.sync#o04	full	S1:semicolon-clauses,S3:contrast-clause	On a namespace set up while empty, new edges reach the adjacency index but not the integer copy until the first sync(); meanwhile the report says in sync and nkg_populated is False
+install.status.sync#o05	partial	S1:semicolon-clauses	A delete or erase drops the integer copy and clears the flag; meanwhile the report says in sync and nkg_populated is False
+install.status.readers#o12	partial	S1:semicolon-clauses	No HTTP or CLI reader shows the pending-sync flag; the server engine's own flag is always False
+structure.drift#o03	full	S4:several-entry-points,S5:enumeration>=3	With a declared index, sync() after any mix of creates, single-relationship deletes, edge/node/prefix deletes and weight changes leaves every entry unchanged

@@ -1,0 +1,36 @@
+verification results:: 60 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T050811Z/models/native_admission/native_admission.rs:386:49
+    |
+384 | pub proof fn theorem_admitted_only_through_every_gate(e: Engine, w: World, q: Query)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+385 |     requires native_path(exec_parsed(e, w, q).0),
+386 |     ensures plan(q).is_some(), e.native_cypher, !e.in_bulk, !names_mapped(q, w), !q.transactional, q.width_ok, !q.hidden_alias,
+    |                                                 ^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T050811Z/models/native_admission/native_admission.rs:402:1
+    |
+402 | pub proof fn theorem_bulk_session_keeps_sql(e: Engine, w: World, q: Query)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T050811Z/models/native_admission/native_admission.rs:405:13
+    |
+402 | pub proof fn theorem_bulk_session_keeps_sql(e: Engine, w: World, q: Query)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+405 |     ensures gate(e, w).0 == Some(Gate::InBulk), exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T050811Z/models/native_admission/native_admission.rs:405:49
+    |
+402 | pub proof fn theorem_bulk_session_keeps_sql(e: Engine, w: World, q: Query)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+405 |     ensures gate(e, w).0 == Some(Gate::InBulk), exec_parsed(e, w, q).0 == sql_out(w, Path::Sql),
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

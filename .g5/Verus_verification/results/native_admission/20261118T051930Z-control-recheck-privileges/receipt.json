@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_revoke_does_not_reach_running_engine"
+    ],
+    "find": "match e.priv_cache {",
+    "name": "recheck-privileges",
+    "replace": "match None::<bool> {",
+    "why": "the privilege answer is asked on every call (no per-engine cache)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_revoke_does_not_reach_running_engine"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1075b77516a96378680aed4d4fb95f0e99591a10826e45c5ac29f6442047279d",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/recheck-privileges/20261118T051926Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 7,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_revoke_does_not_reach_running_engine": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T051926Z-control-recheck-privileges-theorem_revoke_does_not_reach_running_engine.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T051926Z-control-recheck-privileges.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T051930Z-control-recheck-privileges/logs/20261118T051926Z-control-recheck-privileges-theorem_revoke_does_not_reach_running_engine.log": "17e07daa977142d87b765e0e4643106e6fbd3e79f1ab840a1abca7811ae0d44a",
+    ".g5/Verus_verification/results/native_admission/20261118T051930Z-control-recheck-privileges/logs/20261118T051926Z-control-recheck-privileges.log": "9907f594bfc636ecbd2a9168a633ebe9006d76f606c469c29542b9fb4a27362e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

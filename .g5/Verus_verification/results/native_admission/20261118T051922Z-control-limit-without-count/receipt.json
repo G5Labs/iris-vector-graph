@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_limit_count_names_no_row"
+    ],
+    "find": "if sql.len() != native.len() { fail(What::RowCount, None) }",
+    "name": "limit-without-count",
+    "replace": "if false { fail(What::RowCount, None) }",
+    "why": "the LIMIT rule no longer checks the row count"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_limit_count_names_no_row"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1075b77516a96378680aed4d4fb95f0e99591a10826e45c5ac29f6442047279d",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/limit-without-count/20261118T051918Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_limit_count_names_no_row": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T051918Z-control-limit-without-count-theorem_limit_count_names_no_row.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T051918Z-control-limit-without-count.log",
+    "timed_out": false,
+    "verified": 60
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T051922Z-control-limit-without-count/logs/20261118T051918Z-control-limit-without-count-theorem_limit_count_names_no_row.log": "c006a3a12a3f5d45808a835452cca45d1264a0d1efa7d1b0e4a1f88e58bb4ca9",
+    ".g5/Verus_verification/results/native_admission/20261118T051922Z-control-limit-without-count/logs/20261118T051918Z-control-limit-without-count.log": "2b544fde4927ce4b39a02757cf687878385c210ee254a0d9d3917560cb297a6f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_version_gate",
+      "theorem_missing_class_gate"
+    ],
+    "find": "let (cur, e3) = exec_probe(e2, w); if !cur {",
+    "name": "version-gate-dropped",
+    "replace": "let (cur, e3) = exec_probe(e2, w); if false {",
+    "why": "native_gate no longer asks the executor's plan version"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_version_gate",
+      "theorem_missing_class_gate"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "210a36eb31dc3af0d784a9c5d0c5757d6053dacea3b5d3a50759d9d63bc23b9c",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/version-gate-dropped/20261118T050905Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_missing_class_gate": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T050905Z-control-version-gate-dropped-theorem_missing_class_gate.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_version_gate": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T050905Z-control-version-gate-dropped-theorem_version_gate.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T050905Z-control-version-gate-dropped.log",
+    "timed_out": false,
+    "verified": 57
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T050910Z-control-version-gate-dropped/logs/20261118T050905Z-control-version-gate-dropped-theorem_missing_class_gate.log": "5cafbab94bb56cdd8ffc0799af7c6700b6f05d3e2c098f486e57fc799fa414e7",
+    ".g5/Verus_verification/results/native_admission/20261118T050910Z-control-version-gate-dropped/logs/20261118T050905Z-control-version-gate-dropped-theorem_version_gate.log": "28cd9057adc89655ec72e179bd00be02dcb85cedaa5a432b6bfc8456ebf5bf41",
+    ".g5/Verus_verification/results/native_admission/20261118T050910Z-control-version-gate-dropped/logs/20261118T050905Z-control-version-gate-dropped.log": "173f5a86346322934ed09541c9ea0f2ead7d899194f66ffd805378edfae9a771"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

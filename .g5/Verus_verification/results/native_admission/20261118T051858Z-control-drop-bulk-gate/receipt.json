@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_bulk_session_keeps_sql"
+    ],
+    "find": "else if e1.in_bulk {",
+    "name": "drop-bulk-gate",
+    "replace": "else if false {",
+    "why": "native_gate no longer closes inside the engine's own bulk_load_session"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bulk_session_keeps_sql"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1075b77516a96378680aed4d4fb95f0e99591a10826e45c5ac29f6442047279d",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/drop-bulk-gate/20261118T051854Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bulk_session_keeps_sql": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T051854Z-control-drop-bulk-gate-theorem_bulk_session_keeps_sql.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T051854Z-control-drop-bulk-gate.log",
+    "timed_out": false,
+    "verified": 60
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T051858Z-control-drop-bulk-gate/logs/20261118T051854Z-control-drop-bulk-gate-theorem_bulk_session_keeps_sql.log": "447b27c684ce5b3bad3001d412752b654ea7775477ca18607ed83482b7217ef1",
+    ".g5/Verus_verification/results/native_admission/20261118T051858Z-control-drop-bulk-gate/logs/20261118T051854Z-control-drop-bulk-gate.log": "27d99e04de6c74cf5261476cce2c9d57538af710fc4320c811b84a5a94cb55c0"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

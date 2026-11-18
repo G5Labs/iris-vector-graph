@@ -3123,6 +3123,8 @@ Cause: the SQL path binds the stored empty string to `CY_SORT_KEY` as `$Char(0)`
 
 Consequence: the order, and with `LIMIT` or `SKIP` the rows, depend on which executor answers, and the router can switch executors by timing. Shadow mode would raise a mismatch. Medium: visible wrong order with a confirmed trigger on ordinary data.
 
+Iteration 66 (review-1 R1-N2), route consequence reproduced: on a default engine (`native_cypher` on, `native_route_ms` 50, shadow off), twelve identical calls of the six-target query took native for calls 1-3 and then alternated SQL and native, returning the two orders in turn. This is binding case `route_alternation_bug_cyp_104` in I62B ([receipt](results/native_admission/20261118T051407Z-binding/receipt.json)), and the reviewer's own run in namespace R1N showed the same. Passing neighbour: `route_alternation_paths_agree` alternates the same way with one answer. The alternation is modelled in [native_admission](models/native_admission/NOTES.md) `theorem_route_trial_alternates_answers` and `theorem_successive_calls_differ_in_trial` (control `trial-no-alternation`), and stated in [query.native.route](../ontology/architecture/query-execution.g5.md#query.native.route).
+
 Repair proposal (not implemented, not checked): have `Exec.SortKey` pass a stored empty string as `$Char(0)` (or have `Key` distinguish an empty stored value from a missing one on that path), preserving null-last for missing properties and the SQL path unchanged. Distinguishing case: the six-target query above.
 
 <a id="bug-cyp-106"></a>
@@ -4255,6 +4257,29 @@ Consequence: erased text and vectors stay searchable after an erase of everythin
 Repair proposal (not implemented): kill the four index globals in `EraseAll` (and list them in the inventory). Distinguishing case: `D1_erase_all`.
 
 Governing statement: [search.erasure.indexes](../ontology/features/search.g5.md#search.erasure.indexes).
+
+<a id="bug-cyp-162"></a>
+### Shadow mode accepts a wrong top row or a reversed order for an aggregate ordered on anything but its grouping keys
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-18 (review-1 R1-N1, repaired and reproduced in iteration 66)
+
+Description: Shadow mode is the check that holds the native executor to the SQL path, and its clean run justified turning the native executor on by default. For an aggregate whose `ORDER BY` leaves out a grouping key, such as `RETURN a.name AS n, count(*) AS c ORDER BY c DESC LIMIT 1`, the planner marks the plan unordered, so the comparator treats the query as if it had no `ORDER BY`. It then accepts a native answer that keeps the wrong top row under `LIMIT`, or returns the groups in reverse order without `LIMIT`. This is a blind spot in the check, not an observed wrong native answer.
+
+Found by: review-1 (independent checkpoint of iterations 61-65), R1-N1: the reviewer's `topk_probe.py` with the real `plan_query` and `native_shadow.compare`, and a witness added to native_admission. Iteration 66 amended the owner to spec 253 FR-002/FR-013 and modelled it: [native_admission](models/native_admission/NOTES.md) `fr013_equal`, `witness_comparator_accepts_wrong_topk`, `witness_comparator_accepts_reversed_count_order`, `theorem_blind_spot_is_partial_aggregate_order` (this shape is the only one the plan's flag misses), `theorem_comparator_sound_off_partial_aggregate_order` (everywhere else a pass implies the FR-013 rule); controls `topk-plan-ordered`, `owner-drops-order-keys`.
+
+Reproduced by: **E2E reproduced** for the check, with a substituted native answer, on the run-own fixture, namespace I62B ([binding receipt](results/native_admission/20261118T051407Z-binding/receipt.json)). Case `blind_spot_wrong_top1`: alice knows three people and bob one. Under shadow mode, the real `execute_cypher` returned the substituted native answer `[['bob', 1]]` where SQL answers `[['alice', 3]]`; it did not raise. Case `blind_spot_reversed_order` returned the reversed groups without raising. The real planner, shadow switch, `_shadow_compare` and `compare` ran; only `_try_native`'s decoded rows were replaced. `topk_r1_n1` repeats the reviewer's unit probe. Passing neighbour: `blind_spot_neighbour_key_order` orders on the grouping key, so the plan is ordered and the same substitution raises `NativeMismatch` (row 0). The receipt's `fr013_owner_admits` is false for all three substituted answers.
+
+Expected: [query.native.equal-answers](../ontology/architecture/query-execution.g5.md#query.native.equal-answers) (spec 253 FR-002: "row order where the query orders"; FR-013: exact comparison where the rows LIMIT keeps are totally ordered) and [query.shadow](../ontology/architecture/query-execution.g5.md#query.shadow): a difference is raised, never returned.
+
+Observed: `_plan_stages` marks an aggregate ordered only when its ORDER BY covers every grouping key (`native_plan.py:165-166, 478`). For an unordered limited plan `compare` checks only the row count and that each native row is a row of the unlimited SQL answer (`native_shadow.py:43-52`). An unordered, unlimited plan is compared as a multiset (64-69).
+
+Consequence: a native executor defect that returns the wrong top-k groups, or the wrong order, on the common SNB BI shape (aggregate, `ORDER BY` count, `LIMIT`) would pass the shadow run that FR-010 relies on. Since shadow mode bypasses routing, the same defect would reach callers under default routing. Medium: no wrong native answer is known, but the gate that justified the default does not cover this shape.
+
+Repair proposal (not implemented): when the plan has an `ORDER BY` that the planner does not mark ordered, still check that the native rows are sorted by the `ORDER BY` keys and that the kept rows' sort values equal SQL's, in order; or mark every plan with an `ORDER BY` as ordered and keep the LIMIT rule only for ties. Distinguishing case: `blind_spot_wrong_top1` against `blind_spot_neighbour_key_order`. The control `topk-plan-ordered` (planner marks any ORDER BY ordered) makes both witnesses fail.
+
+Governing statement: [query.native.equal-answers](../ontology/architecture/query-execution.g5.md#query.native.equal-answers).
 
 <a id="bug-plt-124"></a>
 ### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors

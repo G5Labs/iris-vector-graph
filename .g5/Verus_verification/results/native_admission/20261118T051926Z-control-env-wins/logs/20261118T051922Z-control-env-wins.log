@@ -1,0 +1,21 @@
+verification results:: 60 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/env-wins/20261118T051922Z/models/native_admission/native_admission.rs:363:49
+    |
+361 | pub proof fn theorem_switch_resolution(env: EnvNative, b: bool)
+    | --------------------------------------------------------------- at the end of the function body
+362 |     ensures resolve_native(None, EnvNative::Unset), resolve_native(None, EnvNative::Other),
+363 |         !resolve_native(None, EnvNative::Zero), resolve_native(Some(b), env) == b,
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/env-wins/20261118T051922Z/models/native_admission/native_admission.rs:368:13
+    |
+366 | pub proof fn theorem_explicit_true_beats_env_zero(w: World, shape: nat)
+    | ----------------------------------------------------------------------- at the end of the function body
+367 |     requires open_world(w), !w.env_shadow_one,
+368 |     ensures native_path(exec_parsed(new_engine(Some(true), EnvNative::Zero, false), w, plain_read(shape)).0),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

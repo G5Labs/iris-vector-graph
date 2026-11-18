@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/warn-every-time/20261118T051902Z/models/native_admission/native_admission.rs:526:13
+    |
+524 | pub proof fn theorem_one_warning_per_reason(e: Engine, r: Reason, s: Reason)
+    | ---------------------------------------------------------------------------- at the end of the function body
+525 |     requires !e.warned.contains(key(r)), !e.warned.contains(key(s)), key(r) != key(s),
+526 |     ensures warn(warn(e, r), r).log == e.log.push(key(r)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

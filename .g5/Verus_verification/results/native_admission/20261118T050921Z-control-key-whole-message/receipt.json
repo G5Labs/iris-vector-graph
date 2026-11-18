@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_reason_is_type_and_160_chars"
+    ],
+    "find": "msg: if r.msg.len() > 160 { r.msg.subrange(0, 160) } else { r.msg }",
+    "name": "key-whole-message",
+    "replace": "msg: r.msg",
+    "why": "the warned reason keys the whole message, not its first 160 characters"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reason_is_type_and_160_chars"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "210a36eb31dc3af0d784a9c5d0c5757d6053dacea3b5d3a50759d9d63bc23b9c",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-whole-message/20261118T050917Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_reason_is_type_and_160_chars": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T050917Z-control-key-whole-message-theorem_reason_is_type_and_160_chars.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T050917Z-control-key-whole-message.log",
+    "timed_out": false,
+    "verified": 61
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T050921Z-control-key-whole-message/logs/20261118T050917Z-control-key-whole-message-theorem_reason_is_type_and_160_chars.log": "f7efb6ad8065d2fa368b2807ccbde678132a4a045ba5cf7d3235438687acf4ec",
+    ".g5/Verus_verification/results/native_admission/20261118T050921Z-control-key-whole-message/logs/20261118T050917Z-control-key-whole-message.log": "5540519818bc3c08f3f7d206530efc95cd352e005bbb22570db1f9781dd4754f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

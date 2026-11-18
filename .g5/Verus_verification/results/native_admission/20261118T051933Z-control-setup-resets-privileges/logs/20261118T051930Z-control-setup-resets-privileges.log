@@ -1,0 +1,30 @@
+verification results:: 59 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/setup-resets-privileges/20261118T051930Z/models/native_admission/native_admission.rs:421:9
+    |
+413 | pub proof fn theorem_version_gate(e: Engine, w: World, v: nat)
+    | -------------------------------------------------------------- at the end of the function body
+...
+421 |         ({ let w2 = World { deployed: Deployed::Version(PLAN_VERSION), ..w }; gate(setup(gate(e, w).1, true), w2).0.is_none() }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/setup-resets-privileges/20261118T051930Z/models/native_admission/native_admission.rs:445:37
+    |
+442 | pub proof fn theorem_revoke_does_not_reach_running_engine(e: Engine, w: World)
+    | ------------------------------------------------------------------------------ at the end of the function body
+...
+445 |     ensures gate(e, w).0.is_none(), gate(setup(e, true), World { index_functional: true, deployed: Deployed::Version(PLAN_VERSION), version_probe_transient: false, ..w }).0.is_none(),
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/setup-resets-privileges/20261118T051930Z/models/native_admission/native_admission.rs:903:67
+    |
+900 | pub proof fn theorem_setup_resets_only_after_deploy(e: Engine, w: World)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+903 |     ensures gate(setup(e, false), w).0 == Some(Gate::NotCurrent), gate(setup(e, true), w).0.is_none(),
+    |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

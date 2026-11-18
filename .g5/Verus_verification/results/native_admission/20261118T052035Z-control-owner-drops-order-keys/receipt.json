@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_comparator_accepts_wrong_topk",
+      "witness_comparator_accepts_reversed_count_order"
+    ],
+    "find": "{ if total_on(u, ks) { sql == native } else { okeys(native, ks) == okeys(sql, ks) } }",
+    "name": "owner-drops-order-keys",
+    "replace": "{ true }",
+    "why": "the pre-iteration-66 owner rule (equal-answers bullets 2-3, owner_equal): no order-key agreement where rows are not totally ordered and no exact comparison where they are; the wrong top-1 and the reversed order then satisfy the owner"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_comparator_accepts_wrong_topk",
+      "witness_comparator_accepts_reversed_count_order"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1075b77516a96378680aed4d4fb95f0e99591a10826e45c5ac29f6442047279d",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/owner-drops-order-keys/20261118T052030Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_comparator_accepts_reversed_count_order": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T052030Z-control-owner-drops-order-keys-witness_comparator_accepts_reversed_count_order.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_comparator_accepts_wrong_topk": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T052030Z-control-owner-drops-order-keys-witness_comparator_accepts_wrong_topk.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T052030Z-control-owner-drops-order-keys.log",
+    "timed_out": false,
+    "verified": 60
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T052035Z-control-owner-drops-order-keys/logs/20261118T052030Z-control-owner-drops-order-keys-witness_comparator_accepts_reversed_count_order.log": "37b78ccd6985c67d182986851feeb25a47dc2bf560bb7dffa72cb8fde5117cba",
+    ".g5/Verus_verification/results/native_admission/20261118T052035Z-control-owner-drops-order-keys/logs/20261118T052030Z-control-owner-drops-order-keys-witness_comparator_accepts_wrong_topk.log": "a2a1cbc1846f0093f78f8eb3d2e7630a7c7f10cf941d6a7b40557941b5c76780",
+    ".g5/Verus_verification/results/native_admission/20261118T052035Z-control-owner-drops-order-keys/logs/20261118T052030Z-control-owner-drops-order-keys.log": "0342a9295a55aece6d827e92ee17d0357411dfe0efc2d131ef355e09c8c17ac1"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

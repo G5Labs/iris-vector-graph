@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/trial-no-alternation/20261118T052041Z/models/native_admission/native_admission.rs:887:13
+    |
+884 |   pub proof fn theorem_successive_calls_differ_in_trial(e: Engine, w: World, q: Query, r: RouteT)
+    |   ----------------------------------------------------------------------------------------------- at the end of the function body
+...
+887 |       ensures ({ let a = call_routed(e, w, q, Some(r)); let b = call_routed(a.1, w, q, a.2);
+    |  _____________^
+888 | |         answer_rows(a.0) != answer_rows(b.0)
+889 | |         && (answer_rows(a.0) == w.native_rows || answer_rows(a.0) == rows_of(w.sql))
+890 | |         && (answer_rows(b.0) == w.native_rows || answer_rows(b.0) == rows_of(w.sql)) }),
+    | |_______________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

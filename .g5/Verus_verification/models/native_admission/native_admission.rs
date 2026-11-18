@@ -77,11 +77,25 @@ pub open spec fn compare(sql_cols: Seq<nat>, sql: Seq<Row>, nat_cols: Seq<nat>, 
     } else { fail(What::ExtraInNative, Some(choose|r: Row| cnt(native, r) > #[trigger] cnt(sql, r))) }
 }
 
-// The owner's equality rule (query.native.equal-answers), stated over the query's own order, not the plan's flag.
-pub open spec fn owner_equal(complete_order: bool, limited: bool, sql: Seq<Row>, unlimited: Seq<Row>, native: Seq<Row>) -> bool {
-    if complete_order { sql == native }
-    else if limited { sql.len() == native.len() && forall|r: Row| #[trigger] cnt(native, r) <= cnt(unlimited, r) }
-    else { bag_equal(sql, native) }
+// The owner's equality rule (query.native.equal-answers as amended in iteration 66 to spec 253 FR-002/FR-013), stated
+// over the rows and the query's ORDER BY columns `ks` (None: no ORDER BY), not over the plan's flag. Where the order
+// keys separate every row of the full answer (`total_on`) the rows and their order must be equal; where rows tie, the
+// rows' order-key values must still come in SQL's order (FR-002 "row order where the query orders"; the review's
+// "order-key agreement for the ordered prefix"); a LIMIT/SKIP over a not totally ordered answer may keep other tied
+// rows of the full answer (FR-013). Before iteration 66 the owner text (and `owner_equal`) dropped the order-key part,
+// so a wrong top-k under a partial ORDER BY satisfied it (review-1 R1-N1).
+pub open spec fn okey(r: Row, ks: Seq<nat>) -> Row { Seq::new(ks.len(), |i: int| if ks[i] < r.len() { r[ks[i] as int] } else { Val::Null }) }
+pub open spec fn okeys(rows: Seq<Row>, ks: Seq<nat>) -> Seq<Row> { Seq::new(rows.len(), |i: int| okey(rows[i], ks)) }
+pub open spec fn total_on(u: Seq<Row>, ks: Seq<nat>) -> bool {
+    forall|i: int, j: int| 0 <= i < u.len() && 0 <= j < u.len() && #[trigger] okey(u[i], ks) == #[trigger] okey(u[j], ks) ==> u[i] == u[j]
+}
+pub open spec fn fits(native: Seq<Row>, u: Seq<Row>) -> bool { forall|r: Row| #[trigger] cnt(native, r) <= cnt(u, r) }
+pub open spec fn order_agrees(ks: Seq<nat>, sql: Seq<Row>, u: Seq<Row>, native: Seq<Row>) -> bool { if total_on(u, ks) { sql == native } else { okeys(native, ks) == okeys(sql, ks) } }
+pub open spec fn rows_agree(limited: bool, sql: Seq<Row>, u: Seq<Row>, native: Seq<Row>) -> bool {
+    if limited { sql.len() == native.len() && fits(native, u) } else { bag_equal(sql, native) }
+}
+pub open spec fn fr013_equal(ks: Option<Seq<nat>>, limited: bool, sql: Seq<Row>, u: Seq<Row>, native: Seq<Row>) -> bool {
+    match ks { None => rows_agree(limited, sql, u, native), Some(k) => order_agrees(k, sql, u, native) && rows_agree(limited, sql, u, native) }
 }
 
 // ------------------------------------------------------------------ queries and the planner
@@ -151,8 +165,9 @@ pub open spec fn new_engine(arg: Option<bool>, env: EnvNative, shadow_attr: bool
         idx_cache: None, priv_cache: None, exec_cache: None, warned: Set::empty(), log: seq![], version_warnings: 0,
         native_answers: 0, route_sql: Set::empty(), route_records: 0 }
 }
-// initialize_schema: resets the index and executor answers, never the privilege answer
-pub open spec fn setup(e: Engine) -> Engine { Engine { idx_cache: None, exec_cache: None, ..e } }
+// initialize_schema: resets the index and executor answers only when the deploy left the ObjectScript classes in place
+// (capabilities.objectscript_deployed, _engine/schema.py:2647-2650), never the privilege answer
+pub open spec fn setup(e: Engine, objectscript_deployed: bool) -> Engine { if objectscript_deployed { Engine { idx_cache: None, exec_cache: None, ..e } } else { e } }
 
 pub enum Gate { Off, NoIndex, InBulk, NoSelect, NotCurrent }
 pub open spec fn idx_probe(e: Engine, w: World) -> (bool, Engine) {
@@ -276,7 +291,59 @@ pub open spec fn chain_part(parent: Query) -> Query { Query { chained: false, ..
 // the write's read step is its own query without the write clause, returning an internal alias
 pub open spec fn count_step(whole: Query) -> Query { Query { mutation: false, hidden_alias: true, ..whole } }
 pub open spec fn merge_prefix(whole: Query) -> Query { Query { mutation: false, hidden_alias: true, ..whole } }
+// merge_rows' j==0 branch (a MERGE right after a WITH, merge_rows.py:133-170): the prefix is the query parts before the
+// MERGE's part, the last ending in that WITH, so the planner declines it (_plan_chain: a part with a WITH, shape_ok);
+// it carries a hidden __rm alias only when the MERGE reads a graph variable's properties (`refs`; review-1 R1-N4)
+pub open spec fn merge_prefix_after_with(whole: Query, refs: bool) -> Query { Query { mutation: false, chained: false, shape_ok: false, hidden_alias: refs, ..whole } }
 pub open spec fn native_path(o: Out) -> bool { o is Answer && o->path == Path::Native }
+
+// ------------------------------------------------------------------ the route trial (review-1 R1-N2)
+// cypher/native_route.py NativeRoute as _execute_parsed drives it (query.py:2063-2104), for one shape with routing on
+// (native_route_ms > 0, the default 50) and shadow off. Transcribed: the trial's path order (next_path: native's
+// warm-up and NATIVE_FIRST=2 timed runs, SQL's warm-up, then alternation on _last) and what record() counts. The end of
+// a trial (native median >= small_ms, a SQL timing over 4x native's slowest, the median decision after `trials` timings
+// of each) is not transcribed here (route_recheck; census query.native.route#o05-#o08): `record_trial` is the record of
+// a trial that this record does not end, which at the defaults covers calls 1-13 of a fast shape. `exec_parsed`'s
+// `route_sql` set is the same decision taken as an input: next_rpath(r) == Sql.
+pub enum RPath { Native, Sql }
+pub struct RouteT { pub trial: bool, pub held: RPath, pub native_runs: nat, pub sql_runs: nat, pub last: Option<RPath> }
+pub open spec fn fresh_route() -> RouteT { RouteT { trial: true, held: RPath::Native, native_runs: 0, sql_runs: 0, last: None } }
+pub open spec fn native_timed(r: RouteT) -> nat { if r.native_runs > 0 { (r.native_runs - 1) as nat } else { 0 } }
+pub open spec fn next_rpath(r: RouteT) -> RPath {
+    if !r.trial { r.held }
+    else if native_timed(r) < 2 { RPath::Native }
+    else if r.sql_runs == 0 { RPath::Sql }
+    else if r.last == Some(RPath::Sql) { RPath::Native } else { RPath::Sql }
+}
+pub open spec fn record_trial(r: RouteT, p: RPath) -> RouteT {
+    match p {
+        RPath::Native => RouteT { native_runs: r.native_runs + 1, last: Some(p), ..r },
+        RPath::Sql => RouteT { sql_runs: r.sql_runs + 1, last: Some(p), ..r },
+    }
+}
+// One call: a route that sends the shape to SQL answers through _routed_sql and records the run (a SQL error result
+// would instead call sql_failed: excluded by the premise that the SQL path answers rows); otherwise _try_native runs, a
+// native answer creates the route on the shape's first native answer and records it, and a declined or failed native
+// attempt answers on SQL and records nothing.
+pub open spec fn call_routed(e: Engine, w: World, q: Query, r: Option<RouteT>) -> (Out, Engine, Option<RouteT>) {
+    if r.is_some() && next_rpath(r.unwrap()) == RPath::Sql { (sql_out(w, Path::RoutedSql), e, Some(record_trial(r.unwrap(), RPath::Sql))) }
+    else {
+        let (tn, e1) = try_native(e, w, q);
+        match tn {
+            None => (sql_out(w, Path::Sql), e1, r),
+            Some((p, rows)) => (Out::Answer { path: Path::Native, cols: w.native_cols, rows },
+                Engine { route_records: e1.route_records + 1, ..e1 },
+                Some(record_trial(match r { Some(x) => x, None => fresh_route() }, RPath::Native))),
+        }
+    }
+}
+// an engine whose index, privilege and executor answers are cached as open (any earlier native read set them)
+pub open spec fn warm_engine(e: Engine) -> bool {
+    e.native_cypher && !e.in_bulk && e.idx_cache == Some(true) && e.priv_cache == Some(true) && e.exec_cache == Some(true)
+}
+// the rows a caller reads from an answer (the path label is not visible to the caller)
+pub open spec fn answer_rows(o: Out) -> Seq<Row> { match o { Out::Answer { path, cols, rows } => rows, _ => seq![] } }
+pub open spec fn admissible(q: Query) -> bool { plan(q).is_some() && !q.transactional && q.width_ok && !q.hidden_alias }
 
 // ------------------------------------------------------------------ helpers for the theorems
 pub open spec fn open_world(w: World) -> bool {
@@ -351,7 +418,7 @@ pub proof fn theorem_version_gate(e: Engine, w: World, v: nat)
         // remembered: the next call is refused without asking, even once the class is current again
         ({ let w2 = World { deployed: Deployed::Version(PLAN_VERSION), ..w }; gate(gate(e, w).1, w2).0 == Some(Gate::NotCurrent) }),
         // a deploy through initialize_schema asks again
-        ({ let w2 = World { deployed: Deployed::Version(PLAN_VERSION), ..w }; gate(setup(gate(e, w).1), w2).0.is_none() }),
+        ({ let w2 = World { deployed: Deployed::Version(PLAN_VERSION), ..w }; gate(setup(gate(e, w).1, true), w2).0.is_none() }),
 {}
 pub proof fn theorem_missing_class_gate(e: Engine, w: World)
     requires e.native_cypher, e.idx_cache == Some(true), !e.in_bulk, e.priv_cache == Some(true), e.exec_cache.is_none(),
@@ -375,7 +442,7 @@ pub proof fn theorem_missing_select_keeps_sql(e: Engine, w: World)
 pub proof fn theorem_revoke_does_not_reach_running_engine(e: Engine, w: World)
     requires e.native_cypher, e.idx_cache == Some(true), !e.in_bulk, e.priv_cache == Some(true), e.exec_cache == Some(true),
         !w.sel_props,
-    ensures gate(e, w).0.is_none(), gate(setup(e), World { index_functional: true, deployed: Deployed::Version(PLAN_VERSION), version_probe_transient: false, ..w }).0.is_none(),
+    ensures gate(e, w).0.is_none(), gate(setup(e, true), World { index_functional: true, deployed: Deployed::Version(PLAN_VERSION), version_probe_transient: false, ..w }).0.is_none(),
         gate(new_engine(Some(true), EnvNative::Unset, false), World { index_functional: true, ..w }).0 == Some(Gate::NoSelect),
 {}
 
@@ -407,16 +474,20 @@ pub proof fn theorem_chained_part_runs_natively(w: World, shape: nat)
     assert(!names_mapped(plain_read(shape), w));
 }
 // The read steps count_create and merge_rows build return an internal alias, so the translation's columns are one
-// short of the plan and the step stays on SQL; a read statement chained after a write is its own part, admitted, and
+// short of the plan and the step stays on SQL (merge_rows' prefix after a WITH is declined by the planner instead); a read statement chained after a write is its own part, admitted, and
 // (theorem below) answered natively inside the write's transaction.
 pub proof fn theorem_write_read_steps(e: Engine, w: World, whole: Query)
     requires whole.mutation,
     ensures plan(whole).is_none(), !native_path(exec_parsed(e, w, count_step(whole)).0),
         !native_path(exec_parsed(e, w, merge_prefix(whole)).0),
+        forall|refs: bool| !native_path(#[trigger] exec_parsed(e, w, merge_prefix_after_with(whole, refs)).0),
 {
     let shadow = shadow_on(e.shadow_attr, w.env_shadow_one);
     assert(try_native(e, w, count_step(whole)).0.is_none());
     assert(try_native(e, w, merge_prefix(whole)).0.is_none());
+    assert forall|refs: bool| !native_path(#[trigger] exec_parsed(e, w, merge_prefix_after_with(whole, refs)).0) by {
+        assert(try_native(e, w, merge_prefix_after_with(whole, refs)).0.is_none());
+    }
 }
 pub proof fn theorem_read_part_of_chained_write_runs_natively(w: World, shape: nat)
     requires open_world(w), !w.env_shadow_one,
@@ -608,16 +679,17 @@ pub proof fn theorem_limit_count_names_no_row(c: Seq<nat>, a: Row, b: Row, u: Se
     ensures compare(c, seq![a, b], c, seq![a], false, true, Some(u)) == fail(What::RowCount, None),
 {}
 // F-0907 / equal-answers#o05: an ORDER BY that leaves ties marks the plan ordered, so a tie permutation (valid under
-// the owner's rule) raises, with or without LIMIT; the LIMIT rule is reached only when the plan has no ORDER BY.
-pub proof fn theorem_partial_order_compared_in_order(c: Seq<nat>, a: Row, b: Row, lim: bool)
-    requires a != b,
+// the owner's FR-013 rule: the rows tie on every order key) raises, with or without LIMIT; the LIMIT rule is reached
+// only when the plan is unordered.
+pub proof fn theorem_partial_order_compared_in_order(c: Seq<nat>, a: Row, b: Row, k: Seq<nat>, lim: bool)
+    requires a != b, okey(a, k) == okey(b, k),
     ensures ({ let q = Query { order_by: true, complete_order: false, limit: lim, ..plain_read(0) };
         plan(q).unwrap().ordered
         && compare(c, seq![a, b], c, seq![b, a], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) is Fail
-        && owner_equal(q.complete_order, false, seq![a, b], seq![a, b], seq![b, a]) }),
+        && fr013_equal(Some(k), false, seq![a, b], seq![a, b], seq![b, a]) }),
         ({ let q = Query { order_by: true, complete_order: false, limit: true, ..plain_read(0) };
         compare(c, seq![a], c, seq![b], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) is Fail
-        && owner_equal(false, true, seq![a], seq![a, b], seq![b]) }),
+        && fr013_equal(Some(k), true, seq![a], seq![a, b], seq![b]) }),
 {
     reveal_with_fuel(first_diff, 2);
     reveal_with_fuel(cnt, 3);
@@ -628,8 +700,13 @@ pub proof fn theorem_partial_order_compared_in_order(c: Seq<nat>, a: Row, b: Row
     let ab: Seq<Row> = seq![a, b];
     let ba: Seq<Row> = seq![b, a];
     let bb: Seq<Row> = seq![b];
+    let aa: Seq<Row> = seq![a];
     assert forall|r: Row| #[trigger] cnt(ab, r) == cnt(ba, r) by {}
     assert forall|r: Row| #[trigger] cnt(bb, r) <= cnt(ab, r) by {}
+    assert(okey(ab[0], k) == okey(ab[1], k));
+    assert(!total_on(ab, k));
+    assert(okeys(ba, k) =~= okeys(ab, k));
+    assert(okeys(bb, k) =~= okeys(aa, k));
 }
 proof fn lemma_cnt_remove1(b: Seq<Row>, x: Row, r: Row)
     requires cnt(b, x) > 0,
@@ -673,6 +750,157 @@ pub proof fn theorem_skip_never_compared(e: Engine, w: World, q: Query)
 pub proof fn theorem_aggregate_order_flag(q: Query)
     requires plan(q).is_some(), q.aggregate,
     ensures plan(q).unwrap().ordered == (q.order_by && q.order_covers_keys),
+{}
+
+
+// ================================================================== theorems: FR-013 and the comparator (review-1 R1-N1)
+// As built, the shadow check's blind spot: an aggregate ordered only on its count (`RETURN a.name AS n, count(*) AS c
+// ORDER BY c DESC LIMIT 1`) is planned unordered (native_plan.py:165-166, 478), so compare takes its LIMIT rule and
+// passes a wrong top-1 that the FR-013 rule rejects (the counts 3 and 1 order the full answer totally).
+pub proof fn witness_comparator_accepts_wrong_topk(c: Seq<nat>)
+    ensures ({ let q = Query { aggregate: true, order_by: true, order_covers_keys: false, limit: true, ..plain_read(0) };
+        let alice: Row = seq![Val::Str(1), Val::Int(3)];
+        let bob: Row = seq![Val::Str(2), Val::Int(1)];
+        !plan(q).unwrap().ordered && plan(q).unwrap().limited
+        && compare(c, seq![alice], c, seq![bob], plan(q).unwrap().ordered, plan(q).unwrap().limited, Some(seq![alice, bob])) == Cmp::Pass
+        && !fr013_equal(Some(seq![1nat]), true, seq![alice], seq![alice, bob], seq![bob]) }),
+{
+    reveal_with_fuel(cnt, 3);
+    reveal_with_fuel(first_unreturnable, 2);
+    let alice: Row = seq![Val::Str(1), Val::Int(3)];
+    let bob: Row = seq![Val::Str(2), Val::Int(1)];
+    let u: Seq<Row> = seq![alice, bob];
+    let k: Seq<nat> = seq![1nat];
+    assert(alice != bob) by { assert(alice[0] != bob[0]); }
+    assert(u.drop_first() =~= seq![bob]);
+    assert(seq![bob].drop_first() =~= Seq::<Row>::empty());
+    assert(okey(alice, k)[0] == Val::Int(3));
+    assert(okey(bob, k)[0] == Val::Int(1));
+    assert(total_on(u, k)) by {
+        assert forall|i: int, j: int| 0 <= i < u.len() && 0 <= j < u.len() && #[trigger] okey(u[i], k) == #[trigger] okey(u[j], k)
+            implies u[i] == u[j] by {
+            if i != j { assert(okey(u[i], k)[0] != okey(u[j], k)[0]); }
+        }
+    }
+    assert(seq![alice] != seq![bob]) by { assert(seq![alice][0] != seq![bob][0]); }
+}
+// Without LIMIT the same plan compares the groups as a multiset, so a reversed count order passes.
+pub proof fn witness_comparator_accepts_reversed_count_order(c: Seq<nat>)
+    ensures ({ let q = Query { aggregate: true, order_by: true, order_covers_keys: false, limit: false, ..plain_read(0) };
+        let alice: Row = seq![Val::Str(1), Val::Int(3)];
+        let bob: Row = seq![Val::Str(2), Val::Int(1)];
+        !plan(q).unwrap().ordered && !plan(q).unwrap().limited
+        && compare(c, seq![alice, bob], c, seq![bob, alice], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) == Cmp::Pass
+        && !fr013_equal(Some(seq![1nat]), false, seq![alice, bob], seq![alice, bob], seq![bob, alice]) }),
+{
+    let alice: Row = seq![Val::Str(1), Val::Int(3)];
+    let bob: Row = seq![Val::Str(2), Val::Int(1)];
+    let u: Seq<Row> = seq![alice, bob];
+    let k: Seq<nat> = seq![1nat];
+    theorem_unordered_permutation_passes(c, alice, bob);
+    assert(alice != bob) by { assert(alice[0] != bob[0]); }
+    assert(okey(alice, k)[0] == Val::Int(3));
+    assert(okey(bob, k)[0] == Val::Int(1));
+    assert(total_on(u, k)) by {
+        assert forall|i: int, j: int| 0 <= i < u.len() && 0 <= j < u.len() && #[trigger] okey(u[i], k) == #[trigger] okey(u[j], k)
+            implies u[i] == u[j] by {
+            if i != j { assert(okey(u[i], k)[0] != okey(u[j], k)[0]); }
+        }
+    }
+    assert(seq![alice, bob][0] != seq![bob, alice][0]);
+}
+// Off that one shape the comparator is sound for FR-013: wherever the plan's ordered flag equals "the query has an
+// ORDER BY" (every non-aggregate, and an aggregate ordered on all its grouping keys or not ordered), a passing
+// comparison means the FR-013 rule holds, for any ORDER BY columns. Premise: SQL's limited rows are rows of its own
+// unlimited answer (fits(sql, u)).
+pub proof fn theorem_comparator_sound_off_partial_aggregate_order(c: Seq<nat>, q: Query, k: Seq<nat>, sql: Seq<Row>, u: Seq<Row>, native: Seq<Row>)
+    requires plan(q).is_some(), !(q.aggregate && q.order_by && !q.order_covers_keys), fits(sql, u),
+        compare(c, sql, c, native, plan(q).unwrap().ordered, plan(q).unwrap().limited,
+            if plan(q).unwrap().limited && !plan(q).unwrap().ordered { Some(u) } else { None }) == Cmp::Pass,
+    ensures fr013_equal(if q.order_by { Some(k) } else { None }, plan(q).unwrap().limited, sql, u, native),
+{
+    let p = plan(q).unwrap();
+    assert(p.ordered == q.order_by);
+    if p.ordered {
+        if compare(c, sql, c, native, true, p.limited, None) == Cmp::Pass {
+            assert(compare(c, sql, c, native, true, p.limited, None) == compare(c, sql, c, native, true, false, None));
+            theorem_ordered_pass_iff_equal(c, sql, native);
+            assert(sql == native);
+            if !p.limited {
+                assert forall|r: Row| #[trigger] cnt(sql, r) == cnt(native, r) by {}
+            }
+        }
+    } else if p.limited {
+        theorem_limit_pass_means_rows_of_full_answer(c, sql, native, u);
+    } else {
+        assert(bag_equal(sql, native));
+    }
+}
+// The blind spot is exactly that shape: an aggregate whose ORDER BY misses a grouping key is planned unordered.
+pub proof fn theorem_blind_spot_is_partial_aggregate_order(q: Query)
+    requires plan(q).is_some(),
+    ensures (plan(q).unwrap().ordered != q.order_by) == (q.aggregate && q.order_by && !q.order_covers_keys),
+{}
+
+// ================================================================== theorems: the route trial (review-1 R1-N2)
+proof fn lemma_warm_admitted(e: Engine, w: World, q: Query)
+    requires warm_engine(e), open_world(w), admissible(q),
+    ensures try_native(e, w, q).0 == Some((plan(q).unwrap(), w.native_rows)),
+        warm_engine(try_native(e, w, q).1),
+{
+    assert(!names_mapped(q, w));
+}
+// From a shape's first call on a warm engine, six identical calls take the paths native, native, native, SQL, native,
+// SQL (the live observation of review-1, R1N: calls 1-3 native, then alternation), so wherever the two paths answer
+// differently (bug-cyp-104, bug-cyp-136) the fifth and sixth identical calls return different answers.
+pub proof fn theorem_route_trial_alternates_answers(e: Engine, w: World, q: Query)
+    requires warm_engine(e), open_world(w), admissible(q), w.sql is Rows,
+    ensures ({
+        let c1 = call_routed(e, w, q, None);
+        let c2 = call_routed(c1.1, w, q, c1.2);
+        let c3 = call_routed(c2.1, w, q, c2.2);
+        let c4 = call_routed(c3.1, w, q, c3.2);
+        let c5 = call_routed(c4.1, w, q, c4.2);
+        let c6 = call_routed(c5.1, w, q, c5.2);
+        native_path(c1.0) && native_path(c2.0) && native_path(c3.0) && c4.0 == sql_out(w, Path::RoutedSql)
+        && native_path(c5.0) && c6.0 == sql_out(w, Path::RoutedSql)
+        && answer_rows(c5.0) == w.native_rows && answer_rows(c6.0) == rows_of(w.sql)
+        && (w.native_rows != rows_of(w.sql) ==> answer_rows(c5.0) != answer_rows(c6.0)) }),
+{
+    lemma_warm_admitted(e, w, q);
+    let c1 = call_routed(e, w, q, None);
+    lemma_warm_admitted(c1.1, w, q);
+    let c2 = call_routed(c1.1, w, q, c1.2);
+    lemma_warm_admitted(c2.1, w, q);
+    let c3 = call_routed(c2.1, w, q, c2.2);
+    assert(c3.2.unwrap().native_runs == 3 && c3.2.unwrap().sql_runs == 0);
+    let c4 = call_routed(c3.1, w, q, c3.2);
+    let c5 = call_routed(c4.1, w, q, c4.2);
+    lemma_warm_admitted(c4.1, w, q);
+    let c6 = call_routed(c5.1, w, q, c5.2);
+}
+// Any two successive identical calls inside a trial past SQL's warm-up take different paths, and so return different
+// answers wherever the paths' rows differ.
+pub proof fn theorem_successive_calls_differ_in_trial(e: Engine, w: World, q: Query, r: RouteT)
+    requires warm_engine(e), open_world(w), admissible(q), w.sql is Rows, r.trial, native_timed(r) >= 2, r.sql_runs > 0,
+        w.native_rows != rows_of(w.sql),
+    ensures ({ let a = call_routed(e, w, q, Some(r)); let b = call_routed(a.1, w, q, a.2);
+        answer_rows(a.0) != answer_rows(b.0)
+        && (answer_rows(a.0) == w.native_rows || answer_rows(a.0) == rows_of(w.sql))
+        && (answer_rows(b.0) == w.native_rows || answer_rows(b.0) == rows_of(w.sql)) }),
+{
+    lemma_warm_admitted(e, w, q);
+    let a = call_routed(e, w, q, Some(r));
+    lemma_warm_admitted(a.1, w, q);
+}
+
+// ================================================================== theorems: setup (review-1 R1-N7)
+// initialize_schema resets the index and executor answers only when the classes are deployed; otherwise a cached
+// "executor not current" answer survives it.
+pub proof fn theorem_setup_resets_only_after_deploy(e: Engine, w: World)
+    requires e.native_cypher, e.idx_cache == Some(true), !e.in_bulk, e.priv_cache == Some(true), e.exec_cache == Some(false),
+        w.index_functional, !w.version_probe_transient, w.deployed == Deployed::Version(PLAN_VERSION),
+    ensures gate(setup(e, false), w).0 == Some(Gate::NotCurrent), gate(setup(e, true), w).0.is_none(),
 {}
 
 } // verus!

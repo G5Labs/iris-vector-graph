@@ -88,8 +88,9 @@ class EngineT:
         self.idx = self.priv = self.exec = None
         self.warned, self.log, self.version_warnings, self.native_answers = set(), [], 0, 0
 
-    def setup(self):
-        self.idx = self.exec = None  # never the privilege answer
+    def setup(self, objectscript_deployed):
+        if objectscript_deployed:  # only after a deploy that left the classes in place (iteration 66, R1-N7)
+            self.idx = self.exec = None  # never the privilege answer
 
 
 def gate_t(e, w):
@@ -194,6 +195,69 @@ def exec_parsed_t(e, w, f, mapped, shadow, route_sql, sql_obs, nat_obs, unl_obs)
     unl = unl_obs["rows"] if p["limited"] and not p["ordered"] else None
     c = compare_t(sql_obs["cols"], sql_obs["rows"], nat_obs["cols"], nat_obs["rows"], p["ordered"], p["limited"], unl)
     return ("answer", "native") if c == "pass" else ("raise", "NativeMismatch:" + c[0].split(" ")[0])
+
+
+def _bag(rows):
+    return Counter(tuple(key_t(v) for v in r) for r in rows)
+
+
+def okey_t(r, ks):
+    return [key_t(r[k]) if k < len(r) else key_t(None) for k in ks]
+
+
+def fr013_t(ks, limited, sql, unl, native):
+    """native_admission.rs fr013_equal: the owner's FR-002/FR-013 rule (iteration 66). ks: ORDER BY column indices of
+    the returned rows (None: no ORDER BY); unl: the SQL answer without LIMIT/SKIP (the SQL answer itself if none)."""
+    rows_ok = (len(sql) == len(native) and not (_bag(native) - _bag(unl))) if limited else _bag(sql) == _bag(native)
+    if ks is None:
+        return rows_ok
+    total = all(okey_t(a, ks) != okey_t(b, ks) or _bag([a]) == _bag([b]) for a in unl for b in unl)
+    if total:
+        order_ok = [[key_t(v) for v in r] for r in sql] == [[key_t(v) for v in r] for r in native]
+    else:
+        order_ok = [okey_t(r, ks) for r in native] == [okey_t(r, ks) for r in sql]
+    return order_ok and rows_ok
+
+
+class RouteT:
+    """native_admission.rs RouteT: the trial's counts (warm-ups included) and the last path."""
+
+    def __init__(self):
+        self.trial, self.held, self.native_runs, self.sql_runs, self.last = True, "native", 0, 0, None
+
+
+def next_rpath_t(r, alternate=True):
+    if not r.trial:
+        return r.held
+    if max(r.native_runs - 1, 0) < 2:
+        return "native"
+    if r.sql_runs == 0:
+        return "sql"
+    if not alternate:  # detection mutant (control trial-no-alternation)
+        return "sql"
+    return "native" if r.last == "sql" else "sql"
+
+
+def record_trial_t(r, path):
+    if path == "native":
+        r.native_runs += 1
+    else:
+        r.sql_runs += 1
+    r.last = path
+
+
+def call_routed_t(et, w, f, r, alternate=True):
+    """native_admission.rs call_routed: (expected path, route after the call)."""
+    if r is not None and next_rpath_t(r, alternate) == "sql":
+        if r.trial:
+            record_trial_t(r, "sql")
+        return "routed_sql", r
+    if try_native_t(et, w, f, False) is None:
+        return "sql", r
+    r = r or RouteT()
+    if r.trial:
+        record_trial_t(r, "native")
+    return "native", r
 
 
 # ====================================================================== the fixture
@@ -303,6 +367,7 @@ def provider(obs):
 
 
 CASES = []
+MUT = {}  # detection results computed inside live()
 
 
 def record(name, expected, obs, extra=None, routed=False, warn_expected=None):
@@ -499,6 +564,97 @@ def live():
     CASES.append({"case": "shadow_records_no_route", "expected": [0], "observed": [len(getattr(e3, "_native_routes", {}))],
                   "agrees": len(getattr(e3, "_native_routes", {})) == 0})
 
+    # ---- route trial alternation (iteration 66, review-1 R1-N2): a default engine (native_route_ms 50), shadow off,
+    # twelve identical calls of bug-cyp-104's shape (an empty string sorts with the nulls natively, first on SQL) and of
+    # a neighbour whose two paths agree. The trial's end is a timing premise: the real route's _trial flag is read
+    # before each call and, if a trial ended (small_ms, a 4x SQL timing, the medians), the held path is the input.
+    RA = f"{T}_ra"
+    a.create_node(RA, labels=[f"RA{T}"], properties={"k": RA})
+    for i, v in enumerate(["", "b", 2, None, "a", 1]):
+        props = {"k": f"{T}_rt{i}", "q": f"q{i}"}
+        if v is not None:
+            props["p"] = v
+        a.create_node(f"{T}_rt{i}", labels=[f"RT{T}"], properties=props)
+        a.create_edge(RA, f"R{T}", f"{T}_rt{i}")
+    route_runs = {}
+    for name, q in (("route_alternation_bug_cyp_104", f"MATCH (x {{k: '{RA}'}})-[:R{T}]->(b) RETURN b.p AS p ORDER BY b.p"),
+                    ("route_alternation_paths_agree", f"MATCH (x {{k: '{RA}'}})-[:R{T}]->(b) RETURN b.q AS q ORDER BY b.q")):
+        f = features(q)
+        er, etr = engine(admin, NSB, None), EngineT()
+        assert er.native_route_ms > 0 and not er._cypher_shadow()
+        key = er._native_key(parse_query(q), {})
+        nat_rows, sql_rows = provider(observe(nat, q))["rows"], provider(observe(sqlonly, q))["rows"]
+        rt, rt_mut, etm = None, None, EngineT()
+        calls = []
+        for i in range(12):
+            real = er.__dict__.get("_native_routes", {}).get(key)
+            premise_trial = real is None or bool(real._trial)
+            for r_ in (rt, rt_mut):
+                if r_ is not None and not premise_trial:
+                    r_.trial, r_.held = False, real.choice
+            exp, rt = call_routed_t(etr, world, f, rt)
+            exp_mut, rt_mut = call_routed_t(etm, world, f, rt_mut, alternate=False)
+            obs = observe(er, q)
+            got = path_of(obs, routed=True)
+            rows = [[v for _, v in r] for r in obs["rows"]]
+            exp_rows = nat_rows if exp == "native" else sql_rows
+            calls.append({"call": i + 1, "premise_trial": premise_trial, "expected": exp, "observed": got[1],
+                          "mutant_expected": exp_mut, "rows": rows,
+                          "agrees": got == ("answer", exp) and _bag(rows) == _bag(exp_rows) and rows == exp_rows})
+        real = er.__dict__.get("_native_routes", {}).get(key)
+        distinct = sorted({json.dumps(c["rows"]) for c in calls})
+        route_runs[name] = calls
+        CASES.append({"case": name, "query": q, "expected": [c["expected"] for c in calls],
+                      "observed": [c["observed"] for c in calls], "calls": calls,
+                      "native_rows": nat_rows, "sql_rows": sql_rows, "paths_differ": nat_rows != sql_rows,
+                      "distinct_answers": distinct,
+                      "route_after": {"trial": bool(real._trial), "choice": real.choice,
+                                      "native_ms": [round(x, 2) for x in real._ms["native"]],
+                                      "sql_ms": [round(x, 2) for x in real._ms["sql"]]},
+                      "agrees": all(c["agrees"] for c in calls)
+                      and (len(distinct) == 2) == (nat_rows != sql_rows and any(c["expected"] != "native" for c in calls))})
+    MUT["route_without_alternation"] = any(c["mutant_expected"] != c["observed"]
+                                           for calls in route_runs.values() for c in calls)
+
+    # ---- the shadow check's blind spot (iteration 66, review-1 R1-N1), live: real planner, execute_cypher, shadow
+    # switch, _shadow_compare and native_shadow.compare; the native answer is SUBSTITUTED (no wrong native answer has
+    # been observed) by wrapping the real _try_native and replacing its decoded rows.
+    PP, KN = f"K{T}", f"KN{T}"
+    for nm, outs in (("alice", 3), ("bob", 1)):
+        a.create_node(f"{T}_{nm}", labels=[PP], properties={"name": nm})
+        for j in range(outs):
+            a.create_node(f"{T}_{nm}_f{j}", labels=[PP], properties={"name": f"{nm}_f{j}"})
+            a.create_edge(f"{T}_{nm}", KN, f"{T}_{nm}_f{j}")
+    base = f"MATCH (a:{PP})-[:{KN}]->(b:{PP}) RETURN a.name AS n, count(*) AS c"
+    for name, q, covers, ks, make_wrong in (
+            ("blind_spot_wrong_top1", base + " ORDER BY c DESC LIMIT 1", False, [1], lambda full: full[-1:]),
+            ("blind_spot_reversed_order", base + " ORDER BY c DESC", False, [1], lambda full: full[::-1]),
+            ("blind_spot_neighbour_key_order", base + " ORDER BY n DESC LIMIT 1", True, [0], lambda full: full[-1:])):
+        f = features(q, covers=covers)
+        full_q = base + " ORDER BY " + q.split(" ORDER BY ", 1)[1].split(" LIMIT ")[0]
+        full = provider(observe(sqlonly, full_q))["rows"]
+        wrong = make_wrong(full)
+        es, ets = engine(admin, NSB, None), EngineT()
+        es.cypher_shadow = True
+        real_try = es._try_native
+
+        def substituted(parsed, parameters, key=None, _real=real_try, _wrong=wrong):
+            out = _real(parsed, parameters, key)
+            if out is None:
+                return None
+            plan_, res = out
+            res.rows = [list(r) for r in _wrong]
+            return plan_, res
+
+        es._try_native = substituted
+        sql_obs = provider(observe(sqlonly, q))
+        row = case(name, es, ets, q, f=f, shadow=True, nat_given={"kind": "rows", "cols": ["n", "c"], "rows": wrong})
+        unl = full if f["limit"] else sql_obs["rows"]
+        row["substituted_native_rows"] = wrong
+        row["fr013_owner_admits"] = fr013_t(ks, f["limit"], sql_obs["rows"], unl, wrong)
+        row["real_plan"] = {k: bool(v) for k, v in native_plan.plan_query(parse_query(q), {}).items()
+                            if k in ("ordered", "limited")}
+
     # ---- privileges (privileges#o01, #o03; shadow#o03 through a real SQL failure)
     made = {}
     try:
@@ -583,7 +739,7 @@ def live():
     case("exec_restored_cached_engine_stays_sql", e5, et5, *RC, w=wc, sql_eng=sqlc, warn=0)
     case("exec_restored_new_engine", engine(cc, NSC, None), EngineT(), *RC, w=wc, sql_eng=sqlc, warn=0)
     e5.initialize_schema()
-    et5.setup()
+    et5.setup(bool(e5.capabilities.objectscript_deployed))  # observed: the deploy left the classes in place
     case("exec_restored_after_setup", e5, et5, *RC, w=wc, sql_eng=sqlc, warn=0)
     cc.close()
     return sample
@@ -670,11 +826,60 @@ def f0907():
             got = "pass"
         except NativeMismatch as x:
             got = str(x).split("(", 1)[1].split(")", 1)[0]
-        owner_ok = sorted(nr) == sorted(sr) if not lim else all(r in sql for r in nr)
+        owner_ok = fr013_t([], lim, sr, sql if lim else sr, nr)  # ORDER BY a key every row ties on (not returned)
         out["limit" if lim else "nolimit"] = {"plan_ordered": bool(pl["ordered"]), "want": want if want == "pass" else want[0],
                                               "got": got, "owner_rule_admits": owner_ok}
     out["agrees"] = all(v["want"] == v["got"] or (v["want"] != "pass" and v["got"] != "pass")
                         for k, v in out.items() if isinstance(v, dict))
+    return out
+
+
+TOPK = {
+    "agg_order_by_count_limit": ("MATCH (a:Person)-[:KNOWS]->(b:Person) RETURN a.name AS n, count(*) AS c ORDER BY c DESC LIMIT 1", False, [1]),
+    "agg_order_by_count": ("MATCH (a:Person)-[:KNOWS]->(b:Person) RETURN a.name AS n, count(*) AS c ORDER BY c DESC", False, [1]),
+    "agg_order_by_key_limit": ("MATCH (a:Person)-[:KNOWS]->(b:Person) RETURN a.name AS n, count(*) AS c ORDER BY n LIMIT 1", True, [0]),
+    "nonagg_order_limit": ("MATCH (a:Person)-[:KNOWS]->(b:Person) RETURN a.name AS n, b.name AS m ORDER BY a.name LIMIT 1", False, [0]),
+}
+
+
+def topk_domain(ordered_override=None):
+    """R1-N1 at unit level: the real plan_query's flags and the real native_shadow.compare on a wrong top-1 and on a
+    reversed order, against compare_t and the owner rule fr013_t (the reviewer's topk_probe.py, extended)."""
+    out = {}
+    alice, bob = ["Alice", 3], ["Bob", 1]
+    for name, (q, covers, ks) in TOPK.items():
+        f = features(q, covers=covers)
+        got = native_plan.plan_query(parse_query(q), {})
+        got = {"ordered": bool(got["ordered"]), "limited": bool(got["limited"])}
+        want = plan_t(f)
+        ordered = got["ordered"] if ordered_override is None else ordered_override
+        if f["limit"]:
+            sr, unl, nr = [alice], [alice, bob], [bob]
+            if name == "agg_order_by_key_limit":  # ORDER BY n: Alice first; native keeps Bob
+                sr, unl, nr = [alice], [alice, bob], [bob]
+        else:
+            sr, unl, nr = [alice, bob], [alice, bob], [bob, alice]
+        cols = ["n", "c"] if "count" in q else ["n", "m"]
+        if cols == ["n", "m"]:
+            sr, unl, nr = [["Alice", "x"]], [["Alice", "x"], ["Bob", "y"]], [["Bob", "y"]]
+        exp = compare_t(cols, sr, cols, nr, ordered, got["limited"], unl if got["limited"] and not ordered else None)
+        try:
+            native_shadow.compare("q", {}, cols, sr, cols, nr, ordered=got["ordered"], limited=got["limited"],
+                                  sql_unlimited_rows=unl if got["limited"] and not got["ordered"] else None)
+            real = "pass"
+        except NativeMismatch as x:
+            real = str(x).split("(", 1)[1].split(")", 1)[0]
+        out[name] = {"plan": got, "plan_agrees": got == want, "comparator_real": real,
+                     "comparator_model": exp if exp == "pass" else exp[0],
+                     "comparator_agrees": (exp == "pass") == (real == "pass"),
+                     "fr013_owner_admits": fr013_t(ks, got["limited"], sr, unl, nr)}
+    blind = out["agg_order_by_count_limit"]
+    out["r1_n1_reproduced"] = (not blind["plan"]["ordered"] and blind["comparator_real"] == "pass"
+                               and not blind["fr013_owner_admits"]
+                               and out["agg_order_by_count"]["comparator_real"] == "pass"
+                               and not out["agg_order_by_count"]["fr013_owner_admits"]
+                               and out["agg_order_by_key_limit"]["comparator_real"] != "pass")
+    out["agrees"] = all(v["plan_agrees"] and v["comparator_agrees"] for k, v in out.items() if isinstance(v, dict))
     return out
 
 
@@ -709,6 +914,7 @@ def main():
     planner = planner_domain()
     ncmp, cmp_bad = comparator_domain()
     tie = f0907()
+    topk = topk_domain()
     warned = warned_set_unit()
     # detection: (a) a changed decisive observed field; (b) product mutants
     flip = json.loads(json.dumps(CASES))
@@ -722,8 +928,16 @@ def main():
     finally:
         native_shadow._key = orig_key
     mutant_warn = warned_set_unit(mutant=True)
+    mutant_topk = topk_domain(ordered_override=True)  # transcription with the planner's flag forced ordered
+    flip_route = json.loads(json.dumps(CASES))
+    tr = next(c for c in flip_route if c["case"] == "route_alternation_bug_cyp_104")
+    tr["calls"][4]["rows"] = tr["calls"][5]["rows"]  # an observed answer changed: call 5 returns call 6's rows
+    detected_route_rows = tr["calls"][4]["rows"] != (tr["native_rows"] if tr["calls"][4]["expected"] == "native" else tr["sql_rows"])
     detection = {"changed_observed_path": detected_obs, "comparator_without_types": bool(mutant_bad),
-                 "warned_set_dropped": not mutant_warn["agrees"]}
+                 "warned_set_dropped": not mutant_warn["agrees"],
+                 "topk_plan_forced_ordered": not mutant_topk["agrees"],
+                 "route_without_alternation": bool(MUT.get("route_without_alternation")),
+                 "route_changed_observed_rows": detected_route_rows}
     mism = [c for c in CASES if not c["agrees"]]
     pin = bc.pin_identity(PIN_DIR)
     for p in PRODUCT_FILES:
@@ -732,23 +946,26 @@ def main():
         pin["files_equal_pin_blobs"][p] = want == have
         pin["all_equal"] &= want == have
     agrees = (not mism and all(r["agrees"] for r in planner) and not cmp_bad and tie["agrees"] and warned["agrees"]
+              and topk["agrees"] and topk["r1_n1_reproduced"]
               and all(detection.values()) and pin["all_equal"])
     verdict = "AGREES" if agrees else "DISAGREES"
     out = bc.write_receipt("native_admission", Path(__file__), {
         "verdict": verdict, "fixture": runtime.FIXTURE, "namespaces": [NSB, NSC], "seconds": round(time.time() - started, 1),
         "live_cases": CASES, "live_mismatches": [c["case"] for c in mism], "equal_answers_sample": sample,
         "planner_domain": planner, "comparator_domain": {"comparisons": ncmp, "mismatches": cmp_bad[:20]},
-        "f0907_tie_order": tie, "warned_set_unit": warned, "detection": detection, "pin": pin,
+        "f0907_tie_order": tie, "topk_r1_n1": topk, "warned_set_unit": warned, "detection": detection, "pin": pin,
         "real": "execute_cypher/_execute_parsed/_try_native/_shadow_compare/native_gate/_native_privileges/"
                 "_native_executor_current/bulk_load_session/map_sql_table on IRIS; plan_query, native_shadow.compare",
-        "scope": "one engine process; label/property reads; disclosed: synthetic NativeRoute timings, Exec recompiled "
-                 "at PLANVERSION 2 or deleted in I62C, SQL tie permutation for F-0907 at unit level"})
+        "scope": "one engine process; label/property reads; disclosed: synthetic NativeRoute timings for the held-SQL "
+                 "route, Exec recompiled at PLANVERSION 2 or deleted in I62C, SQL tie permutation for F-0907 at unit "
+                 "level, a substituted (wrong) native answer for the three blind_spot_* shadow cases, the route "
+                 "trial's end read from the real route as a timing premise"})
     d = json.loads(out.read_text())
     for p in PRODUCT_FILES:
         d["inputs"][p] = bc.sha(bc.REPO / p)
     out.write_text(json.dumps(d, indent=2, sort_keys=True, default=str) + "\n")
     print(f"native_admission: {verdict}, {len(CASES)} live cases ({len(mism)} disagree), planner {len(planner)}, "
-          f"comparator {ncmp}, detection {detection}; {out}")
+          f"comparator {ncmp}, R1-N1 reproduced {topk['r1_n1_reproduced']}, detection {detection}; {out}")
     for c in mism:
         print(json.dumps(c, default=str)[:600])
     return 0 if verdict == "AGREES" else 1

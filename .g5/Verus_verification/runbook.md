@@ -847,3 +847,43 @@ before, none after; graph g2's rows kept). Second lookup: `erasure.atomic` → `
 → `iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.delete_nodes` (1320-1362) and `::_eraser_txn`
 (1451-1473); control `chunks-all-or-nothing`; observations `E4_unjoined_chunk_commits` (500 erased, the second chunk
 raised) beside `E3_joined_list_failure_caller_commit` (nothing erased, the caller's write kept).
+
+Census (iteration 66, review-1 R1-CB/CR/T1; evidence in [iteration-66/census](../uplift/consolidated/iteration-66/census/)).
+Run `tools/census.py` **from a git checkout**: playbook-crate receipts are checked against `git rev-parse HEAD:<crate>`
+and receipts hash product and `experiment/` files, so a copy of `.g5/` alone is not enough. Outside a git work tree
+(e.g. a `git archive` export) the crate-tree check is skipped with a note and every other check runs. The lint now
+also fails a partial row with no model locator (LINT-4). Splitting merged rows follows one rule, written in
+[census/README](census/README.md#splitting-rule-iteration-66-review-1-r1-cb-05). From the repository root:
+
+```sh
+python3 .g5/uplift/consolidated/iteration-66/census/tools/apply.py      # replays the census repair on the fb6660a0 TSVs (git show)
+python3 .g5/uplift/consolidated/iteration-66/census/sweep/sweep.py > /tmp/flagged.tsv   # the mechanical merged-row sweep
+python3 .g5/uplift/consolidated/iteration-66/census/tools/repoint.py --dry-run          # citations that are no longer the latest receipt
+python3 .g5/Verus_verification/tools/census.py                                          # PASS (with the lint)
+```
+
+Iteration 66, native repairs (review-1 R1-N1..N8; [handoff](../uplift/consolidated/iteration-66/HANDOFF.md)), on the
+run's own fixture `ivg-cov-20261118-a-iris` (127.0.0.1:36481). The binding is iteration 62's (namespaces `I62B`/`I62C`,
+users `i62_*`), extended with the route-alternation pair, the three blind-spot shadow cases (a substituted wrong native
+answer) and the reviewer's top-k probe at unit level. From the repository root:
+
+```sh
+export RUN_DIR=$HOME/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a
+export PYTHONDONTWRITEBYTECODE=1 G5_GUIDE=$G5_HARNESS/guidance
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/native_admission       # PASS 62
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/native_admission    # 30 EXPECTED_FAIL
+CONTROL=topk-plan-ordered python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/native_admission
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD IVG_PIN_DIR=$PWD $RUN_DIR/venv/bin/python -B $RUN_DIR/run_binding.py \
+  $OLDPWD/.g5/Verus_verification/models/native_admission/binding.py)                                 # AGREES 55 live, R1-N1 reproduced True
+python3 .g5/uplift/consolidated/iteration-66/regrade-tools/apply_native.py      # native census rows (after the census replay)
+```
+
+Worked lookup (iteration 66): `query.native.equal-answers` → `native_admission.rs::witness_comparator_accepts_wrong_topk`
+→ the rows for `iris_vector_graph/cypher/native_plan.py::_plan_stages` (384-480, decision: an aggregate is ordered only
+when its ORDER BY covers every grouping key) and `iris_vector_graph/cypher/native_shadow.py::compare` (29-69, the LIMIT
+rule for an unordered limited plan) in `crosswalk/decision-links.tsv`; control `topk-plan-ordered`; observation
+`blind_spot_wrong_top1` (shadow mode returned the substituted `[['bob', 1]]` where SQL answers `[['alice', 3]]`) beside
+`blind_spot_neighbour_key_order` (raised NativeMismatch). Second lookup: `query.native.route` →
+`theorem_route_trial_alternates_answers` → `native_route.py::NativeRoute.next_path` (76-83) and
+`_engine/query.py::QueryMixin._execute_parsed` (2063-2082); control `trial-no-alternation`; observation
+`route_alternation_bug_cyp_104` (two answers in turn over twelve identical calls) beside `route_alternation_paths_agree`.

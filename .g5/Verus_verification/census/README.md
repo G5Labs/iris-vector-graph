@@ -14,6 +14,13 @@ python3 .g5/Verus_verification/tools/census.py --no-lint  # every check except t
 
 Exit 0 means every check passed, including the strict-grade lint below. [summary.md](summary.md) is written by the same run; regenerating gives identical bytes.
 
+**Run it from a git checkout of the repository** (iteration 66, review-1 R1-T1). The playbook-crate receipts are
+checked against `git rev-parse HEAD:<crate>`, so the tool needs the repository's git metadata; the product sources and
+`experiment/` must be present too, because receipts record hashes of the files they read. A copy of `.g5/` alone is
+not enough. Outside a git work tree (for example a `git archive` export) the crate-tree check is skipped and the
+summary ends with a note saying how many receipts were not checked; every other check still runs. On a checkout the
+output is unchanged.
+
 ## Files
 
 - `blocks.tsv`: one row per canonical block (`[I · id]` / `[D · id]`) in `.g5/ontology`: page, kind, `sha256` of the
@@ -42,7 +49,7 @@ fails the check until it is regraded; a not-started block's hash is refreshed by
 ## Counting rules (the master's published rules, applied exactly)
 
 1. Read each block's own lead, bullets, prose, tables and exceptions. Split a claim when one outcome can fail while
-   another still holds; keep conditions with the outcome they qualify. Count a restatement once at its owner and point
+   another still holds (the splitting rule below); keep conditions with the outcome they qualify. Count a restatement once at its owner and point
    aliases to it (`excluded.tsv`, kind `restatement`). Do not count Sources/Provenance/Findings metadata.
 2. **full**: the formal rule distinguishes the required cases through the stated observation, directly or by documented
    composition. A model label, code locator, native observation, binding AGREES count, test pass or successful proof
@@ -69,6 +76,42 @@ fails the check until it is regraded; a not-started block's hash is refreshed by
 7. A stated working assumption about current behaviour is an assessable obligation within its scope; a working
    assumption that only states a preferred policy option is an undecided alternative (excluded with reason). Rationale,
    pure navigation and evidence annotations ("Iteration NN … observed") are excluded with reason.
+
+## Splitting rule (iteration 66, review-1 R1-CB-05)
+
+One obligation is **one decision, made by one producer at one entry point, observed at one reader**, together with the
+neighbouring inputs that must give different results (its `cases`). Split a statement into separate obligations when
+its outcomes can fail independently, that is, when any of these holds:
+
+- **different deciders**: the outcomes come from different code (a Python-layer refusal and a native or ObjectScript
+  outcome; a record writer and the redaction that later selects the record; an argument check in Python and a refusal
+  raised by IRIS);
+- **different entry points**: the statement names several public calls, procedures, drivers or readers, each with its
+  own path to the outcome (`execute_cypher`, Bolt and HTTP; `bulk_create_nodes` and `bulk_create_edges`; five readers
+  that each refuse);
+- **an enumeration of separately decided kinds**: one outcome per kind, each produced by its own branch (one counter per
+  refusal kind; one status field per computed value);
+- **different stores or observations**: the outcomes are written to, or read from, different stores (a recomputed
+  statistic and a separately incremented counter).
+
+Do not split:
+
+- the two sides of one decision (the row's own contrast: refused vs admitted, kept vs removed, seconds vs milliseconds
+  by one divisor);
+- a condition from the outcome it qualifies, or an example from the rule it illustrates;
+- a list of inputs that one predicate treats alike (`''`, NULL, `0` and `'0'` select the default graph);
+- the effects of one refusal on one call (raised error and nothing written) when one guard produces all of them, unless
+  another block owns one of the effects (then that part is a restatement of its owner);
+- a universal over a domain ("every reader", "any writer") whose members are not named; grade it partial when the model
+  covers part of the domain.
+
+Each split row keeps the original id for its first outcome; new rows continue the block's `#oNN` sequence and are graded
+from their own model evidence (a split can make one part full and another absent). The iteration-66 sweep
+(`$G5_RUN_STATE/scratch/iteration-66/census/sweep/`, copied into the iteration-66 evidence) flagged rows mechanically
+(several `;`-separated clauses, a refusal beside a native outcome, contrast words, several entry-point names, an
+enumeration of three or more outcomes, three or more `;`-separated cases) and recorded a split / not-split decision
+with its reason for every flagged row. Report splits as a **scope change** (new obligations), separately from grade
+changes on retained obligations.
 
 ## Reporting
 
@@ -97,6 +140,7 @@ bracket depth 0 before the next item).
 | LINT-2a | `check_scope` is full while a cited proof fn has a `requires` clause and `premises` carries no `requires-reviewed:` note explaining why every conjunct is a condition the statement itself states (or a well-formedness fact every product input satisfies); a narrowing conjunct means `narrowed` instead |
 | LINT-2b | `check_scope` is full while every cited proof fn is a point check (name `witness*`, or no parameters), or no proof fn is cited for a proved/refuted check: record `narrowed` |
 | LINT-3 | `grade` is full and no model locator names a `proof fn` (theorem, lemma or witness); a spec fn, definition, NOTES or model.json entry alone cannot carry full |
+| LINT-4 | `grade` is partial and `model_locators` is empty (added iteration 66, review-1 R1-CB-03): partial means a model represents some of the cases, so the row must name that model item; a row with no model item is absent |
 
 The lint cannot judge whether an `outside-statement:` or `requires-reviewed:` note is true; the regrade checklist in the
 iteration-64 handoff and its independent review sample do. Gap segments tagged `owner-contradicted:` record the

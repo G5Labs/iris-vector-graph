@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_shadow_bypasses_route"
+    ],
+    "find": "if !shadow && e.route_on && e.route_sql.contains(q.shape)",
+    "name": "shadow-consults-route",
+    "replace": "if e.route_on && e.route_sql.contains(q.shape)",
+    "why": "shadow mode follows a route that holds SQL"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_shadow_bypasses_route"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "210a36eb31dc3af0d784a9c5d0c5757d6053dacea3b5d3a50759d9d63bc23b9c",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-consults-route/20261118T050858Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_shadow_bypasses_route": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T050858Z-control-shadow-consults-route-theorem_shadow_bypasses_route.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T050858Z-control-shadow-consults-route.log",
+    "timed_out": false,
+    "verified": 59
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T050901Z-control-shadow-consults-route/logs/20261118T050858Z-control-shadow-consults-route-theorem_shadow_bypasses_route.log": "bb7965a09da0e18d8a57d1edaea4cebc026e712d2ccd3eb8b0be31b0a799371e",
+    ".g5/Verus_verification/results/native_admission/20261118T050901Z-control-shadow-consults-route/logs/20261118T050858Z-control-shadow-consults-route.log": "05410ea0314594869b31fe5010170868fcf489937564c66d85e53782abd0b542"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

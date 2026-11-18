@@ -1,0 +1,27 @@
+verification results:: 59 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T051858Z/models/native_admission/native_admission.rs:452:13
+    |
+450 | pub proof fn theorem_no_write_is_planned(q: Query)
+    | -------------------------------------------------- at the end of the function body
+451 |     requires wf(q), writes(q),
+452 |     ensures plan(q).is_none(),
+    |             ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T051858Z/models/native_admission/native_admission.rs:459:12
+    |
+459 |     assert(try_native(e, w, q).0.is_none());
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/plan-admits-mutation/20261118T051858Z/models/native_admission/native_admission.rs:481:13
+    |
+481 |     ensures plan(whole).is_none(), !native_path(exec_parsed(e, w, count_step(whole)).0),
+    |             ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+488 |     assert forall|refs: bool| !native_path(#[trigger] exec_parsed(e, w, merge_prefix_after_with(whole, refs)).0) by {
+    |     ------ at the end of the function body
+
+error: aborting due to 3 previous errors
+

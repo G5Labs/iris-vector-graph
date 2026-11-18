@@ -1,0 +1,20 @@
+verification results:: 60 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/limit-without-count/20261118T051918Z/models/native_admission/native_admission.rs:679:13
+    |
+678 | pub proof fn theorem_limit_count_names_no_row(c: Seq<nat>, a: Row, b: Row, u: Seq<Row>)
+    | --------------------------------------------------------------------------------------- at the end of the function body
+679 |     ensures compare(c, seq![a, b], c, seq![a], false, true, Some(u)) == fail(What::RowCount, None),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/limit-without-count/20261118T051918Z/models/native_admission/native_admission.rs:740:13
+    |
+740 |     ensures s.len() == n.len(), forall|r: Row| #[trigger] cnt(n, r) <= cnt(u, r),
+    |             ^^^^^^^^^^^^^^^^^^ failed this postcondition
+741 | {
+742 |     assert forall|r: Row| #[trigger] cnt(n, r) <= cnt(u, r) by { lemma_fits_bounded(n, u, r); }
+    |     ------ at the end of the function body
+
+error: aborting due to 2 previous errors
+

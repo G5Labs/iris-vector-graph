@@ -10,10 +10,10 @@ enumeration complete
 
 | scope | blocks | full | partial | absent | unassessed | total | full/total (lower) | (full+unassessed)/total (upper) | proved, full scope | proved | bounded | refuted | unchecked |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| enumerated (complete + partial) | 406 | 794 | 666 | 640 | 0 | 2100 | 37.8% | 37.8% | 227 | 1138 | 1 | 152 | 0 |
-| complete blocks only | 406 | 794 | 666 | 640 | 0 | 2100 | 37.8% | 37.8% | 227 | 1138 | 1 | 152 | 0 |
+| enumerated (complete + partial) | 406 | 836 | 686 | 670 | 0 | 2192 | 38.1% | 38.1% | 227 | 1184 | 1 | 154 | 0 |
+| complete blocks only | 406 | 836 | 686 | 670 | 0 | 2192 | 38.1% | 38.1% | 227 | 1184 | 1 | 154 | 0 |
 
-**Whole foundation (all 406 blocks enumerated):** full 794, partial 666, absent 640, unassessed 0 of 2100 obligations; full/total 37.8% (lower bound), (full+unassessed)/total 37.8% (upper bound). Passing design checks over the full stated scope (proved, full scope): 227. Proved (including narrowed) 1138, bounded 1, refuted 152, unchecked 0. Blocks with an empty denominator (N/A): 2.
+**Whole foundation (all 406 blocks enumerated):** full 836, partial 686, absent 670, unassessed 0 of 2192 obligations; full/total 38.1% (lower bound), (full+unassessed)/total 38.1% (upper bound). Passing design checks over the full stated scope (proved, full scope): 227. Proved (including narrowed) 1184, bounded 1, refuted 154, unchecked 0. Blocks with an empty denominator (N/A): 2.
 
 `proved, full scope`: obligations whose design check is a proof over their full stated scope. `bounded` (finite domain), `refuted` (a modeled counterexample of the as-built design) and `unchecked` are counted separately; `proved` includes proofs over a narrowed scope.
 
@@ -22,28 +22,28 @@ enumeration complete
 | page | blocks | full | partial | absent | unassessed | total | full/total (lower) | (full+unassessed)/total (upper) | proved, full scope | proved | bounded | refuted | unchecked |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | architecture/adapters.g5.md (2 complete, 0 partial of 2) | 2 | 7 | 6 | 1 | 0 | 14 | 50.0% | 50.0% | 3 | 9 | 0 | 1 | 0 |
-| architecture/adjacency-and-derived-data.g5.md (26 complete, 0 partial of 26) | 26 | 69 | 37 | 25 | 0 | 131 | 52.7% | 52.7% | 15 | 82 | 0 | 9 | 0 |
-| architecture/algorithm-execution.g5.md (13 complete, 0 partial of 13) | 13 | 10 | 3 | 28 | 0 | 41 | 24.4% | 24.4% | 0 | 11 | 0 | 2 | 0 |
-| architecture/query-execution.g5.md (17 complete, 0 partial of 17) | 17 | 34 | 24 | 12 | 0 | 70 | 48.6% | 48.6% | 7 | 32 | 0 | 14 | 0 |
-| architecture/search-storage-and-indexes.g5.md (18 complete, 0 partial of 18) | 18 | 21 | 35 | 31 | 0 | 87 | 24.1% | 24.1% | 10 | 32 | 0 | 5 | 0 |
+| architecture/adjacency-and-derived-data.g5.md (26 complete, 0 partial of 26) | 26 | 71 | 43 | 25 | 0 | 139 | 51.1% | 51.1% | 14 | 85 | 0 | 9 | 0 |
+| architecture/algorithm-execution.g5.md (13 complete, 0 partial of 13) | 13 | 10 | 4 | 27 | 0 | 41 | 24.4% | 24.4% | 0 | 12 | 0 | 2 | 0 |
+| architecture/query-execution.g5.md (17 complete, 0 partial of 17) | 17 | 38 | 27 | 13 | 0 | 78 | 48.7% | 48.7% | 6 | 39 | 0 | 14 | 0 |
+| architecture/search-storage-and-indexes.g5.md (18 complete, 0 partial of 18) | 18 | 22 | 35 | 34 | 0 | 91 | 24.2% | 24.2% | 10 | 33 | 0 | 5 | 0 |
 | concepts/access.g5.md (13 complete, 0 partial of 13) | 13 | 8 | 22 | 14 | 0 | 44 | 18.2% | 18.2% | 0 | 20 | 0 | 6 | 0 |
-| concepts/graph-scope.g5.md (14 complete, 0 partial of 14) | 14 | 9 | 12 | 18 | 0 | 39 | 23.1% | 23.1% | 2 | 15 | 0 | 3 | 0 |
-| features/algorithms.g5.md (22 complete, 0 partial of 22) | 22 | 35 | 44 | 58 | 0 | 137 | 25.5% | 25.5% | 0 | 62 | 0 | 7 | 0 |
-| features/client-interfaces.g5.md (10 complete, 0 partial of 10) | 10 | 27 | 16 | 8 | 0 | 51 | 52.9% | 52.9% | 11 | 29 | 0 | 13 | 0 |
-| features/cypher.g5.md (50 complete, 0 partial of 50) | 50 | 107 | 92 | 123 | 0 | 322 | 33.2% | 33.2% | 24 | 156 | 0 | 29 | 0 |
+| concepts/graph-scope.g5.md (14 complete, 0 partial of 14) | 14 | 10 | 11 | 19 | 0 | 40 | 25.0% | 25.0% | 2 | 14 | 0 | 4 | 0 |
+| features/algorithms.g5.md (22 complete, 0 partial of 22) | 22 | 39 | 45 | 64 | 0 | 148 | 26.4% | 26.4% | 0 | 67 | 0 | 7 | 0 |
+| features/client-interfaces.g5.md (10 complete, 0 partial of 10) | 10 | 28 | 16 | 8 | 0 | 52 | 53.8% | 53.8% | 11 | 30 | 0 | 13 | 0 |
+| features/cypher.g5.md (50 complete, 0 partial of 50) | 50 | 109 | 93 | 131 | 0 | 333 | 32.7% | 32.7% | 24 | 159 | 0 | 29 | 0 |
 | features/data-interchange.g5.md (11 complete, 0 partial of 11) | 11 | 41 | 26 | 22 | 0 | 89 | 46.1% | 46.1% | 4 | 58 | 0 | 4 | 0 |
 | features/erasure.g5.md (10 complete, 0 partial of 10) | 10 | 45 | 2 | 2 | 0 | 49 | 91.8% | 91.8% | 26 | 38 | 0 | 9 | 0 |
-| features/fhir.g5.md (18 complete, 0 partial of 18) | 18 | 18 | 22 | 41 | 0 | 81 | 22.2% | 22.2% | 7 | 33 | 0 | 1 | 0 |
-| features/graph-structure.g5.md (20 complete, 0 partial of 20) | 20 | 29 | 30 | 40 | 0 | 99 | 29.3% | 29.3% | 5 | 55 | 0 | 0 | 0 |
-| features/ledger.g5.md (19 complete, 0 partial of 19) | 19 | 61 | 46 | 16 | 0 | 123 | 49.6% | 49.6% | 18 | 102 | 0 | 3 | 0 |
-| features/redaction.g5.md (28 complete, 0 partial of 28) | 28 | 27 | 39 | 45 | 0 | 111 | 24.3% | 24.3% | 14 | 47 | 0 | 2 | 0 |
-| features/search.g5.md (27 complete, 0 partial of 27) | 27 | 61 | 55 | 17 | 0 | 133 | 45.9% | 45.9% | 26 | 82 | 0 | 14 | 0 |
-| features/temporal.g5.md (29 complete, 0 partial of 29) | 29 | 68 | 59 | 42 | 0 | 169 | 40.2% | 40.2% | 30 | 105 | 0 | 6 | 0 |
-| operations/ledger.g5.md (6 complete, 0 partial of 6) | 6 | 19 | 13 | 4 | 0 | 36 | 52.8% | 52.8% | 10 | 28 | 0 | 2 | 0 |
+| features/fhir.g5.md (18 complete, 0 partial of 18) | 18 | 19 | 22 | 44 | 0 | 85 | 22.4% | 22.4% | 7 | 34 | 0 | 1 | 0 |
+| features/graph-structure.g5.md (20 complete, 0 partial of 20) | 20 | 31 | 34 | 35 | 0 | 100 | 31.0% | 31.0% | 5 | 58 | 0 | 0 | 0 |
+| features/ledger.g5.md (19 complete, 0 partial of 19) | 19 | 63 | 47 | 16 | 0 | 126 | 50.0% | 50.0% | 18 | 105 | 0 | 3 | 0 |
+| features/redaction.g5.md (28 complete, 0 partial of 28) | 28 | 27 | 39 | 46 | 0 | 112 | 24.1% | 24.1% | 14 | 47 | 0 | 2 | 0 |
+| features/search.g5.md (27 complete, 0 partial of 27) | 27 | 61 | 55 | 24 | 0 | 140 | 43.6% | 43.6% | 26 | 83 | 0 | 14 | 0 |
+| features/temporal.g5.md (29 complete, 0 partial of 29) | 29 | 72 | 60 | 45 | 0 | 177 | 40.7% | 40.7% | 30 | 107 | 0 | 6 | 0 |
+| operations/ledger.g5.md (6 complete, 0 partial of 6) | 6 | 36 | 14 | 7 | 0 | 57 | 63.2% | 63.2% | 12 | 44 | 0 | 2 | 0 |
 | operations/search-indexes.g5.md (3 complete, 0 partial of 3) | 3 | 8 | 7 | 1 | 0 | 16 | 50.0% | 50.0% | 1 | 9 | 0 | 4 | 0 |
-| operations/setup-and-upgrade.g5.md (26 complete, 0 partial of 26) | 26 | 24 | 27 | 55 | 0 | 106 | 22.6% | 22.6% | 14 | 37 | 0 | 9 | 0 |
-| operations/snapshots-and-bulk-load.g5.md (11 complete, 0 partial of 11) | 11 | 16 | 21 | 19 | 0 | 56 | 28.6% | 28.6% | 0 | 32 | 0 | 4 | 0 |
-| operations/status-and-repair.g5.md (13 complete, 0 partial of 13) | 13 | 50 | 28 | 18 | 0 | 96 | 52.1% | 52.1% | 0 | 64 | 1 | 5 | 0 |
+| operations/setup-and-upgrade.g5.md (26 complete, 0 partial of 26) | 26 | 24 | 28 | 54 | 0 | 106 | 22.6% | 22.6% | 14 | 37 | 0 | 9 | 0 |
+| operations/snapshots-and-bulk-load.g5.md (11 complete, 0 partial of 11) | 11 | 16 | 22 | 19 | 0 | 57 | 28.1% | 28.1% | 0 | 32 | 0 | 5 | 0 |
+| operations/status-and-repair.g5.md (13 complete, 0 partial of 13) | 13 | 51 | 28 | 19 | 0 | 98 | 52.0% | 52.0% | 0 | 64 | 1 | 5 | 0 |
 | concepts/adapters.g5.md (no canonical blocks) | 0 | | | | | | N/A | | | | | | |
 | concepts/install.g5.md (no canonical blocks) | 0 | | | | | | N/A | | | | | | |
 | root.g5.md (no canonical blocks) | 0 | | | | | | N/A | | | | | | |
@@ -55,24 +55,24 @@ enumeration complete
 | adapters.embedded | complete | 0 | 5 | 1 | 0 | 6 | 0.0% | 0.0% | 1 |  |
 | adapters.embedded.no_data | complete | 7 | 1 | 0 | 0 | 8 | 87.5% | 87.5% | 0 |  |
 | structure.multigraph.layout | complete | 5 | 1 | 2 | 0 | 8 | 62.5% | 62.5% | 0 |  |
-| structure.adjacency | complete | 0 | 3 | 2 | 0 | 5 | 0.0% | 0.0% | 2 |  |
+| structure.adjacency | complete | 1 | 4 | 2 | 0 | 7 | 14.3% | 14.3% | 2 |  |
 | structure.adjacency.declared | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 0 |  |
-| structure.adjacency.undeclared | complete | 0 | 2 | 1 | 0 | 3 | 0.0% | 0.0% | 0 |  |
+| structure.adjacency.undeclared | complete | 0 | 4 | 1 | 0 | 5 | 0.0% | 0.0% | 0 |  |
 | structure.adjacency.one_writer | complete | 0 | 0 | 1 | 0 | 1 | 0.0% | 0.0% | 2 |  |
-| structure.adjacency.bulk | complete | 0 | 3 | 3 | 0 | 6 | 0.0% | 0.0% | 1 |  |
+| structure.adjacency.bulk | complete | 0 | 3 | 4 | 0 | 7 | 0.0% | 0.0% | 1 |  |
 | structure.adjacency.scan | complete | 8 | 3 | 0 | 0 | 11 | 72.7% | 72.7% | 1 |  |
 | structure.adjacency.declare | complete | 5 | 1 | 0 | 0 | 6 | 83.3% | 83.3% | 1 |  |
 | structure.degree.cache | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 2 |  |
 | structure.degree.cache.uncommitted | complete | 1 | 3 | 0 | 0 | 4 | 25.0% | 25.0% | 0 |  |
 | structure.degree.cache.erase | complete | 2 | 0 | 0 | 0 | 2 | 100.0% | 100.0% | 0 |  |
-| structure.degree.cache.warm | complete | 4 | 4 | 1 | 0 | 9 | 44.4% | 44.4% | 1 |  |
+| structure.degree.cache.warm | complete | 4 | 5 | 1 | 0 | 10 | 40.0% | 40.0% | 1 |  |
 | structure.rebuilt | complete | 1 | 0 | 3 | 0 | 4 | 25.0% | 25.0% | 3 |  |
 | structure.rebuilt.token | complete | 0 | 2 | 2 | 0 | 4 | 0.0% | 0.0% | 1 |  |
 | structure.rebuilt.stamp | complete | 6 | 1 | 0 | 0 | 7 | 85.7% | 85.7% | 0 |  |
 | structure.rebuilt.valid | complete | 1 | 1 | 0 | 0 | 2 | 50.0% | 50.0% | 0 |  |
-| structure.rebuilt.stale_read | complete | 0 | 1 | 2 | 0 | 3 | 0.0% | 0.0% | 0 |  |
+| structure.rebuilt.stale_read | complete | 0 | 2 | 1 | 0 | 3 | 0.0% | 0.0% | 0 |  |
 | temporal.owner | complete | 0 | 0 | 1 | 0 | 1 | 0.0% | 0.0% | 2 |  |
-| temporal.stats.writers | complete | 3 | 3 | 0 | 0 | 6 | 50.0% | 50.0% | 2 |  |
+| temporal.stats.writers | complete | 4 | 4 | 0 | 0 | 8 | 50.0% | 50.0% | 2 |  |
 | temporal.structural | complete | 1 | 1 | 2 | 0 | 4 | 25.0% | 25.0% | 6 |  |
 | temporal.structural.mark | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 1 |  |
 | temporal.structural.mark.readers | complete | 6 | 1 | 1 | 0 | 8 | 75.0% | 75.0% | 1 |  |
@@ -80,7 +80,7 @@ enumeration complete
 | temporal.structural.end | complete | 3 | 0 | 1 | 0 | 4 | 75.0% | 75.0% | 0 |  |
 | temporal.structural.upgrade | complete | 7 | 1 | 1 | 0 | 9 | 77.8% | 77.8% | 2 |  |
 | temporal.structural.ledger | complete | 3 | 2 | 1 | 0 | 6 | 50.0% | 50.0% | 1 |  |
-| algorithms.owner | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 0 |  |
+| algorithms.owner | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | algorithms.routing | complete | 0 | 0 | 7 | 0 | 7 | 0.0% | 0.0% | 4 |  |
 | algorithms.routing.revision | complete | 0 | 0 | 3 | 0 | 3 | 0.0% | 0.0% | 0 |  |
 | algorithms.routing.fallback | complete | 0 | 0 | 3 | 0 | 3 | 0.0% | 0.0% | 0 |  |
@@ -93,15 +93,15 @@ enumeration complete
 | algorithms.cache.pagerank | complete | 6 | 0 | 0 | 0 | 6 | 100.0% | 100.0% | 2 |  |
 | algorithms.cache.erasure | complete | 1 | 0 | 0 | 0 | 1 | 100.0% | 100.0% | 0 |  |
 | algorithms.cache.concurrency | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 1 |  |
-| query.paths | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 2 |  |
+| query.paths | complete | 0 | 2 | 1 | 0 | 3 | 0.0% | 0.0% | 2 |  |
 | query.native | complete | 3 | 0 | 0 | 0 | 3 | 100.0% | 100.0% | 1 |  |
 | query.native.gates | complete | 5 | 0 | 0 | 0 | 5 | 100.0% | 100.0% | 1 |  |
-| query.native.privileges | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 1 |  |
-| query.native.reads-only | complete | 4 | 1 | 0 | 0 | 5 | 80.0% | 80.0% | 0 |  |
-| query.native.equal-answers | complete | 2 | 3 | 0 | 0 | 5 | 40.0% | 40.0% | 0 |  |
+| query.native.privileges | complete | 3 | 1 | 0 | 0 | 4 | 75.0% | 75.0% | 1 |  |
+| query.native.reads-only | complete | 5 | 1 | 0 | 0 | 6 | 83.3% | 83.3% | 0 |  |
+| query.native.equal-answers | complete | 3 | 4 | 0 | 0 | 7 | 42.9% | 42.9% | 0 |  |
 | query.native.sql-first | complete | 0 | 0 | 0 | 0 | 0 | N/A | N/A | 3 | process rule (rationale) and two restatements of equal-answers/query.values/query.conformance |
-| query.native.fallback | complete | 2 | 0 | 0 | 0 | 2 | 100.0% | 100.0% | 0 |  |
-| query.native.route | complete | 4 | 6 | 5 | 0 | 15 | 26.7% | 26.7% | 3 |  |
+| query.native.fallback | complete | 2 | 0 | 1 | 0 | 3 | 66.7% | 66.7% | 0 |  |
+| query.native.route | complete | 5 | 7 | 5 | 0 | 17 | 29.4% | 29.4% | 3 |  |
 | query.shadow | complete | 4 | 1 | 0 | 0 | 5 | 80.0% | 80.0% | 3 |  |
 | query.compiled | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | query.compiled.equal-answers | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
@@ -117,16 +117,16 @@ enumeration complete
 | search.embedding.bulk | complete | 3 | 2 | 2 | 0 | 7 | 42.9% | 42.9% | 0 |  |
 | search.routes.cache | complete | 5 | 2 | 0 | 0 | 7 | 71.4% | 71.4% | 0 |  |
 | search.routes.create_on_write | complete | 0 | 1 | 3 | 0 | 4 | 0.0% | 0.0% | 0 |  |
-| search.routes.orphan | complete | 0 | 1 | 2 | 0 | 3 | 0.0% | 0.0% | 1 |  |
-| search.scope.indexes.upkeep | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
-| search.quarantine | complete | 0 | 0 | 8 | 0 | 8 | 0.0% | 0.0% | 2 |  |
+| search.routes.orphan | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 1 |  |
+| search.scope.indexes.upkeep | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 1 |  |
+| search.quarantine | complete | 0 | 0 | 10 | 0 | 10 | 0.0% | 0.0% | 2 |  |
 | search.quarantine.placement | complete | 2 | 3 | 0 | 0 | 5 | 40.0% | 40.0% | 1 |  |
 | search.bm25.query_time_idf | complete | 0 | 3 | 0 | 0 | 3 | 0.0% | 0.0% | 0 |  |
 | search.bm25.counts | complete | 2 | 2 | 0 | 0 | 4 | 50.0% | 50.0% | 0 |  |
 | search.bm25.incremental | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | search.bm25.write_lock | complete | 2 | 4 | 2 | 0 | 8 | 25.0% | 25.0% | 3 |  |
 | search.bm25.schema | complete | 1 | 3 | 0 | 0 | 4 | 25.0% | 25.0% | 0 |  |
-| search.fusion.python | complete | 2 | 4 | 2 | 0 | 8 | 25.0% | 25.0% | 4 |  |
+| search.fusion.python | complete | 2 | 3 | 5 | 0 | 10 | 20.0% | 20.0% | 4 |  |
 | search.fusion.leg_index | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 1 |  |
 | access.iris_boundary | complete | 1 | 4 | 1 | 0 | 6 | 16.7% | 16.7% | 1 |  |
 | access.graph_id | complete | 0 | 1 | 0 | 0 | 1 | 0.0% | 0.0% | 1 |  |
@@ -145,7 +145,7 @@ enumeration complete
 | graph.default | complete | 0 | 1 | 3 | 0 | 4 | 0.0% | 0.0% | 6 |  |
 | graph.named | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | graph.tenants | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
-| graph.key | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 0 |  |
+| graph.key | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 0 |  |
 | graph.key.two_forms | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 1 |  |
 | graph.key.derive | complete | 2 | 1 | 1 | 0 | 4 | 50.0% | 50.0% | 0 |  |
 | graph.key.owner | complete | 1 | 0 | 1 | 0 | 2 | 50.0% | 50.0% | 0 |  |
@@ -157,26 +157,26 @@ enumeration complete
 | graph.all_graphs_write | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 0 |  |
 | algorithms.graph_scope | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 5 |  |
 | algorithms.op | complete | 0 | 9 | 3 | 0 | 12 | 0.0% | 0.0% | 3 |  |
-| algorithms.op.pagerank | complete | 1 | 1 | 7 | 0 | 9 | 11.1% | 11.1% | 0 |  |
-| algorithms.op.ppr | complete | 6 | 2 | 0 | 0 | 8 | 75.0% | 75.0% | 1 |  |
+| algorithms.op.pagerank | complete | 1 | 1 | 8 | 0 | 10 | 10.0% | 10.0% | 0 |  |
+| algorithms.op.ppr | complete | 8 | 2 | 0 | 0 | 10 | 80.0% | 80.0% | 1 |  |
 | algorithms.op.ppr.completion | complete | 2 | 0 | 0 | 0 | 2 | 100.0% | 100.0% | 0 |  |
 | algorithms.op.wcc | complete | 3 | 0 | 0 | 0 | 3 | 100.0% | 100.0% | 0 |  |
 | algorithms.op.cdlp | complete | 2 | 2 | 0 | 0 | 4 | 50.0% | 50.0% | 0 |  |
 | algorithms.op.subgraph | complete | 1 | 6 | 3 | 0 | 10 | 10.0% | 10.0% | 0 |  |
 | algorithms.op.subgraph.guided | complete | 4 | 3 | 3 | 0 | 10 | 40.0% | 40.0% | 1 |  |
 | algorithms.op.degree | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 0 |  |
-| algorithms.op.betweenness | complete | 0 | 0 | 7 | 0 | 7 | 0.0% | 0.0% | 0 |  |
+| algorithms.op.betweenness | complete | 0 | 0 | 8 | 0 | 8 | 0.0% | 0.0% | 0 |  |
 | algorithms.op.closeness | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | algorithms.op.eigenvector | complete | 0 | 0 | 3 | 0 | 3 | 0.0% | 0.0% | 1 |  |
-| algorithms.op.leiden | complete | 0 | 0 | 6 | 0 | 6 | 0.0% | 0.0% | 0 |  |
+| algorithms.op.leiden | complete | 0 | 0 | 7 | 0 | 7 | 0.0% | 0.0% | 0 |  |
 | algorithms.op.triangles | complete | 0 | 0 | 3 | 0 | 3 | 0.0% | 0.0% | 0 |  |
 | algorithms.op.scc | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | algorithms.op.kcore | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | algorithms.op.khop | complete | 2 | 4 | 1 | 0 | 7 | 28.6% | 28.6% | 0 |  |
 | algorithms.op.walks | complete | 3 | 1 | 4 | 0 | 8 | 37.5% | 37.5% | 2 |  |
 | algorithms.op.neighbors | complete | 0 | 5 | 2 | 0 | 7 | 0.0% | 0.0% | 0 |  |
-| algorithms.op.paths | complete | 2 | 4 | 1 | 0 | 7 | 28.6% | 28.6% | 1 |  |
-| algorithms.op.paths.weighted | complete | 9 | 6 | 4 | 0 | 19 | 47.4% | 47.4% | 2 |  |
+| algorithms.op.paths | complete | 2 | 4 | 2 | 0 | 8 | 25.0% | 25.0% | 1 |  |
+| algorithms.op.paths.weighted | complete | 11 | 7 | 6 | 0 | 24 | 45.8% | 45.8% | 2 |  |
 | access.surfaces | complete | 3 | 1 | 1 | 0 | 5 | 60.0% | 60.0% | 1 |  |
 | access.mcp | complete | 0 | 1 | 2 | 0 | 3 | 0.0% | 0.0% | 1 |  |
 | access.bolt | complete | 0 | 1 | 0 | 0 | 1 | 0.0% | 0.0% | 6 |  |
@@ -185,9 +185,9 @@ enumeration complete
 | access.bolt.transactions | complete | 5 | 2 | 0 | 0 | 7 | 71.4% | 71.4% | 2 |  |
 | access.http_transactions | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 4 |  |
 | access.bolt.versions | complete | 1 | 3 | 1 | 0 | 5 | 20.0% | 20.0% | 0 |  |
-| access.bolt.errors | complete | 3 | 2 | 0 | 0 | 5 | 60.0% | 60.0% | 0 |  |
+| access.bolt.errors | complete | 4 | 2 | 0 | 0 | 6 | 66.7% | 66.7% | 0 |  |
 | access.bolt.graph_values | complete | 4 | 2 | 3 | 0 | 9 | 44.4% | 44.4% | 3 |  |
-| query.paths.varlength | complete | 4 | 4 | 1 | 0 | 9 | 44.4% | 44.4% | 2 |  |
+| query.paths.varlength | complete | 4 | 4 | 2 | 0 | 10 | 40.0% | 40.0% | 2 |  |
 | query.aql | complete | 6 | 1 | 0 | 0 | 7 | 85.7% | 85.7% | 1 |  |
 | query.graph-scope | complete | 0 | 2 | 2 | 0 | 4 | 0.0% | 0.0% | 3 |  |
 | query.graph-scope.read | complete | 0 | 2 | 3 | 0 | 5 | 0.0% | 0.0% | 2 |  |
@@ -208,16 +208,16 @@ enumeration complete
 | query.system-procedures | complete | 0 | 3 | 6 | 0 | 9 | 0.0% | 0.0% | 4 |  |
 | query.system-procedures.results | complete | 2 | 6 | 0 | 0 | 8 | 25.0% | 25.0% | 1 |  |
 | query.aggregation | complete | 10 | 3 | 0 | 0 | 13 | 76.9% | 76.9% | 1 |  |
-| query.aggregation.keys | complete | 4 | 4 | 0 | 0 | 8 | 50.0% | 50.0% | 3 |  |
+| query.aggregation.keys | complete | 6 | 3 | 4 | 0 | 13 | 46.2% | 46.2% | 3 |  |
 | query.aggregation.arithmetic | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 0 |  |
-| query.optional | complete | 8 | 4 | 3 | 0 | 15 | 53.3% | 53.3% | 2 |  |
+| query.optional | complete | 8 | 4 | 5 | 0 | 17 | 47.1% | 47.1% | 2 |  |
 | query.with | complete | 0 | 0 | 8 | 0 | 8 | 0.0% | 0.0% | 2 |  |
 | query.paging | complete | 1 | 5 | 2 | 0 | 8 | 12.5% | 12.5% | 1 |  |
-| query.parameters | complete | 1 | 5 | 1 | 0 | 7 | 14.3% | 14.3% | 2 |  |
+| query.parameters | complete | 1 | 7 | 1 | 0 | 9 | 11.1% | 11.1% | 2 |  |
 | query.union | complete | 3 | 2 | 5 | 0 | 10 | 30.0% | 30.0% | 0 |  |
 | query.conformance | complete | 0 | 0 | 6 | 0 | 6 | 0.0% | 0.0% | 10 |  |
 | query.values | complete | 5 | 4 | 2 | 0 | 11 | 45.5% | 45.5% | 2 |  |
-| query.values.equality | complete | 5 | 1 | 0 | 0 | 6 | 83.3% | 83.3% | 2 |  |
+| query.values.equality | complete | 5 | 1 | 1 | 0 | 7 | 71.4% | 71.4% | 2 |  |
 | query.values.ordering | complete | 2 | 1 | 1 | 0 | 4 | 50.0% | 50.0% | 1 |  |
 | query.values.sorting | complete | 3 | 2 | 1 | 0 | 6 | 50.0% | 50.0% | 1 |  |
 | query.values.nulls | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 0 |  |
@@ -258,9 +258,9 @@ enumeration complete
 | erasure.entry-points | complete | 6 | 0 | 0 | 0 | 6 | 100.0% | 100.0% | 3 |  |
 | erasure.entry-points.single-path | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 2 |  |
 | erasure.prefix-match | complete | 2 | 2 | 0 | 0 | 4 | 50.0% | 50.0% | 3 |  |
-| fhir.graph | complete | 0 | 2 | 3 | 0 | 5 | 0.0% | 0.0% | 3 |  |
+| fhir.graph | complete | 0 | 2 | 4 | 0 | 6 | 0.0% | 0.0% | 3 |  |
 | fhir.graph.install | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 0 |  |
-| fhir.graph.lifecycle | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 5 |  |
+| fhir.graph.lifecycle | complete | 1 | 1 | 4 | 0 | 6 | 16.7% | 16.7% | 5 |  |
 | fhir.graph.lifecycle.tasks | complete | 15 | 0 | 0 | 0 | 15 | 100.0% | 100.0% | 1 |  |
 | fhir.sync | complete | 0 | 3 | 1 | 0 | 4 | 0.0% | 0.0% | 5 |  |
 | fhir.sync.idempotent | complete | 0 | 1 | 5 | 0 | 6 | 0.0% | 0.0% | 0 |  |
@@ -268,7 +268,7 @@ enumeration complete
 | fhir.sync.behind | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | fhir.rebuild | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 0 |  |
 | fhir.erase | complete | 0 | 3 | 0 | 0 | 3 | 0.0% | 0.0% | 4 |  |
-| fhir.interpretation | complete | 0 | 0 | 8 | 0 | 8 | 0.0% | 0.0% | 0 |  |
+| fhir.interpretation | complete | 1 | 0 | 7 | 0 | 8 | 12.5% | 12.5% | 0 |  |
 | fhir.interpretation.version | complete | 0 | 3 | 1 | 0 | 4 | 0.0% | 0.0% | 0 |  |
 | fhir.sql_mapping | complete | 1 | 5 | 3 | 0 | 9 | 11.1% | 11.1% | 2 |  |
 | fhir.sql_mapping.relationships | complete | 1 | 2 | 1 | 0 | 4 | 25.0% | 25.0% | 0 |  |
@@ -276,11 +276,11 @@ enumeration complete
 | fhir.sql_mapping.embeddings | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | fhir.event | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 2 |  |
 | fhir.event.access | complete | 0 | 0 | 0 | 0 | 0 | N/A | N/A | 2 | restates access.api_key.every_route#o01 and access.read_only#o07; no own obligation |
-| structure.write | complete | 3 | 3 | 5 | 0 | 11 | 27.3% | 27.3% | 6 |  |
+| structure.write | complete | 3 | 4 | 4 | 0 | 11 | 27.3% | 27.3% | 6 |  |
 | structure.node | complete | 0 | 2 | 2 | 0 | 4 | 0.0% | 0.0% | 1 |  |
-| structure.node.bulk | complete | 9 | 1 | 0 | 0 | 10 | 90.0% | 90.0% | 2 |  |
-| structure.node.delete | complete | 2 | 1 | 2 | 0 | 5 | 40.0% | 40.0% | 1 |  |
-| structure.node.delete.bulk | complete | 3 | 3 | 1 | 0 | 7 | 42.9% | 42.9% | 1 |  |
+| structure.node.bulk | complete | 10 | 1 | 0 | 0 | 11 | 90.9% | 90.9% | 2 |  |
+| structure.node.delete | complete | 2 | 3 | 0 | 0 | 5 | 40.0% | 40.0% | 1 |  |
+| structure.node.delete.bulk | complete | 3 | 4 | 0 | 0 | 7 | 42.9% | 42.9% | 1 |  |
 | structure.node.update | complete | 0 | 5 | 1 | 0 | 6 | 0.0% | 0.0% | 0 |  |
 | structure.node.read | complete | 4 | 2 | 1 | 0 | 7 | 57.1% | 57.1% | 1 |  |
 | structure.node.read.properties | complete | 0 | 2 | 6 | 0 | 8 | 0.0% | 0.0% | 1 |  |
@@ -288,7 +288,7 @@ enumeration complete
 | structure.edge.single | complete | 1 | 1 | 0 | 0 | 2 | 50.0% | 50.0% | 0 |  |
 | structure.edge.weight | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 0 |  |
 | structure.edge.weight.set | complete | 2 | 1 | 1 | 0 | 4 | 50.0% | 50.0% | 0 |  |
-| structure.edge.delete | complete | 2 | 1 | 3 | 0 | 6 | 33.3% | 33.3% | 0 |  |
+| structure.edge.delete | complete | 3 | 1 | 2 | 0 | 6 | 50.0% | 50.0% | 0 |  |
 | structure.reification | complete | 0 | 0 | 7 | 0 | 7 | 0.0% | 0.0% | 0 |  |
 | structure.multigraph | complete | 0 | 2 | 1 | 0 | 3 | 0.0% | 0.0% | 1 |  |
 | structure.multigraph.off | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 1 |  |
@@ -301,9 +301,9 @@ enumeration complete
 | ledger.commit | complete | 2 | 11 | 3 | 0 | 16 | 12.5% | 12.5% | 2 |  |
 | ledger.commit.admission | complete | 4 | 1 | 0 | 0 | 5 | 80.0% | 80.0% | 2 |  |
 | ledger.commit.serial | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 1 |  |
-| ledger.commit.expected-head | complete | 2 | 0 | 0 | 0 | 2 | 100.0% | 100.0% | 0 |  |
+| ledger.commit.expected-head | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 0 |  |
 | ledger.commit.size | complete | 6 | 2 | 0 | 0 | 8 | 75.0% | 75.0% | 1 |  |
-| ledger.commit.caller-transaction | complete | 8 | 3 | 1 | 0 | 12 | 66.7% | 66.7% | 2 |  |
+| ledger.commit.caller-transaction | complete | 9 | 3 | 1 | 0 | 13 | 69.2% | 69.2% | 2 |  |
 | ledger.commit.post-commit | complete | 0 | 1 | 5 | 0 | 6 | 0.0% | 0.0% | 1 |  |
 | ledger.idempotency | complete | 4 | 1 | 0 | 0 | 5 | 80.0% | 80.0% | 2 |  |
 | ledger.idempotency.key-required | complete | 1 | 0 | 0 | 0 | 1 | 100.0% | 100.0% | 0 |  |
@@ -312,12 +312,12 @@ enumeration complete
 | ledger.unrecorded | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 1 |  |
 | ledger.strict | complete | 4 | 6 | 1 | 0 | 11 | 36.4% | 36.4% | 8 |  |
 | ledger.readers | complete | 4 | 3 | 1 | 0 | 8 | 50.0% | 50.0% | 4 |  |
-| ledger.readers.history | complete | 9 | 4 | 0 | 0 | 13 | 69.2% | 69.2% | 3 |  |
+| ledger.readers.history | complete | 10 | 4 | 0 | 0 | 14 | 71.4% | 71.4% | 3 |  |
 | ledger.readers.bound | complete | 6 | 0 | 1 | 0 | 7 | 85.7% | 85.7% | 3 |  |
 | ledger.readers.diff | complete | 6 | 2 | 0 | 0 | 8 | 75.0% | 75.0% | 2 |  |
 | redaction.purpose | complete | 2 | 4 | 0 | 0 | 6 | 33.3% | 33.3% | 5 |  |
 | redaction.target | complete | 2 | 1 | 0 | 0 | 3 | 66.7% | 66.7% | 2 |  |
-| redaction.target.nodes | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 1 |  |
+| redaction.target.nodes | complete | 1 | 2 | 1 | 0 | 4 | 25.0% | 25.0% | 1 |  |
 | redaction.target.relationships | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | redaction.tenant | complete | 0 | 1 | 0 | 0 | 1 | 0.0% | 0.0% | 6 |  |
 | redaction.call | complete | 0 | 3 | 12 | 0 | 15 | 0.0% | 0.0% | 2 |  |
@@ -351,12 +351,12 @@ enumeration complete
 | search.routes | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 0 |  |
 | search.routes.no_fallback | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 0 |  |
 | search.knn | complete | 0 | 4 | 1 | 0 | 5 | 0.0% | 0.0% | 0 |  |
-| search.knn.threshold | complete | 3 | 1 | 0 | 0 | 4 | 75.0% | 75.0% | 1 |  |
+| search.knn.threshold | complete | 2 | 2 | 0 | 0 | 4 | 50.0% | 50.0% | 1 |  |
 | search.scope | complete | 0 | 3 | 1 | 0 | 4 | 0.0% | 0.0% | 1 |  |
 | search.scope.indexes | complete | 0 | 5 | 0 | 0 | 5 | 0.0% | 0.0% | 3 |  |
 | search.vecindex | complete | 5 | 6 | 0 | 0 | 11 | 45.5% | 45.5% | 1 |  |
 | search.plaid | complete | 4 | 2 | 0 | 0 | 6 | 66.7% | 66.7% | 0 |  |
-| search.ivf | complete | 2 | 4 | 1 | 0 | 7 | 28.6% | 28.6% | 1 |  |
+| search.ivf | complete | 3 | 3 | 3 | 0 | 9 | 33.3% | 33.3% | 1 |  |
 | search.ivf.metric | complete | 3 | 3 | 0 | 0 | 6 | 50.0% | 50.0% | 0 |  |
 | search.bm25 | complete | 5 | 2 | 2 | 0 | 9 | 55.6% | 55.6% | 4 |  |
 | search.bm25.scoring | complete | 2 | 2 | 0 | 0 | 4 | 50.0% | 50.0% | 1 |  |
@@ -364,13 +364,13 @@ enumeration complete
 | search.fusion | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 3 |  |
 | search.fusion.same_graph | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 0 |  |
 | search.fusion.failed_leg | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 1 |  |
-| search.fusion.surfaces | complete | 5 | 1 | 1 | 0 | 7 | 71.4% | 71.4% | 1 |  |
-| search.fusion.vector_graph | complete | 4 | 2 | 0 | 0 | 6 | 66.7% | 66.7% | 0 |  |
+| search.fusion.surfaces | complete | 5 | 0 | 4 | 0 | 9 | 55.6% | 55.6% | 1 |  |
+| search.fusion.vector_graph | complete | 4 | 3 | 0 | 0 | 7 | 57.1% | 57.1% | 0 |  |
 | search.fusion.rest | complete | 0 | 2 | 1 | 0 | 3 | 0.0% | 0.0% | 0 |  |
-| search.fusion.multi_vector | complete | 1 | 1 | 1 | 0 | 3 | 33.3% | 33.3% | 0 |  |
+| search.fusion.multi_vector | complete | 1 | 1 | 3 | 0 | 5 | 20.0% | 20.0% | 0 |  |
 | search.erasure | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 3 |  |
 | search.erasure.indexes | complete | 4 | 0 | 1 | 0 | 5 | 80.0% | 80.0% | 4 |  |
-| temporal.edge | complete | 4 | 2 | 0 | 0 | 6 | 66.7% | 66.7% | 1 |  |
+| temporal.edge | complete | 5 | 2 | 0 | 0 | 7 | 71.4% | 71.4% | 1 |  |
 | temporal.edge.clock | complete | 11 | 0 | 0 | 0 | 11 | 100.0% | 100.0% | 0 |  |
 | temporal.edge.graph-scope | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | temporal.write | complete | 6 | 3 | 0 | 0 | 9 | 66.7% | 66.7% | 10 |  |
@@ -379,11 +379,11 @@ enumeration complete
 | temporal.write.retry | complete | 5 | 0 | 0 | 0 | 5 | 100.0% | 100.0% | 1 |  |
 | temporal.stats | complete | 0 | 1 | 0 | 0 | 1 | 0.0% | 0.0% | 7 |  |
 | temporal.stats.after-purge | complete | 5 | 1 | 0 | 0 | 6 | 83.3% | 83.3% | 1 |  |
-| temporal.stats.window | complete | 7 | 5 | 1 | 0 | 13 | 53.8% | 53.8% | 2 |  |
+| temporal.stats.window | complete | 9 | 5 | 5 | 0 | 19 | 47.4% | 47.4% | 2 |  |
 | temporal.stats.velocity | complete | 4 | 4 | 0 | 0 | 8 | 50.0% | 50.0% | 0 |  |
 | temporal.stats.distinct | complete | 2 | 4 | 3 | 0 | 9 | 22.2% | 22.2% | 0 |  |
 | temporal.latest | complete | 0 | 0 | 8 | 0 | 8 | 0.0% | 0.0% | 1 |  |
-| temporal.latest.exact | complete | 0 | 0 | 5 | 0 | 5 | 0.0% | 0.0% | 2 |  |
+| temporal.latest.exact | complete | 0 | 2 | 3 | 0 | 5 | 0.0% | 0.0% | 2 |  |
 | temporal.delete | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 5 |  |
 | temporal.optout | complete | 1 | 2 | 1 | 0 | 4 | 25.0% | 25.0% | 4 |  |
 | temporal.optout.effect | complete | 1 | 3 | 1 | 0 | 5 | 20.0% | 20.0% | 0 |  |
@@ -395,16 +395,16 @@ enumeration complete
 | temporal.window.paging.release | complete | 5 | 1 | 3 | 0 | 9 | 55.6% | 55.6% | 0 |  |
 | temporal.labelset | complete | 3 | 4 | 2 | 0 | 9 | 33.3% | 33.3% | 1 |  |
 | temporal.purge | complete | 1 | 3 | 1 | 0 | 5 | 20.0% | 20.0% | 4 |  |
-| temporal.purge.bare-nodes | complete | 0 | 0 | 5 | 0 | 5 | 0.0% | 0.0% | 0 |  |
-| temporal.erase | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 6 |  |
+| temporal.purge.bare-nodes | complete | 0 | 0 | 6 | 0 | 6 | 0.0% | 0.0% | 0 |  |
+| temporal.erase | complete | 1 | 1 | 0 | 0 | 2 | 50.0% | 50.0% | 6 |  |
 | temporal.ledger | complete | 0 | 3 | 1 | 0 | 4 | 0.0% | 0.0% | 3 |  |
 | temporal.ledger.atomic | complete | 2 | 0 | 0 | 0 | 2 | 100.0% | 100.0% | 0 |  |
-| ledger.lifecycle | complete | 6 | 5 | 1 | 0 | 12 | 50.0% | 50.0% | 5 |  |
+| ledger.lifecycle | complete | 10 | 4 | 4 | 0 | 18 | 55.6% | 55.6% | 5 |  |
 | ledger.lifecycle.genesis | complete | 0 | 3 | 0 | 0 | 3 | 0.0% | 0.0% | 2 |  |
-| ledger.observability | complete | 2 | 2 | 2 | 0 | 6 | 33.3% | 33.3% | 5 |  |
-| ledger.verify | complete | 4 | 2 | 1 | 0 | 7 | 57.1% | 57.1% | 0 |  |
+| ledger.observability | complete | 14 | 3 | 2 | 0 | 19 | 73.7% | 73.7% | 5 |  |
+| ledger.verify | complete | 4 | 3 | 1 | 0 | 8 | 50.0% | 50.0% | 0 |  |
 | ledger.verify.meaning | complete | 1 | 0 | 0 | 0 | 1 | 100.0% | 100.0% | 2 |  |
-| ledger.verify.scope | complete | 6 | 1 | 0 | 0 | 7 | 85.7% | 85.7% | 2 |  |
+| ledger.verify.scope | complete | 7 | 1 | 0 | 0 | 8 | 87.5% | 87.5% | 2 |  |
 | search.routes.inventory | complete | 2 | 2 | 1 | 0 | 5 | 40.0% | 40.0% | 0 |  |
 | search.scope.indexes.ivf | complete | 1 | 3 | 0 | 0 | 4 | 25.0% | 25.0% | 1 |  |
 | search.bm25.upgrade | complete | 5 | 2 | 0 | 0 | 7 | 71.4% | 71.4% | 0 |  |
@@ -418,7 +418,7 @@ enumeration complete
 | install.schema.not_ready | complete | 4 | 2 | 1 | 0 | 7 | 57.1% | 57.1% | 0 |  |
 | install.schema.existing | complete | 4 | 3 | 0 | 0 | 7 | 57.1% | 57.1% | 1 |  |
 | install.schema.concurrency | complete | 4 | 0 | 0 | 0 | 4 | 100.0% | 100.0% | 1 |  |
-| install.schema.classes_follow | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
+| install.schema.classes_follow | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | install.schema.speed | complete | 0 | 0 | 1 | 0 | 1 | 0.0% | 0.0% | 1 |  |
 | install.setup | complete | 0 | 1 | 2 | 0 | 3 | 0.0% | 0.0% | 3 |  |
 | install.setup.dry_run | complete | 0 | 2 | 0 | 0 | 2 | 0.0% | 0.0% | 0 |  |
@@ -434,7 +434,7 @@ enumeration complete
 | install.migration | complete | 0 | 0 | 6 | 0 | 6 | 0.0% | 0.0% | 2 |  |
 | install.migration.steps | complete | 0 | 0 | 3 | 0 | 3 | 0.0% | 0.0% | 1 |  |
 | install.migration.schema | complete | 1 | 0 | 0 | 0 | 1 | 100.0% | 100.0% | 2 |  |
-| install.snapshot | complete | 0 | 2 | 2 | 0 | 4 | 0.0% | 0.0% | 2 |  |
+| install.snapshot | complete | 0 | 3 | 1 | 0 | 4 | 0.0% | 0.0% | 2 |  |
 | install.snapshot.scope | complete | 1 | 4 | 1 | 0 | 6 | 16.7% | 16.7% | 1 |  |
 | install.snapshot.failure | complete | 0 | 0 | 2 | 0 | 2 | 0.0% | 0.0% | 1 |  |
 | install.snapshot.derived | complete | 0 | 0 | 3 | 0 | 3 | 0.0% | 0.0% | 0 |  |
@@ -444,19 +444,19 @@ enumeration complete
 | install.bulk_load | complete | 0 | 1 | 1 | 0 | 2 | 0.0% | 0.0% | 7 |  |
 | install.bulk_load.loader | complete | 1 | 5 | 3 | 0 | 9 | 11.1% | 11.1% | 0 |  |
 | install.bulk_load.ledger | complete | 0 | 0 | 1 | 0 | 1 | 0.0% | 0.0% | 3 |  |
-| install.bulk_load.rebuild | complete | 1 | 0 | 3 | 0 | 4 | 25.0% | 25.0% | 2 |  |
+| install.bulk_load.rebuild | complete | 1 | 0 | 4 | 0 | 5 | 20.0% | 20.0% | 2 |  |
 | access.health | complete | 3 | 1 | 0 | 0 | 4 | 75.0% | 75.0% | 2 |  |
 | access.health.lifecycle | complete | 9 | 0 | 0 | 0 | 9 | 100.0% | 100.0% | 1 |  |
 | install.status | complete | 7 | 0 | 0 | 0 | 7 | 100.0% | 100.0% | 1 |  |
 | install.status.readiness | complete | 6 | 6 | 2 | 0 | 14 | 42.9% | 42.9% | 2 |  |
 | install.status.sync | complete | 4 | 3 | 0 | 0 | 7 | 57.1% | 57.1% | 0 |  |
 | install.status.verify_sync | complete | 5 | 1 | 0 | 0 | 6 | 83.3% | 83.3% | 1 |  |
-| install.status.capabilities | complete | 4 | 1 | 2 | 0 | 7 | 57.1% | 57.1% | 1 |  |
+| install.status.capabilities | complete | 5 | 2 | 2 | 0 | 9 | 55.6% | 55.6% | 1 |  |
 | install.status.readers | complete | 1 | 5 | 6 | 0 | 12 | 8.3% | 8.3% | 1 |  |
 | install.status.ledger | complete | 5 | 1 | 0 | 0 | 6 | 83.3% | 83.3% | 0 |  |
 | install.status.diagram | complete | 1 | 0 | 2 | 0 | 3 | 33.3% | 33.3% | 0 |  |
 | structure.drift | complete | 1 | 2 | 0 | 0 | 3 | 33.3% | 33.3% | 0 |  |
-| structure.rebuild | complete | 4 | 8 | 2 | 0 | 14 | 28.6% | 28.6% | 2 |  |
+| structure.rebuild | complete | 4 | 7 | 3 | 0 | 14 | 28.6% | 28.6% | 2 |  |
 | structure.verify | complete | 0 | 0 | 4 | 0 | 4 | 0.0% | 0.0% | 0 |  |
 
 ## Exclusions by kind (enumerated scope)
@@ -471,6 +471,125 @@ enumeration complete
 
 ## Checks
 
-PASS: every block is in blocks.tsv; no graded block is STALE; every model locator and cited receipt resolves and is the latest fresh receipt of its kind; counts agree.
+118 problem(s):
 
-Strict-grade lint (LINT-1 untagged gap on a full row; LINT-2a/2b check_scope full over a requires clause not reviewed or over point checks only; LINT-3 full without a cited proof fn): PASS.
+- FAIL: algorithms.cache.erasure#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: algorithms.cache.erasure#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic#o05: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic#o05: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic.routes#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic.routes#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic.routes#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic.routes#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic.routes#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.atomic.routes#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.atomic.routes#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.count#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.count#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.count#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.count#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.count#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.count#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.count#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.count#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points#o05: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points#o05: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points#o06: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points#o06: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points.single-path#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points.single-path#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points.single-path#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points.single-path#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points.single-path#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points.single-path#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.entry-points.single-path#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.entry-points.single-path#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.history#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.history#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.history#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.history#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.kept#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.kept#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.kept#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.kept#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.kept#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.kept#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.kept#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.kept#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.kept#o05: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.kept#o05: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.kept#o06: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.kept#o06: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.kept#o07: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.kept#o07: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.live-statements#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.live-statements#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.live-statements#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.live-statements#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.live-statements#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.live-statements#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.prefix-match#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.prefix-match#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.prefix-match#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.prefix-match#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o05: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o05: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o06: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o06: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o07: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o07: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: erasure.scope#o08: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: erasure.scope#o08: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: fhir.interpretation#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: fhir.interpretation#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T051023Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: graph.key#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: graph.key#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T051023Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: graph.key#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: search.erasure#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: search.erasure#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: search.erasure#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: search.erasure#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: search.erasure#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: search.erasure#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: search.erasure.indexes#o03: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: search.erasure.indexes#o03: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: search.erasure.indexes#o05: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: search.erasure.indexes#o05: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: search.routes.orphan#o02: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: search.routes.orphan#o02: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T051023Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: structure.degree.cache.erase#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: structure.degree.cache.erase#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: structure.degree.cache.uncommitted#o04: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: structure.degree.cache.uncommitted#o04: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: structure.edge.delete#o06: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: structure.edge.delete#o06: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T051023Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: structure.write#o05: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: structure.write#o05: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T051023Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+- FAIL: temporal.erase#o01: as_built receipt inputs changed (STALE): .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json: ['.g5/Verus_verification/models/erasure_stores/binding.py', '.g5/Verus_verification/models/erasure_stores/erasure_stores.rs']
+- FAIL: temporal.erase#o01: not the latest proof receipt: .g5/Verus_verification/results/erasure_stores/20261118T051023Z-prove/receipt.json (latest .g5/Verus_verification/results/erasure_stores/20261118T051838Z-prove/receipt.json)
+
+Strict-grade lint (LINT-1 untagged gap on a full row; LINT-2a/2b check_scope full over a requires clause not reviewed or over point checks only; LINT-3 full without a cited proof fn; LINT-4 partial without a model locator): PASS.

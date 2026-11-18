@@ -20,6 +20,10 @@ a not-started block; a count in blocks.tsv that disagrees with obligations.tsv; 
 file or named item does not resolve; a cited receipt that does not exist, is not the latest of its kind for its model
 and label, carries the wrong verdict or whose recorded inputs changed; a parent entailment naming an unknown obligation;
 a restatement whose owner does not resolve; and (unless --no-lint) the strict-grade lint, see lint().
+
+Needs a git checkout for the playbook-crate receipts (it compares `git rev-parse HEAD:<crate>` with the recorded
+tree). Outside a git work tree (e.g. a `git archive` copy of .g5/) that check is skipped and a note says so; every
+other check still runs (iteration 66, review-1 R1-T1).
 """
 import csv
 import glob
@@ -171,6 +175,22 @@ def latest_receipts(results_dir):
     return latest
 
 
+_git_checkout = []
+_skipped_tree_checks = set()
+
+
+def in_git_checkout():
+    """True when the working directory is inside a git work tree (the playbook crate-tree check needs one)."""
+    if not _git_checkout:
+        try:
+            out = subprocess.check_output(["git", "rev-parse", "--is-inside-work-tree"], text=True,
+                                          stderr=subprocess.DEVNULL).strip()
+        except (subprocess.CalledProcessError, OSError):
+            out = ""
+        _git_checkout.append(out == "true")
+    return _git_checkout[0]
+
+
 def check_receipt(path):
     """None if the cited receipt exists, is the latest of its kind and label, has the expected verdict and fresh
     recorded inputs; else a problem string."""
@@ -191,13 +211,16 @@ def check_receipt(path):
         kind = d.get("kind")
         if kind == "playbook-crate-rerun":
             key, want = ("playbook", d.get("label")), ("PASS" if d.get("label") == "baseline" else "EXPECTED_FAIL")
-            try:
-                tree = subprocess.check_output(["git", "rev-parse", f"HEAD:{d['crate']}"], text=True,
-                                               stderr=subprocess.DEVNULL).strip()
-            except (subprocess.CalledProcessError, KeyError):
-                tree = None
-            if tree != d.get("sources", {}).get("tree_at_source"):
-                return f"playbook crate tree changed since {path}"
+            if not in_git_checkout():  # R1-T1 (iteration 66): a copy of .g5/ has no tree to compare; skip, noted
+                _skipped_tree_checks.add(path)
+            else:
+                try:
+                    tree = subprocess.check_output(["git", "rev-parse", f"HEAD:{d['crate']}"], text=True,
+                                                   stderr=subprocess.DEVNULL).strip()
+                except (subprocess.CalledProcessError, KeyError):
+                    tree = None
+                if tree != d.get("sources", {}).get("tree_at_source"):
+                    return f"playbook crate tree changed since {path}"
         elif "control" in d and isinstance(d["control"], dict):
             key, want = ("control", d["control"].get("name")), "EXPECTED_FAIL"
         else:
@@ -347,6 +370,8 @@ def lint(orows):
             parameters): record narrowed.
     LINT-3  grade full with no model locator naming a `proof fn` (theorem, lemma or witness); a spec fn, definition,
             NOTES or model.json entry alone cannot carry full.
+    LINT-4  grade partial with no model locator at all (added iteration 66, review-1 R1-CB-03): partial means a model
+            represents some of the cases, so it must name that model item; otherwise the grade is absent.
     """
     probs = []
     for r in orows:
@@ -371,6 +396,9 @@ def lint(orows):
                 probs.append(f"LINT-2b {oid}: check_scope full with no cited proof fn")
         if r["grade"] == "full" and not proofs:
             probs.append(f"LINT-3 {oid}: full but no model locator names a proof fn")
+        if r["grade"] == "partial" and not split_list(r["model_locators"]):
+            probs.append(f"LINT-4 {oid}: partial without a model locator (cite the model item that represents "
+                         f"some of the cases, or grade absent)")
     return probs
 
 
@@ -631,8 +659,12 @@ def main(argv):
     if not nolint:  # added iteration 64; --no-lint reproduces the earlier output byte for byte
         P("")
         P(f"Strict-grade lint (LINT-1 untagged gap on a full row; LINT-2a/2b check_scope full over a requires clause "
-          f"not reviewed or over point checks only; LINT-3 full without a cited proof fn): "
+          f"not reviewed or over point checks only; LINT-3 full without a cited proof fn; LINT-4 partial without a "
+          f"model locator): "
           f"{'PASS' if not lint_probs else str(len(lint_probs)) + ' problem(s), listed above'}.")
+    if _skipped_tree_checks:  # only outside a git checkout (R1-T1); never on a checkout, so its output is unchanged
+        notes.append(f"not a git checkout: the playbook crate-tree freshness check was skipped for "
+                     f"{len(_skipped_tree_checks)} receipt(s); run from a git checkout of the repository for the full check")
     if notes:
         P("")
         for n in sorted(notes):

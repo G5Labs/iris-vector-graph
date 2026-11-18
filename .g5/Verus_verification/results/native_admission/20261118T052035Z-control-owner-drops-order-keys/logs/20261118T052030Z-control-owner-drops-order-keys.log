@@ -1,0 +1,32 @@
+verification results:: 60 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/owner-drops-order-keys/20261118T052030Z/models/native_admission/native_admission.rs:761:13
+    |
+761 |       ensures ({ let q = Query { aggregate: true, order_by: true, order_covers_keys: false, limit: true, ..plain_read(0) };
+    |  _____________^
+762 | |         let alice: Row = seq![Val::Str(1), Val::Int(3)];
+763 | |         let bob: Row = seq![Val::Str(2), Val::Int(1)];
+764 | |         !plan(q).unwrap().ordered && plan(q).unwrap().limited
+765 | |         && compare(c, seq![alice], c, seq![bob], plan(q).unwrap().ordered, plan(q).unwrap().limited, Some(seq![alice, ...
+766 | |         && !fr013_equal(Some(seq![1nat]), true, seq![alice], seq![alice, bob], seq![bob]) }),
+    | |____________________________________________________________________________________________^ failed this postcondition
+...
+785 |       assert(seq![alice] != seq![bob]) by { assert(seq![alice][0] != seq![bob][0]); }
+    |       ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/owner-drops-order-keys/20261118T052030Z/models/native_admission/native_admission.rs:789:13
+    |
+788 |   pub proof fn witness_comparator_accepts_reversed_count_order(c: Seq<nat>)
+    |   ------------------------------------------------------------------------- at the end of the function body
+789 |       ensures ({ let q = Query { aggregate: true, order_by: true, order_covers_keys: false, limit: false, ..plain_read(0) };
+    |  _____________^
+790 | |         let alice: Row = seq![Val::Str(1), Val::Int(3)];
+791 | |         let bob: Row = seq![Val::Str(2), Val::Int(1)];
+792 | |         !plan(q).unwrap().ordered && !plan(q).unwrap().limited
+793 | |         && compare(c, seq![alice, bob], c, seq![bob, alice], plan(q).unwrap().ordered, plan(q).unwrap().limited, None) == Cmp::Pass
+794 | |         && !fr013_equal(Some(seq![1nat]), false, seq![alice, bob], seq![alice, bob], seq![bob, alice]) }),
+    | |_________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

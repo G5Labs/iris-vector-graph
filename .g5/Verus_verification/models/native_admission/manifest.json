@@ -16,7 +16,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built transcription",
-      "expect": "{\"errors\": 0, \"verified\": 54}"
+      "expect": "{\"errors\": 0, \"verified\": 62}"
     },
     {
       "label": "binding",
@@ -161,6 +161,48 @@
       "kind": "control",
       "variant": "as-built transcription",
       "expect": "{\"fail_in\": [\"lemma_fits_bounded\", \"theorem_limit_outside_row_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "topk-plan-ordered",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"witness_comparator_accepts_wrong_topk\", \"witness_comparator_accepts_reversed_count_order\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "owner-drops-order-keys",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"witness_comparator_accepts_wrong_topk\", \"witness_comparator_accepts_reversed_count_order\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ordered-compared-as-bag",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_ordered_pass_iff_equal\", \"theorem_type_is_part_of_the_value\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "trial-no-alternation",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_route_trial_alternates_answers\", \"theorem_successive_calls_differ_in_trial\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "setup-resets-unconditionally",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_setup_resets_only_after_deploy\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "merge-after-with-planned",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_write_read_steps\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "plan-drops-order",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_comparator_sound_off_partial_aggregate_order\", \"theorem_blind_spot_is_partial_aggregate_order\"], \"verdict\": \"EXPECTED_FAIL\"}"
     }
   ]
 }

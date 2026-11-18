@@ -1,0 +1,124 @@
+id	iteration	grade	model	statement
+query.paths#o01	64	partial	native_admission	Every Cypher query has a SQL-path answer; a query the native executor does not support (or declines) is answered by the SQL path exactly as with the native executor off
+query.paths#o02	61	absent	native_admission	Python builds the native plan and IRIS runs it; the native executor never parses Cypher text
+access.iris_boundary#o05	62	partial	native_admission	ObjectScript class methods called over the Native API do not check SQL privileges (a caller without SQL SELECT can still read through them)
+access.ledger_strict.bypasses#o02	61	full	erasure_stores	bulk_delete_adjacency is refused in strict mode and deletes nothing
+graph.default#o02	61	absent	erasure_stores	delete_node / bulk_delete_nodes with graph omitted (not None) delete each ID from the one graph that holds it, a holder being a graph with a node row or an edge row naming the ID; with None they delete from the default graph.
+graph.named#o02	61	partial	native_admission	A read scoped to one graph never returns content written to another graph.
+graph.key#o01	61	partial	erasure_stores	In every native store, every graph-scoped entry has the graph key as its first subscript after the store's own node name.
+graph.key#o02	61	partial	erasure_stores	Reading or clearing one graph touches only that graph's subtree: no other graph's entries are visited or changed.
+graph.key.two_forms#o03	61	partial	erasure_stores	SQL: the default graph is graph_id '' and a NULL graph_id also means the default graph for every SQL reader and writer.
+graph.no_fallthrough#o01	61	partial	native_admission	A lookup with a key or graph name that has no content answers empty; it never falls back to the default graph or every graph.
+graph.unscoped_snapshot#o02	61	absent	erasure_stores	Once any named graph holds an edge, every snapshot reader refuses or switches to the default graph's scoped index; none answers over all graphs merged.
+graph.all_graphs_read#o01	61	partial	native_admission	A Cypher read without USE GRAPH answers the union (with multiplicity) of the answers each graph would give alone.
+ledger.changeset#o05	64	partial	erasure_stores	delete_node without detach (the default) is refused (node_has_relationships) while the default-graph node has live default-graph relationships
+ledger.commit#o03	61	absent	native_admission	With auto-stubs, each stub op precedes its relationship and shifts positions; the returned reference names the shifted position
+ledger.commit#o07	61	partial	erasure_stores	set/remove prop, add/remove label and delete_node on a non-node fail NodeNotFoundError
+ledger.node-scope#o01	61	partial	erasure_stores	Ledger node operations read and write only default-graph node, label and property rows
+ledger.strict#o01	61	partial	erasure_stores	In strict mode the listed calls (node and edge writes (create_node ... delete_node)) raise LedgerStrictModeError and change nothing
+ledger.strict#o03	61	full	erasure_stores	In strict mode the listed calls (erases (erase_graph/drop_graph, erase_all, delete_nodes_by_prefix)) raise LedgerStrictModeError and change nothing
+ledger.strict#o07	61	partial	erasure_stores	In strict mode the listed calls (the store's write_nodes ... erase_bare_nodes) raise LedgerStrictModeError and change nothing
+redaction.purpose#o03	61	partial	erasure_stores	After a complete run no ledger record that belongs to the target (outside the listed exceptions) still holds its content.
+redaction.purpose#o05	61	partial	erasure_stores	Current behaviour: while strict mode stays on, a target whose graph still has node rows cannot be erased through the engine and its redaction is refused (target_live); the erase-then-redact sequence needs strict mode off.
+redaction.purpose#o06	61	partial	erasure_stores	Current behaviour: a record the run cannot attribute to the target (Matches answers unknown) stays in clear, and the receipt counts it in unattributed_records while still reporting complete.
+redaction.target#o01	64	partial	native_admission	A record outside the target graph never belongs to the target; with no prefix every record of the target graph belongs; with a prefix only records whose IDs begin with the match string do.
+redaction.target.nodes#o03	61	partial	erasure_stores	A relationship delete or detach delete inside a tenant's revision writes delete records for the relationship's reifier nodes with the reifier's own ID and the default graph; unless the reifier ID begins with the tenant's prefix, neither the tenant's graph target nor its prefix target tombstones them.
+redaction.after-erasure#o01	61	partial	erasure_stores	Start is refused (target_live) while any node, label, property or relationship row of the target is live.
+redaction.after-erasure#o02	64	partial	erasure_stores	A target_live refusal changes no record, marker, key or metadata.
+redaction.after-erasure#o03	61	absent	erasure_stores	The target_live refusal names the target and what is live.
+redaction.after-erasure#o04	64	full	erasure_stores	The final step re-checks liveness under the head lock and refuses to finish (keeping the marker) if the target became live during the run.
+redaction.after-erasure#o05	64	full	erasure_stores	Current behaviour: liveness counts rows only, so a target whose only live content is temporal-only edges is not refused and its temporal records are tombstoned while the events stay readable.
+redaction.after-erasure.default-graph#o01	64	partial	erasure_stores	For a default-graph prefix target, a live node, label or property row of a matching ID in any graph refuses the redaction.
+redaction.after-erasure.default-graph#o02	64	full	erasure_stores	For the whole default graph (no prefix) a node row live in any graph must refuse the redaction; as built only default-graph rows are counted, so named-graph node records are tombstoned while the node is live.
+redaction.after-erasure.default-graph#o03	64	partial	erasure_stores	For a default-graph target, relationship rows of other graphs do not refuse the redaction.
+redaction.metadata.exception#o03	64	full	native_admission	The four-field update is allowed only when the redaction's context names the row.
+redaction.audit#o02	61	absent	native_admission	The redaction revision names each revision this run redacted, by seq, with its tombstone count.
+redaction.verify#o01	61	partial	erasure_stores	After the erase alone (target records still in the ledger) verify reports a divergence.
+redaction.verify#o02	61	partial	erasure_stores	When the ledger matched the store before the erase, nothing was written outside the ledger afterwards and the redacted targets cover everything erased, verify reports equal after erase and redaction.
+ledger.verify.scope#o04	64	full	native_admission	Statement ID mismatches never produce differences
+structure.adjacency#o02	63	absent	erasure_stores	A second publishing rebuild of the interned snapshot (^NKG) while one runs waits or gets a documented busy result
+structure.adjacency#o05	64	partial	erasure_stores	Removing a triple from one graph keeps the interned snapshot's merged edge while another graph still holds the triple, and drops it when none does
+structure.adjacency.declared#o01	64	full	erasure_stores	With the index declared, every row insert, update or delete by any writer path (engine, store, Cypher, ledger, Eraser, raw SQL) changes the adjacency index accordingly
+structure.adjacency.undeclared#o01	63	absent	erasure_stores	Without the declared index, the engine's own edge writers keep the adjacency index current
+structure.adjacency.bulk#o04	63	absent	erasure_stores	With no caller transaction open, bulk_load_session leaves ^NKG current when it returns
+structure.adjacency.bulk#o05	64	partial	erasure_stores	Inside a caller transaction bulk_load_session leaves ^NKG for sync() to rebuild
+structure.degree.cache#o02	64	partial	erasure_stores	Every change to a node's outgoing adjacency moves its generation
+structure.degree.cache.warm#o04	63	full	erasure_stores	A failed exclusive probe, the no-lock-writer flag or a generation change keeps the source from counting as filled
+structure.rebuilt#o01	64	absent	erasure_stores	The interned snapshot (^NKG) records the token it was built from and is current only while that token is live
+structure.rebuilt.stale_read#o02	63	absent	erasure_stores	After an erasure the first algorithm reading the snapshot rebuilds it once, under a lock, before answering
+temporal.structural.end#o03	64	full	erasure_stores	An unmarked structural edge stays when its last timestamp goes
+algorithms.routing#o04	63	absent	native_admission	A Native Reader is used only for a default-graph call; a named-graph call is answered by its Owner
+algorithms.cache#o04	63	absent	native_admission	Owner and Native Reader answers are cached under the same key, which does not include the library build
+search.routes.orphan#o02	63	absent	erasure_stores	Erasing a graph deletes that graph's rows from an orphan routed table and does not drop the table
+search.scope.indexes.upkeep#o02	63	absent	erasure_stores	After delete_node, the node stays findable through a named index until the caller deletes it from the index or rebuilds
+search.bm25.write_lock#o01	63	partial	native_admission	Insert and Delete run under the index's write lock inside a transaction
+algorithms.graph_scope#o02	64	absent	erasure_stores	The ^NKG-reading procedures (Cypher CALL ivg.betweenness/closeness/eigenvector/leiden/triangleCount/scc/kcore and the SQL kg_* functions) raise, naming the Python method to use, exactly when a graph other than the default holds an edge; otherwise they answer.
+algorithms.op#o07	64	partial	native_admission	For the eight centrality/community algorithms the engine method and its CALL ivg.* procedure accept exactly the same option values and refuse the same ones with ValueError before reading data.
+algorithms.op#o10	63	absent	native_admission	gamma is accepted in (0, 100] and refused otherwise.
+query.paths.varlength#o01	63	absent	native_admission	A Cypher variable-length pattern returns one row per path (openCypher multiplicity) on the native and SQL paths: over a->x->b, a->y->b, a->b, *1..2 gives b three times and x, y once; *2..2 gives b twice; *0..1 includes a
+query.paths.varlength#o06	63	full	erasure_stores	The accelerator (Arno) BFS is chosen only for an outbound walk of the default graph while no other graph holds edges (and the library offers bfs)
+query.graph-scope#o01	63	partial	native_admission	Under USE GRAPH g every read clause of the query (MATCH, OPTIONAL MATCH, variable-length, procedure calls) reads only graph g, on the native and SQL paths
+query.graph-scope#o04	63	absent	native_admission	The native executor and the SQL path apply the same graph scope (USE GRAPH g, USE GRAPH '', none) to the same read
+query.writes.atomic#o04	63	partial	native_admission	A failed Cypher write inside a caller transaction takes back only its own changes; the caller's earlier work stays pending
+query.aggregation.keys#o01	64	partial	native_admission	Values of one kind that are equal fall into one group / one DISTINCT value / one count(DISTINCT) unit, on the SQL path and the native executor
+query.aggregation.keys#o04	63	full	native_admission	The native executor groups by typed value, so a grouped query over a number and its spelling answers different groups on the two paths
+query.optional#o07	63	absent	native_admission	A query with OPTIONAL MATCH is never admitted to the native executor
+query.values.sorting#o05	64	full	native_admission	An empty-string property sorts first as a string on the SQL path and with the nulls on the native executor
+fhir.sync.behind#o01	63	absent	erasure_stores	When either feed's MAX(ID) is below its watermark (reset, older restore) a sync runs a rebuild instead of applying feeds
+fhir.rebuild#o02	63	absent	erasure_stores	A rebuild compares rather than erases, so surviving nodes keep their vectors
+fhir.erase#o01	63	partial	erasure_stores	A graph erase resets the FHIR graph's interpretation version (NULL), marking it stale
+fhir.erase#o02	63	partial	erasure_stores	After an erase the next sync re-derives and re-applies every resource from watermark 0 (the graph refills)
+fhir.erase#o03	63	partial	erasure_stores	An ordinary erase keeps the graph's sync task, which keeps running
+fhir.interpretation#o04	63	absent	erasure_stores	A graph erase removes compartment edges as ordinary edges
+structure.write#o04	63	full	erasure_stores	purge_before and set_temporal_structural run on the engine's own Native API connection when the engine knows its credentials (from_connect) and are durable whatever the caller does; on the caller's connection they follow the caller.
+structure.write#o05	63	absent	erasure_stores	erase_graph/erase_all go through the engine's native connection: they join the caller's transaction on the caller's connection and commit on their own with from_connect.
+structure.write#o05	63	absent	native_admission	erase_graph/erase_all go through the engine's native connection: they join the caller's transaction on the caller's connection and commit on their own with from_connect.
+structure.write#o06	63	absent	erasure_stores	sync() and the temporal rebuilds run on the engine's native connection with the same join-or-own-transaction rule.
+structure.write#o07	63	absent	erasure_stores	set_multigraph runs on the engine's native connection with the same join-or-own-transaction rule.
+structure.write#o08	63	absent	erasure_stores	Named BM25 and vector index writes run on the engine's native connection with the same join-or-own-transaction rule.
+structure.write#o09	63	absent	erasure_stores	FHIR graph calls run on the engine's native connection with the same join-or-own-transaction rule.
+structure.write#o11	64	partial	erasure_stores	Node deletion removes the reifier nodes of the deleted node's edges in a later transaction, so the node delete can commit while the reifier cleanup fails.
+structure.node.delete#o01	63	full	erasure_stores	delete_node removes the node, its labels and properties and every edge incident to it in its graph; other nodes stay.
+structure.node.delete#o02	63	absent	erasure_stores	delete_node also removes the node's documents and vectors (every routed vector table of the graph) in its graph.
+structure.node.delete#o03	63	partial	erasure_stores	After the node's delete, the reifier nodes of its edges are removed (in each graph holding them).
+structure.node.delete#o04	63	absent	erasure_stores	The node row and its own rows (labels, properties, documents, vectors, incident edges) are deleted in one transaction: all or none.
+structure.node.delete.bulk#o01	64	partial	erasure_stores	bulk_delete_nodes drops None and empty IDs, converts the rest to text and removes repeats before batching.
+structure.node.delete.bulk#o05	63	full	erasure_stores	A node delete can finish before its reifier cleanup raises; the batch then counts as failed (false result) although the nodes are gone.
+structure.node.delete.bulk#o06	63	absent	erasure_stores	When the store's delete commits earlier chunks and a later chunk fails, the batch is counted failed and logged as rolled back although earlier chunks are deleted.
+structure.edge.delete#o01	64	partial	erasure_stores	delete_edge removes every row of the triple from the given graph.
+structure.edge.delete#o02	63	absent	erasure_stores	delete_edge(all_graphs=True) removes the triple from every graph.
+structure.edge.delete#o03	63	full	erasure_stores	delete_edge returns True when no row matched.
+structure.edge.delete#o06	63	absent	erasure_stores	As built, delete_edge removes only the edge rows (and their adjacency), leaving the edge's reifications and edge embeddings.
+structure.reification#o07	63	absent	erasure_stores	delete_reification removes the reifier's link, properties, labels and node rows in every graph and keeps the edge.
+structure.multigraph.count#o02	63	absent	erasure_stores	^NKG holds one entry per triple whatever its multiplicity.
+structure.degree#o01	63	partial	erasure_stores	A degree answer equals the count of the node's adjacency entries at the time asked; no maintained counter answers it.
+search.vecindex#o01	63	partial	native_admission	vec_search returns at most k stored IDs ordered nearest first
+temporal.write.collision#o01	64	partial	native_admission	An insert at occupied coordinates changes nothing anywhere (raw, attributes, statistics, event counter, newest-event index, rows), so the statistics never count the second write.
+temporal.latest.exact#o04	63	absent	erasure_stores	The newest-event index stays exact through node erasure.
+temporal.latest.exact#o05	63	absent	erasure_stores	The newest-event index stays exact through graph erasure.
+temporal.optout.toggle#o04	64	partial	native_admission	A backfill writes a marked structural edge and both nodes for every triple of the predicate that has a timestamp and no edge.
+temporal.erase#o01	63	partial	erasure_stores	Erasing a node in g removes every temporal edge of g with that node as source or target, and none in other graphs.
+temporal.erase#o02	63	partial	erasure_stores	After a committed node erasure the remaining statistics equal the surviving edges.
+install.schema.refusal#o07	63	partial	native_admission	A login without %Native_GlobalAccess gets a warning and its engine is not checked (a mismatched engine is admitted)
+install.schema.speed#o01	63	absent	erasure_stores	On any IVG Schema, write, erase and read paths are at most 5% slower than baseline a42db224
+install.upgrade#o03	63	absent	native_admission	Upgrade leaves legacy objects in place and working (except the Arno revoke)
+install.upgrade#o05	63	partial	native_admission	Upgrade discards compiled Cypher plans built against the old names; none is reused
+install.upgrade.arno_revoke#o01	63	absent	native_admission	Upgrade revokes EXECUTE on the 4.5.x Arno SQL functions from every user and role except %All holders (warning when held through a schema-wide grant)
+install.upgrade.arno_revoke#o02	63	absent	native_admission	The Arno functions remain after the revoke
+install.snapshot.scope#o02	63	partial	erasure_stores	A replacing restore empties every graph and then loads the archive.
+install.snapshot.scope#o06	64	partial	erasure_stores	An archive with another layout is refused before erase; an unstamped archive is accepted.
+install.snapshot.info#o03	63	absent	native_admission	snapshot_info version is the archive format '1.1'; the writing release is metadata.ivg_version.
+install.snapshot.info#o04	63	absent	native_admission	snapshot_info of a ZIP without metadata.json raises KeyError.
+install.status.readiness#o06	63	full	erasure_stores	ready_for_multihop_bfs does not require the integer adjacency copy
+install.status.readiness#o07	63	absent	erasure_stores	Variable-length Cypher matches answer without the integer adjacency copy
+install.status.sync#o02	63	full	erasure_stores	The sync state does not report whether the integer copy is built; adjacency.nkg_populated does
+install.status.sync#o05	64	partial	erasure_stores	A delete or erase drops the integer copy and clears the flag; meanwhile the report says in sync and nkg_populated is False
+install.status.sync#o06	64	partial	erasure_stores	After a delete or erase, the next reader of the integer copy rebuilds it
+install.status.sync#o07	63	full	erasure_stores	After the first sync(), each edge write interns its new triple in the integer copy
+install.status.verify_sync#o05	63	full	erasure_stores	After a delete or erase, verify_sync reports drift until the integer copy is rebuilt, while the status report says in sync
+install.status.capabilities#o01	64	full	erasure_stores	engine.capabilities says what the namespace has deployed (classes, ^KG, ^NKG)
+install.status.capabilities#o07	63	absent	erasure_stores	The store's capabilities() is a fixed catalogue of what the adapter implements (every algorithm True, only Arno entries live), not a report of what the namespace can run
+structure.drift#o01	63	partial	erasure_stores	With a declared adjacency index, the index always equals the canonical form of the rows, on every write path
+structure.rebuild#o02	63	partial	erasure_stores	sync() then rebuilds the interned snapshot (^NKG) from the adjacency index
+structure.rebuild#o04	63	partial	erasure_stores	After bulk loads and erasures the interned snapshot needs a rebuild
+structure.rebuild#o11	63	partial	erasure_stores	Without the Arno library, sync() still rebuilds the interned snapshot with the ObjectScript builder

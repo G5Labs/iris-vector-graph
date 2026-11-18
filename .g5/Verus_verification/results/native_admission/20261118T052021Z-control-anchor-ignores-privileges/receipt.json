@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_revoke_reaches_sql_anchor_only"
+    ],
+    "find": "else if q.anchor == Anchor::PropLookup && !w.sel_props {",
+    "name": "anchor-ignores-privileges",
+    "replace": "else if false {",
+    "why": "Exec's property-lookup anchor no longer goes through SQL's privilege check"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_revoke_reaches_sql_anchor_only"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/native_admission/model.json": "1075b77516a96378680aed4d4fb95f0e99591a10826e45c5ac29f6442047279d",
+    ".g5/Verus_verification/models/native_admission/native_admission.rs": "71576157027709c98dc4c9ef7784ea26d97651eb7748b6ac9026b47683ecd765"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/anchor-ignores-privileges/20261118T052018Z/models/native_admission/native_admission.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_revoke_reaches_sql_anchor_only": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T052018Z-control-anchor-ignores-privileges-theorem_revoke_reaches_sql_anchor_only.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/20261118T052018Z-control-anchor-ignores-privileges.log",
+    "timed_out": false,
+    "verified": 61
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/native_admission/20261118T052021Z-control-anchor-ignores-privileges/logs/20261118T052018Z-control-anchor-ignores-privileges-theorem_revoke_reaches_sql_anchor_only.log": "33705fdedbf1d9528aef7ee1238aa3acd08fa05e2993a8e4a268372a6d444513",
+    ".g5/Verus_verification/results/native_admission/20261118T052021Z-control-anchor-ignores-privileges/logs/20261118T052018Z-control-anchor-ignores-privileges.log": "14d81a2cfeb1e287385cdee18ebe7e5614239b2a4460d97ea0b12a31df0ed83d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

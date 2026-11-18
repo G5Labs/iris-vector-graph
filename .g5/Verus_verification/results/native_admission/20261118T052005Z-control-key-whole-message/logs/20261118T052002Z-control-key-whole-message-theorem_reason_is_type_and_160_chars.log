@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/key-whole-message/20261118T052002Z/models/native_admission/native_admission.rs:532:13
+    |
+530 | pub proof fn theorem_reason_is_type_and_160_chars(e: Engine, m: Seq<nat>, a: nat, b: nat)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+531 |     requires m.len() == 160, a != b, !e.warned.contains(Reason { ty: 1, msg: m }), !e.warned.contains(Reason { ty: 2, msg: m }),
+532 |     ensures warn(warn(e, Reason { ty: 1, msg: m.push(a) }), Reason { ty: 1, msg: m.push(b) }).log.len() == e.log.len() + 1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

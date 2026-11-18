@@ -1,0 +1,57 @@
+verification results:: 60 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-sql-error-answered/20261118T051910Z/models/native_admission/native_admission.rs:554:1
+    |
+554 | pub proof fn theorem_shadow_returns_only_compared(e: Engine, w: World, q: Query)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-sql-error-answered/20261118T051910Z/models/native_admission/native_admission.rs:556:46
+    |
+554 | pub proof fn theorem_shadow_returns_only_compared(e: Engine, w: World, q: Query)
+    | -------------------------------------------------------------------------------- at the end of the function body
+555 |     requires shadow_on(e.shadow_attr, w.env_shadow_one), native_path(exec_parsed(e, w, q).0),
+556 |     ensures try_native(e, w, q).0.is_some(), w.sql is Rows,
+    |                                              ^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-sql-error-answered/20261118T051910Z/models/native_admission/native_admission.rs:557:9
+    |
+554 |   pub proof fn theorem_shadow_returns_only_compared(e: Engine, w: World, q: Query)
+    |   -------------------------------------------------------------------------------- at the end of the function body
+...
+557 | /         ({ let (p, rows) = try_native(e, w, q).0.unwrap();
+558 | |            compare(w.sql->Rows_0, w.sql->Rows_1, w.native_cols, rows, p.ordered, p.limited,
+559 | |                    if p.limited && !p.ordered { Some(rows_of(w.sql_unlimited)) } else { None }) == Cmp::Pass }),
+    | |_______________________________________________________________________________________________________________^ failed this postcondition
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-sql-error-answered/20261118T051910Z/models/native_admission/native_admission.rs:558:20
+    |
+141 | pub enum SqlOut { Rows(Seq<nat>, Seq<Row>), ErrorResult(nat), RaiseRuntime(nat), RaiseTyped(nat) }
+    | -------------------------------------------------------------------------------------------------- recommendation not met
+...
+558 |            compare(w.sql->Rows_0, w.sql->Rows_1, w.native_cols, rows, p.ordered, p.limited,
+    |                    ^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-sql-error-answered/20261118T051910Z/models/native_admission/native_admission.rs:558:35
+    |
+141 | pub enum SqlOut { Rows(Seq<nat>, Seq<Row>), ErrorResult(nat), RaiseRuntime(nat), RaiseTyped(nat) }
+    | -------------------------------------------------------------------------------------------------- recommendation not met
+...
+558 |            compare(w.sql->Rows_0, w.sql->Rows_1, w.native_cols, rows, p.ordered, p.limited,
+    |                                   ^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/native_admission/controls/shadow-sql-error-answered/20261118T051910Z/models/native_admission/native_admission.rs:571:9
+    |
+569 |   pub proof fn theorem_shadow_sql_failure(w: World, p: Plan, native: Seq<Row>, m: nat)
+    |   ------------------------------------------------------------------------------------ at the end of the function body
+570 |       ensures
+571 | /         shadow_out(World { sql: SqlOut::ErrorResult(m), ..w }, p, native) == Out::Raise(Err::Mismatch(Mismatch {
+572 | |             what: What::SqlFailed, names_query: false, names_plan: false, names_params: false, row: None })),
+    | |____________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+
