@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_delete_edge_leaves_statement"
+    ],
+    "find": "r.filter(|e: E| !((e.k == K::Edge || e.k == K::Adj) && in_g(e, c) && tri(e) == x))",
+    "name": "delete-edge-through-eraser",
+    "replace": "erase_edges(r, c, |y: (Str, int, Str)| y == x)",
+    "why": "repair (simp-str-001): delete_edge deletes through EraseEdges"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_delete_edge_leaves_statement"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "032de67744456daf75397b478b46ad192182f1ca47ac1c7701c54ee8f6341d52",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "25e37887fb60a7e38bdb1a99350a9bb88e6dc4e78c605613b172e58f942f28e2"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/delete-edge-through-eraser/20261118T051942Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_delete_edge_leaves_statement": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T051942Z-control-delete-edge-through-eraser-witness_delete_edge_leaves_statement.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T051942Z-control-delete-edge-through-eraser.log",
+    "timed_out": false,
+    "verified": 65
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T051946Z-control-delete-edge-through-eraser/logs/20261118T051942Z-control-delete-edge-through-eraser-witness_delete_edge_leaves_statement.log": "67d9edebef5788ce21a5d226a318072d131688e2411473de887c46c776d47340",
+    ".g5/Verus_verification/results/erasure_stores/20261118T051946Z-control-delete-edge-through-eraser/logs/20261118T051942Z-control-delete-edge-through-eraser.log": "f29bf5ed34b4c03835a5e79e67517e4bc9c8a594d8d3b0d797e8b5c027f70ed3"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

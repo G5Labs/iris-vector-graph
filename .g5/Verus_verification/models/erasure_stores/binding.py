@@ -59,7 +59,7 @@ def iris(script, ns="%SYS"):
 
 
 def recreate(ns):
-    assert ns.startswith("I65")
+    assert ns.startswith("I65") or ns.startswith("I66E")
     out = iris(f'Set ns="{ns}", dir="/usr/irissys/mgr/{ns.lower()}/"\n'
                'If ##class(Config.Namespaces).Exists(ns) { Set sc=##class(Config.Namespaces).Delete(ns) }\n'
                'If ##class(Config.Databases).Exists(ns) { Set sc=##class(Config.Databases).Delete(ns) }\n'
@@ -90,7 +90,7 @@ WALKS = [('^KG("out")', 4, "out"), ('^KG("in")', 4, "in"), ('^KG("gen")', 2, "Ge
 PER_KEY = [('^KG("tin")', "tin"), ('^KG("bucket")', "bucket"), ('^KG("tagg")', "tagg"), ('^KG("edgeprop")', "edgeprop"),
            ('^KG("tlast")', "tlast")]
 WHOLE = [('^KG("labelset")', "Labelset"), ('^KG("deg2p_exact_merged")', "Merged"), ('^ArnoKG', "Arno"),
-         ('^IVG.Ledger("rec")', "Rec"), ('^BM25Idx', "Bm25"), ('^IVF', "Ivf"), ('^PLAID', "Plaid"), ('^VecIdx', "VecIdx"),
+         ('^BM25Idx', "Bm25"), ('^IVF', "Ivf"), ('^PLAID', "Plaid"), ('^VecIdx', "VecIdx"),
          ('^NKG', "NkgAll")]
 
 
@@ -115,7 +115,11 @@ def global_entries(ns):
     for r, t in WHOLE:
         lines += _count(r, t).split("\n")
     lines.append('Set i="" For  Set i=$Order(^IVG.Ledger("stmt",i)) Quit:i=""  Set v=$Get(^IVG.Ledger("stmt",i)) '
-                 'Write "E",$C(9),"Stmt",$C(9),[(i),($LG(v,1)),($LG(v,2)),($LG(v,3)),($LG(v,4))].%ToJSON(),!')
+                 'Write "E",$C(9),"Stmt",$C(9),[(i),($LG(v,1)),($LG(v,2)),($LG(v,3)),($LG(v,4)),($LG(v,6))].%ToJSON(),!')
+    # iteration 66 (R1-ER-07): every ledger record node with a CRC of its value, not a count
+    lines.append('Set r=$Name(^IVG.Ledger("rec")),ql=$QLength(r),q=r For  Set q=$Query(@q) Quit:q=""  Quit:$Name(@q,ql)\'=r  '
+                 'Set a=[] For i=ql+1:1:$QLength(q) { Do a.%Push($QSubscript(q,i)) } Do a.%Push($ZCRC($Get(@q),7)) '
+                 'Write "E",$C(9),"Rec",$C(9),a.%ToJSON(),!')
     lines.append('Write "V",$C(9),"version",$C(9),+$Get(^KG("__version")),!')
     lines.append('Write "V",$C(9),"invalidated",$C(9),+$Get(^NKG("$meta","invalidated")),!')
     lines.append('Write "V",$C(9),"nkgstamp",$C(9),$Data(^NKG("$meta","version"))#2,!')
@@ -207,6 +211,11 @@ def sql_entries(c):
         out.append(E("Registry", gid(g), tbl=nz(t)))
     for eid, rid in rows("SELECT edge_id, reifier_id FROM Graph_KG.rdf_reifications") or []:
         out.append(E("Reif", "", nz(rid), eid=str(eid)))
+    # iteration 66 (R1-ER-07): the revision rows, each with a digest of its content
+    import hashlib
+    for row in rows("SELECT seq, revision_id, parent_id, kind, actor, actor_type, committed_ms, message, op_count, "
+                    "stmt_first, stmt_last FROM Graph_KG.ledger_revisions") or []:
+        out.append(E("Rec", "", f"rev:{row[0]}:{nz(row[1])}", wm=hashlib.sha1(repr(tuple(nz(x) for x in row)).encode()).hexdigest()[:12]))
     for (i,) in rows("SELECT %ID FROM Graph_KG.embedding_quarantine") or []:
         out.append(E("Quar", "", str(i)))
     for t, col in (("fhir_unresolved", "source"), ("fhir_canonical_refs", "source"), ("fhir_definitions", "rsrc_key")):
@@ -246,7 +255,10 @@ def snapshot(c, ns):
         elif tag == "Tuple":
             out.append(E("Tuple", ledger_name(a[3]), a[0], a[1], a[2]))
         elif tag == "Stmt":
-            out.append(E("Stmt", ledger_name(a[4]), a[1], a[2], a[3], a[0]))
+            # wm: "closed" when deletedSeq is set (iteration 66, R1-ER-04)
+            out.append(E("Stmt", ledger_name(a[4]), a[1], a[2], a[3], a[0], wm="closed" if len(a) > 5 and a[5] != "" else ""))
+        elif tag == "Rec":
+            out.append(E("Rec", "", "/".join(a[:-1]), wm=a[-1]))
         elif tag == "Nkg":
             out.append(E("Nkg", "", a[0]))
     ni = sum(1 for t, _ in ent if t == "Nkg")
@@ -284,7 +296,12 @@ def interned(r, i):
 
 
 def valid(n):
-    return n != "0" and not any(ord(ch) < 32 or ord(ch) == 127 for ch in n)
+    # GraphKey.Validate ($ZStrip "*C"): C0, DEL and the C1 controls 128-159 (iteration 66, R1-CB-07)
+    return n != "0" and not any(ord(ch) < 32 or ord(ch) == 127 or 128 <= ord(ch) <= 159 for ch in n)
+
+
+def live_stmt(e):
+    return e[0] == "Stmt" and e[7] == ""
 
 
 def route_named(t):
@@ -346,7 +363,7 @@ def keep_ids(r, c, d, e):
         return False
     if k == "Reif":
         return not any(x[5] == e[5] for x in inc)
-    if k in ("EEmb", "ERoute", "Stmt", "Tuple") and in_g(e, c):
+    if (k in ("EEmb", "ERoute", "Tuple") or live_stmt(e)) and in_g(e, c):
         return not any(x[2] == e[2] and x[3] == e[3] and x[4] == e[4] for x in inc)
     if k in ("Adj", "Temporal") and in_g(e, c):
         return not (e[2] in d or e[4] in d)
@@ -383,7 +400,7 @@ def keep_edges(r, c, t, e):
         return False
     if k == "Reif":
         return not any(x[5] == e[5] for x in sel)
-    if k in ("EEmb", "ERoute", "Stmt", "Tuple") and in_g(e, c):
+    if (k in ("EEmb", "ERoute", "Tuple") or live_stmt(e)) and in_g(e, c):
         return not any((x[2], x[3], x[4]) == (e[2], e[3], e[4]) for x in sel)
     if k == "Adj" and in_g(e, c):
         return (e[2], e[3], e[4]) not in t
@@ -410,6 +427,29 @@ def keep_all(r, df, e):
 
 def erase_all(r, df=frozenset()):
     return [x for x in ((e[:7] + ("0/0",)) if e[0] == "FhirReg" else e for e in r) if keep_all(r, df, x)]
+
+
+def reifier_sel(r, c, ids):
+    """_reifiers_of, read before the delete, minus the ids themselves (erasure_stores.rs reifier_sel)."""
+    d = list_sel(ids)
+    eids = {x[5] for x in r if incident(x, c, d)}
+    return {e[2] for e in r if e[0] == "Reif" and e[5] in eids and e[2] not in ids}
+
+
+def holds(r, h, i):
+    return any(in_g(e, h) and ((e[0] == "Node" and e[2] == i) or (e[0] == "Edge" and (e[2] == i or e[4] == i))) for e in r)
+
+
+def delete_in_scope(r, c, ids, sweep=True):
+    """_delete_in_scope (erasure_stores.rs delete_in_scope): EraseNodeIds(c, ids), then EraseNodeIds per graph holding a
+    reifier of a deleted relationship, in sorted graph order. Returns (count of the first delete, store map)."""
+    rs = reifier_sel(r, c, ids)
+    r1 = erase_ids(r, c, list_sel(ids))
+    gs = sorted({canon(e[1]) for e in r1 if (e[0] == "Node" and e[2] in rs) or (e[0] == "Edge" and (e[2] in rs or e[4] in rs))})
+    x = r1
+    for h in (gs if sweep else []):
+        x = erase_ids(x, h, {i for i in rs if holds(r1, h, i)})
+    return count_ids(r, c, list_sel(ids)), x
 
 
 def delete_edge_t(r, c, x):
@@ -612,6 +652,8 @@ def scenario_b():
         lambda: e._iris_obj().classMethodValue("Graph.KG.Eraser", "EraseGraph", "0"),
         note="the Eraser's own GraphKey refusal (Python refuses first on the engine path)")
     run(c, ns, "B7_erase_empty_graph", ("graph", "g9"), lambda: e.erase_graph("g9"))
+    run(c, ns, "B8_refuse_c1_control", ("graph", "bad\x85"), lambda: e.erase_graph("bad\x85"),
+        note="iteration 66 (R1-CB-07): Python's check passes a C1 control; GraphKey refuses it before TSTART")
     c.close()
 
 
@@ -643,10 +685,11 @@ def scenario_c():
         lambda: e._store.delete_nodes(["acme|9", "acme|8"], graph="g1"), skip=LIST_SKIP,
         note="explicit IDs reach the temporal-only event and the orphan property row the prefix erase left")
     run(c, ns, "C4_delete_node", ("ids", "g1", ["x1"]), lambda: e.delete_node("x1", graph="g1"), skip=LIST_SKIP,
-        want=lambda pre: ((lambda n, r: (n > 0, r))(*expect(pre.entries, ("ids", "g1", ["x1"])))))
+        want=lambda pre: ((lambda n, r: (n > 0, r))(*delete_in_scope(pre.entries, "g1", ["x1"]))),
+        note="delete_in_scope (no reified incident relationship: the sweep is empty)")
     run(c, ns, "C5_bulk_delete_nodes", ("ids", "g1", ["x2", "x3"]),
         lambda: e.bulk_delete_nodes(["x2", "x3"], graph="g1"), skip=LIST_SKIP,
-        want=lambda pre: ((lambda n, r: ([n, 0], r))(*expect(pre.entries, ("ids", "g1", ["x2", "x3"])))))
+        want=lambda pre: ((lambda n, r: ([n, 0], r))(*delete_in_scope(pre.entries, "g1", ["x2", "x3"]))))
     run(c, ns, "C6_store_delete_edges", ("edges", "g1", [("k1", "R", "k2")]),
         lambda: e._store.delete_edges([("k1", "R", "k2")], graph="g1"), skip=LIST_SKIP)
     run(c, ns, "C7_delete_edge_bypass", ("delete_edge", "g1", ("k3", "R", "k4")),
@@ -812,6 +855,76 @@ def scenario_e():
     c.close()
 
 
+# ====================================================================== scenario R (iteration 66): review-1 repairs
+R_STATE = {}
+
+
+def scenario_r():
+    """R1-ER-01 (delete_node / bulk_delete_nodes erase a reifier ID in every graph holding it), R1-ER-05 (a
+    relationship-list erase keeps the triple's temporal events), R1-ER-04 (it removes the live statement and keeps a
+    closed one of the same triple)."""
+    ns = "I66E"
+    print(f"[{ns}] reifier sweep, temporal events, closed statements", flush=True)
+    c, e = fresh(ns)
+    cur = c.cursor()
+
+    def eid_of(s_, o_, g_):
+        cur.execute("SELECT edge_id FROM Graph_KG.rdf_edges WHERE s = ? AND o_id = ? AND graph_id = ?", [s_, o_, g_])
+        return cur.fetchall()[0][0]
+
+    # R1E: ev1 is unrelated content of graph h; a->b in g reified with reifier id ev1 (written in the default graph)
+    e.create_node("ev1", ["Evidence"], {"note": "unrelated, graph h"}, graph="h")
+    e.create_node("a", ["N"], {}, graph="g")
+    e.create_node("b", ["N"], {}, graph="g")
+    e.create_edge("a", "R", "b", graph="g")
+    e.reify_edge(eid_of("a", "b", "g"), reifier_id="ev1", props={"why": "g-edge"})
+    # the same shape for bulk_delete_nodes: ev2 in h2, c->d in g reified as ev2
+    e.create_node("ev2", ["Evidence"], {"note": "unrelated, graph h2"}, graph="h2")
+    e.create_node("c", ["N"], {}, graph="g")
+    e.create_node("d", ["N"], {}, graph="g")
+    e.create_edge("c", "R", "d", graph="g")
+    e.reify_edge(eid_of("c", "d", "g"), reifier_id="ev2")
+    # R1-ER-05: a structural triple with a timestamped event in g
+    e.create_node("t1", ["N"], {}, graph="g")
+    e.create_node("t2", ["N"], {}, graph="g")
+    e.create_edge_temporal("t1", "T", "t2", timestamp=1700000300, graph="g")
+    # R1-ER-04: k5-R-k6 recorded, deleted through the ledger (closed statement), recorded again (live statement)
+    ledger_rel(e, [("k5", "R", "k6", "g")])
+    cs = Changeset(actor="i66", actor_type="system")
+    cs.delete_relationship(("k5", "R", "k6", "g"))
+    e.ledger.commit(cs)
+    ledger_rel(e, [("k5", "R", "k6", "g")])
+    before = {"ev1": e.get_node("ev1", graph="h"), "ev2": e.get_node("ev2", graph="h2")}
+
+    pre, post, _ = run(c, ns, "R1_delete_node_reifier_other_graph", ("ids", "g", ["a"]), lambda: e.delete_node("a", graph="g"),
+                       skip=LIST_SKIP, want=lambda pre: ((lambda n, r: (n > 0, r))(*delete_in_scope(pre.entries, "g", ["a"]))),
+                       note="delete_in_scope: the sweep erases ev1 from h and from the default graph (bug-str-121)")
+    R_STATE.update(r1_pre=pre.entries, r1_post=post.entries)
+    after = e.get_node("ev1", graph="h")
+    CASES.append({"case": "R1_reader_get_node_other_graph", "observed": {"before": before["ev1"], "after": after},
+                  "model": "theorem_delete_node_sweeps_reifier_everywhere / witness_delete_node_erases_reifier_in_other_graph",
+                  "agrees": bool(before["ev1"]) and after is None})
+    run(c, ns, "R2_bulk_delete_nodes_reifier_other_graph", ("ids", "g", ["c"]),
+        lambda: e.bulk_delete_nodes(["c"], graph="g"), skip=LIST_SKIP,
+        want=lambda pre: ((lambda n, r: ([n, 0], r))(*delete_in_scope(pre.entries, "g", ["c"]))),
+        note="bulk_delete_nodes runs the same _delete_in_scope per batch")
+    CASES.append({"case": "R2_reader_get_node_other_graph", "observed": {"before": before["ev2"], "after": e.get_node("ev2", graph="h2")},
+                  "model": "theorem_delete_node_sweeps_reifier_everywhere", "agrees": bool(before["ev2"]) and e.get_node("ev2", graph="h2") is None})
+    pre, post, _ = run(c, ns, "R3_relationship_erase_keeps_events", ("edges", "g", [("t1", "T", "t2")]),
+                       lambda: e._store.delete_edges([("t1", "T", "t2")], graph="g"), skip=LIST_SKIP,
+                       note="theorem_edges_erase_keeps_temporal: the row goes, the triple's event (tout) stays")
+    R_STATE.update(r3_pre=pre.entries, r3_post=post.entries)
+    ev = e.get_edges_in_window("t1", "T", 1700000000, 1700001000, graph="g") if hasattr(e, "get_edges_in_window") else None
+    CASES.append({"case": "R3_reader_event_after_relationship_erase", "observed": ev,
+                  "model": "witness_edge_erase_leaves_triple_events: the event stays readable", "agrees": bool(ev)})
+    pre, post, _ = run(c, ns, "R4_relationship_erase_keeps_closed_statement", ("edges", "g", [("k5", "R", "k6")]),
+                       lambda: e._store.delete_edges([("k5", "R", "k6")], graph="g"), skip=LIST_SKIP,
+                       note="witness_list_erase_keeps_closed_statement: the live statement goes, the closed one stays")
+    R_STATE.update(r4_pre=pre.entries, r4_post=post.entries,
+                   r4_closed=[x for x in pre.entries if x[0] == "Stmt" and x[7] == "closed"])
+    c.close()
+
+
 # ====================================================================== detection
 def detection():
     """(a) a changed decisive observed field; (b) transcription mutants against the live observations."""
@@ -822,6 +935,20 @@ def detection():
     # the frame-ignores-graph mutant: graph-scoped kinds of every graph go
     mutant = [x for x in B1_STATE["pre"] if x[0] not in GRAPH_KILL]
     out["mutant_frame_ignores_graph"] = not diff(mutant, B1_STATE["post"])["agrees"]
+    # iteration 66
+    out["observed_history_changed"] = not diff(B1_STATE["expected"], [
+        (x[:7] + ("tampered",)) if x[0] == "Rec" and i == 0 else x
+        for i, x in enumerate(sorted(B1_STATE["post"], key=lambda y: (y[0] != "Rec", repr(y))))])["agrees"]
+    out["observed_reifier_other_graph_kept"] = not diff(delete_in_scope(R_STATE["r1_pre"], "g", ["a"])[1],
+                                                        R_STATE["r1_post"] + [E("Node", "h", "ev1")], LIST_SKIP)["agrees"]
+    out["mutant_delete_node_is_erase_ids"] = not diff(delete_in_scope(R_STATE["r1_pre"], "g", ["a"], sweep=False)[1],
+                                                      R_STATE["r1_post"], LIST_SKIP)["agrees"]
+    m1 = [x for x in erase_edges(R_STATE["r3_pre"], "g", {("t1", "T", "t2")})
+          if not (x[0] == "Temporal" and in_g(x, "g") and (x[2], x[3], x[4]) == ("t1", "T", "t2"))]
+    out["mutant_edges_erase_temporal"] = not diff(m1, R_STATE["r3_post"], LIST_SKIP)["agrees"]
+    killed = [x for x in erase_edges(R_STATE["r4_pre"], "g", {("k5", "R", "k6")}) if x not in R_STATE["r4_closed"]]
+    out["mutant_edge_row_kills_closed"] = bool(R_STATE["r4_closed"]) and not diff(killed, R_STATE["r4_post"], LIST_SKIP)["agrees"]
+    out["b1_version_moved"] = B1_STATE["version"][1] > B1_STATE["version"][0]
     c1 = next(x for x in CASES if x["case"] == "C1_prefix_acme_bar")
     out["mutant_count_ids_includes_edges"] = c1["returned"] != C1_STATE["mutant_count"]
     out["mutant_prefix_from_names"] = not diff(C1_STATE["mutant_expected"], C1_STATE["post"], LIST_SKIP)["agrees"]
@@ -841,7 +968,8 @@ _orig_run = run
 def run(c, ns, name, ep, call, skip=(), note="", want=None):  # noqa: F811  (wrap to keep B1/C1 snapshots)
     pre, post, case = _orig_run(c, ns, name, ep, call, skip, note, want)
     if name == "B1_erase_graph_g1":
-        B1_STATE.update(pre=pre.entries, post=post.entries, expected=expect(pre.entries, ep)[1])
+        B1_STATE.update(pre=pre.entries, post=post.entries, expected=expect(pre.entries, ep)[1],
+                        version=[pre.version, post.version])
     if name == "C1_prefix_acme_bar":
         d = prefix_sel(pre.entries, "g1", "acme|")
         names = {x[2] for x in pre.entries if x[2].startswith("acme|") and in_g(x, "g1")} | {x[4] for x in pre.entries
@@ -858,6 +986,7 @@ def main():
     scenario_c()
     scenario_d()
     scenario_e()
+    scenario_r()
     det = detection()
     mism = [x["case"] for x in CASES if not x.get("agrees")]
     pin = bc.pin_identity(PIN_DIR)
@@ -877,10 +1006,11 @@ def main():
                 print(json.dumps(x, default=str)[:1500])
         return 0
     out = bc.write_receipt("erasure_stores", Path(__file__), {
-        "verdict": verdict, "fixture": runtime.FIXTURE, "namespaces": ["I65B", "I65C", "I65D", "I65E"],
+        "verdict": verdict, "fixture": runtime.FIXTURE, "namespaces": ["I65B", "I65C", "I65D", "I65E", "I66E"],
         "seconds": round(time.time() - started, 1), "live_cases": CASES, "live_mismatches": mism, "detection": det,
         "pin": pin,
-        "real": "engine erase_graph/drop_graph/erase_all/delete_nodes_by_prefix/delete_node/bulk_delete_nodes/"
+        "real": "engine erase_graph/drop_graph/erase_all/delete_nodes_by_prefix/delete_node/bulk_delete_nodes (with the "
+                "reifier sweep)/"
                 "bulk_delete_adjacency/delete_edge, store delete_nodes/delete_edges, Graph.KG.Eraser.EraseGraph natively, "
                 "GraphStores.Digest, bm25_search, from_connect engine, on IRIS",
         "scope": "one process per scenario; disclosed direct-SQL fixture rows (see module docstring); failed post-commit "

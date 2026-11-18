@@ -1,0 +1,21 @@
+verification results:: 64 verified, 2 errors
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/erase-all-clears-indexes/20261118T051919Z/models/erasure_stores/erasure_stores.rs:799:17
+    |
+587 |     requires 0 <= i < r.len(), f(m(r[i])),
+    |                                ---------- failed precondition
+...
+799 |                 lemma_in_mapped(r, |x: E| reset_all(x), |x: E| keep_all(r, df, x), i);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/erase-all-clears-indexes/20261118T051919Z/models/erasure_stores/erasure_stores.rs:1158:5
+     |
+ 587 |     requires 0 <= i < r.len(), f(m(r[i])),
+     |                                ---------- failed precondition
+...
+1158 |     lemma_in_mapped(r, |x: E| reset_all(x), |x: E| keep_all(r, Set::empty(), x), 0);
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

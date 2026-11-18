@@ -1,155 +1,203 @@
 {
-  "title": "erasure across stores",
-  "question": "What each erase entry point (graph, prefix, ID list, relationship list, all, and the delete_edge bypass) removes, keeps and returns in every store the ontology names, which names it refuses before any change, and how its own transaction, the store's 500-entry chunks, the post-commit route drop and the caller's transaction change the outcome",
-  "ontology_ids": [
-    "erasure.scope",
-    "erasure.live-statements",
-    "erasure.history",
-    "erasure.kept",
-    "erasure.atomic",
-    "erasure.atomic.routes",
-    "erasure.count",
-    "erasure.entry-points",
-    "erasure.entry-points.single-path",
-    "erasure.prefix-match",
-    "search.erasure",
-    "search.erasure.indexes",
-    "algorithms.cache.erasure",
-    "structure.degree.cache.erase",
-    "structure.degree.cache.uncommitted"
-  ],
-  "runs": [
-    {
-      "label": "proof",
-      "kind": "proof",
-      "variant": "as-built transcription",
-      "expect": "{\"errors\": 0, \"verified\": 49}"
-    },
-    {
-      "label": "binding",
-      "kind": "binding",
-      "variant": "as-built transcription",
-      "expect": null
-    },
-    {
-      "label": "spelling-not-coalesced",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_default_graph_both_spellings\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "frame-ignores-graph",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_graph_erase_frame\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "reif-of-all-graphs",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_graph_erase_keeps_other_reifications\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "prefix-from-names",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_prefix_selects_node_rows\", \"witness_prefix_leaves_event_ids_remove\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "empty-prefix-accepted",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_unsafe_or_empty_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "unsafe-name-accepted",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_unsafe_or_empty_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "count-includes-labels",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_count_ignores_derived\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "count-ids-includes-edges",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"witness_id_erase_count_omits_relationships\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "orphan-dropped",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_graph_erase_routes\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "registry-before-drop",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_graph_erase_routes\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "erase-all-quarantine",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_no_erase_touches_kind\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "erase-all-clears-indexes",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"witness_erase_all_keeps_named_indexes\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "chunks-all-or-nothing",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"witness_list_erase_commits_earlier_chunk\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "edge-row-keeps-statement",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_ids_erase_statements\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "graph-erase-keeps-nkg",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"witness_graph_erase_drops_unscoped_nkg\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "fhir-watermark-kept",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_graph_erase_keeps_settings\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "joined-commits-own",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_joined_caller_decides\", \"witness_dedicated_erase_survives_caller_rollback\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "delete-edge-through-eraser",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"witness_delete_edge_leaves_statement\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "failed-call-partial",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_failed_call_leaves_stores\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    },
-    {
-      "label": "graph-erase-keeps-nolock",
-      "kind": "control",
-      "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"witness_graph_erase_clears_nolock\"], \"verdict\": \"EXPECTED_FAIL\"}"
-    }
-  ]
+ "title": "erasure across stores",
+ "question": "What each erase entry point (graph, prefix, ID list, relationship list, all, and the delete_edge bypass) removes, keeps and returns in every store the ontology names, which names it refuses before any change, and how its own transaction, the store's 500-entry chunks, the post-commit route drop and the caller's transaction change the outcome, plus the engine's node delete with its reifier sweep across graphs, live and closed ledger statements, and the $Increment counters a rollback keeps",
+ "ontology_ids": [
+  "erasure.scope",
+  "erasure.live-statements",
+  "erasure.history",
+  "erasure.kept",
+  "erasure.atomic",
+  "erasure.atomic.routes",
+  "erasure.count",
+  "erasure.entry-points",
+  "erasure.entry-points.single-path",
+  "erasure.prefix-match",
+  "search.erasure",
+  "search.erasure.indexes",
+  "algorithms.cache.erasure",
+  "structure.degree.cache.erase",
+  "structure.degree.cache.uncommitted"
+ ],
+ "runs": [
+  {
+   "label": "proof",
+   "kind": "proof",
+   "variant": "as-built transcription",
+   "expect": "{\"errors\": 0, \"verified\": 66}"
+  },
+  {
+   "label": "binding",
+   "kind": "binding",
+   "variant": "as-built transcription",
+   "expect": null
+  },
+  {
+   "label": "spelling-not-coalesced",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_default_graph_both_spellings\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "frame-ignores-graph",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_graph_erase_frame\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "reif-of-all-graphs",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_graph_erase_keeps_other_reifications\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "prefix-from-names",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_prefix_selects_node_rows\", \"witness_prefix_leaves_event_ids_remove\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "empty-prefix-accepted",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_unsafe_or_empty_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "unsafe-name-accepted",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_unsafe_or_empty_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "count-includes-labels",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_count_ignores_derived\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "count-ids-includes-edges",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"witness_id_erase_count_omits_relationships\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "orphan-dropped",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_graph_erase_routes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "registry-before-drop",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_graph_erase_routes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "erase-all-quarantine",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_no_erase_touches_kind\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "erase-all-clears-indexes",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"witness_erase_all_keeps_named_indexes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "chunks-all-or-nothing",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"witness_list_erase_commits_earlier_chunk\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "edge-row-keeps-statement",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_ids_erase_statements\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "graph-erase-keeps-nkg",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"witness_graph_erase_drops_unscoped_nkg\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "fhir-watermark-kept",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_graph_erase_keeps_settings\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "joined-commits-own",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"lemma_eraser_keeps_levels\", \"theorem_joined_caller_decides\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "delete-edge-through-eraser",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"witness_delete_edge_leaves_statement\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "failed-call-partial",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_failed_call_leaves_stores\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "graph-erase-keeps-nolock",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"witness_graph_erase_clears_nolock\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "catch-rolls-back-every-level",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_failed_call_leaves_stores\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "writetxn-undo-ends-caller-level",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_joined_list_erase_keeps_caller_work\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "edge-row-kills-closed",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_edges_erase_statements\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "edges-erase-temporal",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_edges_erase_keeps_temporal\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "delete-node-is-erase-ids",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_delete_node_sweeps_reifier_everywhere\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "reifier-sweep-default-graph-only",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"lemma_sweep_removes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "python-control-set",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_unsafe_or_empty_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  },
+  {
+   "label": "no-version-bump",
+   "kind": "control",
+   "variant": "as-built transcription",
+   "expect": "{\"fail_in\": [\"theorem_graph_erase_call\"], \"verdict\": \"EXPECTED_FAIL\"}"
+  }
+ ]
 }

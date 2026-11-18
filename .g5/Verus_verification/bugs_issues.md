@@ -826,6 +826,8 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
 
+Iteration 66: the graph-erase residue is carried by the obligation erasure.scope#o10, refuted by [erasure_stores](models/erasure_stores/NOTES.md) `witness_named_erase_keeps_reifier_node` and observed again in binding case `B1_reader_reifier_node_after_erase` ([receipt](results/erasure_stores/20261118T052216Z-binding/receipt.json)). The engine's node delete removes reifier nodes in every graph holding the ID: [bug-str-121](#bug-str-121).
+
 <a id="F-1503"></a>
 ### delete_reification deletes any id's node, labels and properties in every graph without checking it is a reifier
 
@@ -4281,6 +4283,29 @@ Repair proposal (not implemented): when the plan has an `ORDER BY` that the plan
 
 Governing statement: [query.native.equal-answers](../ontology/architecture/query-execution.g5.md#query.native.equal-answers).
 
+<a id="bug-str-121"></a>
+### Deleting a node in one graph deletes a same-ID node in every other graph when that ID is a reifier of one of its relationships
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-18 (review-1, reproduced in iteration 66)
+
+Description: `delete_node(id, graph=g)` and `bulk_delete_nodes(ids, graph=g)` delete the nodes from g, then delete the reifier nodes of the relationships they removed. That second step deletes each reifier ID in every graph that has a node row, or a relationship end, with that ID, not only the graph the reifier was written in. A node of another graph that merely shares the reifier's ID is erased with its labels, properties and relationships there.
+
+Found by: review-1 reviewer (source read of `nodes_edges.py` `_delete_in_scope` 2176-2203 and `_graphs_holding` 2134-2153; live probe R1E); iteration 66 [erasure_stores](models/erasure_stores/NOTES.md) `delete_in_scope`, `theorem_delete_node_sweeps_reifier_everywhere`, `witness_delete_node_erases_reifier_in_other_graph`, controls `delete-node-is-erase-ids` and `reifier-sweep-default-graph-only`.
+
+Reproduced by: **E2E reproduced** twice. Review-1 probe, namespace R1E (`.g5/uplift/consolidated/review-1/scratch-evidence/live/r1_reifier_cross_graph.out`): `ev1` held in graphs `''` and `h` before `delete_node("a", graph="g")`, in neither after; `get_node("ev1", graph="h")` returned None. Iteration 66 binding on the run-own fixture, namespace I66E ([binding receipt](results/erasure_stores/20261118T052216Z-binding/receipt.json)), cases `R1_delete_node_reifier_other_graph` (node rows 14 -> 11: `a` in g, `ev1` in h and `ev1` in the default graph; every other entry as the transcription predicts) with `R1_reader_get_node_other_graph` (before: `{"id": "ev1", "labels": ["Evidence"], "note": "unrelated, graph h"}`, after: None), and `R2_bulk_delete_nodes_reifier_other_graph` / `R2_reader_get_node_other_graph` (the same through `bulk_delete_nodes`, `ev2` of graph h2). Passing neighbour: `C4_delete_node` (no reified incident relationship; nothing outside g changes).
+
+Expected: [erasure.scope](../ontology/features/erasure.g5.md#erasure.scope): "Another graph's content is never touched, even where it uses the same node IDs."
+
+Observed: `_reifiers_of(ids, g)` reads the reifier IDs of g's relationships incident to the ids; after `store.delete_nodes(ids, graph=g)` the loop `for scope, ids in self._graphs_holding(reifiers).items(): self._store.delete_nodes(ids, graph=scope)` runs `EraseNodeIds` in every graph holding such an ID. `reify_edge` writes the reifier node in the default graph ([F-1502](#F-1502)), so the default-graph deletion is the intended cleanup; the other graphs are collateral.
+
+Consequence: a node delete in one tenant's graph can erase unrelated content in another tenant's graph, irreversibly and without an error or a count (reifier deletions are not counted). The same family as [bug-str-014](#bug-str-014) and [F-1503](#F-1503) (`delete_reification`), reached here through the ordinary node-delete methods.
+
+Repair proposal (not implemented): delete a reifier only in the graph its node was written in (the default graph at the pin, or the relationship's graph once F-1502 is fixed), e.g. `self._store.delete_nodes(reifiers, graph="")`, and only when the node is still a reifier (`Reification` label or an `rdf_reifications` row). Model: control `reifier-sweep-default-graph-only` (the repaired sweep fails the as-built witness). Distinguishing case: `R1_delete_node_reifier_other_graph`.
+
+Governing statement: [erasure.scope](../ontology/features/erasure.g5.md#erasure.scope).
+
 <a id="bug-plt-124"></a>
 ### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors
 
@@ -5739,6 +5764,8 @@ Description: Source review suggests that deleting a reification in one graph rem
 **Suspected.** Source reading only; severity is lowered one level from Medium.
 
 Found by: reconstruction check 2(a)3 (verified `schema.py:3361-3392`).
+
+Related, reproduced: the node-delete methods reach the same cross-graph deletion through their reifier sweep ([bug-str-121](#bug-str-121)).
 
 Reproduced by: **outside active reproduction scope** — defensive source and existing-evidence review only. No new security reproduction was constructed or executed. Historical runtime claims below are not fresh e2e observations.
 

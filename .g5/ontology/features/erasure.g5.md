@@ -21,6 +21,8 @@ An erase removes a graph's content from every store that holds it: its rows, its
 - Another graph's content is never touched, even where it uses the same node IDs.
 - The default graph is erased in both of its spellings: an empty graph ID and a missing one.
 - A graph name that cannot be stored safely is refused before anything is deleted.
+- Today a graph erase keeps the reifier nodes of its relationships, which `reify_edge` writes in the default graph with the relationship's properties ([finding](../../Verus_verification/bugs_issues.md#F-1502)).
+- Today `delete_node` and `bulk_delete_nodes` also delete, in every graph, any node whose ID is a reifier ID of a relationship they delete, even when that node is unrelated content of another graph ([finding](../../Verus_verification/bugs_issues.md#bug-str-121)).
 
 - Working assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 
@@ -84,6 +86,7 @@ The Eraser has these entry points, and every erase call of the engine uses one o
 - Erase nodes by ID prefix in one graph, with what hangs off them there ([how the prefix matches](#erasure.prefix-match)). An empty prefix is refused, because that would be a graph erase.
 - Erase a list of node IDs in one graph, with their relationships in that graph.
 - Erase a list of relationships in one graph, leaving nodes alone.
+- Today erasing a list of relationships leaves their temporal events readable, while erasing a node or a graph removes them; whether it should remove them is [open](../../Verus_verification/open_questions.md#q-tmp-007).
 
 <a id="erasure.entry-points.single-path"></a>
 [D · erasure.entry-points.single-path]
@@ -126,13 +129,15 @@ These links take you to the current sections and statements.
 - user-facing-behavior, data-integrity
 - test-coverage
 
-Live tests: `tests/integration/test_erase_graph.py` (rows, adjacency, degree cache, temporal index, both default-graph spellings, another graph untouched, invalid name). Observed divergence: the BM25, vector (`^VecIdx`), IVF and PLAID indexes are not erased, so erased content can still be found through them until a rebuild ([search question](search.g5.md#search.erasure.indexes); [operations inventory](../../uplift/ivg-verus-initial/intent/operations.md#L254-L256)). The store list is derived from `Graph.KG.GraphStores` and checked by a source-text unit test (`tests/unit/test_eraser_inventory_coverage.py`).
+Live tests: `tests/integration/test_erase_graph.py` (rows, adjacency, degree cache, temporal index, both default-graph spellings, another graph untouched, invalid name). Observed divergence: the BM25, vector (`^VecIdx`), IVF and PLAID indexes are not erased, so erased content can still be found through them until a rebuild ([search question](search.g5.md#search.erasure.indexes); [operations inventory](../../uplift/ivg-verus-initial/intent/operations.md#L254-L256)). The Eraser's store list is written by hand in `Eraser.cls`; its header says it is derived from `Graph.KG.GraphStores`, but at the pin only a source-text unit test compares the two (`tests/unit/test_eraser_inventory_coverage.py`; review-1 R1-ER-09).
 
-Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001); [Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable](../../Verus_verification/bugs_issues.md#bug-led-007)
+Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001); [Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable](../../Verus_verification/bugs_issues.md#bug-led-007); [Deleting a node in one graph deletes a same-ID node in every other graph when that ID is a reifier of one of its relationships](../../Verus_verification/bugs_issues.md#bug-str-121)
 
 Open questions: [Should erasure and redaction reach the store in REACH-1?](../../Verus_verification/open_questions.md#REACH-1), [Should erasure and redaction reach the store in REACH-5?](../../Verus_verification/open_questions.md#REACH-5)
 
 Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json)): `erase_graph` of one of two graphs sharing node IDs removed every graph-scoped store of that graph (rows, documents, routed vectors, reifications, FHIR side rows, adjacency and degree cache, temporal subtrees, label/prop globals, multigraph mode, statements and tuple lookups) and kept the other graph's; `erase_graph(None)` and `erase_graph("")` are one erase. Every content table declares `graph_id` NOT NULL at the pin, so the NULL spelling can only come from older data; the model covers both spellings (`theorem_default_graph_both_spellings`). Kept as built: the reifier node of a named graph's edge, which lives in the default graph with the edge's properties ([F-1502](../../Verus_verification/bugs_issues.md#F-1502)), and the BM25 postings ([bug-srch-001](../../Verus_verification/bugs_issues.md#bug-srch-001)).
+
+Iteration 66 (review-1 R1-ER-01, R1-ER-06; [erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T052216Z-binding/receipt.json)): `delete_node("a", graph="g")`, with a->b of g reified by `ev1` and `ev1` also an unrelated node of graph h, deleted `ev1` from h and from the default graph (`R1_delete_node_reifier_other_graph`, `get_node("ev1", graph="h")` None after); `bulk_delete_nodes` did the same (`R2`). Cause: `_delete_in_scope` erases the reifier IDs in every graph `_graphs_holding` finds (`theorem_delete_node_sweeps_reifier_everywhere`, `witness_delete_node_erases_reifier_in_other_graph`). The graph erase's reifier residue is `witness_named_erase_keeps_reifier_node`. A C1 control character in a name passes Python's check and is refused by `GraphKey.Validate` before anything (`B8_refuse_c1_control`).
 
 State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 
@@ -149,6 +154,8 @@ Findings: [Deleting a relationship with delete_edge or Cypher DELETE leaves its 
 
 Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json)): an erase by IDs, prefix or relationship list removed the statement and tuple lookup of each relationship row it deleted and no other (`theorem_ids_erase_statements`, `theorem_edges_erase_statements`); `delete_edge` left them (`C7_delete_edge_bypass`, [bug-str-013](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-013)).
 
+Iteration 66 (review-1 R1-ER-04): such an erase removes only the live statement, the one the tuple lookup names; a closed statement of the same triple (its `deletedSeq` set) stays, while a graph erase removes both (`witness_list_erase_keeps_closed_statement`; [binding](../../Verus_verification/results/erasure_stores/20261118T052216Z-binding/receipt.json) `R4_relationship_erase_keeps_closed_statement`).
+
 State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 
 ### erasure.history
@@ -160,7 +167,9 @@ State machines: [erasure across stores](../../Verus_verification/models/erasure_
 
 Rejected alternatives (ADR-0004): refusing to erase when the ledger holds revisions; marking the ledger stale; pruning records by graph. Live evidence that records survive an erase: `test_256_ledger_redaction_e2e.py::TestUS1RedactTenant::test_the_scan_sees_tenant_a_after_the_erase_alone`.
 
-The empty-graph reader: `Graph.KG.GraphStores.Digest(graph)` walks every graph-scoped store. After an erase it reports 0 entries for every content store but still lists two kinds of configuration the erase keeps on purpose, `^IVG.TemporalStructural` and non-route registry rows; it does not read the search indexes, which a graph erase leaves ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json) `B1_reader_digest_after_erase`; `theorem_graph_erase_digest_empty`, `witness_empty_digest_bm25_survives`).
+The empty-graph reader: `Graph.KG.GraphStores.Digest(graph)` walks every graph-scoped store. After an erase it reports 0 entries for every content store but still lists two kinds the erase keeps: `^IVG.TemporalStructural` (configuration, ADR-0015) and the registry rows of non-route tables (keeping these is unratified, and `EraseAll`'s own comment argues for deleting them: [open](../../Verus_verification/open_questions.md#q-srch-007)); it does not read the search indexes, which a graph erase leaves ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json) `B1_reader_digest_after_erase`; `theorem_graph_erase_digest_empty`, `witness_empty_digest_bm25_survives`).
+
+Iteration 66 (review-1 R1-ER-07): the binding now reads every ledger record and revision row by content (a CRC or digest per entry), and every erase observed left them unchanged ([binding](../../Verus_verification/results/erasure_stores/20261118T052216Z-binding/receipt.json)).
 
 State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 
@@ -177,7 +186,7 @@ The quarantine rule cites FR-039/FR-040 of an embedding spec that is not in `spe
 
 Review round 3 R3-reader M7: the multigraph mode is killed by a graph erase ([Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L243-L244), matching [the multigraph switch](graph-structure.g5.md#structure.multigraph.switch)) and the FHIR watermarks are reset ([Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L180-L181)); the embedding quarantine rule is in [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L300-L302). No erase names the document or edge-vector quarantine tables either.
 
-Open questions: [Should erasure and redaction reach the store in REACH-2?](../../Verus_verification/open_questions.md#REACH-2), [Should erasure and redaction reach the store in REACH-3?](../../Verus_verification/open_questions.md#REACH-3), [Should erasure and redaction reach the store in REACH-4?](../../Verus_verification/open_questions.md#REACH-4), [Should quarantined vectors and documents survive erasure indefinitely?](../../Verus_verification/open_questions.md#q-srch-001)
+Open questions: [Should erasure and redaction reach the store in REACH-2?](../../Verus_verification/open_questions.md#REACH-2), [Should erasure and redaction reach the store in REACH-3?](../../Verus_verification/open_questions.md#REACH-3), [Should erasure and redaction reach the store in REACH-4?](../../Verus_verification/open_questions.md#REACH-4), [Should quarantined vectors and documents survive erasure indefinitely?](../../Verus_verification/open_questions.md#q-srch-001), [Should a graph erase keep the registry rows of the graph's non-route embedding tables?](../../Verus_verification/open_questions.md#q-srch-007)
 
 Today a graph erase also drops `^NKG`, which belongs to no single graph, when the graph has an interned node or edge, and every graph's cached algorithm answers; both are derived and rebuilt on the next read ([finding](../../Verus_verification/bugs_issues.md#bug-str-118); [erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json) `B1_erase_graph_g1`). The quarantine, history, temporal-only settings and FHIR registrations (watermarks reset) were kept by every erase observed, and erase-all emptied the label sets, `^NKG`, settings and registry.
 
@@ -200,6 +209,8 @@ Live test: `tests/integration/test_eraser_failures.py` (a refused delete in any 
 Observed divergence (code reading, review round 3 R3-reader M4): the store splits ID lists into chunks of 500 and calls the Eraser once per chunk, and with no caller transaction each call commits on its own ([iris_sql_store.py](../../../iris_vector_graph/stores/iris_sql_store.py#L1302-L1358), [_eraser_txn](../../../iris_vector_graph/stores/iris_sql_store.py#L1451-L1472)). `bulk_delete_nodes` batches by design and counts a failed batch as wholly failed even when its earlier chunks committed ([nodes_edges.py](../../../iris_vector_graph/_engine/nodes_edges.py#L2283-L2298)); `erase_bare_nodes` commits per 10,000 IDs ([Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L1297-L1304)). No failure was injected natively.
 
 Findings: [Erasing a long list of node IDs or relationships without a caller's transaction commits once per 500 entries](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-011)
+
+Iteration 66 (review-1 R1-ER-02, R1-CR-01): the model now represents the transaction as the levels open on the process. A failing step may leave any partial write; the Eraser's Catch rolls back to the level it found, so every journalled store returns to what the call found and a caller's level and earlier writes stay (`theorem_failed_call_leaves_stores`, `theorem_joined_caller_decides`, `theorem_joined_list_erase_keeps_caller_work`; controls change the Catch, the Eraser's TCOMMIT and the store's WriteTxn rollback). What a rollback does not undo: `$Increment` of `^KG("__version")` and of the temporal bucket counters (`TemporalIndex.RemoveTemporalRow`), so a call that failed after its temporal step would leave those counters changed (`witness_failed_call_keeps_increments`); no production failure at that point has been constructed.
 
 Open questions: [Should a graph erasure take the ledger head lock?](../../Verus_verification/open_questions.md#HD-1201), [Must erasure and redaction be serialised with each other and with ledger commits?](../../Verus_verification/open_questions.md#q-004), [Should whether a write joins the caller's transaction depend on how the engine was opened?](../../Verus_verification/open_questions.md#q-plt-006)
 
@@ -254,7 +265,11 @@ State machines: [erasure across stores](../../Verus_verification/models/erasure_
 
 In strict ledger mode the engine's erase methods are refused ([strict mode](ledger.g5.md#ledger.strict)). The engine's `erase_graph` (alias `drop_graph`), `erase_all`, `delete_nodes_by_prefix`, `delete_node` and `bulk_delete_nodes`, and the store's `delete_nodes`, `delete_edges` and `erase_bare_nodes`, call the Eraser. Live tests: `test_erase_graph.py`, `test_eraser_failures.py` (graph, prefix, IDs, edges, all).
 
-Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json)): every listed method ran against the model's expectation for its Eraser entry point; `theorem_methods_reach_eraser` (delete_edge is the one method that does not).
+Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json)): every listed method ran against the model's expectation for its Eraser entry point; `theorem_methods_reach_eraser` (delete_edge is the one method that does not). That method table is a transcription of the callers, so the theorem restates it (review-1 R1-ER-03); the per-method evidence is the binding.
+
+Iteration 66 (review-1 R1-ER-05): a relationship-list erase never touches the temporal index (`EraseEdges`, Eraser.cls 395-463), so the erased triple's events stay readable (`theorem_edges_erase_keeps_temporal`, `witness_edge_erase_leaves_triple_events`; [binding](../../Verus_verification/results/erasure_stores/20261118T052216Z-binding/receipt.json) `R3_relationship_erase_keeps_events`, where `get_edges_in_window` still returned the event). ADR-0009 treats a structural predicate's timestamp as implying its row, the same question [q-tmp-006](../../Verus_verification/open_questions.md#q-tmp-006) asks for `delete_edge`.
+
+Open questions: [Should a relationship-list erase remove the relationships' temporal events?](../../Verus_verification/open_questions.md#q-tmp-007)
 
 State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
 

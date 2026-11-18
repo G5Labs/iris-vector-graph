@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_joined_list_erase_keeps_caller_work"
+    ],
+    "find": "_ => rollback_to(t2, 1) };",
+    "name": "writetxn-undo-ends-caller-level",
+    "replace": "_ => rollback_to(t2, 0) };",
+    "why": "product step: the store's WriteTxn exit rolls back the caller's level too (a driver rollback instead of Txn_Undo(level))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_joined_list_erase_keeps_caller_work"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/erasure_stores/erasure_stores.rs": "032de67744456daf75397b478b46ad192182f1ca47ac1c7701c54ee8f6341d52",
+    ".g5/Verus_verification/models/erasure_stores/model.json": "25e37887fb60a7e38bdb1a99350a9bb88e6dc4e78c605613b172e58f942f28e2"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/writetxn-undo-ends-caller-level/20261118T051956Z/models/erasure_stores/erasure_stores.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_joined_list_erase_keeps_caller_work": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T051956Z-control-writetxn-undo-ends-caller-level-theorem_joined_list_erase_keeps_caller_work.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/20261118T051956Z-control-writetxn-undo-ends-caller-level.log",
+    "timed_out": false,
+    "verified": 65
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/erasure_stores/20261118T052000Z-control-writetxn-undo-ends-caller-level/logs/20261118T051956Z-control-writetxn-undo-ends-caller-level-theorem_joined_list_erase_keeps_caller_work.log": "96fe02221f539949b137fd9500cfae1271d07ba6b6125ab1531a7323bb208ea6",
+    ".g5/Verus_verification/results/erasure_stores/20261118T052000Z-control-writetxn-undo-ends-caller-level/logs/20261118T051956Z-control-writetxn-undo-ends-caller-level.log": "03da521d93f0b0e7cd60bb95932d178ffbb1c114adcca346cf8d03b5bfed3d2f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

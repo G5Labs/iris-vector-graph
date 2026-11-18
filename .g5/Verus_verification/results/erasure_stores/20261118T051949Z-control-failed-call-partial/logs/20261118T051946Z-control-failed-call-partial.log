@@ -1,0 +1,12 @@
+verification results:: 65 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/failed-call-partial/20261118T051946Z/models/erasure_stores/erasure_stores.rs:969:9
+    |
+965 | pub proof fn theorem_failed_call_leaves_stores(t: Tx, ep: Ep, f: Fault, df: Set<int>)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+...
+969 |         eraser(t, ep, f, df).1.st.rows == t.st.rows,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

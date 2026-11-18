@@ -1,0 +1,16 @@
+verification results:: 65 verified, 1 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/registry-before-drop/20261118T051912Z/models/erasure_stores/erasure_stores.rs:1057:9
+     |
+1057 |           ((r[i].k == K::RouteTable || r[i].k == K::Registry) && df.contains(r[i].tbl)) ==> erase_graph(r, c, df).contains(r[i]),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1060 | /     if keep_graph(r, c, df, r[i]) {
+1061 | |         lemma_in_mapped(r, |x: E| reset_in(x, c), |x: E| keep_graph(r, c, df, x), i);
+1062 | |     } else {
+1063 | |         lemma_not_in_filter(r.map_values(|x: E| reset_in(x, c)), |x: E| keep_graph(r, c, df, x), r[i]);
+1064 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

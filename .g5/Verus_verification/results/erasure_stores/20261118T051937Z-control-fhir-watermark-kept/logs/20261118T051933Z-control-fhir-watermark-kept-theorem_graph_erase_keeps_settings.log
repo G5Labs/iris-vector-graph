@@ -1,0 +1,39 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/fhir-watermark-kept/20261118T051933Z/models/erasure_stores/erasure_stores.rs:820:1
+    |
+820 | pub proof fn theorem_graph_erase_keeps_settings(r: Seq<E>, c: Str, df: Set<int>, i: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/fhir-watermark-kept/20261118T051933Z/models/erasure_stores/erasure_stores.rs:824:9
+    |
+824 |           r[i].k == K::FhirReg && in_g(r[i], c) ==> erase_graph(r, c, df).contains(E { wm: 0, ..r[i] }),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+828 | /     if r[i].k == K::FhirReg && in_g(r[i], c) && r[i].wm != 0 {
+829 | |         let mv = r.map_values(|x: E| reset_in(x, c));
+830 | |         if erase_graph(r, c, df).contains(r[i]) {
+831 | |             lemma_filter_sub(mv, |x: E| keep_graph(r, c, df, x), r[i]);
+...   |
+835 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/fhir-watermark-kept/20261118T051933Z/models/erasure_stores/erasure_stores.rs:825:9
+    |
+825 |           r[i].k == K::FhirReg && in_g(r[i], c) && r[i].wm != 0 ==> !erase_graph(r, c, df).contains(r[i]),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+828 | /     if r[i].k == K::FhirReg && in_g(r[i], c) && r[i].wm != 0 {
+829 | |         let mv = r.map_values(|x: E| reset_in(x, c));
+830 | |         if erase_graph(r, c, df).contains(r[i]) {
+831 | |             lemma_filter_sub(mv, |x: E| keep_graph(r, c, df, x), r[i]);
+...   |
+835 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

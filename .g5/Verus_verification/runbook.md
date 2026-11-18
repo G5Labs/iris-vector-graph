@@ -887,3 +887,21 @@ rule for an unordered limited plan) in `crosswalk/decision-links.tsv`; control `
 `theorem_route_trial_alternates_answers` → `native_route.py::NativeRoute.next_path` (76-83) and
 `_engine/query.py::QueryMixin._execute_parsed` (2063-2082); control `trial-no-alternation`; observation
 `route_alternation_bug_cyp_104` (two answers in turn over twelve identical calls) beside `route_alternation_paths_agree`.
+
+Iteration 66, erasure repairs (review-1 R1-ER-01..09, R1-CR-01, R1-CB-07/08), same fixture. The binding drops and
+re-creates `I65B`-`I65E` and `I66E` (the cross-graph reifier cases R1/R2, the relationship-erase temporal events R3, the
+live/closed statements R4, the GraphKey control-character refusal B8). From the repository root:
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/erasure_stores       # PASS 66
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/erasure_stores    # 28 EXPECTED_FAIL
+CONTROL=delete-node-is-erase-ids python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/erasure_stores
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD IVG_PIN_DIR=$PWD $RUN_DIR/venv/bin/python -B $RUN_DIR/run_binding.py \
+  $OLDPWD/.g5/Verus_verification/models/erasure_stores/binding.py)                                   # AGREES 36 cases, 11/11 detection
+python3 .g5/uplift/consolidated/iteration-66/regrade-tools/apply_ledger.py $PWD .g5/uplift/consolidated/iteration-66/regrade-tools/census-ledger.tsv --in-place
+```
+
+Worked lookup (iteration 66): `erasure.scope` → `erasure_stores.rs::witness_delete_node_erases_reifier_in_other_graph`
+→ `iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._delete_in_scope` (2176-2201, the reifier sweep through
+`_graphs_holding`) in `crosswalk/decision-links.tsv`; control `delete-node-is-erase-ids` (iteration 65's mapping);
+observation `R1_delete_node_reifier_other_graph` (node rows 14 → 11, `ev1` of graph h gone) beside `C4_delete_node`.

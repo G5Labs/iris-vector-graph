@@ -1,0 +1,12 @@
+verification results:: 65 verified, 1 errors
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/spelling-not-coalesced/20261118T051838Z/models/erasure_stores/erasure_stores.rs:625:5
+    |
+610 |     requires graph_kill(e.k), in_g(e, c),
+    |                               ---------- failed precondition
+...
+625 |     theorem_graph_erase_removes_scoped(r, Seq::<int>::empty(), df, E { k, g: Sp::Null, s, p, o, eid, tbl: 0, wm: 0 });
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 1 previous error
+

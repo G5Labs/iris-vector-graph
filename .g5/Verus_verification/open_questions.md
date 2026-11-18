@@ -1122,6 +1122,48 @@ answer:
 default_assumption: Preserve each current text corpus and rank rule until one common corpus is chosen; common fusion arithmetic alone cannot settle text ranking.
 ```
 
+<a id="erasure.graph.registry-rows"></a><!-- question identity -->
+<a id="q-srch-007"></a>
+### Should a graph erase keep the registry rows of the graph's non-route embedding tables?
+
+[Q · erasure.graph.registry-rows]
+
+Run: Uplift 2026-11-18 (review-1 R1-ER-08)
+
+Evidence: `EraseGraph` deletes a graph's `embedding_registry` rows only for routed tables it claims and drops (`Eraser.cls` 262-303); rows that name a legacy, non-route table (`kg_NodeEmbeddings`) stay, and `GraphStores.Digest(g)` still lists them after the erase. `EraseAll` deletes the whole registry, and its own comment argues the opposite of keeping them: "a legacy table's identity row describes vectors that no longer exist once this method has emptied it, and a surviving row would make the next write conflict with a model nothing in the namespace was written by" (`Eraser.cls` 753-760). A graph erase also empties the graph's rows of that legacy table. No governing source ratifies keeping them; the iteration-65 metadata called them configuration "kept on purpose". Model: [erasure_stores](models/erasure_stores/NOTES.md) `keep_graph` (Registry branch), `config_kind`, `witness_digest_reports_kept_setting`; live: binding `B1_reader_digest_after_erase`.
+
+Interpretations: (a) keep them: they record which model a graph embeds with, configuration for a re-ingest like the temporal-only settings; (b) delete them with the graph's content, as erase-all does, so an erased graph leaves no registry trace and the empty-graph check is clean.
+
+Decision needed: which; if (a), say so in [erasure.kept](../ontology/features/erasure.g5.md#erasure.kept) and make the empty-graph check skip them.
+
+Audit: Working assumption (agent, unratified): Keep the rows as built and report them as kept configuration in removal receipts until an owner decides.
+
+Canonical owner: [erasure.graph.registry-rows](#q-srch-007).
+
+```g5-question
+schema: 1
+id: erasure.graph.registry-rows
+status: open
+prompt: Should a graph erase keep the registry rows of the graph's non-route embedding tables?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: Keep the rows as built and report them as kept configuration in removal receipts until an owner decides.
+    description: Default assumption.
+  - label: keep them as configuration for a re-ingest, like the temporal-only settings
+    description: ""
+  - label: delete them with the graph's content, as erase-all does
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the rows as built and report them as kept configuration in removal receipts until an owner decides.
+```
+
 <a id="q-002"></a>
 ### Which ledger readers must refuse while a redaction is unfinished?
 
@@ -1627,6 +1669,50 @@ answer:
   answered_by: null
   answered_at: null
 default_assumption: Preserve the temporal implication requirement and record the direct-delete exception; the maintainer must decide whether to refuse or repair it.
+```
+
+<a id="erasure.relationship-list.temporal-events"></a><!-- question identity -->
+<a id="q-tmp-007"></a>
+### Should a relationship-list erase remove the relationships' temporal events?
+
+[Q · erasure.relationship-list.temporal-events]
+
+Run: Uplift 2026-11-18 (review-1 R1-ER-05; reproduced in iteration 66)
+
+Evidence: `Eraser.EraseEdges` (`Eraser.cls` 395-463), behind `store.delete_edges` and `bulk_delete_adjacency`, never calls the temporal index, so the erased triple's events (`^KG("tout"/"tin"/"edgeprop")`) stay readable; a node erase removes them (`TemporalIndex.EraseNodes`) and a graph erase removes them (`TemporalIndex.EraseGraph`). ADR-0009 treats a temporal event as content whose structural predicate implies the row. Model: [erasure_stores](models/erasure_stores/NOTES.md) `theorem_edges_erase_keeps_temporal`, `witness_edge_erase_leaves_triple_events` (control `edges-erase-temporal`, the reviewer's mutant M1, fails). Live: [binding](results/erasure_stores/20261118T052216Z-binding/receipt.json) `R3_relationship_erase_keeps_events` (row gone, event kept) and `R3_reader_event_after_relationship_erase` (`get_edges_in_window` still returns it). The same tension for `delete_edge` is [q-tmp-006](#q-tmp-006).
+
+Interpretations: (a) a relationship erase removes only the relationship rows and what hangs off them; its events are history of the triple and stay; (b) it also removes the triple's events in that graph, as a node or graph erase does, so no erased relationship stays readable through the temporal index; (c) it refuses a triple that still has events.
+
+Decision needed: which, and whether a structural predicate's events then re-assert the row (ADR-0009). Open statement: [erasure.entry-points](../ontology/features/erasure.g5.md#erasure.entry-points) (its "Today erasing a list of relationships leaves their temporal events readable" bullet).
+
+Audit: Working assumption (agent, unratified): Record that a relationship erase leaves the triple's temporal events and keep the obligation open; do not treat the events as history without an owner decision.
+
+Canonical owner: [erasure.relationship-list.temporal-events](#q-tmp-007).
+
+```g5-question
+schema: 1
+id: erasure.relationship-list.temporal-events
+status: open
+prompt: Should a relationship-list erase remove the relationships' temporal events?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: Record that a relationship erase leaves the triple's temporal events and keep the obligation open; do not treat the events as history without an owner decision.
+    description: Default assumption.
+  - label: a relationship erase removes only the relationship rows and what hangs off them; its events stay
+    description: ""
+  - label: it also removes the triple's events in that graph, as a node or graph erase does
+    description: ""
+  - label: it refuses a triple that still has events
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Record that a relationship erase leaves the triple's temporal events and keep the obligation open; do not treat the events as history without an owner decision.
 ```
 
 <a id="search.embedding.undeclared_default"></a><!-- question identity -->

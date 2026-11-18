@@ -1,7 +1,7 @@
 {
  "name": "erasure_stores",
  "root": "erasure_stores.rs",
- "expected_verified": 49,
+ "expected_verified": 66,
  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
  "controls": [
   {
@@ -116,8 +116,8 @@
   {
    "name": "chunks-all-or-nothing",
    "why": "repair of bug-led-011: an unjoined list erase rolls every chunk back on a failure",
-   "find": "Out::Count(n) => list_erase(s1, g, chunks.drop_first(), fail_at - 1, acc + n),",
-   "replace": "Out::Count(n) => { let (o2, s3) = list_erase(s1, g, chunks.drop_first(), fail_at - 1, acc + n); match o2 { Out::Count(m) => (o2, s3), _ => (o2, St { rows: st.rows, version: s3.version }) } },",
+   "find": "Out::Count(n) => list_erase_tx(t1, g, chunks.drop_first(), fail_at - 1, f, acc + n),",
+   "replace": "Out::Count(n) => { let (o2, t3) = list_erase_tx(t1, g, chunks.drop_first(), fail_at - 1, f, acc + n); match o2 { Out::Count(m) => (o2, t3), _ => (o2, Tx { st: St { rows: t.st.rows, version: t3.st.version, bucket: t3.st.bucket }, lv: t3.lv }) } },",
    "expect_fail_in": [
     "witness_list_erase_commits_earlier_chunk"
    ]
@@ -125,7 +125,7 @@
   {
    "name": "edge-row-keeps-statement",
    "why": "EraseEdgeRow leaves the live statement and tuple lookup",
-   "find": "else if (e.k == K::EEmb || e.k == K::ERoute || e.k == K::Stmt || e.k == K::Tuple) && in_g(e, c) {\n        !incident_triple(r, c, d, e)",
+   "find": "else if (e.k == K::EEmb || e.k == K::ERoute || live_stmt(e) || e.k == K::Tuple) && in_g(e, c) {\n        !incident_triple(r, c, d, e)",
    "replace": "else if (e.k == K::EEmb || e.k == K::ERoute) && in_g(e, c) {\n        !incident_triple(r, c, d, e)",
    "expect_fail_in": [
     "theorem_ids_erase_statements"
@@ -151,12 +151,12 @@
   },
   {
    "name": "joined-commits-own",
-   "why": "the joined erase commits on its own: the caller's rollback no longer restores it",
-   "find": "(o, if commit { p2 } else { St { rows: base.rows, version: p2.version } })",
-   "replace": "(o, p2)",
+   "why": "product step: the Eraser's TCOMMIT ends every open level (a COMMIT that is not nested), so the caller's rollback no longer restores the erase",
+   "find": "tcommit(Tx { st: St { rows: effect(t.st.rows, ep, df), version: t.st.version + 1, bucket: t.st.bucket },\n                             lv: t1.lv })",
+   "replace": "Tx { st: St { rows: effect(t.st.rows, ep, df), version: t.st.version + 1, bucket: t.st.bucket },\n                             lv: Seq::<Seq<E>>::empty() }",
    "expect_fail_in": [
-    "theorem_joined_caller_decides",
-    "witness_dedicated_erase_survives_caller_rollback"
+    "lemma_eraser_keeps_levels",
+    "theorem_joined_caller_decides"
    ]
   },
   {
@@ -170,9 +170,9 @@
   },
   {
    "name": "failed-call-partial",
-   "why": "a failed call keeps what it removed before the failing step",
-   "find": "Some(late) => (Out::Failed, St { rows: st.rows,",
-   "replace": "Some(late) => (Out::Failed, St { rows: effect(st.rows, ep, df),",
+   "why": "product step: the Catch keeps what the failing step wrote (it closes its level instead of While $TLevel > tTxnLevel { TROLLBACK 1 })",
+   "find": "(Out::Failed, rollback_to(t2, found))",
+   "replace": "(Out::Failed, tcommit(t2))",
    "expect_fail_in": [
     "theorem_failed_call_leaves_stores"
    ]
@@ -184,6 +184,78 @@
    "replace": "| K::Gen | K::Degc | K::Degw | K::KLabel",
    "expect_fail_in": [
     "witness_graph_erase_clears_nolock"
+   ]
+  },
+  {
+   "name": "catch-rolls-back-every-level",
+   "why": "product step (the pre-4.6.4 Catch): a failing call rolls back every open level, the caller's included",
+   "find": "(Out::Failed, rollback_to(t2, found))",
+   "replace": "(Out::Failed, rollback_to(t2, 0))",
+   "expect_fail_in": [
+    "theorem_failed_call_leaves_stores"
+   ]
+  },
+  {
+   "name": "writetxn-undo-ends-caller-level",
+   "why": "product step: the store's WriteTxn exit rolls back the caller's level too (a driver rollback instead of Txn_Undo(level))",
+   "find": "_ => rollback_to(t2, 1) };",
+   "replace": "_ => rollback_to(t2, 0) };",
+   "expect_fail_in": [
+    "theorem_joined_list_erase_keeps_caller_work"
+   ]
+  },
+  {
+   "name": "edge-row-kills-closed",
+   "why": "EraseEdgeRow kills every statement of the triple, closed ones included (not only the one the tuple names)",
+   "find": "else if (e.k == K::EEmb || e.k == K::ERoute || live_stmt(e) || e.k == K::Tuple) && in_g(e, c) {\n        !row_for(r, c, t, tri(e))",
+   "replace": "else if (e.k == K::EEmb || e.k == K::ERoute || e.k == K::Stmt || e.k == K::Tuple) && in_g(e, c) {\n        !row_for(r, c, t, tri(e))",
+   "expect_fail_in": [
+    "theorem_edges_erase_statements"
+   ]
+  },
+  {
+   "name": "edges-erase-temporal",
+   "why": "repair of R1-ER-05 (reviewer mutant M1): a relationship-list erase also removes the erased triple's temporal events",
+   "find": "    else if e.k == K::Adj && in_g(e, c) { !t(tri(e)) }                         // Adjacency.Remove per triple",
+   "replace": "    else if e.k == K::Adj && in_g(e, c) { !t(tri(e)) }\n    else if e.k == K::Temporal && in_g(e, c) { !t(tri(e)) }",
+   "expect_fail_in": [
+    "theorem_edges_erase_keeps_temporal"
+   ]
+  },
+  {
+   "name": "delete-node-is-erase-ids",
+   "why": "the iteration-65 mapping: delete_node is EraseNodeIds alone, with no reifier sweep",
+   "find": "    sweep(r1, r1, gs, reifier_sel(r, c, ids))",
+   "replace": "    r1",
+   "expect_fail_in": [
+    "theorem_delete_node_sweeps_reifier_everywhere"
+   ]
+  },
+  {
+   "name": "reifier-sweep-default-graph-only",
+   "why": "repair of R1-ER-01: the sweep erases a reifier only in the graph reify_edge writes it in (the default graph)",
+   "find": "if gs.len() == 0 { r } else { sweep(erase_ids(r, gs[0], held_sel(r1, gs[0], rs)), r1, gs.drop_first(), rs) }",
+   "replace": "if gs.len() == 0 { r } else { sweep(if gs[0] == Seq::<int>::empty() { erase_ids(r, gs[0], held_sel(r1, gs[0], rs)) } else { r }, r1, gs.drop_first(), rs) }",
+   "expect_fail_in": [
+    "lemma_sweep_removes"
+   ]
+  },
+  {
+   "name": "python-control-set",
+   "why": "the Eraser's name check is Python's (codes 0-31 and 127 only): a C1 control character is accepted",
+   "find": "pub open spec fn ctl(ch: int) -> bool { ch < 32 || ch == 127 || (128 <= ch && ch <= 159) }",
+   "replace": "pub open spec fn ctl(ch: int) -> bool { ch < 32 || ch == 127 }",
+   "expect_fail_in": [
+    "theorem_unsafe_or_empty_refused"
+   ]
+  },
+  {
+   "name": "no-version-bump",
+   "why": "a successful graph erase leaves ^KG(\"__version\") (RemoveGraph's $Increment removed)",
+   "find": "version: t.st.version + 1, bucket: t.st.bucket },\n                             lv: t1.lv",
+   "replace": "version: t.st.version, bucket: t.st.bucket },\n                             lv: t1.lv",
+   "expect_fail_in": [
+    "theorem_graph_erase_call"
    ]
   }
  ]

@@ -1,0 +1,21 @@
+verification results:: 64 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/joined-commits-own/20261118T051937Z/models/erasure_stores/erasure_stores.rs:981:13
+    |
+981 |       ensures eraser(t, ep, f, df).1.lv == t.lv,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+982 |   {
+983 | /     if !refused(ep) {
+984 | |         if is_fault(f) { theorem_failed_call_leaves_stores(t, ep, f, df); }
+985 | |         else { assert(t.lv.push(t.st.rows).drop_last() =~= t.lv); }
+986 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/model-coverage-uplift-20261117/runs/ivg-cov-a/verus/erasure_stores/controls/joined-commits-own/20261118T051937Z/models/erasure_stores/erasure_stores.rs:1004:12
+     |
+1004 |     assert(t1.lv.len() == 1);
+     |            ^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+
