@@ -1,0 +1,33 @@
+====================================================================================================
+id                : install.schema.classes_follow#o01
+block             : install.schema.classes_follow
+locator           : lead: 'setup rewrites their sources for that schema before compiling them'
+statement         : The deployed ObjectScript classes use the engine's IVG Schema because setup rewrites their sources for it before compiling
+cases             : setup on Graph_KG vs another schema; a case-variant engine
+observation       : the compiled classes' embedded SQL schema
+model_locators    : 
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : upstream-test passed tests/e2e/test_262_alt_schema_paths.py; inspection rewrites with the engine's spelling, not the record's (bug-plt-015) iris_vector_graph/_engine/class_deploy.py
+parent_entailment : n/a: own text
+gap               : source rewrite not modelled (install_lifecycle takes classes as opaque) || owner-contradicted: deploy rewrites class sources with the engine's spelling, not the recorded schema's (bug-plt-015) (handoff-63 §6.1 #28)
+grade_source      : new: inspected here; it64: owner-contradicted tag added
+iteration         : 64
+--- block install.schema.classes_follow (.g5/ontology/operations/setup-and-upgrade.g5.md)
+[D · install.schema.classes_follow]
+
+The ObjectScript classes follow the IVG Schema because setup rewrites their sources for that schema before compiling them; no class reads the record at run time. This keeps the classes' embedded SQL within the [speed budget](#install.schema.speed).
+--- metadata
+### install.schema.classes_follow
+
+- Sources: [Spec 262 research R1](../../../specs/262-ivg-owned-sql-schema/research.md); [plan.md](../../../specs/262-ivg-owned-sql-schema/plan.md); [class_deploy.py](../../../iris_vector_graph/_engine/class_deploy.py)
+- Supersedes: ADR-0016's wording that "the ObjectScript classes read it there"; its status line still says "implementation pending"
+- Expands: [IVG Schema](#install.schema)
+- Children: [Speed budget](#install.schema.speed)
+- agent
+- architecture-decision
+
+Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/bugs_issues.md#bug-plt-012)

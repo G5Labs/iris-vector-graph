@@ -1,0 +1,337 @@
+----- obligations.tsv algorithms.op.paths.weighted#o01
+  block: algorithms.op.paths.weighted
+  locator: lead: 'returns a path with the lowest total cost, even when that path has more hops than another, and returns no row when no path joins the two nodes'
+  statement: The weighted search returns a minimum-cost path (even with more hops) and no row when no path exists.
+  cases: a-b cost 10 vs a-c-b cost 2: a-c-b; disconnected: no row
+  observation: procedure rows
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_actual_returned_path_is_optimal; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_empty_queue_is_no_feasible_path; .g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_raw_signed_rational_json
+  premises: finite stable raw scalar graph; exact integer or rational weights; nonnegative cap; float coercion, native JSON/collation and DijkstraCost's native body providers
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json; .g5/Verus_verification/results/weighted_fraction/20261116T160923Z-prove/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json; binding AGREES .g5/Verus_verification/results/weighted_fraction/20261115T220812Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: changed: coverage.md line 484 'Open (no optimality proof of the ObjectScript Dijkstra)': weighted_paths (iteration 9) proves optimality and termination; it64 regrade: held full
+  iteration: 64
+----- obligations.tsv algorithms.op.paths.weighted#o02
+  block: algorithms.op.paths.weighted
+  locator: bullet 1: 'Each edge costs its stored weight. A weight of zero or less, or no weight, costs one'
+  statement: Edge cost is its stored weight; zero, negative or missing weight costs 1.
+  cases: weight -2 costs 1 vs -2; no weight costs 1
+  observation: path cost
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search
+  premises: 
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json; .g5/Verus_verification/results/weighted_paths/20261116T163036Z-control-nonpositive-weight-zero/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/weighted_paths/NOTES.md
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o03
+  block: algorithms.op.paths.weighted
+  locator: bullet 2: 'naming another weight property, or a direction other than out, in or both, is refused'
+  statement: The procedure refuses a weight property other than the stored weight and any direction other than out/in/both.
+  cases: weightProp 'cost' or direction 'up': error vs answer
+  observation: error
+  model_locators: .g5/Verus_verification/models/sql_procs/sql_procs.rs::theorem_sql_entry_refuses_bad_arguments; .g5/Verus_verification/models/sql_procs/sql_procs.rs::dijkstra_json
+  premises: body-level CheckWeightProp/CheckDirection
+  grade: partial
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/sql_procs/20261117T072020Z-prove/receipt.json; .g5/Verus_verification/results/sql_procs/20261117T072043Z-control-sql-entry-unchecked/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/sql_procs/20261117T070417Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: the Python procedure's own CheckWeightProp/CheckDirection refusal is observation only (weighted_paths NOTES); proved at the SQL entry
+  grade_source: reused: models/sql_procs/NOTES.md (iteration 53); it64 regrade: full -> partial
+  iteration: 64
+----- obligations.tsv algorithms.op.paths.weighted#o04
+  block: algorithms.op.paths.weighted
+  locator: bullet 3: 'For distinct endpoints, a path that costs more than the cost limit, or has more hops than a positive hop limit, is not an answer'
+  statement: For distinct endpoints a path over the cost limit or over a positive hop limit is never returned.
+  cases: path cost = cap kept vs cap+1 rejected; hops = limit vs limit+1
+  observation: procedure rows
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_actual_returned_path_is_optimal; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_empty_queue_is_no_feasible_path
+  premises: nonnegative cap and hop bound
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json; .g5/Verus_verification/results/weighted_paths/20261116T163028Z-control-exact-cap-neighbor-rejected/receipt.json; .g5/Verus_verification/results/weighted_paths/20261116T163040Z-control-exact-cap-target-not-returned/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/weighted_paths/NOTES.md
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o05
+  block: algorithms.op.paths.weighted
+  locator: bullet 3: 'Zero means no hop limit in the public procedure'
+  statement: A hop limit of 0 means unbounded.
+  cases: maxHops 0 finds a 7-hop path
+  observation: procedure rows
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search
+  premises: H0 = unbounded in the Config
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/weighted_paths/NOTES.md
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o06
+  block: algorithms.op.paths.weighted
+  locator: bullet 3: 'a negative hop limit is refused there. The native search also treats negative hops as unbounded'
+  statement: The public procedure refuses a negative hop limit; the native search treats one as unbounded.
+  cases: maxHops -1: public error vs native unbounded answer
+  observation: error / native rows
+  model_locators: 
+  premises: 
+  grade: absent
+  design_check: none
+  check_scope: n/a
+  design_receipts: 
+  as_built: none
+  parent_entailment: n/a: own text
+  gap: negative public hops outside the formal Config domain (NOTES)
+  grade_source: reused: models/weighted_paths/NOTES.md (domain)
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o07
+  block: algorithms.op.paths.weighted
+  locator: bullet 4: 'Nonempty equal endpoints return the empty path at cost 0 before the native cost-cap or node-existence check'
+  statement: Equal nonempty endpoints answer the empty path at cost 0, even for a ghost ID or a negative cap.
+  cases: (ghost,ghost): empty path 0; negative cap self: 0
+  observation: procedure rows
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_admitted_self_is_zero; .g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_negative_cap_json_source_trace; .g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs::theorem_raw_signed_rational_json
+  premises: 
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json; .g5/Verus_verification/results/weighted_fraction/20261116T160923Z-prove/receipt.json; .g5/Verus_verification/results/weighted_cost/20261116T163015Z-control-admitted-self-zero-lost/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/weighted_paths/NOTES.md and weighted_fraction/NOTES.md; it64 regrade: held full
+  iteration: 64
+----- obligations.tsv algorithms.op.paths.weighted#o08
+  block: algorithms.op.paths.weighted
+  locator: bullet 4: 'Public empty or missing endpoint arguments are refused; direct native empty endpoints answer no path'
+  statement: The public procedure refuses an empty/missing endpoint; the native search answers no path for one.
+  cases: ('',b) public: error; native DijkstraJson('',b): {}
+  observation: error / native JSON
+  model_locators: .g5/Verus_verification/models/sql_procs/sql_procs.rs::theorem_dijkstra_endpoint_neighbors
+  premises: 
+  grade: partial
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/sql_procs/20261117T072020Z-prove/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/sql_procs/20261117T070417Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: the native side is modelled; the public refusal is outside the formal domain
+  grade_source: reused: models/sql_procs/NOTES.md
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o09
+  block: algorithms.op.paths.weighted
+  locator: bullet 5: 'With a graph named, it searches that graph'
+  statement: With a graph named only that graph's edges are searched.
+  cases: edge in another graph unused
+  observation: procedure rows
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_actual_returned_path_is_optimal; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_empty_queue_is_no_feasible_path
+  premises: graph selector in the transition
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/weighted_paths/NOTES.md
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o10
+  block: algorithms.op.paths.weighted
+  locator: bullet 5: 'With none, it searches each graph that has edges and gives one row for each graph where it finds a path'
+  statement: Without a graph, each graph with edges is searched separately and each graph with a path gives one row.
+  cases: path in default and in g: two rows; never a path crossing graphs
+  observation: procedure rows
+  model_locators: 
+  premises: 
+  grade: absent
+  design_check: none
+  check_scope: n/a
+  design_receipts: 
+  as_built: none
+  parent_entailment: n/a: own text
+  gap: unspecified-graph enumeration (engine.py::_proc_ivg_shortestpath_weighted :1275-1282) outside the formal domain
+  grade_source: new: inspected here
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o11
+  block: algorithms.op.paths.weighted
+  locator: bullet 6: 'Costs come back as decimal numbers, so a weight of one reads back as 1.0'
+  statement: Costs are returned as decimals (1.0, not 1).
+  cases: weight 1 path: totalCost 1.0
+  observation: procedure rows
+  model_locators: 
+  premises: 
+  grade: absent
+  design_check: none
+  check_scope: n/a
+  design_receipts: 
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: the final float(totalCost) consumer is observed by the binding, not modelled
+  grade_source: reused: models/weighted_paths/NOTES.md
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o12
+  block: algorithms.op.paths.weighted
+  locator: bullet 6: 'A failed search raises instead of answering no row'
+  statement: A failed search raises rather than answering no row.
+  cases: native error: exception vs []
+  observation: exception
+  model_locators: 
+  premises: 
+  grade: absent
+  design_check: none
+  check_scope: n/a
+  design_receipts: 
+  as_built: none
+  parent_entailment: n/a: own text
+  gap: not modelled
+  grade_source: new: inspected here
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o13
+  block: algorithms.op.paths.weighted
+  locator: bullet 7: 'DijkstraPath(...) runs the same search and answers the path's JSON text, or {} for no path'
+  statement: SQL DijkstraPath runs the same search and answers its JSON, {} for no path.
+  cases: same arguments through SQL and the procedure
+  observation: SQL value
+  model_locators: .g5/Verus_verification/models/sql_procs/sql_procs.rs::dijkstra_path; .g5/Verus_verification/models/sql_procs/sql_procs.rs::dijkstra_json; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search
+  premises: delegated search
+  grade: partial
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/sql_procs/20261117T072020Z-prove/receipt.json; .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/sql_procs/20261117T070417Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: the SQL entry's search is a delegation token (PathAns::Search); JSON text and '{}' are not modelled
+  grade_source: reused: models/sql_procs/NOTES.md; it64 regrade: full -> partial
+  iteration: 64
+----- obligations.tsv algorithms.op.paths.weighted#o14
+  block: algorithms.op.paths.weighted
+  locator: bullet 7: 'It refuses a caller without SELECT on rdf_edges'
+  statement: DijkstraPath refuses a caller without SELECT on rdf_edges before searching.
+  cases: no grant: refused; grant: answers
+  observation: SQL error
+  model_locators: .g5/Verus_verification/models/sql_procs/sql_procs.rs::theorem_entries_gated; .g5/Verus_verification/models/sql_procs/sql_procs.rs::theorem_readers_check_rdf_edges
+  premises: 
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/sql_procs/20261117T072020Z-prove/receipt.json; .g5/Verus_verification/results/sql_procs/20261117T072040Z-control-no-select-check/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/sql_procs/20261117T070417Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/sql_procs/NOTES.md; it64 regrade: held full
+  iteration: 64
+----- obligations.tsv algorithms.op.paths.weighted#o15
+  block: algorithms.op.paths.weighted
+  locator: bullet 7: 'it refuses another weight property or direction as the procedure does'
+  statement: DijkstraPath refuses another weight property or direction exactly as the procedure.
+  cases: weightProp 'cost' via SQL: error
+  observation: SQL error
+  model_locators: .g5/Verus_verification/models/sql_procs/sql_procs.rs::theorem_sql_entry_refuses_bad_arguments
+  premises: 
+  grade: partial
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/sql_procs/20261117T072020Z-prove/receipt.json; .g5/Verus_verification/results/sql_procs/20261117T072043Z-control-sql-entry-unchecked/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/sql_procs/20261117T070417Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: the comparison side (the Python procedure's checks) is observed only
+  grade_source: reused: models/sql_procs/NOTES.md; it64 regrade: full -> partial
+  iteration: 64
+----- obligations.tsv algorithms.op.paths.weighted#o16
+  block: algorithms.op.paths.weighted
+  locator: bullet 7: 'A graph of '' or NULL is the default graph'
+  statement: DijkstraPath's graph '' or NULL searches the default graph.
+  cases: graph '' vs NULL vs omitted: same answer
+  observation: SQL value
+  model_locators: .g5/Verus_verification/models/sql_procs/sql_procs.rs::theorem_default_graph_spellings
+  premises: 
+  grade: partial
+  design_check: none
+  check_scope: n/a
+  design_receipts: 
+  as_built: binding AGREES .g5/Verus_verification/results/sql_procs/20261117T070417Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: the default-graph spelling theorem is MatchEdges'; DijkstraPath's graph argument is not in the model's GArg domain
+  grade_source: new: inspected here
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o17
+  block: algorithms.op.paths.weighted
+  locator: bullet 8: 'Today DijkstraPath('', '') answers a zero-length path through a node named by the NUL character'
+  statement: Today DijkstraPath with two empty endpoints answers a zero-length path through $Char(0).
+  cases: ('','') zero path vs no path
+  observation: SQL value
+  model_locators: .g5/Verus_verification/models/sql_procs/sql_procs.rs::theorem_sql_empty_endpoints_zero_path
+  premises: 
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/sql_procs/20261117T072020Z-prove/receipt.json; .g5/Verus_verification/results/sql_procs/20261117T072045Z-control-nul-read-as-empty/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/sql_procs/20261117T070417Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/sql_procs/NOTES.md; defect bug-str-112; it64 regrade: held full
+  iteration: 64
+----- obligations.tsv algorithms.op.paths.weighted#o18
+  block: algorithms.op.paths.weighted
+  locator: bullet 9: 'Relationship types omitted or supplied as an empty list mean every type'
+  statement: Omitted or empty relationship types search every type.
+  cases: types [] vs [p]
+  observation: procedure rows
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_actual_returned_path_is_optimal; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_empty_queue_is_no_feasible_path
+  premises: empty predicate set = all
+  grade: full
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: 
+  grade_source: reused: models/weighted_paths/NOTES.md
+  iteration: 63
+----- obligations.tsv algorithms.op.paths.weighted#o19
+  block: algorithms.op.paths.weighted
+  locator: bullet 9: 'As built, the search reads each adjacency leaf's representative weight; in a correctly maintained multigraph that is the lowest live edge key'
+  statement: As built the search costs each adjacency leaf's representative weight, which in a maintained multigraph is the lowest live edge key's weight.
+  cases: multigraph key0 weight 10, key5 weight 1: cost 10 vs 1
+  observation: path cost
+  model_locators: .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_complete_terminating_search; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_actual_returned_path_is_optimal; .g5/Verus_verification/models/weighted_paths/weighted_paths.rs::theorem_empty_queue_is_no_feasible_path
+  premises: minimum over the raw scalar graph regardless of writer
+  grade: partial
+  design_check: proved
+  check_scope: narrowed
+  design_receipts: .g5/Verus_verification/results/weighted_paths/20261116T160926Z-prove/receipt.json
+  as_built: binding AGREES .g5/Verus_verification/results/weighted_paths/20261115T193617Z-binding/receipt.json
+  parent_entailment: n/a: own text
+  gap: the scalar-graph search is proved; the lowest-key writer (SetLeafFromLowest) is observed, not modelled
+  grade_source: reused: models/weighted_paths/NOTES.md
+  iteration: 63
+----- excluded.tsv algorithms.op.paths.weighted#x01
+  block: algorithms.op.paths.weighted
+  locator: bullet 9: 'Whether the intended minimum must instead consider every stored parallel relationship remains open'
+  kind: undecided-alternative
+  owner: 
+  reason: open question q-iter-007
+  iteration: 63
+----- excluded.tsv algorithms.op.paths.weighted#x02
+  block: algorithms.op.paths.weighted
+  locator: working assumption: 'Keep the current lowest-key representative route distinct from all-parallel-edge shortest path; the optimization domain needs owner choice'
+  kind: undecided-alternative
+  owner: 
+  reason: policy pending owner choice (q-iter-007)
+  iteration: 63

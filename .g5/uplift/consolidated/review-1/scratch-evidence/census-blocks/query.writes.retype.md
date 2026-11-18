@@ -1,0 +1,5 @@
+# query.writes.retype (recorded 5 obl / 2 exc; mine 5/2)
+Own enumeration: o1 node SET same-text retypes (Prop_Set); o2 pre-4.7.0 namespace keeps old string until deploy; o3 checked once per engine, unreadable taken as yes; o4 missing fn + unreadable -> write fails; o5 Today rel SET of own prop refused w/ misleading msg. Excl: "covers node properties" (definition), rel text by spelling (restatement -> query.values.relationship_text#o01, owner carries decode-by-spelling).
+Grades: all agree. o01 full: cypher_exprs.rs:362-365 node_update(true,..)==new for all old/new; deployed=true is the stated condition. o02 full: :378-383 relies on filer premise filer_writes_same_text()==false (:336) -> narrowed ok. o03 partial (cached is a param, :350). o04 partial: model at :368-376 shows Unreadable -> node_update(..)==new (retype succeeds); SQL failure not modelled. o05 absent (no rel-SET model; grep).
+Split: o03 statement (it64 'statement fixed') now also carries o04's failed-write outcome -> overlap/double ownership (minor).
+Fidelity: engine.py:1763-1781 matches prop_set_deployed; translator.py:12960-12968 _prop_set matches node_update switch.

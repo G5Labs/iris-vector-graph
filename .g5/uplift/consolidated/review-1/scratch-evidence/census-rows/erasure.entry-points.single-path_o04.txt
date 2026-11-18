@@ -1,0 +1,53 @@
+====================================================================================================
+id                : erasure.entry-points.single-path#o04
+block             : erasure.entry-points.single-path
+locator           : bullet 3: 'Today delete_edge runs its own delete'
+statement         : Today delete_edge removes the relationship row and its adjacency but leaves the relationship's live statement, reification and edge vector.
+cases             : delete_edge(s,p,o,g) on a ledger-created, reified relationship -> row and adjacency gone; stmt, tuple, reification, edge vector kept (store.delete_edges removes them)
+observation       : rdf_edges, ^KG out/in, ^IVG.Ledger stmt/tuple, rdf_reifications, kg_EdgeEmbeddings
+model_locators    : .g5/Verus_verification/models/erasure_stores/erasure_stores.rs::witness_delete_edge_leaves_statement; .g5/Verus_verification/models/erasure_stores/erasure_stores.rs::delete_edge
+premises          : erasure_stores store map (every kind the ontology names; one entry per row or global node); graph spelling via COALESCE
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json
+parent_entailment : 
+gap               : none
+grade_source      : new (iteration 65): owner Today bullet (bug-str-013) [cases: C7_delete_edge_bypass; the edge vector was not populated on the fixture]
+iteration         : 65
+--- block erasure.entry-points.single-path (.g5/ontology/features/erasure.g5.md)
+[D · erasure.entry-points.single-path]
+
+Every path that deletes graph content goes through the Eraser's transaction. A path that removes content from one store but not the others is a defect, not a mode.
+
+- The old graph-drop call is only a deprecated name for a graph erase.
+- The old adjacency-only delete survives only as a deprecated name for a relationship erase, and must be refused in strict mode like the other erases.
+- Today `delete_edge` runs its own delete: it removes the relationship row and its adjacency but leaves the relationship's live statement, its reification and its edge vector ([defect](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-013)).
+--- metadata
+### erasure.entry-points.single-path
+
+- Sources: [ADR-0004 Consequences](../../../docs/adr/0004-erasure-removes-content-not-history.md#L71-L82), [Eraser.cls header](../../../iris_src/src/Graph/KG/Eraser.cls#L1-L16), [nodes_edges.py delete_edge](../../../iris_vector_graph/_engine/nodes_edges.py#L1382-L1456), [schema.py delete_reification](../../../iris_vector_graph/_engine/schema.py#L3361-L3395), [operations inventory](../../uplift/ivg-verus-initial/intent/operations.md#L250-L262)
+- Expands: [Entry points](#erasure.entry-points)
+- agent
+- architecture-decision
+- test-coverage
+
+Observed divergence: several deletes bypass the Eraser and leave stores behind.
+
+- `delete_edge` removes the row and its adjacency, but not its reifications, edge embeddings or ledger statement.
+- Cypher `DELETE` of a relationship leaves the same. `DETACH DELETE` also leaves the optimized and routed node vectors and the temporal stores (inventory, not verified here).
+- `delete_reification` deletes the reifier's rows in every graph.
+- The temporal delete and purge, the temporal row drop, FHIR resync and the `rebuild_edge_indices` procedure delete outside the Eraser (inventory).
+
+The deprecated `bulk_delete_adjacency` still exists, but it now deletes through the Eraser's relationship erase, so it no longer leaves drift. ADR-0004 said it would be removed. Live test: `test_erase_graph.py::test_drop_graph_is_the_eraser_now`.
+
+Findings: [bulk_delete_adjacency deletes relationships under strict mode without a record](../../Verus_verification/bugs_issues.md#bug-plt-006); [Deleting a relationship with delete_edge or Cypher DELETE leaves its reifications, edge embeddings and ledger statement behind](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-013); [Under strict mode the only API delete is a ledger changeset, which leaves documents, temporal, FHIR and search-index content that redaction and verify cannot see](../../Verus_verification/bugs_issues.md#bug-led-008); [ADR-0004 says bulk_delete_adjacency was removed, but it is still shipped and documented](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-007); [Delete a relationship through one Eraser path, whatever the caller](../../Verus_verification/design_simplification.md#simp-str-001)
+
+Iteration 65 ([erasure_stores binding](../../Verus_verification/results/erasure_stores/20261118T043516Z-binding/receipt.json)): `drop_graph` behaved as `erase_graph` (`B2_drop_graph_g2`); `bulk_delete_adjacency` erased the incident relationships through EraseEdges in each graph holding one (`C8`).
+
+State machines: [erasure across stores](../../Verus_verification/models/erasure_stores/manifest.json)
+--- proof fn witness_delete_edge_leaves_statement() [POINT CHECK]
+    header: ensures ({ let r = seq![ent(K::Edge, g1(), n_a(), n_b(), 7, 0), ent(K::Stmt, g1(), n_a(), n_b(), 0, 0), ent(K::Reif, none(), none(), none(), 7, 0), ent(K::EEmb, g1(), n_a(), n_b(), 0, 0)]; let post = delete_edge(r, g1(), (n_a(), 1, n_b())); &&& !post.contains(r[0]) &&& post.contains(r[1]) &&& post.contains(r[2]) &&& post.contains(r[3]) &&& !erase_edges(r, g1(), |x: (Str, int, Str)| x == (n_a(), 1int, n_b())).contains(r[1]) }),
+--- delete_edge: not a proof fn (spec fn / exec fn / type / other)
+--- latest PASS prove receipt for erasure_stores: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (verdict PASS)

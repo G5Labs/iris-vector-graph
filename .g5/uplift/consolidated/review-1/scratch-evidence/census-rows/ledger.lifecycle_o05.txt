@@ -1,0 +1,61 @@
+====================================================================================================
+id                : ledger.lifecycle#o05
+block             : ledger.lifecycle
+locator           : bullet 4: 'While the ledger is disabled, commits ... are refused with LedgerDisabledError and nothing is recorded'
+statement         : While disabled, commits are refused with LedgerDisabledError and nothing is recorded
+cases             : disabled: refused vs enabled: commits
+observation       : exception; history
+model_locators    : .g5/Verus_verification/models/ledger_client/ledger_client.rs::theorem_disabled_and_never_enabled
+premises          : head lock and counter row free
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/ledger_client/20261118T013558Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/ledger_client/20261117T225756Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: models/ledger_client/NOTES.md (iteration-60 repair 2) and iteration-60 test-obligations.md; it64 regrade: f removed '(counted)', imported from ledger.observability#o03, to match the block bullet; theorem_disabled_and_never_enabled: Disabled -> Disabled raised and same_ledger; requires holder/stats free na
+iteration         : 64
+--- block ledger.lifecycle (.g5/ontology/operations/ledger.g5.md)
+[I · ledger.lifecycle]
+
+The ledger is off until someone enables it.
+
+- The first enable writes a genesis revision that describes the current graph.
+- Enabling a ledger that is already enabled changes nothing and returns the head; `enable(strict=True)` then leaves strict mode as it was.
+- The first enable sets strict mode, the size limit for a changeset and the size bound for a reconstruction. Strict mode can be switched later.
+- Disabling is safe to repeat. While the ledger is disabled, commits and redactions are refused with `LedgerDisabledError` and nothing is recorded, but `head()`, history and the other readers still work. Before the first enable, commits, redactions, `head()`, `verify()` and `set_strict()` are refused with `LedgerNotEnabledError`, and history is empty.
+- Today, disabling does not cancel an unfinished redaction: its next batch is refused with `LedgerDisabledError`, the marker stays, and the caller runs the same redaction again after enabling. Whether disable should be refused instead is [open](../../Verus_verification/open_questions.md#q-led-003).
+- Enabling again while a redaction is unfinished skips the adoption below without an error.
+- Enabling again records, as one adoption revision by `system:ledger-verify`, every difference that verify finds: the changes made while it was disabled and any earlier writes made outside the ledger. Strict mode then comes from this call (off by default), so a `set_strict` made while disabled does not survive it.
+
+- Working assumption: Prefer refusal of disable during unfinished redaction; resumption and blocked readers require a deliberate lifecycle rule.
+- Working assumption: Refuse `disable()` and `set_strict()` inside a caller transaction on every engine, as `enable()`/`redact()`.
+- Working assumption: Keep `max_ops` and `recon_bound` fixed at genesis. Model strict as set by `enable(strict=...)` on genesis and on every re-enable (default False) and by `set_strict`; record the reset on re-enable as an explicit transition and do not assume strict survives a disable/enable cycle.
+--- metadata
+### ledger.lifecycle
+
+
+- design-verified
+
+- uncertain
+- Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [Ledger.cls Enable/Disable](../../../iris_src/src/Graph/KG/Ledger.cls#L250-L358), [client.py enable](../../../iris_vector_graph/ledger/client.py#L281-L303)
+- Verus (iteration 60): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_enable_lifecycle`, `theorem_disable_and_set_strict`, `witness_strict_set_while_disabled_is_reset_by_enable`, `theorem_head_reader_states`; native binding on the local fixture agrees (enable on an enabled ledger keeps strict; a strict flag set while disabled is reset by the next enable).
+- Verus (inspected typed adoption slice): [ledger_content alternate](../../Verus_verification/models/ledger_content/NOTES.md) derives adopted identity reuse/allocation and typed contents while retaining permissive payload and duplicate-view boundaries. Raw envelope/parser/tuple-JSON reference handling, canonical SQL changes and truth of supplied priors are not proved. Actual downstream Python readers execute the typed records; bounded native Adopt producer assertions were not run.
+- Expands: [Revision](../features/ledger.g5.md#ledger.revision)
+- Children: [Genesis](#ledger.lifecycle.genesis), [What should disabling the ledger do while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-led-003)
+- agent
+- user-facing-behavior, operations
+
+Live tests: `test_ledger_us01_commit_head.py` (genesis) and `test_ledger_us09_verify.py::test_disable_and_reenable_adopts`. Enable takes `strict`, `max_ops` and `recon_bound`; `set_strict` switches strict mode and takes no head lock. The redaction's stop on disable is a code comment in [LedgerRedact.cls BatchInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L302-L305); disable itself takes no head lock and does not refuse while a redaction is unfinished. Observed divergence: re-enabling while a redaction is unfinished skips the adoption without reporting it, because verify returns `redaction_in_progress`.
+
+Findings: [Re-enabling the ledger during an unfinished redaction skips the adoption without telling the caller](../../Verus_verification/bugs_issues.md#bug-led-004); [What should disabling the ledger do while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-led-003)
+
+Open questions: [Should disable() and set_strict() refuse a caller's open transaction, as enable() does?](../../Verus_verification/open_questions.md#HD-1102), [Should the ledger's settings be changeable after the genesis?](../../Verus_verification/open_questions.md#HD-1104), [What should disabling the ledger do while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-led-003)
+
+Findings: [Two ledger test fixtures read a meta() key that does not exist, so their teardown always disables the ledger of the shared scratch namespace](../../Verus_verification/bugs_issues.md#bug-test-004)
+
+State 
+--- proof fn theorem_disabled_and_never_enabled(s: Srv, c: Cs, p: nat, a: Apply, f: int)
+    header: requires s.holder is None, s.stats_holder is None, calls_server(c), ensures ({ let o = client_commit(s, c, p, a, f); &&& s.state == LState::Never ==> o.py == Py::Raise(Exc::NotEnabled) && o.srv == s && o.events == seq![Ev::Refused(Code::NotEnabled)] &&& s.state == LState::Disabled ==> o.py == Py::Raise(Exc::Disabled) && same_ledger(o.srv, s) && o.srv.cnt == (Cnt { disabled: s.cnt.disabled + 1, ..s.cnt }) && o.events == seq![Ev::Refused(Code::Disabled)] }),
+--- latest PASS prove receipt for ledger_client: .g5/Verus_verification/results/ledger_client/20261118T013558Z-prove/receipt.json (verdict PASS)

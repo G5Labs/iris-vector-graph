@@ -1,0 +1,4 @@
+# install.status.capabilities (recorded 7/1; mine 9/1)
+o02 merges: read once per engine (caps_of def :355, no theorem), class dictionary (os constant true :352, unmodelled), markers written only with edge rows (proved :616 + :603). Split would give full/partial/absent. Minor.
+Grades agree: o01 full refuted (theorem_markers_never_set_after_empty_setup :603-614; ^KG built implied by rows), o03 full (sync_eng :165, lemma_markers_kept :590 general), o04 full, o05 absent (PPR path choice unmodelled), o06 full (:624), o07 absent (WA about current behaviour, assessable; correct).
+Fidelity: schema.py:3309-3358 bootstrap_kg_global = setup() (rows>0 && !marker_kg -> both markers); _engine/schema.py:2887-2895 _sync_kg sets only self.capabilities.kg_built; engine.py:1742-1756 detects once. Matches. BuildKG failure branch (no markers) unmodelled.

@@ -1,0 +1,33 @@
+====================================================================================================
+id                : install.snapshot.failure#o02
+block             : install.snapshot.failure
+locator           : lead: 'A restore is not atomic as a whole: a failed table commit raises an error naming the tables already committed'
+statement         : A restore is not atomic as a whole: it commits table by table, and a failed table commit raises an error naming the tables already committed.
+cases             : commit failure on the third table
+observation       : exception text and committed tables
+model_locators    : 
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : inspection read iris_vector_graph/_engine/snapshot.py
+parent_entailment : n/a: own text
+gap               : no model
+grade_source      : new: inspected here; it64 regrade: statement fixed (f)
+iteration         : 64
+--- block install.snapshot.failure (.g5/ontology/operations/snapshots-and-bulk-load.g5.md)
+[D · install.snapshot.failure]
+
+Saving fails with no archive written if any table or global cannot be read. A restore is not atomic as a whole: a failed table commit raises an error naming the tables already committed. The erase that starts a replacing restore is one transaction.
+--- metadata
+### install.snapshot.failure
+
+- Sources: [_engine/snapshot.py](../../../iris_vector_graph/_engine/snapshot.py); [ADMIN_GUIDE](../../../docs/ADMIN_GUIDE.md); [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls)
+- Expands: [Snapshots](#install.snapshot)
+- agent
+- data-integrity, operations
+
+Introduced in 4.6.0 (R271, R276). Suspected divergence: one global line that fails to write during restore is logged and skipped without being counted or reported.
+
+Findings: [A restore swallows a global line that fails to import](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-016)

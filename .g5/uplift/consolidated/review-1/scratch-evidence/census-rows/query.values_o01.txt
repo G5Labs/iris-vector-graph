@@ -1,0 +1,55 @@
+====================================================================================================
+id                : query.values#o01
+block             : query.values
+locator           : lead: 'A node property read preserves its stored numeric type: a D-marked IRIS double becomes a Python float, and an N-marked integer becomes an int'
+statement         : A node property stored as a D-marked double reads as float and an N-marked integer as int
+cases             : D vs N tag; numeric write vs numeric-looking text
+observation       : the returned Python value and type
+model_locators    : .g5/Verus_verification/models/node_read/node_read.rs::theorem_numeric_writer_and_reader; .g5/Verus_verification/models/node_read/node_read.rs::theorem_sql_scalar_read_reaches_result; .g5/Verus_verification/models/node_read/node_read.rs::typed_column
+premises          : scalar node-property projections; numeric payload abstract
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/node_read/20261116T160751Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/node_read/20261115T053327Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : outside-statement: the binding substitutes IRIS for as-built agreement (evidence detail; the D/N read rule itself is proved)
+grade_source      : reused: coverage.md rows 510-511 and models/node_read/NOTES.md; it64 regrade: gap retagged outside-statement
+iteration         : 64
+--- block query.values (.g5/ontology/features/cypher.g5.md)
+[D · query.values]
+
+A node property read preserves its stored numeric type: a D-marked IRIS double becomes a Python float, and an N-marked integer becomes an int (a fractional or exponent N spelling becomes a float). Unmarked numeric-looking node text stays text; a string beginning with the mark is escaped with S and unwrapped once, so its contents are not decoded again.
+
+- Since 4.6.4 the Python node writers bind signed 64-bit integers and finite floats as numbers; booleans become `true`/`false` text, lists and maps JSON text, and larger integers and nonfinite floats text. Earlier Python numeric text stays text after setup. The engine's node read API decodes stored booleans and valid JSON lists/maps; a string spelling a list/map also reads as one.
+- Relationship properties are stored in qualifier text and follow their separately owned decoder; preserving a node's stored type does not establish that relationship values preserve their original type.
+- A returned value keeps its Cypher type at every reader and with every supported IRIS driver, whatever expression produced it: a number stays a number, a boolean a boolean, and a list or map a list or map. The four readers are the Python engine, Bolt, `/api/cypher` and `/db/neo4j/tx/commit`.
+- Today a `CASE` column whose branches are node properties is not decoded: a stored boolean answers `'true'`, a stored list or map its JSON text, and with IRIS driver 5.4.1 a stored number its text (`'3'`), on every reader ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-156)).
+- Today `WITH coalesce(n.a, n.b) AS x ... RETURN x` answers a stored number or boolean as text (`'3'`, `'true'`) under both drivers, while `RETURN coalesce(n.a, n.b)` is typed ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-155)).
+--- metadata
+### query.values
+
+- design-verified
+- Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
+- Children: [relationship property text](#query.values.relationship_text), [conditions](#query.values.conditions), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering), [sorting](#query.values.sorting), [nulls](#query.values.nulls), [string predicates](#query.values.string_predicates), [IN lists](#query.values.in_lists)
+- Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md), as-built numeric writer, D/N tag selection, S escape and numeric/text read distinctions. The scalar node-property projection reaches the final result in `theorem_sql_scalar_read_reaches_result`; JSON/J tags, N fractional/exponent parsing, nonfinite values, mixed expressions and the remaining SQL finishing pipeline are open modeling gaps. Numeric spelling/parse identity in `CY_TYPED` is an inspected provider premise, not a proved IRIS function.
+- agent
+- user-facing-behavior
+
+New owner in the consolidated uplift. Node values and the typed-value marks are the playbook's `CYP-B17` family.
+
+Audit reproduction: [F-0810](../../Verus_verification/bugs_issues.md#F-0810) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [SET n.p = null keeps the key](../../Verus_verification/bugs_issues.md#F-0810); [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A relationship property that is not a number orders as one against a number literal](../../Verus_verification/bugs_issues.md#bug-cyp-103); [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105).; [import_rdf drops a literal's datatype](../../Verus_verification/bugs_issues.md#bug-str-109)
+
+State machines: [node read](../../Verus_verification/models/node_read/manifest.json)
+
+Findings: [A UNION answers stored property values as their storage text: 1 as "\x01N1", 2.5 as "\x01D2.5", a list as JSON text](../../Verus_verification/bugs_issues.md#bug-cyp-138) (iteration 54: a UNION drops the type decoders this block's reads rely on)
+
+Iteration 58 (W62 D1 missed; D3-D6 held): [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md); Verus [result_decoders](../../Verus_verification/models/result_decoders/NOTES.md) `theorem_typed_roundtrip`, `theorem_property_reads_roundtrip`, `theorem_strings_held_everywhere`, `theorem_with_coalesce_number_is_text`, `theorem_case_bool_is_text`, `theorem_case_container_is_text`, `theorem_case_number_by_driver`, `theorem_compare_is_boolean_or_null`. Findings: [A WITH column of coalesce() answers a stored numb
+--- proof fn theorem_numeric_writer_and_reader(n: int)
+    header: requires in64(n), ensures journey(Input::Integer(n)) == Value::Integer(n), journey(Input::Double(n)) == Value::Double(n),
+--- proof fn theorem_sql_scalar_read_reaches_result(n: int)
+    header: requires in64(n), ensures finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Integer(n))))==Cell::Decoded(Value::Integer(n)), finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Double(n))))==Cell::Decoded(Value::Double(n)), finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Text(seq!['2','9']))))==Cell::Decoded(Value::Text(seq!['2','9'])),
+--- typed_column: not a proof fn (spec fn / exec fn / type / other)
+--- latest PASS prove receipt for node_read: .g5/Verus_verification/results/node_read/20261116T160751Z-prove/receipt.json (verdict PASS)

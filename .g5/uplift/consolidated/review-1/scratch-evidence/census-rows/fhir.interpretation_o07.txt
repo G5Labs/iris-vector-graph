@@ -1,0 +1,35 @@
+====================================================================================================
+id                : fhir.interpretation#o07
+block             : fhir.interpretation
+locator           : bullet 3: 'Personalized PageRank skips them by default'
+statement         : FHIR personalized PageRank skips compartment edges unless the caller passes an exclusion list
+cases             : fhir_concept_ppr default -> compartment edges not walked; exclude_predicates=[] -> walked
+observation       : PPR scores
+model_locators    : 
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : inspection read iris_vector_graph/_engine/fhir_graph.py
+parent_entailment : n/a: own text
+gap               : no model; source: only fhir_concept_ppr defaults to FHIR_PPR_EXCLUDE, engine.personalized_pagerank(graph=...) defaults to no exclusion (algorithms.py:227) || owner-contradicted: only fhir_concept_ppr skips them (fhir_graph.py:409); personalized_pagerank defaults exclude_predicates=None (algorithms.py:227, :434) (iteration-63 §6.1 item 13)
+grade_source      : new: inspected here
+iteration         : 64
+--- block fhir.interpretation (.g5/ontology/features/fhir.g5.md)
+[D · fhir.interpretation]
+
+A sync adds compartment edges from each resource to its patients, derived from the reference edges already synced and the server's patient-compartment rules.
+
+- The source resource owns its compartment edges: they are re-derived in the same transaction as its reference edges and deleted with it.
+- Erasure, snapshot restore and graph verification (`verify_graph`) treat compartment edges as ordinary edges.
+- Personalized PageRank skips them by default, and status counts them apart from reference edges.
+--- metadata
+### fhir.interpretation
+
+- Sources: [Spec 235 Clarifications, session 2026-09-26](../../../specs/235-fhir-graph-interpretation/spec.md); [FHIR_GRAPH.md interpretation contract](../../../docs/FHIR_GRAPH.md)
+- Children: [version](#fhir.interpretation.version)
+- agent
+- user-facing-behavior
+
+The spec's clarification answers carry no human attribution.

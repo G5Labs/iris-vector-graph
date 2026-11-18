@@ -1,0 +1,49 @@
+====================================================================================================
+id                : access.bolt.graph_values#o05
+block             : access.bolt.graph_values
+locator           : lead: 'a relationship carries ... its stored start and end node'
+statement         : A relationship carries its stored start and end node whatever the RETURN column order
+cases             : RETURN a, r, b vs b, r, a vs r alone
+observation       : Relationship start/end ids
+model_locators    : .g5/Verus_verification/models/bolt_answers/bolt_answers.rs::theorem_endpoints_follow_columns; .g5/Verus_verification/models/bolt_answers/bolt_answers.rs::theorem_one_hop_right_iff_source_first; .g5/Verus_verification/models/bolt_answers/bolt_answers.rs::theorem_rel_alone_or_last
+premises          : one relationship column; paths outside
+grade             : full
+design_check      : refuted
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/bolt_answers/20261117T063017Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/bolt_answers/20261117T063052Z-binding/receipt.json
+parent_entailment : none
+gap               : 
+grade_source      : reused: models/bolt_answers/NOTES.md; it64 regrade: held
+iteration         : 64
+--- block access.bolt.graph_values (.g5/ontology/features/client-interfaces.g5.md)
+[I · access.bolt.graph_values]
+
+A value in a Bolt record arrives with the value and type the engine answers, and a whole node or relationship arrives as a Bolt node or relationship. A node carries its own identity, labels and stored properties; a relationship carries its type, its properties and its stored start and end node.
+- Integers, floats, strings, booleans, null, lists, maps and paths arrive alike on Bolt, `execute_cypher` and the HTTP routes. Integers use the smallest PackStream width; a path arrives as the engine's map of node ids and relationship types.
+- Today a node's id is 31 bits of Python's hash of its node ID, so two nodes can reach the client as one, and ids change when the server restarts ([finding](../../Verus_verification/bugs_issues.md#bug-plt-122)).
+- Today a relationship's start and end are the node columns before and after it in the RETURN: `RETURN b, r, a` reports b as the start of a stored `a→b`, and `RETURN r` alone has no endpoints ([finding](../../Verus_verification/bugs_issues.md#bug-plt-123)).
+- Today a whole node carries each property longer than 200 characters as its first 200 characters and `...`, and a long list or map as that text ([finding](../../Verus_verification/bugs_issues.md#bug-plt-121)).
+--- metadata
+### access.bolt.graph_values
+
+- design-verified
+- Sources: [`_node_int_id`, `pack_node`](../../../iris_vector_graph/bolt_server.py#L351-L362), [`_recompose_graph_row`, `_pack_rel_from_value`, `_parse_props_field`](../../../iris_vector_graph/bolt_server.py#L713-L905), [`PackStream`](../../../iris_vector_graph/bolt_server.py#L67-L150); [USER_GUIDE: lists, maps and paths through execute_cypher, REST and Bolt](../../../docs/USER_GUIDE.md); [PackStream specification](https://neo4j.com/docs/bolt/current/packstream/)
+- Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `int_marker`, `theorem_marker_is_smallest`; `bolt_id`, `client_view2`, `theorem_hash_collision_loses_first_node`, `theorem_distinct_ids_keep_both`; `reported`, `theorem_endpoints_follow_columns`, `theorem_one_hop_right_iff_source_first`, `theorem_rel_alone_or_last`; `bolt_node_prop`, `theorem_long_property_truncated`, `theorem_short_property_kept`
+- Evidence: [W60 predictions RT1-RT11, BP6-BP8, T1-T3 and results](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)
+- Expands: [Bolt stream](#access.bolt)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 55. The value-type rows RT1-RT7 held on all four readers (Python, Bolt, `/api/cypher`, `/db/neo4j/tx/commit`). The id collision relies on the neo4j driver's per-result node cache (provider premise P-DRIVER-ID, observed with 6.4.1).
+
+Findings: [Bolt cuts long node properties](../../Verus_verification/bugs_issues.md#bug-plt-121); [Bolt node ids can collide](../../Verus_verification/bugs_issues.md#bug-plt-122); [Bolt relationship endpoints follow column order](../../Verus_verification/bugs_issues.md#bug-plt-123); [The Neo4j HTTP transaction route answers a node as three text columns](../../Verus_verification/bugs_issues.md#bug-plt-126)
+
+State machines: [bolt answers](../../Verus_verification/models/bolt_answers/manifest.json)
+--- proof fn theorem_endpoints_follow_columns(a: int, b: int)
+    header: requires a != b, a != 0, b != 0, ensures reported(seq![Col::Node(b), Col::Rel, Col::Node(a)], 1) == (b, a), reported(seq![Col::Node(b), Col::Rel, Col::Node(a)], 1) != (a, b),
+--- proof fn theorem_one_hop_right_iff_source_first(x: int, y: int, src: int, dst: int)
+    header: requires x != y, src != dst, (x == src && y == dst) || (x == dst && y == src), ensures (reported(seq![Col::Node(x), Col::Rel, Col::Node(y)], 1) == (src, dst)) == (x == src),
+--- proof fn theorem_rel_alone_or_last(a: int, b: int)
+    header: ensures reported(seq![Col::Rel], 0) == (0int, 0int), reported(seq![Col::Node(a), Col::Node(b), Col::Rel], 2) == (b, 0int),
+--- latest PASS prove receipt for bolt_answers: .g5/Verus_verification/results/bolt_answers/20261117T063017Z-prove/receipt.json (verdict PASS)

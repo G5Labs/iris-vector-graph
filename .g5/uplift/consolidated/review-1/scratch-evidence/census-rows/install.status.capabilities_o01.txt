@@ -1,0 +1,43 @@
+====================================================================================================
+id                : install.status.capabilities#o01
+block             : install.status.capabilities
+locator           : lead: 'engine.capabilities says what the namespace has deployed'
+statement         : engine.capabilities says what the namespace has deployed (classes, ^KG, ^NKG)
+cases             : empty setup, later edges and sync(): a new engine reads kg_built/nkg_built False although both are built
+observation       : engine.capabilities
+model_locators    : .g5/Verus_verification/models/operator_reports/operator_reports.rs::theorem_markers_never_set_after_empty_setup
+premises          : declared adjacency index; KGEdgeCount below its 10000 cap; no Arno library; P-COLLATE (IRIS DISTINCT answers SQLUPPER, observed); probe failures as inputs
+grade             : full
+design_check      : refuted
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/operator_reports/20261117T045706Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/operator_reports/20261117T045659Z-binding/receipt.json
+parent_entailment : n/a: own text (child of install.status)
+gap               : 
+grade_source      : reused: models/operator_reports/NOTES.md (iterations 52-53), decision-links.tsv; it64 regrade: refutation note moved from gap: as-built counterexample bug-plt-117
+iteration         : 64
+--- block install.status.capabilities (.g5/ontology/operations/status-and-repair.g5.md)
+[I · install.status.capabilities]
+
+`engine.capabilities` says what the namespace has deployed. Each engine reads it once, from the class dictionary and two markers that setup writes when it finds edge rows to build from.
+- `sync()` sets `kg_built` only in the engine that ran it and never sets `nkg_built` or the markers.
+- So on a namespace set up while empty, every engine created later reads `kg_built` and `nkg_built` False whatever is built, until setup runs again while edges exist. Meanwhile personalized PageRank skips its ObjectScript fast path in those engines ([bug-plt-117](../../Verus_verification/bugs_issues.md#bug-plt-117)).
+- Running setup again re-detects the capabilities and sets both markers once edges exist, from any engine.
+- Working assumption: the store's `capabilities()` is a fixed list of what the adapter implements, every algorithm True, with only the Arno entries live; it is not a report of what this namespace can run. Read availability from `engine.capabilities` and `status()` ([open question](../../Verus_verification/open_questions.md#HD-1703)).
+--- metadata
+### install.status.capabilities
+
+- Sources: [capabilities](../../../iris_vector_graph/engine.py#L1742-L1814), [markers read](../../../iris_vector_graph/schema.py#L2782-L2850), [markers written](../../../iris_vector_graph/schema.py#L3309-L3358), [setup replaces the cache](../../../iris_vector_graph/_engine/schema.py#L2578-L2596), [sync sets kg_built](../../../iris_vector_graph/_engine/schema.py#L2887-L2895), [PageRank fast path](../../../iris_vector_graph/_engine/algorithms.py#L341-L343), [store catalogue](../../../iris_vector_graph/stores/iris_sql_store.py#L29-L52), [API reference](../../../docs/API_REFERENCE.md#L51-L57)
+- Expands: [Status reports](#install.status)
+- agent
+- architecture-decision, operations
+- uncertain
+- design-verified
+- Formal: [`theorem_markers_never_set_after_empty_setup`, `theorem_setup_again_sets_markers`, `theorem_setup_with_edges_sets_markers`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+Expected result from the API reference ("What the namespace has deployed: the Graph.KG classes, ^KG, ^NKG"). Findings: [bug-plt-117](../../Verus_verification/bugs_issues.md#bug-plt-117). The store catalogue is observed only (all True, Arno entries absent with Arno not loaded); its intent stays with [HD-1703](../../Verus_verification/open_questions.md#HD-1703).
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+--- proof fn theorem_markers_never_set_after_empty_setup(acts: Seq<Act>, eng: Eng)
+    header: requires eng.caps.is_none(), ensures ({ let ns = run(fresh_setup(), acts); &&& !detect(ns).kg_built && !detect(ns).nkg_built &&& caps_of(ns, sync_eng(ns, eng)).kg_built &&& !caps_of(ns, sync_eng(ns, eng)).nkg_built }),
+--- latest PASS prove receipt for operator_reports: .g5/Verus_verification/results/operator_reports/20261117T045706Z-prove/receipt.json (verdict PASS)

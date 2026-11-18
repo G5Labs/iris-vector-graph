@@ -1,0 +1,6 @@
+# ledger.observability (recorded 6 obl / 5 exc; mine ~19 / 5)
+Split: o03 merges 11 independently failing counter outcomes (written incl genesis, replays, stale, unknown, conflict, redacted-key conflict, failed op, too many ops, disabled, lock timeout, strict-mode). Separately: replays ledger_client.rs:519-530, conflict :536-546, stale/unknown :589-600, disabled :602-612, too large :624-635, failed op :637-649, lock timeout counted in theorem_uncounted_nested_refusal_leaves_the_counter_row :699 (not cited), strict count :722-741. Genesis and IdemRedacted (bump :172, no theorem) partial. Merged partial hides ~8 full.
+o04 merges never-enabled / redaction-blocked / inconsistent (3); each full via :602-612, :722-741.
+Grades agree: o01 partial (single event seq for all hooks; product client.py:538 loops hooks), o02 absent, o05 full scope full (requires calls_server only), o06 absent.
+Exclusions: x01->caller-transaction#o05 ok; x02->#o12 covers strict count, verify record not explicit (minor); x03->#o09 ok; x04->#o11 ok; x05->size#o05 only empty changeset, bad op reference is size#o04 (owner pointer incomplete, still carried). o01 statement also includes the client-side-refusal clause excluded by x05 (double-handled).
+Fidelity: client.py:401-422,508-540 one _emit per server call, log line + per-hook loop with try/except; matches client_commit :299-314.

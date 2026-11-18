@@ -1,0 +1,39 @@
+====================================================================================================
+id                : structure.rebuilt#o01
+block             : structure.rebuilt
+locator           : lead: 'The interned snapshot ... Each records the graph-version token it was built from and is current only while that token is still the live one'
+statement         : The interned snapshot (^NKG) records the token it was built from and is current only while that token is live
+cases             : another process's bulk write moves the token -> ^NKG stale for every reader; no write -> current
+observation       : readers' freshness decision for ^NKG
+model_locators    : .g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs::theorem_mark_graph_gone
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : none
+as_built          : inspection contradicted iris_src/src/Graph/KG/TraversalBuild.cls
+parent_entailment : residual: structure.rebuilt.stamp#o01..o07 and structure.rebuilt.valid#o01..o02 can all hold while ^NKG decides freshness by its own stale flag and a per-process flag (metadata observed divergence)
+gap               : owner-contradicted: the block's metadata says the interned snapshot decides freshness with its own stale flag and a per-process flag, not a token stamp, and freshness.py has no caller || adjacency_maint models only the stale flag MarkGraphGone sets
+grade_source      : new: inspected here; it64 regrade: gap tagged owner-contradicted
+iteration         : 64
+--- block structure.rebuilt (.g5/ontology/architecture/adjacency-and-derived-data.g5.md)
+[D · structure.rebuilt]
+
+The interned snapshot, the two-hop statistics, the accelerator's snapshot and cached algorithm results are rebuilt stores. Each records the graph-version token it was built from and is current only while that token is still the live one, so a failed rebuild leaves it stale for every process.
+
+- Working assumption: yes, because the degree cache and the rebuild already treat that case as unsafe. Today the cached result stays current until the next write (observed).
+--- metadata
+### structure.rebuilt
+
+- uncertain
+- Sources: [CONTEXT.md, Rebuilt store](../../../CONTEXT.md#L109-L114), [ADR-0008 decision](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L23-L26), [freshness module](../../../iris_vector_graph/freshness.py), [two-hop stamps](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L939-L992)
+- Children: [token](#structure.rebuilt.token), [stamp](#structure.rebuilt.stamp), [valid results](#structure.rebuilt.valid), [When a computation sees a write that is not yet committed and that write later rolls back, must the cached result be thrown away?](../../Verus_verification/open_questions.md#structure.rebuilt.rollback), [stale snapshot reads](#structure.rebuilt.stale_read)
+- agent
+- architecture-decision, data-integrity
+
+The interned snapshot's graph scope is stated in [graph scope](../concepts/graph-scope.g5.md#graph.unscoped_snapshot). Observed divergence: the interned snapshot decides freshness with its own stale flag and a per-process flag rather than a token stamp, and every edge write also updates it in place. The freshness module is imported nowhere.
+
+Open questions: [When a computation sees a write that is not yet committed and that write later rolls back, must the cached result be thrown away?](../../Verus_verification/open_questions.md#structure.rebuilt.rollback)
+--- proof fn theorem_mark_graph_gone(g: int, interned: bool)
+    header: ensures !marks_stale(0, false, true, true), (g != 0 && interned) ==> marks_stale(g, false, true, interned), !marks_stale(g, true, true, interned),
+--- latest PASS prove receipt for adjacency_maint: .g5/Verus_verification/results/adjacency_maint/20261118T013554Z-prove/receipt.json (verdict PASS)

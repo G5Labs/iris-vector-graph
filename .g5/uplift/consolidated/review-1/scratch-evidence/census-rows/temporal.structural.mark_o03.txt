@@ -1,0 +1,48 @@
+====================================================================================================
+id                : temporal.structural.mark#o03
+block             : temporal.structural.mark
+locator           : bullet 2: 'The mark, not a count of timestamps, decides whether the edge may be removed'
+statement         : Whether a temporal delete or purge removes the structural edge is decided by the mark: a marked edge goes with its last timestamp, an unmarked one never
+cases             : marked + last timestamp removed -> row goes; unmarked -> stays; control retract-ignores-marker fails
+observation       : rdf_edges row
+model_locators    : .g5/Verus_verification/models/temporal/temporal.rs::lemma_temporal_ops_keep_explicit_rows; .g5/Verus_verification/models/temporal/temporal.rs::lemma_marked_row_goes_with_last_timestamp; .g5/Verus_verification/models/temporal/temporal.rs::theorem_rows_as_built
+premises          : temporal.rs: P-IDX (declared index), P-NODES; indexed install
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/temporal/20261116T160854Z-prove/receipt.json
+as_built          : native OBSERVED_AS_EXPECTED .g5/Verus_verification/receipts/native/temporal_marked_row_lifecycle.json
+parent_entailment : n/a: own text
+gap               : outside-statement: concurrent purge/write interleavings are temporal.structural.end#o01's (refuted there)
+grade_source      : reused: coverage.md row temporal.structural.mark; it64 regrade: theorem_rows_as_built added; gap tagged
+iteration         : 64
+--- block temporal.structural.mark (.g5/ontology/architecture/adjacency-and-derived-data.g5.md)
+[I · temporal.structural.mark]
+
+An implied structural edge carries the temporal mark, so counts, exports and later cleanup can tell it from an explicitly written edge.
+- All timestamps of one triple share one structural edge.
+- The mark, not a count of timestamps, decides whether the edge may be removed; the purge itself checks whether any surviving timestamp still holds the triple.
+
+- Working assumption: no. The mark is bookkeeping (spec 252 planned it as a separate column), so Cypher maps and RDF qualifiers would leave it out while the edge and its weight stay visible.
+--- metadata
+### temporal.structural.mark
+
+- uncertain
+- Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L42), [spec 254 plan, Decision 1](../../../specs/254-temporal-purge-collisions-rebuild/plan.md#L5-L26); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
+- Expands: [Implied structural edge](#temporal.structural)
+- agent
+- data-integrity, architecture-decision
+- test-coverage
+
+The plan chose the mark over a count because a counter is not undone by a rollback, needs a new store and needs a migration. The upgrade backfill gives an edge the weight of its earliest timestamp, while live writes keep the first-written weight.
+
+Findings: [May an explicit delete_edge remove a marked structural row while its triple still has timestamps?](../../Verus_verification/open_questions.md#q-tmp-006); [A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier](../../Verus_verification/bugs_issues.md#bug-tmp-101)
+
+Open questions: [Should readers show the temporal mark as part of the edge's data?](../../Verus_verification/open_questions.md#temporal.structural.mark.visibility)
+--- proof fn lemma_temporal_ops_keep_explicit_rows(s: St, a: Action, v: Variant, t: Triple)
+    header: requires temporal_action(a), s.rows.contains_key(t), ensures !s.rows[t] ==> step(s, a, v).rows.contains_key(t), step(s, a, v).rows.contains_key(t) ==> step(s, a, v).rows[t] == s.rows[t],
+--- proof fn lemma_marked_row_goes_with_last_timestamp(s: St, a: Action, v: Variant, t: Triple)
+    header: requires (a matches Action::Delete { .. }) || (a matches Action::Purge { stop_after_rows: false, .. }), s.rows.contains_key(t), s.rows[t], !step(s, a, v).rows.contains_key(t), ensures !has_ts(step(s, a, v).tout, t),
+--- proof fn theorem_rows_as_built(s: St, a: Action)
+    header: requires rows_ok(s), snaps_rows_ok(s), !(a matches Action::SetStructural { enabled: true, .. }), !phased(a), ensures rows_ok(step(s, a, as_built())), snaps_rows_ok(step(s, a, as_built())),
+--- latest PASS prove receipt for temporal: .g5/Verus_verification/results/temporal/20261116T160854Z-prove/receipt.json (verdict PASS)

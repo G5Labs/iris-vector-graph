@@ -1,0 +1,30 @@
+====================================================================================================
+id                : algorithms.graph_scope#o02
+block             : algorithms.graph_scope
+locator           : lead: 'Procedures that read the index without a graph dimension refuse, naming the Python method to use, once a named graph holds an edge'
+statement         : The ^NKG-reading procedures (Cypher CALL ivg.betweenness/closeness/eigenvector/leiden/triangleCount/scc/kcore and the SQL kg_* functions) raise, naming the Python method to use, exactly when a graph other than the default holds an edge; otherwise they answer.
+cases             : named graph with an edge: ValueError naming engine.<method>() (Cypher) / IVG 5001 (SQL) vs only default-graph edges: answer; a named graph with nodes but no edge: answer
+observation       : the procedure's error or rows
+model_locators    : 
+premises          : ^KG("out") graph keys are the edge census
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : inspection read iris_vector_graph/cypher/translator.py
+parent_entailment : n/a: own text
+gap               : no model of _refuse_merged_graphs or NKGAccel.RefuseMergedGraphs || owner-contradicted: the SQL functions' refusal says only 'Call the engine's method' and does not name it (NKGAccel.cls:213-223)
+grade_source      : new: inspected here; it64 regrade: held absent
+iteration         : 64
+--- block algorithms.graph_scope (.g5/ontology/features/algorithms.g5.md)
+[D · algorithms.graph_scope]
+
+PageRank, WCC, CDLP and subgraph read the default graph only, while PPR and degree centrality can read a named graph. Procedures that read the index without a graph dimension refuse, naming the Python method to use, once a named graph holds an edge. Without that refusal they would answer from every graph merged.
+--- metadata
+### algorithms.graph_scope
+
+- Sources: [KNOWN_ISSUES: The ^NKG algorithm procedures raise once a named graph has edges](../../../docs/KNOWN_ISSUES.md); [USER_GUIDE algorithms](../../../docs/USER_GUIDE.md); [graph.unscoped_snapshot](../concepts/graph-scope.g5.md#graph.unscoped_snapshot)
+- agent
+- user-facing-behavior
+
+Changed in 4.6.0. Before that, procedures and methods disagreed: some answered every graph merged and others the default graph.

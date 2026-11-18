@@ -1,0 +1,53 @@
+====================================================================================================
+id                : search.fusion.python#o03
+block             : search.fusion.python
+locator           : lead: 'It ignores the providers' score magnitudes'
+statement         : Provider score magnitudes do not affect fused ranks
+cases             : same IDs, scores -9 vs 999 -> same fused order
+observation       : fused order
+model_locators    : .g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::theorem_rank_ignores_magnitude; .g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::theorem_second_leg_changes_winner
+premises          : requires-reviewed: same_ids(a, b) is the statement's case (same IDs, different scores)
+grade             : full
+design_check      : proved
+check_scope       : full
+design_receipts   : .g5/Verus_verification/results/fusion_ranking/20261116T160726Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/fusion_ranking/20261115T061036Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: fusion_ranking NOTES; it64 regrade: held full
+iteration         : 64
+--- block search.fusion.python (.g5/ontology/architecture/search-storage-and-indexes.g5.md)
+[D · search.fusion.python]
+
+The exported Python `RRFFusion.fuse_results` uses each entity's first position in each list, starting at one, and adds nothing for a missing entity. It ignores the providers' score magnitudes, returns each entity once in descending fused score, and promises no order between tied scores.
+
+- `HybridSearchFusion.multi_modal_search` fuses the legs that completed and returns at most k entities with their fused rank and each retained leg's first score and position. A successful graph expansion is another ranked leg.
+- These Python helpers' shipped behavior is settled; whether to keep them as supported public API is [open](../../Verus_verification/open_questions.md#HD-0705).
+
+- Working assumption: Treat the three as compatibility surfaces and qualify each: RRFFusion is a pure standard-RRF helper (document that its rule differs from engine `kg_RRF_FUSE`, HD-0702); HybridSearchFusion is de facto public (migration guide) and graph-scoped; TextSearchEngine is exported but reads every graph and its document search cannot reach the IVG Schema, so it is not a supported reader of graph-scoped data. Prefer deprecation with migration advice (to `kg_TXT` / `bm25_search`) or a `graph=` argument; do not remove without a compatibility decision.
+--- metadata
+### search.fusion.python
+
+
+- design-verified
+
+- uncertain
+- Sources: [`RRFFusion.fuse_results`](../../../iris_vector_graph/fusion.py#L27-L64), [`HybridSearchFusion.multi_modal_search`](../../../iris_vector_graph/fusion.py#L113-L253), [migration guide](../../../docs/migration/v4.0.0.md#L427-L435)
+- Verus: [fusion_ranking](../../Verus_verification/models/fusion_ranking/NOTES.md), as-built `rank`, `score`, `theorem_rank_ignores_magnitude`, `theorem_first_occurrence_wins`, `theorem_second_leg_changes_winner`; exact real arithmetic for rank contributions and a strict pair winner. General sorting, floating point rounding and detail assembly are observed in Python, not proved.
+- Expands: [fusion](../features/search.g5.md#search.fusion)
+- Children: [Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported public API?](../../Verus_verification/open_questions.md#HD-0705)
+- agent
+- user-facing-behavior
+
+No order is claimed between ties or at a tied k cutoff. This helper's zero absent contribution does not settle the shared rule for the other fusion entry points.
+
+Open questions: [Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported public API?](../../Verus_verification/open_questions.md#HD-0705)
+
+State machines: [fusion ranking](../../Verus_verification/models/fusion_ranking/manifest.json)
+
+Assumption review evidence: Same direction as decisions.md.
+--- proof fn theorem_rank_ignores_magnitude(a:Seq<Row>,b:Seq<Row>,id:int,offset:nat)
+    header: requires same_ids(a,b), ensures rank(a,id,offset)==rank(b,id,offset), decreases a.len(),
+--- proof fn theorem_second_leg_changes_winner() [POINT CHECK]
+    header: ensures top_two(seq![seq![(0,1),(1,1000)]])==Some(0), top_two(seq![seq![(0,1),(1,1000)],seq![(1,-1000)]])==Some(1),
+--- latest PASS prove receipt for fusion_ranking: .g5/Verus_verification/results/fusion_ranking/20261116T160726Z-prove/receipt.json (verdict PASS)

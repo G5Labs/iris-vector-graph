@@ -1,0 +1,49 @@
+====================================================================================================
+id                : install.export.rdf.report#o02
+block             : install.export.rdf.report
+locator           : lead: 'the number of distinct subjects including blank nodes'
+statement         : nodes = distinct subjects, blank envelope nodes included, objects-only excluded
+cases             : object-only node -> not counted; qualified edge -> +2 blanks
+observation       : returned nodes
+model_locators    : .g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs::theorem_summary_counts_subjects_not_objects
+premises          : successful providers; rdflib serializer and parser
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/rdf_reporting/20261116T163325Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/rdf_reporting/20261116T163512Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: install.export.rdf.report metadata (design-verified) and rdf_reporting NOTES; it64 regrade: held full proved narrowed
+iteration         : 64
+--- block install.export.rdf.report (.g5/ontology/features/data-interchange.g5.md)
+[D · install.export.rdf.report]
+
+After serialization succeeds, RDF export reports the number of distinct triples across the union of contexts, the number of distinct subjects including blank nodes, and the number of those triples with an IRI object whose predicate is not `rdf:type`. These counts include qualifier envelopes and are not physical node or edge counts; the same triple in two contexts can be two serialized quads but one reported triple.
+
+- The format argument overrides extension inference. N-Quads and TriG preserve graph contexts; flat formats do not establish a context-preserving export, and no successful answer promises file atomicity on an earlier error.
+--- metadata
+### install.export.rdf.report
+
+
+- design-verified
+
+- Sources: [Semantic Layer metrics and formats](../../../docs/SEMANTIC_LAYER.md#L67-L93), [`RdfExportMixin.export_rdf`](../../../iris_vector_graph/_engine/rdf_export.py#L96-L157), [format inference](../../../iris_vector_graph/_engine/_rdf_utils.py#L56-L69)
+- Evidence: [sealed13 ordinary union/quad contrast](../../uplift/consolidated/iteration-13/next-reporting-survey.md), [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md)
+- Related: [content](#install.export.rdf.content)
+- Verus: [rdf_reporting.rs](../../Verus_verification/models/rdf_reporting/rdf_reporting.rs) `theorem_raw_rows_to_final_report`, `theorem_summary_reads_union_not_rows`, `theorem_summary_two_contexts_is_one_triple`, `theorem_summary_counts_subjects_not_objects` and `theorem_non_type_uri_count_rule`; [scope and provider limits](../../Verus_verification/models/rdf_reporting/NOTES.md)
+- agent
+- user-facing-behavior, data-integrity
+
+The returned counts read the generated triples merged across contexts, not the rows or the lines in the file.
+
+- `triples` counts distinct subject–predicate–object triples, so the same triple in two named graphs counts once even though N-Quads writes two lines.
+- `nodes` counts distinct subjects, including the blank statement and reifier nodes of qualified edges; a node that appears only as an object is not counted.
+- `edges` counts distinct triples whose object is an IRI and whose predicate is not `rdf:type`. This includes the IRI-valued envelope triples of qualified edges.
+
+This settles the docs' "counts what was written" wording as a union reader without promising equal serialized line counts. Namespace binding, third-party serialization and parsing, provider failures and cross-read consistency remain qualified; no whole-serializer or failed-file guarantee follows.
+
+State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/manifest.json)
+--- proof fn theorem_summary_counts_subjects_not_objects(g:Text,sub:Term,p:Text,a:Term,b:Term)
+    header: requires a!=b ensures summary(seq![Quad{graph:g,triple:Triple{s:sub,p,o:a}},Quad{graph:g,triple:Triple{s:sub,p,o:b}}]).nodes==1
+--- latest PASS prove receipt for rdf_reporting: .g5/Verus_verification/results/rdf_reporting/20261116T163325Z-prove/receipt.json (verdict PASS)

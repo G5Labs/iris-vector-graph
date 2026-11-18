@@ -1,0 +1,50 @@
+====================================================================================================
+id                : algorithms.cache.pagerank#o05
+block             : algorithms.cache.pagerank
+locator           : bullet 1: 'An unreadable node token falls back to reading the edgeless list before lookup ... an empty table successfully reads as 0:0'
+statement         : An unreadable node token makes PageRank read the edgeless list before lookup and key on it; a failed token is not treated as a known empty node set, while an empty table reads 0:0
+cases             : token query fails vs succeeds on an empty table (0:0)
+observation       : key used and census reads
+model_locators    : .g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::theorem_failed_token_uses_list; .g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::token; .g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::theorem_count_max_producer
+premises          : stable reads; monotone non-reused row IDs; faithful shared-cache lookup; successful small payload storage
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/pagerank_admission/20261116T160752Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/pagerank_admission/20261115T070306Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: models/pagerank_admission/NOTES.md, coverage.md line 549, decision-links.tsv (algorithms.cache.pagerank); it64 regrade: held full
+iteration         : 64
+--- block algorithms.cache.pagerank (.g5/ontology/architecture/algorithm-execution.g5.md)
+[D · algorithms.cache.pagerank]
+
+Global PageRank puts the node table's row count and largest row ID in its cache key, alongside damping and iteration count; a cache hit also requires the current adjacency token. On a hit it returns the stored score rows without reading the nodes with no edge; adding an isolated node changes the node key and makes the next call compute again.
+
+- An unreadable node token falls back to reading the edgeless list before lookup and using that list in the key. A missing token is not a known empty node set; an empty table successfully reads as `0:0`.
+- The loner reader includes nodes whose only edges are self-loops. PageRank's adapter removes those from the edgeless list; a nonempty remaining list forces the Owner, while a self-loop-only list does not force that fallback.
+- These checks assume stable reads and non-reused row IDs. They do not establish a consistent snapshot during concurrent writes, PPR freshness, or numerical correctness. The Owner's 10,000-row cap can break the requirement to list every node and return scores summing to one; that is the existing [F-1003](../../Verus_verification/bugs_issues.md#F-1003).
+--- metadata
+### algorithms.cache.pagerank
+
+- design-verified
+
+- Sources: [COUNT:MAX producer and engine consumer](../../../iris_vector_graph/_engine/algorithms.py#L179-L194), [global engine](../../../iris_vector_graph/_engine/algorithms.py#L782-L804), [store and cache](../../../iris_vector_graph/stores/iris_sql_store.py#L2362-L2424), [edgeless producer](../../../iris_vector_graph/_edgeless.py#L65-L67), [R313 tests](../../../tests/unit/test_460_r313_pagerank_loners_lazy.py)
+- Verus: [pagerank_admission](../../Verus_verification/models/pagerank_admission/NOTES.md), as-built `token`, `key`, `edgeless`, `call` and named neighbor theorems. COUNT:MAX SQL, row-ID monotonicity, snapshot consistency and actual PageRank numerics remain provider obligations.
+- Expands: [cache](#algorithms.cache)
+- agent
+- data-integrity
+
+Findings: [F-1003](../../Verus_verification/bugs_issues.md#F-1003). Global PageRank's node key is not evidence of [PPR freshness](#algorithms.cache.token). No live IRIS or numerical proof.
+
+Audit reproduction: [F-1003](../../Verus_verification/bugs_issues.md#F-1003) is e2e reproduced through the actual engine/Owner cap, with a passing small graph; [results](../../Verus_verification/audits/register-20261115/regressions.json). Arno route equivalence is untested.
+
+Findings: [Global PageRank output cap](../../Verus_verification/bugs_issues.md#F-1003).
+
+State machines: [pagerank admission](../../Verus_verification/models/pagerank_admission/manifest.json)
+--- proof fn theorem_failed_token_uses_list(l:Seq<int>,d:int,it:nat)
+    header: ensures key(None,l,d,it).loners==l,call(None,l,0,d,it,None,seq![]).census==1,
+--- token: not a proof fn (spec fn / exec fn / type / other)
+--- proof fn theorem_count_max_producer() [POINT CHECK]
+    header: ensures token(None,None,false)==Some(Nodes{count:0,max_id:0}),token(Some(2),Some(8),true)==None,
+--- latest PASS prove receipt for pagerank_admission: .g5/Verus_verification/results/pagerank_admission/20261116T160752Z-prove/receipt.json (verdict PASS)

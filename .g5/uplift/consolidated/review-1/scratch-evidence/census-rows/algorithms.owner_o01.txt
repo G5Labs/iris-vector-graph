@@ -1,0 +1,30 @@
+====================================================================================================
+id                : algorithms.owner#o01
+block             : algorithms.owner
+locator           : lead: 'Every algorithm has an Owner, and IVG gives complete answers without Arno'
+statement         : Every algorithm has an IVG Owner running in IRIS, so without the Arno library every algorithm still returns its complete answer
+cases             : Arno absent: pagerank/wcc answer from the Owner vs random_walk (no Owner) returns []
+observation       : the algorithm call's result without Arno
+model_locators    : 
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : inspection CONTRADICTED iris_vector_graph/_engine/algorithms.py
+parent_entailment : n/a: own text
+gap               : no model || owner-contradicted: random_walk has no Owner and returns [] with a warning without Arno (_engine/algorithms.py:658-678)
+grade_source      : new: inspected here; it64 regrade: held absent
+iteration         : 64
+--- block algorithms.owner (.g5/ontology/architecture/algorithm-execution.g5.md)
+[D · algorithms.owner]
+
+Every algorithm has an Owner, and IVG gives complete answers without Arno. No Owner is removed when a Native Reader is adopted.
+--- metadata
+### algorithms.owner
+
+- Sources: [CONTEXT.md: Owner, Arno](../../../CONTEXT.md); [Spec 236 FR-005](../../../specs/236-arno-callout-adoption/spec.md); [ADMIN_GUIDE §4: Arno](../../../docs/ADMIN_GUIDE.md)
+- agent
+- architecture-decision
+
+Observed divergence: `random_walk` has no Owner; without Arno it logs a warning and returns an empty list (see [walks](../features/algorithms.g5.md#algorithms.op.walks)).

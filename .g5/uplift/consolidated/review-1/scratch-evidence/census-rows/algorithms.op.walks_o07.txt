@@ -1,0 +1,50 @@
+====================================================================================================
+id                : algorithms.op.walks#o07
+block             : algorithms.op.walks
+locator           : bullet 3: 'A random walk returns num_walks (10) walks of up to length (20) steps from a seed'
+statement         : random_walk returns num_walks walks of at most length steps from the seed.
+cases             : num_walks 3, length 5: 3 walks of <= 5 steps
+observation       : returned list
+model_locators    : 
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : none
+parent_entailment : n/a: own text
+gap               : not modelled || owner-contradicted: random_walk needs Arno and answers [] without it (_engine/algorithms.py:658-678; block metadata 'Observed divergence', HD-1001)
+grade_source      : new: inspected here; it64 regrade: held absent
+iteration         : 64
+--- block algorithms.op.walks (.g5/ontology/features/algorithms.g5.md)
+[I · algorithms.op.walks]
+
+The walk operations follow outbound edges from one start node.
+
+- A graph walk goes breadth first up to `max_depth` (3) hops and returns at most `max_results` (100) rows of (source, type, target, hop). Its edge-type list is a sequence: hop h follows the h-th type, and the last type repeats.
+  - Its rows are the edges walked from each hop's new nodes, ordered by hop and then target, including an edge back to a node reached earlier. Today two edges that reach the same node at the same hop leave only one row ([open question](../../Verus_verification/open_questions.md#algorithms.op.walks.rows)).
+  - A walk whose answer is longer than one IRIS string raises an error; a k-hop read of the same size is answered.
+- A graph path returns the two-hop paths start, first type, middle, second type, end, one row per step.
+- A random walk returns `num_walks` (10) walks of up to `length` (20) steps from a seed.
+
+- Working assumption: Walk the default graph's adjacency (graph key 0) in ObjectScript, library or not (option (a)). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option (c)) is a compatible extension.
+--- metadata
+### algorithms.op.walks
+
+- uncertain
+- Sources: [API_REFERENCE kg_GRAPH_WALK, kg_GRAPH_PATH, random_walk](../../../docs/API_REFERENCE.md); [_engine/algorithms.py](../../../iris_vector_graph/_engine/algorithms.py); [USER_GUIDE: shortest path](../../../docs/USER_GUIDE.md)
+- Expands: [Operations](#algorithms.op)
+- agent
+- user-facing-behavior
+
+Observed divergence: `random_walk` needs Arno, and without it returns an empty list after a warning, against the promise that every algorithm has an Owner. The graph path's `max_hops` argument is not used. Weighted shortest paths are a Cypher procedure and use each edge's `weight` property, 1.0 when absent; [weighted path search](#algorithms.op.paths.weighted) owns that rule.
+
+Observed (iteration 37, [W43](../../uplift/consolidated/iteration-37/traversal-PAIRS.md)): chains, typed sequences, `max_results`, the named-graph case (nothing) and the graph path agree with this block. The walk keeps one row per hop and target, and an over-long walk raises and leaves its staged rows behind.
+
+Verus: active: [`walk_reader.rs`](../../Verus_verification/models/walk_reader/walk_reader.rs) `theorem_distinct_keys_list_every_edge`, `theorem_same_hop_target_collapses` (as-built), `theorem_walk_overflow_raises_and_leaves_stage` (as-built), `theorem_khop_answers_any_size`.
+
+Findings: [kg_GRAPH_WALK keeps one row per hop and node](../../Verus_verification/bugs_issues.md#bug-str-103); [A graph walk whose answer is longer than an IRIS string raises](../../Verus_verification/bugs_issues.md#bug-str-104)
+
+Open questions: [What should `random_walk` answer, and over which graph?](../../Verus_verification/open_questions.md#HD-1001), [Should a graph walk list every edge it walks, or one row per node reached?](../../Verus_verification/open_questions.md#algorithms.op.walks.rows)
+
+Assumption review evidence: Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed ObjectScript walk runs without the library (upstream test and live), and ADMIN_GUIDE says every algorithm has an ObjectScript answer. So a real default-graph answer is the better-supported reading. 'Unavailable' remains only for a route that cannot honour the scope.

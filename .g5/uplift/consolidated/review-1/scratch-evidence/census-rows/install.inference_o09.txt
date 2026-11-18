@@ -1,0 +1,43 @@
+====================================================================================================
+id                : install.inference#o09
+block             : install.inference
+locator           : bullet 3: 'A triple that already has an edge is not written again, so an edge asserted first stays asserted and survives retracting'
+statement         : An asserted-first triple stays asserted and survives retract
+cases             : create then materialize then retract -> kept
+observation       : rdf_edges
+model_locators    : .g5/Verus_verification/models/inference_rows/inference_rows.rs::theorem_asserted_first_survives
+premises          : 
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/inference_rows/20261117T003757Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/inference_rows/20261117T003857Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: inference_rows NOTES; it64 regrade: held full; check_scope full -> narrowed
+iteration         : 64
+--- block install.inference (.g5/ontology/features/data-interchange.g5.md)
+[D · install.inference]
+
+Materializing inference in one graph adds the RDFS consequences of that graph's asserted edges as new edges marked inferred. Retracting inference removes that graph's inferred edges and their adjacency entries. Neither call touches another graph.
+- It derives subclass and subproperty chains, the types an asserted type implies through its superclasses, and the types a property's domain and range give its subjects and objects.
+- It does not copy an edge to a property's superproperty, and it does not lift a type that came from a domain or range to that class's superclasses ([finding](../../Verus_verification/bugs_issues.md#bug-str-106)).
+- It reads only asserted edges, so a second run adds nothing. A triple that already has an edge is not written again, so an edge asserted first stays asserted and survives retracting.
+- Creating an edge whose triple was already inferred answers False and leaves it marked inferred, so retracting deletes it ([open question](../../Verus_verification/open_questions.md#install.inference.assert_after)).
+--- metadata
+### install.inference
+
+- Sources: [API_REFERENCE materialize_inference, retract_inference](../../../docs/API_REFERENCE.md); [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [`SchemaMixin.materialize_inference`](../../../iris_vector_graph/_engine/schema.py#L2966-L3183), [`SchemaMixin.retract_inference`](../../../iris_vector_graph/_engine/schema.py#L3186-L3260), [`NodesEdgesMixin.create_edge`](../../../iris_vector_graph/_engine/nodes_edges.py#L1151)
+- Expands: [imports](#install.import)
+- Verus: active: [`inference_rows.rs`](../../Verus_verification/models/inference_rows/NOTES.md) `theorem_retract_keeps_asserted`, `theorem_rerun_adds_nothing`, `theorem_asserted_first_survives`; as-built departures `theorem_asserted_after_is_retracted`, `theorem_no_subproperty_propagation`, `theorem_domain_type_not_lifted`.
+- agent
+- data-integrity, user-facing-behavior
+
+Recovered in iteration 38 from the API reference and observation ([W44](../../uplift/consolidated/iteration-38/inference-PAIRS.md)); no owner statement existed. OWL rules (`rules="owl"`), multigraph mode and the ledger-related retraction case F-C0151 were not exercised.
+
+Findings: [retract_inference deletes an edge the user created after the same triple was inferred](../../Verus_verification/bugs_issues.md#bug-str-105); [materialize_inference derives less than the RDFS entailments the API reference promises](../../Verus_verification/bugs_issues.md#bug-str-106); [import_rdf(infer=True) infers in the graph argument](../../Verus_verification/bugs_issues.md#bug-str-111)
+
+Open questions: [Should creating an edge that inference already wrote make it an asserted edge?](../../Verus_verification/open_questions.md#install.inference.assert_after)
+--- proof fn theorem_asserted_first_survives(x: int, a: int, b: int)
+    header: requires !reserved(x), !reserved(a), !reserved(b), a != b, ensures present(retract(materialize(create_edge(rows2((a, SUB(), b), (x, TYPE(), a)), (x, TYPE(), b)))), (x, TYPE(), b)),
+--- latest PASS prove receipt for inference_rows: .g5/Verus_verification/results/inference_rows/20261117T003757Z-prove/receipt.json (verdict PASS)

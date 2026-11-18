@@ -1,0 +1,45 @@
+====================================================================================================
+id                : install.schema.not_ready#o06
+block             : install.schema.not_ready
+locator           : bullet 4 (Today): 'a namespace with no record whose IVG Schema already holds this release's SQL objects ... admits every engine for that schema'
+statement         : With no record and this release's marker function present, every engine for that schema is admitted
+cases             : no record + marker vs no record, no marker
+observation       : first public call runs
+model_locators    : .g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs::theorem_unrecorded_with_marker_admitted
+premises          : requires-reviewed: record None and marker present = the statement's condition
+grade             : full
+design_check      : proved
+check_scope       : full
+design_receipts   : .g5/Verus_verification/results/install_lifecycle/20261117T072020Z-prove/receipt.json; .g5/Verus_verification/results/install_lifecycle/20261117T072035Z-control-unrecorded-marker-refused/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/install_lifecycle/20261117T072228Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: models/install_lifecycle/NOTES.md (iteration 56) and decision-links.tsv; it64 regrade: premises/gap note only, grade unchanged
+iteration         : 64
+--- block install.schema.not_ready (.g5/ontology/operations/setup-and-upgrade.g5.md)
+[I · install.schema.not_ready]
+
+An engine on a namespace with no schema record, or without the current release's SQL objects, raises one error on first access and runs nothing else. It never falls back to legacy objects. The error says which case applies and names setup and its dry run as the way forward:
+
+- set up by an earlier release and not yet upgraded;
+- never set up for IVG;
+- a setup that stopped before finishing.
+
+- Today a namespace with no record whose IVG Schema already holds this release's SQL objects (a setup that stopped after creating them, or a record removed by hand) admits every engine for that schema, and a namespace with a record is not checked for its objects ([bug-plt-133](../../Verus_verification/bugs_issues.md#bug-plt-133)).
+--- metadata
+### install.schema.not_ready
+
+- Sources: [Spec 262 Clarifications (not-yet-upgraded namespace), FR-006a](../../../specs/262-ivg-owned-sql-schema/spec.md); [schema_name.py](../../../iris_vector_graph/schema_name.py)
+- Expands: [IVG Schema](#install.schema)
+- human-verified
+- user-facing-behavior, operations
+- test-coverage
+
+Live coverage: `tests/e2e/test_262_not_upgraded.py`. Known issue: after a setup that stopped once the current SQL objects existed, the engine is accepted without a record (KNOWN_ISSUES "After an interrupted setup"). ADMIN_GUIDE describes the as-built rule ("no record and lacks 4.6.0's SQL objects").
+
+Iteration 56: [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_unrecorded_reason_order`, `theorem_unrecorded_with_marker_admitted`, `theorem_record_admits_without_objects`; control `unrecorded-marker-refused`; binding cases `A:norecord_marker_call`, `A:record_nomarker_call`, `C:*`.
+
+Findings: [An unrecorded namespace holding this release's SQL objects admits engines](../../Verus_verification/bugs_issues.md#bug-plt-133)
+--- proof fn theorem_unrecorded_with_marker_admitted(ns: Ns, s: nat)
+    header: requires ns.record is None, ns.marker.contains(s), ensures first_access(ns, s) == Access::Ok, call_runs(ns, s, false),
+--- latest PASS prove receipt for install_lifecycle: .g5/Verus_verification/results/install_lifecycle/20261117T072020Z-prove/receipt.json (verdict PASS)

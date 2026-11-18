@@ -1,0 +1,45 @@
+====================================================================================================
+id                : temporal.write.retry#o03
+block             : temporal.write.retry
+locator           : bullet 1: 'A failure before any item writes leaves only epoch zero'
+statement         : A Counts failure before any item writes leaves only the epoch-0 event of a zero-timestamp item.
+cases             : prewrite failure vs lost reply
+observation       : window points
+model_locators    : .g5/Verus_verification/models/retry_replay/retry_replay.rs::theorem_prewrite_zero_has_only_epoch; .g5/Verus_verification/models/retry_replay/retry_replay.rs::theorem_zero_clock_overlaps
+premises          : proved on an empty store with a one-item batch
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/retry_replay/20261116T160829Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/retry_replay/20261115T183316Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: models/retry_replay/NOTES.md and decision-links.tsv; it64 regrade: check_scope full -> narrowed: e the theorems fix an empty store and a one-item batch
+iteration         : 64
+--- block temporal.write.retry (.g5/ontology/features/temporal.g5.md)
+[D · temporal.write.retry]
+
+A Counts error does not undo completed items: the Python store retries every
+normalized item through the single writer and reports only accepted fallback calls.
+
+- With a nonzero current clock, an error after a completed zero-timestamp item can leave both its current-time and epoch-zero events while reporting one write. A failure before any item writes leaves only epoch zero.
+- A positive explicit timestamp collides at its original coordinate; fallback can report one accepted call while inserting nothing new and reporting no collisions.
+- A completed prefix of a mixed zero/positive batch remains when the whole batch is replayed; the failed prefix's counters are discarded. This describes completed item boundaries and successful fallback calls, not a partial effect inside one write or a real transport failure.
+--- metadata
+### temporal.write.retry
+
+- design-verified
+- agent
+- user-facing-behavior
+- data-integrity
+- Expands: [When a temporal write fails part way, what may it leave behind, and must a retry be able to finish it?](../../Verus_verification/open_questions.md#temporal.write.partial-failure).
+- Formal: [completed-prefix and whole-batch replay](../../Verus_verification/models/retry_replay/retry_replay.rs), [exact producer/writer/reader scope](../../Verus_verification/models/retry_replay/NOTES.md).
+
+Evidence: [retained predictions](../../uplift/consolidated/iteration-8/retry-PAIRS.md), [actual native full-completion then injected reply error](../../uplift/consolidated/iteration-7/posteffect-native.json). Native partial-prefix errors, fallback item failures, upsert/skip, within-write failure and concurrency remain conditional or open. Known bug-tmp-001/F-0502 are strengthened, not newly discovered; no retry repair or owner policy was accepted.
+
+State machines: [retry replay](../../Verus_verification/models/retry_replay/manifest.json)
+--- proof fn theorem_prewrite_zero_has_only_epoch(e:clock::stores::Edge,now:int,w:int)
+    header: requires now>0, ensures read(single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(0)),e,0,false)==Some(w), read(single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(0)),e,now,false)==None, single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(0)).completed==0,
+--- proof fn theorem_zero_clock_overlaps(e:clock::stores::Edge,w:int)
+    header: ensures single(Map::empty(),e,0,w,true,0,Fault::ErrorAfter(1)).outcome.state==single(Map::empty(),e,0,w,true,0,Fault::None).outcome.state, read(single(Map::empty(),e,0,w,true,0,Fault::ErrorAfter(1)),e,0,false)==Some(w),
+--- latest PASS prove receipt for retry_replay: .g5/Verus_verification/results/retry_replay/20261116T160829Z-prove/receipt.json (verdict PASS)

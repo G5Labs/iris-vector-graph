@@ -1,0 +1,46 @@
+====================================================================================================
+id                : query.functions.percentile#o02
+block             : query.functions.percentile
+locator           : lead: '`percentileCont(x, p)` interpolates between the two nearest values'
+statement         : percentileCont answers the linear interpolation at (n - 1) p
+cases             : p at a value vs between two values; p = 1
+observation       : the execute_cypher result row (SQL path; the native executor declines these shapes)
+model_locators    : .g5/Verus_verification/models/percentile/percentile.rs::pcont; .g5/Verus_verification/models/percentile/percentile.rs::rule_cont; .g5/Verus_verification/models/percentile/percentile.rs::theorem_cont_follows_rule
+premises          : integer values; sorted list given
+grade             : full
+design_check      : proved
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/percentile/20261117T072020Z-prove/receipt.json; .g5/Verus_verification/results/percentile/20261117T065555Z-control-cont-floor-only/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/percentile/20261117T065550Z-binding/receipt.json
+parent_entailment : n/a: own text
+gap               : none
+grade_source      : reused: models/percentile/NOTES.md and coverage.md (percentile row, iteration 56); it64 regrade: gap is a premise
+iteration         : 64
+--- block query.functions.percentile (.g5/ontology/features/cypher.g5.md)
+[D · query.functions.percentile]
+
+`percentileDisc(x, p)` returns the stored value at the nearest rank, and `percentileCont(x, p)` interpolates between the two nearest values. Both leave out nulls, give null when no value remains, and fail with NumberOutOfRange when `p` is outside 0 to 1.
+- Over 10, 20, 30 and 40 at 0.5, `percentileDisc` gives 20 and `percentileCont` 25.0, as Neo4j does.
+- Today `percentileDisc` takes the value at position (n − 1) × p rounded down, not the nearest rank. Over 10, 20, 30 and 40, p 0.6 gives 20 and p 0.9 gives 30, where Neo4j gives 30 and 40; p 0.95 over 1 to 10 gives 9, not 10 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
+- `percentileDisc` answers one of the values, so over integers it answers an integer, as Neo4j does; `percentileCont` answers a float. Today both answer a float, also over integers (20.0) ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-147)).
+- `p` must be a number. Today a null `$p` parameter fails with Python's raw `TypeError` and other text with a raw `ValueError`; a numeric string or a boolean parameter is used as a number (true as 1); and a literal `null` answers the p = 0 value ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-148)).
+--- metadata
+### query.functions.percentile
+
+- Sources: openCypher TCK `Aggregation6`; CHANGELOG (`IVG.Percentile`, R269); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
+- Expands: [Built-in functions](#query.functions)
+- agent
+- user-facing-behavior
+
+- design-verified
+
+Frozen predictions L9 and L10 held (nearest rank 20, interpolation 25.0, quartiles 10, 30 and 17.5, empty null, nulls left out, NumberOutOfRange for 1.5 and -1). Iteration 56 (review 53-55 minors) registered the result type ([bug-cyp-147](../../Verus_verification/bugs_issues.md#bug-cyp-147)) and the p argument's kinds ([bug-cyp-148](../../Verus_verification/bugs_issues.md#bug-cyp-148)); whether a null p should fail or answer null is not stated by openCypher, and both readings reject today's answers. openCypher says only "nearest". Iteration 53 corrected the iteration-47 reading that "the rounding follows Neo4j": the quartiles and the median give the same answer under rounding down and under nearest rank, but p 0.6 and 0.9 do not ([bug-cyp-134](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
+
+- Formal: [`theorem_disc_never_above_rule`, `theorem_disc_top_percentile_misses_max`, `theorem_disc_rounds_down_p90`, `theorem_disc_agrees_at_ends_and_median`, `theorem_cont_follows_rule`, `theorem_empty_and_out_of_range`](../../Verus_verification/models/percentile/percentile.rs); iteration 56: answer type `theorem_disc_over_ints_answers_float`, neighbor `theorem_float_and_cont_kinds_follow_rule` (control `disc-keeps-input-kind`); the p argument `theorem_non_number_p_not_refused`, general `theorem_p_departs_exactly_on_non_numbers` (controls `null-param-refused`, `literal-null-refused`)
+
+State machines: [percentile](../../Verus_verification/models/percentile/manifest.json)
+--- pcont: not a proof fn (spec fn / exec fn / type / other)
+--- rule_cont: not a proof fn (spec fn / exec fn / type / other)
+--- proof fn theorem_cont_follows_rule(xs: Seq<int>, pn: int, pd: int)
+    header: ensures rat_eq(pcont(xs, pn, pd), rule_cont(xs, pn, pd)),
+--- latest PASS prove receipt for percentile: .g5/Verus_verification/results/percentile/20261117T072020Z-prove/receipt.json (verdict PASS)

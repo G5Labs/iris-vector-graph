@@ -1,0 +1,55 @@
+====================================================================================================
+id                : erasure.atomic#o01
+block             : erasure.atomic
+locator           : lead: 'either remove all requested content or leave it untouched'
+statement         : An erase call either removes all requested content from every store or, on failure, leaves every store untouched.
+cases             : a store refuses mid-erase -> nothing erased; no failure -> all erased
+observation       : all stores after the call (rows, adjacency, temporal, statements)
+model_locators    : .g5/Verus_verification/models/erasure_stores/erasure_stores.rs::theorem_failed_call_leaves_stores; .g5/Verus_verification/models/erasure_stores/erasure_stores.rs::call; .g5/Verus_verification/models/temporal/temporal.rs::witness_rolled_back_delete_undercounts
+premises          : IRIS transaction premise: TROLLBACK restores every journaled row and global set in the call, $Increment excepted (the version stamp may move); the temporal witness is the caller-rollback case
+grade             : full
+design_check      : refuted
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json; .g5/Verus_verification/results/temporal/20261116T160854Z-prove/receipt.json
+as_built          : binding AGREES .g5/Verus_verification/results/erasure_stores/20261118T044251Z-binding/receipt.json; native OBSERVED_DEFECT .g5/Verus_verification/receipts/native/temporal_rollback_counters.json
+parent_entailment : residual: erasure.atomic.routes#o01..o04 can all hold while a list erase without a caller transaction commits its first 500-entry chunk and then fails (bug-led-011)
+gap               : none
+grade_source      : reused: coverage.md "erasure.atomic ... Assumed (IRIS transaction premise)"; it64 regrade: cites temporal witness_rolled_back_delete_undercounts and native temporal_rollback_counters R6 (iteration-63 §6.4); it65 erasure_stores regrade [cases: E5_graph_erase_fails_fk: every store unchanged after a failure at the nodes DELETE; E3, E4]
+iteration         : 65
+--- block erasure.atomic (.g5/ontology/features/erasure.g5.md)
+[D · erasure.atomic]
+
+An erase must either remove all requested content or leave it untouched. On failure it must roll back its work and report the error.
+
+- An erase never commits or rolls back work that a caller's open transaction holds. When it joins that transaction, the caller's commit or rollback decides the outcome ([open choice](../../Verus_verification/open_questions.md#q-plt-006)).
+- The current list-erasure path violates this rule without a caller transaction. It commits each group of 500 entries, so a later failure leaves earlier groups erased.
+
+- Working assumption: Record each transport-dependent transaction boundary; prefer an explicit consistent join-or-refuse contract before changing it.
+- Working assumption (intended; [open choice](../../Verus_verification/open_questions.md#HD-1201)): Erasure, ledger commits and redaction share the ledger head lock. Erasure would hold it through the outer transaction, and redaction checks liveness while holding it. Today no erase path takes the head lock, and only redaction's final step re-checks liveness under it ([finding](../../Verus_verification/bugs_issues.md#F-1114)).
+--- metadata
+### erasure.atomic
+
+Concurrency assumption and evidence: Serialize erasure with ledger commits and redaction on the same lock: the erasure holds the head lock until its outermost transaction ends (an IRIS lock released inside a transaction is held to its end, P-0003), AND the redaction's opening liveness check and marker run under that lock (HD-1301). Neither alone closes the open-erasure case: with only the erasure lock the dirty opening check still passes and the batches tombstone a target the erasure later restores; with only the locked opening check the erasure holds nothing to wait on. A liveness check that reads committed data only is an alternative to the erasure lock for the redaction half, but not for the F-1201 statement half.
+
+- uncertain
+- Sources: [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md#L21-L51), [Eraser.cls header](../../../iris_src/src/Graph/KG/Eraser.cls#L18-L24), [CHANGELOG 4.6.4](../../../CHANGELOG.md#L410-L426), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L285-L310)
+- Children: [Should whether a write joins the caller's transaction depend on how the engine was opened?](../../Verus_verification/open_questions.md#q-plt-006), [Routed tables](#erasure.atomic.routes)
+- agent
+- architecture-decision, data-integrity
+- test-coverage
+
+Live test: `tests/integration/test_eraser_failures.py` (a refused delete in any table erases nothing). It compares SQL row counts only, not the native indexes or ledger statements. The rule that IVG never commits or rolls back a caller's transaction comes from 4.6.4. Since then the Eraser rolls back only to the level it found; before, it rolled back every level.
+
+
+Observed divergence (code reading, review round 3 R3-reader M4): the store splits ID lists into chunks of 500 and calls the Eraser once per chunk, and with no caller transaction each call commits on its own ([iris_sql_store.py](../../../iris_vector_graph/stores/iris_sql_store.py#L1302-L1358), [_eraser_txn](../../../iris_vector_graph/stores/iris_sql_store.py#L1451-L1472)). `bulk_delete_nodes` batches by design and counts a failed batch as wholly failed even when its earlier chunks committed ([nodes_edges.py](../../../iris_vector_graph/_engine/nodes_edges.py#L2283-L2298)); `erase_bare_nodes` commits per 10,000 IDs ([Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L1297-L1304)). No failure was injected natively.
+
+Findings: [Erasing a long list of node IDs or relationships without a caller's transaction commits once per 500 entries](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-011)
+
+Open questions: [Should a graph erasure take the ledger head lock?](../../Verus_verification/open_questions.md#HD-1201), [Must erasure and redaction be serialised with each other and with ledger commits?](../../Verus_verification/open_questions.md#q-004), [Should whether a write joins the caller's transaction depend on how the engine was opened?](../../Verus_verification/open_qu
+--- proof fn theorem_failed_call_leaves_stores(st: St, ep: Ep, late: bool, df: Set<int>)
+    header: requires !refused(ep), ensures call(st, ep, Some(late), df).0 == Out::Failed, call(st, ep, Some(late), df).1.rows == st.rows, call(st, ep, Some(late), df).1.version >= st.version,
+--- call: not a proof fn (spec fn / exec fn / type / other)
+--- proof fn witness_rolled_back_delete_undercounts() [POINT CHECK]
+    header: 
+--- latest PASS prove receipt for erasure_stores: .g5/Verus_verification/results/erasure_stores/20261118T044107Z-prove/receipt.json (verdict PASS)
+--- latest PASS prove receipt for temporal: .g5/Verus_verification/results/temporal/20261116T160854Z-prove/receipt.json (verdict PASS)

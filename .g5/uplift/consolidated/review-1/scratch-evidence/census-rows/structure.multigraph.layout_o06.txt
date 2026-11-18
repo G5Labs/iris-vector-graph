@@ -1,0 +1,47 @@
+====================================================================================================
+id                : structure.multigraph.layout#o06
+block             : structure.multigraph.layout
+locator           : bullet 5: 'the loser retries once with a fresh key and fails loudly after a second clash'
+statement         : When two writers pick the same new key, the loser retries once with a fresh key and fails loudly only after a second clash
+cases             : one clash -> both edges written; two clashes -> the second writer raises; no clash -> no retry
+observation       : rows written and the writer's exception
+model_locators    : none
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : none
+as_built          : inspection contradicted iris_vector_graph/cypher/translator.py
+parent_entailment : n/a: own text
+gap               : owner-contradicted: the block's metadata records that no retry after a key clash was found (the losing statement fails with a uniqueness error; translator.py keyed inserts) || no concurrency model
+grade_source      : new: inspected here; it64 regrade: gap tagged owner-contradicted
+iteration         : 64
+--- block structure.multigraph.layout (.g5/ontology/architecture/adjacency-and-derived-data.g5.md)
+[D · structure.multigraph.layout]
+
+A triple with one edge looks the same in the adjacency index in either mode.
+
+- While a triple has two or more edges, each edge also has its own entry, and the triple records how many edges it holds.
+- The triple's own entry carries the weight of its edge with the lowest edge key.
+- Edge keys are never renumbered, and a live edge's key is never reused.
+- A new edge takes one more than the triple's highest live key, or 0 for the first, so the key of a deleted highest edge can return.
+- When two writers pick the same new key, the loser retries once with a fresh key and fails loudly after a second clash.
+- A rebuild produces the same layout as the writes that led to it.
+- The one-to-two transition keeps the earlier edge as a keyed entry with its own weight, whatever order the rows are written or rebuilt in.
+--- metadata
+### structure.multigraph.layout
+
+- Sources: [spec 234 clarifications and FR-004 to FR-006](../../../specs/234-multigraph-parallel-edges/spec.md#L44-L47), [Adjacency.PutKeyed / RemoveKeyed](../../../iris_src/src/Graph/KG/Adjacency.cls#L197-L321), [spec 252 FR-003](../../../specs/252-adjacency-functional-index/spec.md#L109-L110)
+- Expands: [multigraph mode](../features/graph-structure.g5.md#structure.multigraph)
+- agent
+- architecture-decision, data-integrity
+- test-coverage
+- Verus (iteration 57): [adjacency_maint](../../Verus_verification/models/adjacency_maint/NOTES.md) `lemma_create`, `lemma_second`
+
+Key allocation and the retry come from [spec 234 FR-007 and edge cases](../../../specs/234-multigraph-parallel-edges/spec.md#L185-L190) and the [key entity](../../../specs/234-multigraph-parallel-edges/spec.md#L329-L331); Cypher allocates the key in [its keyed inserts](../../../iris_vector_graph/cypher/translator.py#L10368-L10386). Observed divergence: no retry after a key clash was found, so the losing writer's statement fails with a uniqueness error. Live coverage: [one to three edges and back, and rebuild equals 200 random keyed writes](../../../tests/e2e/test_234_multigraph_storage_e2e.py). Observed divergence, suspected: concurrent writers or parallel rebuild jobs on one triple can lose an edge from the count or leave an entry with no row, and a ledger reweight can set the triple's weight from an edge that is not the lowest ([stage-A notes, F4 and F11](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
+
+Findings: [Deleting one of several parallel edges through the ledger removes the adjacency of the edges that remain](../../Verus_verification/bugs_issues.md#bug-str-001); [Concurrent writers of one multigraph triple can lose its multiplicity or leave a ghost edge entry](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-006); [A ledger qualifier update reweights a multigraph triple's leaf to an edge that is not the lowest](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-012)
+
+Iteration9 finite source/native qualification: the actual RowPut callback checks the GraphMode flag, not the graph name or existence of parallel SQL rows. In the retained mode-off fixture, ekey0/weight10 then ekey5/weight1 leaves bare out/in1 with no keyed children; a lowest-key expectation there was withdrawn. With mode enabled before writes, the same rows leave scalar10 and children0=10,5=1,#=2. [Native points and retained mismatch review](../../uplift/consolidated/iteration-9/weighted-projection-review.md). This corroborates the existing mode-off admission boundary and the completed mode-on fragment, without proving concurrent/index/writer histories.
+
+Audit reproduction: [bug-str-001](../../Verus_verification/bugs_issues.md#bug-str-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is produ

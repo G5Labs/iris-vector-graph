@@ -1,0 +1,44 @@
+====================================================================================================
+id                : install.snapshot#o04
+block             : install.snapshot
+locator           : working assumption 2: 'for the current exporter declare the quiet-writer premise'
+statement         : The current exporter's archive is consistent only when writers are quiet (an operator premise); a consistent snapshot under concurrent writers needs a verified snapshot or epoch protocol.
+cases             : concurrent writer during save vs quiet
+observation       : archive vs any single committed state
+model_locators    : 
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : inspection read iris_vector_graph/_engine/snapshot.py
+parent_entailment : n/a: own text
+gap               : no model (HD-1802)
+grade_source      : new: inspected here; it64 regrade: statement fixed (f)
+iteration         : 64
+--- block install.snapshot (.g5/ontology/operations/snapshots-and-bulk-load.g5.md)
+[I · install.snapshot]
+
+A snapshot copies the namespace's graph content to a file and back. One server-side inventory of IVG's stores decides what is archived and what is derived. A snapshot is not a backup: it leaves out IVG's deploy record and compiled-plan state, its embedding queue, the quarantine table and the derived vector table.
+
+- Working assumption: Prefer refusal while a live ledger exists until replace/merge history semantics are specified; do not count the current overlay as a decided contract.
+- Working assumption: Claim a consistent snapshot only when writers are quiescent (an operator premise) or under a verified snapshot/epoch protocol; for the current exporter declare the quiet-writer premise.
+--- metadata
+### install.snapshot
+
+- uncertain
+- Sources: [USER_GUIDE §10](../../../docs/USER_GUIDE.md); [ADMIN_GUIDE: backups and snapshots](../../../docs/ADMIN_GUIDE.md); [_engine/snapshot.py STORE_PLAN](../../../iris_vector_graph/_engine/snapshot.py); [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md)
+- Children: [scope](#install.snapshot.scope), [failure](#install.snapshot.failure), [derived](#install.snapshot.derived), [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004), [routed vectors](#install.snapshot.routes), [temporal events](#install.snapshot.temporal), [archive info](#install.snapshot.info)
+- agent
+- user-facing-behavior, operations
+- test-coverage
+
+Live coverage of the inventory: `tests/integration/test_snapshot_inventory.py`. Snapshots made through the HTTP server land in the temporary directory unless `IVG_SNAPSHOT_DIR` is set (KNOWN_ISSUES).
+
+Findings: [A merge restore keeps at most one row per graph in the core tables and reports every row restored](../../Verus_verification/bugs_issues.md#bug-plt-004)
+
+Audit reproduction: [bug-plt-004](../../Verus_verification/bugs_issues.md#bug-plt-004) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Open questions: [Should a snapshot be a point-in-time view?](../../Verus_verification/open_questions.md#HD-1802), [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004)
+
+Assumption review evidence: Changed from decisions.md: **no**.

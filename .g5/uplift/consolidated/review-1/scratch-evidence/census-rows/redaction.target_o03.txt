@@ -1,0 +1,46 @@
+====================================================================================================
+id                : redaction.target#o03
+block             : redaction.target
+locator           : bullet 2 "A prefix that already ends with the separator is used as given"
+statement         : A prefix ending with the separator is not doubled: acme| and acme select the same IDs.
+cases             : acme vs acme|
+observation       : Matches classification; target identity
+model_locators    : .g5/Verus_verification/models/ledger_redaction/redaction.rs::lemma_match_string_not_doubled
+premises          : non-empty separator; requires-reviewed: non-empty prefix and separator, and a prefix not already ending with the separator, which is exactly the acme vs acme| case the statement compares
+grade             : full
+design_check      : proved
+check_scope       : full
+design_receipts   : .g5/Verus_verification/results/ledger_redaction/20261116T160746Z-prove/receipt.json
+as_built          : native OBSERVED_AS_EXPECTED .g5/Verus_verification/receipts/native/redaction_binding.json
+parent_entailment : none
+gap               : none
+grade_source      : reused: coverage.md "redaction.target — prefix selects ids starting with prefix+separator"; it64 regrade: requires reviewed
+iteration         : 64
+--- block redaction.target (.g5/ontology/features/redaction.g5.md)
+[D · redaction.target]
+
+A target is a graph, optionally narrowed to the entity IDs that begin with a prefix and its separator.
+
+- The separator is part of the match, so the prefix `acme` never matches `acme-health|…`.
+- A prefix that already ends with the separator is used as given.
+- An empty separator is refused.
+
+- Working assumption: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
+--- metadata
+### redaction.target
+
+- uncertain
+- Sources: [spec 256 FR-001 and edge cases](../../../specs/256-ledger-tenant-redaction/spec.md#L97-L116), [LedgerRedact.cls MatchString](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L45-L64), [client.py redact](../../../iris_vector_graph/ledger/client.py#L633-L680)
+- Children: [Node records](#redaction.target.nodes), [Relationship records](#redaction.target.relationships)
+- agent
+- user-facing-behavior, security
+- test-coverage
+
+An empty prefix means the whole graph; the Eraser refuses an empty prefix for the analogous erase. Live tests: `TestDefaultGraphTenantByPrefix` in `test_256_ledger_redaction_e2e.py`.
+
+Findings: [Spell record graphs in redaction through GraphKey instead of an inline translate](../../Verus_verification/design_simplification.md#simp-led-001)
+
+Open questions: [What should happen to a record in the target graph when it cannot be determined whether the record belongs to a prefix target?](../../Verus_verification/open_questions.md#redaction.unattributed)
+--- proof fn lemma_match_string_not_doubled(prefix: Id, sep: Id)
+    header: requires prefix.len() > 0, sep.len() > 0, !ends_with(prefix, sep), ensures match_string(prefix + sep, sep) == match_string(prefix, sep),
+--- latest PASS prove receipt for ledger_redaction: .g5/Verus_verification/results/ledger_redaction/20261116T160746Z-prove/receipt.json (verdict PASS)

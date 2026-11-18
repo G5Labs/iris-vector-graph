@@ -1,0 +1,32 @@
+====================================================================================================
+id                : query.graph-scope.names#o02
+block             : query.graph-scope.names
+locator           : lead: 'USE GRAPH refuses a graph name ... before anything is read'
+statement         : A read under USE GRAPH with a refused graph name is refused rather than answered
+cases             : USE GRAPH '0' MATCH (n) RETURN n: refusal vs default-graph rows or empty
+observation       : error vs rows
+model_locators    : 
+premises          : 
+grade             : absent
+design_check      : none
+check_scope       : n/a
+design_receipts   : 
+as_built          : inspection CONTRADICTS iris_vector_graph/cypher/parser.py
+parent_entailment : n/a: own text
+gap               : no model; no validation on the read path either || owner-contradicted: no graph-name validation in cypher/parser.py:174-192, translator.py or _engine/query.py (bug-cyp-006) (iteration-63 §6.1 item 1)
+grade_source      : new: inspected here
+iteration         : 64
+--- block query.graph-scope.names (.g5/ontology/features/cypher.g5.md)
+[I · query.graph-scope.names]
+
+`USE GRAPH` refuses a graph name the way every other IVG write does, as [graph names](../concepts/graph-scope.g5.md#graph.names) requires, before anything is read or written.
+--- metadata
+### query.graph-scope.names
+
+- agent
+- data-integrity
+- Expands: [Graph scope](#query.graph-scope).
+
+Sources: [`GraphKey.Validate`](../../../iris_src/src/Graph/KG/GraphKey.cls#L23-L48), [`validate_graph_name`](../../../iris_vector_graph/_validate.py#L19-L45), [`USE GRAPH` parsing](../../../iris_vector_graph/cypher/parser.py#L174-L192). Observed divergence: the Cypher path does not validate the name, so a label-free node can be written under graph `"0"` while label and edge writes there fail in the index ([A-cypher notes, F8](../../uplift/ivg-verus-initial/intent/cypher.md#candidate-findings)).
+
+Findings: [USE GRAPH accepts graph names the graph keys refuse](../../Verus_verification/bugs_issues.md#bug-cyp-006)

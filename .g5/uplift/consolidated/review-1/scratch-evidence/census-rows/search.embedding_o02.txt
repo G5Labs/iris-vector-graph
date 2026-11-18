@@ -1,0 +1,40 @@
+====================================================================================================
+id                : search.embedding#o02
+block             : search.embedding
+locator           : parent: children registry, model_key, width, check_on_write, claim, other_model, queue
+statement         : Every vector write is checked against the record of the table it lands in, across all child mechanisms (record kept in the registry, claimed at setup, checked on every writer including the queue)
+cases             : a write whose identity conflicts with its table's record -> refused with fresh reads; a cached route with a failed identity read -> conflicting write admitted (as built)
+observation       : writer outcome and registry contents
+model_locators    : .g5/Verus_verification/models/search/search.rs::witness_identity_fail_open; .g5/Verus_verification/models/search/search.rs::theorem_store_routes_and_refuses
+premises          : search model ESys; route cache and registry read outcomes as inputs
+grade             : full
+design_check      : refuted
+check_scope       : narrowed
+design_receipts   : .g5/Verus_verification/results/search/20261116T160846Z-prove/receipt.json
+as_built          : none
+parent_entailment : residual: search.embedding.check_on_write#o03, search.embedding.check_on_write#o04 (rule per writer) and search.embedding.other_model#o01 can all hold for store_embedding while the IRIS queue worker writes default-graph entries with no identity check (witness_queue_default_graph_misroutes) and a failed registry read admits a conflicting write (witness_identity_fail_open); the parent promise 'every vector write' fails
+gap               : none
+grade_source      : new: inspected here (parent composition); it64 regrade: queue witness dropped (embed_queue binding contradicts it); refutation rests on fail-open witness
+iteration         : 64
+--- block search.embedding (.g5/ontology/features/search.g5.md)
+[I · search.embedding]
+
+IVG records which model produced each embedding table's vectors and how wide they are, and checks every vector write against that record.
+
+- Working assumption: Keep width-compatible undeclared writes to the claimed default table as current compatibility; separate-route enforcement needs an explicit decision.
+--- metadata
+### search.embedding
+
+- uncertain
+- Sources: [ADR-0006](../../../docs/adr/0006-embedding-identity-lives-in-a-registry-not-the-ledger.md), [CHANGELOG v3.2.0](../../../CHANGELOG.md#L4371-L4440), [CONTEXT.md glossary](../../../CONTEXT.md#L154-L157), [stage-A notes](../../uplift/ivg-verus-initial/intent/search.md#capabilities), live tests [registry](../../../tests/integration/test_embedding_registry_e2e.py) and [refusal](../../../tests/integration/test_embedding_identity_refusal_e2e.py)
+- Children: [Registry](../architecture/search-storage-and-indexes.g5.md#search.embedding.registry), [Model key](#search.embedding.model_key), [Width](#search.embedding.width), [Check on write](#search.embedding.check_on_write), [Claim](../architecture/search-storage-and-indexes.g5.md#search.embedding.claim), [Other model](#search.embedding.other_model), [May an undeclared writer add vectors to the default graph's table after a model has claimed it?](../../Verus_verification/open_questions.md#q-srch-002), [Queue](../architecture/search-storage-and-indexes.g5.md#search.embedding.queue)
+- agent
+- data-integrity, user-facing-behavior
+- test-coverage
+
+Open questions: [May an undeclared writer add vectors to the default graph's table after a model has claimed it?](../../Verus_verification/open_questions.md#q-srch-002)
+--- proof fn witness_identity_fail_open() [POINT CHECK]
+    header: 
+--- proof fn theorem_store_routes_and_refuses(s: ESys, g: Graph, node: Node, off: Ident)
+    header: requires names_ok(), one_row(s.reg), routed_rows_ok(s.reg), ensures ({ let out = store(s, g, node, off, None, Read::Ok, Read::Ok, false); let key = off.model; &&& (out is Refused <==> (target_row(s.reg, g, key) is Some && l1_must_refuse(target_row(s.reg, g, key)->Some_0, off))) &&& out is Wrote ==> read_table(out->s.reg, g, key) == Some(out->table) && get(out->s, g, key, node) == Some(off) && one_row(out->s.reg) && routed_rows_ok(out->s.reg) }),
+--- latest PASS prove receipt for search: .g5/Verus_verification/results/search/20261116T160846Z-prove/receipt.json (verdict PASS)
